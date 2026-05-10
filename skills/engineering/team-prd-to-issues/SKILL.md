@@ -21,7 +21,7 @@ metadata:
 
 - `team-spec-review` 输出的阻塞项、HITL 决策点、风险清单和建议改写。
 - `team-spec-refine` 产出的规格上下文和产品决策记录，尤其是 `team-spec/spec/CONTEXT.md` 与 `team-spec/spec/decisions/`。
-- 默认从规格工作空间读取同 slug 参考材料：`team-spec/spec/refinements/{slug}.md`、`team-spec/spec/reviews/{slug}.md`、`team-spec/spec/CONTEXT.md` 和 `team-spec/spec/decisions/`。
+- 默认从规格工作空间读取同 slug 参考材料：`team-spec/spec/refine/{slug}.md`、`team-spec/spec/reviews/{slug}.md`、`team-spec/spec/CONTEXT.md` 和 `team-spec/spec/decisions/`。
 
 必要时探索代码库，理解：
 

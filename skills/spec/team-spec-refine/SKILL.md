@@ -31,7 +31,7 @@ metadata:
 │   ├── spec/
 │   │   ├── CONTEXT.md
 │   │   └── decisions/
-│   │   └── refinements/
+│   │   └── refine/
 │   ├── prd/
 │   └── issues/
 └── docs/
@@ -49,11 +49,12 @@ metadata:
 - 现有 `team-spec/spec/CONTEXT.md`，如果项目已有需求上下文。
 - 现有 `team-spec/spec/decisions/`，如果项目已有产品决策记录。
 - 相关 PRD、业务文档、任务、设计稿或代码现状。
+- 如果存在 `team-spec/spec/reviews/{slug}.md` 且状态为 `needs refinement`，必须优先读取它，并围绕其中的问题继续追问用户。
 
 ## 输出物
 
 - 对话中的澄清结论：需求摘要、规范术语、范围内/范围外、开放问题和轻量风险扫尾。
-- `team-spec/spec/refinements/{yyyy-mm-dd}-{english-slug}.md`：单次规格细化的主输出物。
+- `team-spec/spec/refine/{yyyy-mm-dd}-{english-slug}.md`：单次规格细化的主输出物。
 - `team-spec/spec/CONTEXT.md`：当产品术语、角色、流程或业务规则被确认后更新。
 - `team-spec/spec/decisions/{number}-{slug}.md`：当出现长期有效的产品决策时创建。
 
@@ -61,7 +62,9 @@ metadata:
 
 `team-spec-refine` 可以与 `team-spec-review` 反复迭代。如果评审发现 P0 或关键 P1，应回到本技能继续修正术语、范围、业务规则、异常路径或验收口径。
 
-每个需求必须使用唯一 slug 串联全流程。格式为 `{yyyy-mm-dd}-{short-english-slug}`，例如 `2026-05-10-export-filter`。如果同一天同名，追加序号，例如 `2026-05-10-export-filter-2`。`CONTEXT.md` 和 `decisions/` 是长期共享上下文，不替代单次 `refinements/{slug}.md`。
+每个需求必须使用唯一 slug 串联全流程。格式为 `{yyyy-mm-dd}-{short-english-slug}`，例如 `2026-05-10-export-filter`。如果同一天同名，追加序号，例如 `2026-05-10-export-filter-2`。`CONTEXT.md` 和 `decisions/` 是长期共享上下文，不替代单次 `refine/{slug}.md`。
+
+修订同一个需求时，不要新建 slug。继续更新 `team-spec/spec/refine/{slug}.md`，并在文件中的 `## Change Log` 记录本轮修订原因和日期。
 
 ## 细化原则
 
@@ -112,5 +115,6 @@ metadata:
 - 范围内和范围外内容。
 - 仍未解决的问题。
 - 轻量风险扫尾：指出是否存在会阻塞 PRD 的明显 P0/P1 缺口。
-- 写入或更新 `team-spec/spec/refinements/{slug}.md`。
+- 写入或更新 `team-spec/spec/refine/{slug}.md`。
+- 在 `## Change Log` 中记录本次澄清或修订。
 - 推荐下一步：如果没有明显阻塞，使用 `team-spec-review`；如果仍有高风险歧义，继续细化。

@@ -16,7 +16,7 @@ metadata:
 优先读取上游技能输出：
 
 - `team-spec-refine` 的澄清结论。
-- `team-spec/spec/refinements/{slug}.md`。
+- `team-spec/spec/refine/{slug}.md`。
 - `team-spec/spec/CONTEXT.md`。
 - `team-spec/spec/decisions/`。
 - `team-spec/spec/reviews/{slug}.md`，或 `team-spec-review` 的阻塞项、风险清单和建议改写。
@@ -25,6 +25,8 @@ metadata:
 如果没有澄清结论或需求上下文，先判断是否需要回到 `team-spec-refine`。如果存在未处理的 P0 或关键 P1 风险，先处理风险，不要直接固化到 PRD。
 
 本技能是阶段性固化步骤，不是需求探索步骤。进入本技能前，`team-spec-refine` 与 `team-spec-review` 应已完成必要迭代，P0 和关键 P1 风险应已解决或被明确接受。
+
+只允许基于 `Status: ready` 的 `team-spec/spec/reviews/{slug}.md` 生成 PRD。如果 review 状态为 `needs refinement` 或 `blocked`，不要生成 PRD；应要求回到 `team-spec-refine` 或处理阻塞项，除非用户明确要求带风险草稿。
 
 ## 输出物
 
@@ -38,11 +40,11 @@ metadata:
 1. 阅读现有需求上下文：
    - `team-spec/spec/CONTEXT.md`
    - `team-spec/spec/decisions/`
-   - `team-spec/spec/refinements/{slug}.md`
+   - `team-spec/spec/refine/{slug}.md`
    - `team-spec/spec/reviews/{slug}.md`
    - 相关 PRD、规格、任务或文档
 2. 执行 `team-spec-review` 风格的前置检查，只识别会阻塞 PRD 的 P0/P1 风险。
-3. 如果存在 P0 或关键 P1，先向用户说明阻塞项，不要继续写完整 PRD，除非用户明确要求带风险起草。
+3. 检查 `team-spec/spec/reviews/{slug}.md` 的 `Status`。如果不是 `ready`，先向用户说明原因，不要继续写完整 PRD，除非用户明确要求带风险起草。
 4. 探索仓库，理解当前产品行为和实现边界。
 5. 使用上下文中的规范术语，并遵守已有产品决策。
 6. 识别受影响的产品模块、流程、权限、数据对象和运营界面。

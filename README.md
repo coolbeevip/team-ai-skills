@@ -44,7 +44,7 @@ team-spec/
 ├── spec/
 │   ├── CONTEXT.md
 │   ├── decisions/
-│   ├── refinements/
+│   ├── refine/
 │   └── reviews/
 ├── prd/
 └── issues/
@@ -53,13 +53,13 @@ team-spec/
 单个需求的产物链路：
 
 ```text
-team-spec/spec/refinements/{slug}.md
+team-spec/spec/refine/{slug}.md
 team-spec/spec/reviews/{slug}.md
 team-spec/prd/{slug}.md
 team-spec/issues/{slug}/
 ```
 
-`CONTEXT.md` 和 `decisions/` 是长期共享上下文，不替代单次需求的 `refinements/{slug}.md`。
+`CONTEXT.md` 和 `decisions/` 是长期共享上下文，不替代单次需求的 `refine/{slug}.md`。
 
 `team-prd-to-issues` 默认以 `team-spec/prd/{slug}.md` 为主输入，并参考规格上下文、产品决策和评审报告，再将工程 issue 草稿写入 `team-spec/issues/{slug}/`。
 

@@ -26,7 +26,7 @@ metadata:
 
 - 当前对话中的需求、澄清结论或 PRD。
 - `team-spec-refine` 的澄清结论。
-- `team-spec/spec/refinements/{slug}.md`，这是本技能的主输入。
+- `team-spec/spec/refine/{slug}.md`，这是本技能的主输入。
 - `team-spec-to-prd` 生成的 PRD，如果已经存在。
 - `team-spec/spec/CONTEXT.md`。
 - `team-spec/spec/decisions/`。
@@ -45,6 +45,8 @@ metadata:
 如果项目需要沉淀评审报告，默认保存到 `team-spec/spec/reviews/{slug}.md`，目录只在需要时创建。
 
 本技能可以与 `team-spec-refine` 反复迭代。发现 P0 或关键 P1 时，默认建议回到 `team-spec-refine` 修正规格；只有风险已解决或被明确接受后，才建议进入 `team-spec-to-prd`。
+
+本技能不要直接修改 `team-spec/spec/refine/{slug}.md`。如果规格需要修订，输出 `Status: needs refinement`，并在 `Questions For User` 与 `Required Refinement` 中给出明确问题和修改方向，由 `team-spec-refine` 继续与用户确认并更新同一个 refine 文件。
 
 ## 分析维度
 
@@ -78,6 +80,12 @@ metadata:
 - 是否存在阻塞项。
 - 最大风险来自哪个维度。
 
+`Status` 只能使用：
+
+- `ready`
+- `needs refinement`
+- `blocked`
+
 ### 阻塞项
 
 只列 `P0` 和必须立即处理的 `P1`。
@@ -93,6 +101,14 @@ metadata:
 ### 需要补充的问题
 
 只列真正影响判断的问题。不要列开放式访谈问题。
+
+### Questions For User
+
+当 `Status: needs refinement` 时必须填写。只列需要回到 `team-spec-refine` 继续确认的问题。
+
+### Required Refinement
+
+当 `Status: needs refinement` 时必须填写。说明需要更新 `team-spec/spec/refine/{slug}.md` 的哪些章节或规则。
 
 ### 建议改写
 
