@@ -22,27 +22,9 @@ npx skills@latest add coolbeevip/team-ai-skills --skill team-req-clarify
 
 ```mermaid
 flowchart TD
-    A[模糊需求 / 业务问题 / 用户想法] --> B[team-req-clarify]
-    B --> C[澄清结论]
-    B --> D[team-spec/requirements/CONTEXT.md]
-    B --> E[team-spec/requirements/decisions/]
-
-    C --> F[team-req-risk-analysis]
-    D --> F
-    E --> F
-    F --> G[team-spec/requirements/risks/]
-
-    C --> H[team-req-to-prd]
-    D --> H
-    E --> H
-    G --> H
-    H --> I[team-spec/requirements/prd/]
-
-    I --> J[team-eng-to-issues]
-    G --> J
-    D --> J
-    E --> J
-    J --> K[team-spec/engineering/issues/]
+    A[team-req-clarify] --> B[team-req-risk-analysis]
+    B --> C[team-req-to-prd]
+    C --> D[team-eng-to-issues]
 ```
 
 每个 `SKILL.md` 都声明了 `输入物` 和 `输出物`，用于说明它会读取哪些上游产物，以及会为哪些下游技能提供材料。
