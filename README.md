@@ -7,13 +7,7 @@
 安装全部技能：
 
 ```bash
-npx skills@latest add coolbeevip/team-ai-skills
-```
-
-安装单个技能：
-
-```bash
-npx skills@latest add coolbeevip/team-ai-skills --skill team-req-clarify
+npx skills@latest add coolbeevip/team-ai-skills --all
 ```
 
 ## Workflow
