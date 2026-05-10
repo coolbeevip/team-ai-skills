@@ -15,13 +15,13 @@ metadata:
 
 主输入：
 
-- `team-spec/issues/{yyyy-mm-dd}-{short-slug}.md`
+- `team-spec/issues/{slug}/{issue-number}-{short-issue-slug}.md`
 - 或外部 issue tracker 中的单个 issue。
 
 参考输入：
 
-- `team-spec/prd/` 中的关联 PRD。
-- `team-spec/spec/reviews/` 中的风险评审。
+- `team-spec/prd/{slug}.md` 中的关联 PRD。
+- `team-spec/spec/reviews/{slug}.md` 中的风险评审。
 - 当前 git 状态、主干分支、远程仓库和已有分支。
 
 如果 issue 仍有未完成依赖、HITL 决策点或阻塞项，不要创建开发分支。先说明阻塞原因。
@@ -29,7 +29,7 @@ metadata:
 ## 输出物
 
 - 一个基于最新主干的 issue 分支。
-- 开始记录，可选写入 `team-spec/issues/{issue-slug}.start.md`。
+- 开始记录，可选写入 `team-spec/issues/{slug}/{issue-number}-{short-issue-slug}.start.md`。
 - 明确的下一步：进入 `team-issue-implement`。
 
 ## 分支规则

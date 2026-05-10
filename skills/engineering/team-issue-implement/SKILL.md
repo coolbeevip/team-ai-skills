@@ -15,15 +15,15 @@ metadata:
 
 主输入必须是一个明确的 issue：
 
-- `team-spec/issues/{yyyy-mm-dd}-{short-slug}.md`
+- `team-spec/issues/{slug}/{issue-number}-{short-issue-slug}.md`
 - 或外部 issue tracker 中的单个 issue。
 
 参考输入可以包括：
 
-- `team-spec/prd/` 中的关联 PRD。
+- `team-spec/prd/{slug}.md` 中的关联 PRD。
 - `team-spec/spec/CONTEXT.md` 中的规范术语和业务规则。
 - `team-spec/spec/decisions/` 中的产品决策。
-- `team-spec/spec/reviews/` 中的风险评审。
+- `team-spec/spec/reviews/{slug}.md` 中的风险评审。
 - 当前代码库、测试、ADR、接口文档和现有实现。
 
 如果 issue 没有验收标准、依赖未完成、或仍有 HITL 决策点，不要直接实现。先说明阻塞项，并要求回到 `team-prd-to-issues` 或人工决策。
@@ -33,7 +33,7 @@ metadata:
 - 代码变更。
 - 测试变更。
 - 验证结果，包括运行了哪些测试、是否通过。
-- 如需沉淀实现记录，写入 `team-spec/issues/{issue-slug}.implementation.md`，目录只在需要时创建。
+- 如需沉淀实现记录，写入 `team-spec/issues/{slug}/{issue-number}-{short-issue-slug}.implementation.md`，目录只在需要时创建。
 
 不要修改 PRD、规格评审或产品决策，除非用户明确要求。发现需求问题时，应反馈给上游技能，而不是在实现中隐式改需求。
 

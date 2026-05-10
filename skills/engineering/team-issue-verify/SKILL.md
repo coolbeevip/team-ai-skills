@@ -21,10 +21,10 @@ metadata:
 
 参考输入：
 
-- `team-spec/prd/` 中的关联 PRD。
+- `team-spec/prd/{slug}.md` 中的关联 PRD。
 - `team-spec/spec/CONTEXT.md` 中的规范术语和业务规则。
 - `team-spec/spec/decisions/` 中的产品决策。
-- `team-spec/spec/reviews/` 中的风险评审。
+- `team-spec/spec/reviews/{slug}.md` 中的风险评审。
 - 项目现有测试、CI 配置、发布说明、迁移说明或操作文档。
 
 如果无法确认关联 issue 或验收标准，不要给出 ready 结论。先说明缺少的输入。
@@ -36,7 +36,7 @@ metadata:
 - 未覆盖验收标准。
 - 回归风险和建议补测项。
 - 实际运行的验证命令和结果。
-- 如需沉淀报告，写入 `team-spec/issues/{issue-slug}.verification.md`。
+- 如需沉淀报告，写入 `team-spec/issues/{slug}/{issue-number}-{short-issue-slug}.verification.md`。
 
 ## 验证原则
 

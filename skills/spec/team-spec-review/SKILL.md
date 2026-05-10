@@ -26,6 +26,7 @@ metadata:
 
 - 当前对话中的需求、澄清结论或 PRD。
 - `team-spec-refine` 的澄清结论。
+- `team-spec/spec/refinements/{slug}.md`，这是本技能的主输入。
 - `team-spec-to-prd` 生成的 PRD，如果已经存在。
 - `team-spec/spec/CONTEXT.md`。
 - `team-spec/spec/decisions/`。
@@ -37,10 +38,11 @@ metadata:
 ## 输出物
 
 - 对话中的规格评审报告：ready 结论、阻塞项、风险清单、需要补充的问题和建议改写。
+- `team-spec/spec/reviews/{slug}.md`：与 refinement 使用同一个 slug 的规格评审报告。
 - 可被 `team-spec-to-prd` 读取的 PRD 前置检查结果。
 - 可被 `team-prd-to-issues` 参考的工程拆解风险提示，例如 blocker、HITL 决策点和验收风险。
 
-如果项目需要沉淀评审报告，默认保存到 `team-spec/spec/reviews/{yyyy-mm-dd}-{short-slug}.md`，目录只在需要时创建。
+如果项目需要沉淀评审报告，默认保存到 `team-spec/spec/reviews/{slug}.md`，目录只在需要时创建。
 
 本技能可以与 `team-spec-refine` 反复迭代。发现 P0 或关键 P1 时，默认建议回到 `team-spec-refine` 修正规格；只有风险已解决或被明确接受后，才建议进入 `team-spec-to-prd`。
 

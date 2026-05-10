@@ -16,9 +16,10 @@ metadata:
 优先读取上游技能输出：
 
 - `team-spec-refine` 的澄清结论。
+- `team-spec/spec/refinements/{slug}.md`。
 - `team-spec/spec/CONTEXT.md`。
 - `team-spec/spec/decisions/`。
-- `team-spec-review` 的阻塞项、风险清单和建议改写，如果已经执行过。
+- `team-spec/spec/reviews/{slug}.md`，或 `team-spec-review` 的阻塞项、风险清单和建议改写。
 - 相关 PRD、规格、任务、设计稿、代码或项目文档。
 
 如果没有澄清结论或需求上下文，先判断是否需要回到 `team-spec-refine`。如果存在未处理的 P0 或关键 P1 风险，先处理风险，不要直接固化到 PRD。
@@ -28,7 +29,7 @@ metadata:
 ## 输出物
 
 - 结构化 PRD。
-- 如果没有外部任务系统，默认保存到 `team-spec/prd/{yyyy-mm-dd}-{short-slug}.md`。
+- 如果没有外部任务系统，默认保存到 `team-spec/prd/{slug}.md`。
 - PRD 中应保留开放问题、风险假设和验收标准，供 `team-prd-to-issues` 继续拆解工程任务。
 - PRD 是需求到工程的正式交接边界。工程拆解技能应以 PRD 为主输入，而不是直接基于澄清过程材料拆任务。
 
@@ -37,6 +38,8 @@ metadata:
 1. 阅读现有需求上下文：
    - `team-spec/spec/CONTEXT.md`
    - `team-spec/spec/decisions/`
+   - `team-spec/spec/refinements/{slug}.md`
+   - `team-spec/spec/reviews/{slug}.md`
    - 相关 PRD、规格、任务或文档
 2. 执行 `team-spec-review` 风格的前置检查，只识别会阻塞 PRD 的 P0/P1 风险。
 3. 如果存在 P0 或关键 P1，先向用户说明阻塞项，不要继续写完整 PRD，除非用户明确要求带风险起草。
@@ -159,7 +162,7 @@ metadata:
 如果无法发布到外部任务系统，就按仓库已有 PRD 规范保存到本地。若没有现成规范，使用：
 
 ```text
-team-spec/prd/{yyyy-mm-dd}-{short-slug}.md
+team-spec/prd/{slug}.md
 ```
 
 目录只在需要时创建。

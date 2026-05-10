@@ -17,12 +17,12 @@ metadata:
 
 - 当前 issue 分支上的代码和测试变更。
 - `team-issue-verify` 的验证报告，状态应为 `ready for PR`。
-- 当前 issue，来自 `team-spec/issues/` 或外部 issue tracker。
+- 当前 issue，来自 `team-spec/issues/{slug}/` 或外部 issue tracker。
 
 参考输入：
 
-- `team-spec/prd/` 中的关联 PRD。
-- `team-spec/spec/reviews/` 中的风险评审。
+- `team-spec/prd/{slug}.md` 中的关联 PRD。
+- `team-spec/spec/reviews/{slug}.md` 中的风险评审。
 - 项目 PR 模板、贡献指南、CI 要求和分支保护规则。
 
 如果验证状态不是 `ready for PR`，不要提交 PR。先说明应回到 `team-issue-implement` 或 `team-issue-verify`。

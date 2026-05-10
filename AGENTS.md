@@ -23,11 +23,13 @@
 
 技能运行时，所有产物应统一写入目标项目根目录下的 `team-spec/`。阶段拥有独立工作空间：
 
-- `team-spec/spec/`：规格阶段产物，包括 `CONTEXT.md`、`decisions/`、`reviews/`。
+- `team-spec/spec/`：规格阶段产物，包括 `CONTEXT.md`、`decisions/`、`refinements/`、`reviews/`。
 - `team-spec/prd/`：PRD 固化产物，是需求到工程的正式交接边界。
 - `team-spec/issues/`：PRD 拆解后的工程 issue 草稿。
 
-下游技能应优先读取上游阶段工作空间。例如 `team-prd-to-issues` 默认以 `team-spec/prd/` 中的 PRD 为主输入，评审报告、规格上下文和产品决策只能作为参考输入。
+每个需求使用唯一 slug 串联全流程，格式为 `{yyyy-mm-dd}-{short-english-slug}`。例如：`team-spec/spec/refinements/2026-05-10-export-filter.md`、`team-spec/spec/reviews/2026-05-10-export-filter.md`、`team-spec/prd/2026-05-10-export-filter.md`、`team-spec/issues/2026-05-10-export-filter/`。
+
+下游技能应优先读取上游阶段工作空间。例如 `team-prd-to-issues` 默认以 `team-spec/prd/{slug}.md` 为主输入，评审报告、规格上下文和产品决策只能作为参考输入。
 
 ## 构建、测试与开发命令
 
