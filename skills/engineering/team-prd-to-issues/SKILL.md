@@ -17,6 +17,8 @@ metadata:
 
 主输入必须是 `team-spec-to-prd` 生成的 PRD，默认来自 `team-spec/prd/{slug}.md`。没有 PRD 时，不要直接基于澄清记录或风险清单拆工程任务；应先要求执行 `team-spec-to-prd`，除非用户明确要求生成临时工程草案。
 
+必须先确定要拆解的 PRD，即明确的 `{slug}` 或 `team-spec/prd/{slug}.md`。如果无法从用户请求、当前对话或文件路径中唯一判断，应停止并要求用户提供 slug 或 PRD 文件路径，不要猜测要拆哪个 PRD。
+
 参考输入可以包括：
 
 - `team-spec-review` 输出的阻塞项、HITL 决策点、风险清单和建议改写。

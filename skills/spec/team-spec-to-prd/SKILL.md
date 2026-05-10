@@ -28,6 +28,8 @@ metadata:
 
 只允许基于 `Status: ready` 的 `team-spec/spec/reviews/{slug}.md` 生成 PRD。如果 review 状态为 `needs refinement` 或 `blocked`，不要生成 PRD；应要求回到 `team-spec-refine` 或处理阻塞项，除非用户明确要求带风险草稿。
 
+必须先确定本次 PRD 对应的 `{slug}`，以及明确的 `team-spec/spec/refine/{slug}.md` 和 `team-spec/spec/reviews/{slug}.md`。如果无法从用户请求、当前对话或文件路径中唯一判断，应停止并要求用户提供 slug、refine 文件路径或 review 文件路径，不要猜测要固化哪个规格。
+
 ## 输出物
 
 - 结构化 PRD。
@@ -51,6 +53,7 @@ metadata:
 7. 寻找可由研发独立测试的深模块或清晰 ownership 边界。
 8. 按下面模板起草 PRD。
 9. 如果项目已配置 issue tracker 或任务系统，将 PRD 发布到对应系统，并打上团队约定的 `ready-for-agent` 或 `ready-for-engineering` 标签；如果没有外部系统，就按仓库惯例创建或更新本地 Markdown PRD。
+10. PRD 成功固化后，必须明确引导下一步使用 `team-prd-to-issues`，并给出 PRD 路径 `team-spec/prd/{slug}.md`。
 
 ## PRD 模板
 
@@ -168,3 +171,19 @@ team-spec/prd/{slug}.md
 ```
 
 目录只在需要时创建。
+
+## 完成输出
+
+完成时必须输出：
+
+- PRD 路径：`team-spec/prd/{slug}.md`。
+- 是否基于 `Status: ready` 的 review 生成。
+- 仍保留的开放问题或已接受风险。
+- 下一步：使用 `team-prd-to-issues` 将该 PRD 拆解为工程 issue。
+
+推荐结尾：
+
+```text
+PRD 已固化到 team-spec/prd/{slug}.md。
+下一步请使用 team-prd-to-issues，以该 PRD 为主输入拆解工程 issues。
+```

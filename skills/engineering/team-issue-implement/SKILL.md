@@ -28,6 +28,8 @@ metadata:
 
 如果 issue 没有验收标准、依赖未完成、或仍有 HITL 决策点，不要直接实现。先说明阻塞项，并要求回到 `team-prd-to-issues` 或人工决策。
 
+必须先确定要实现的单个 issue，即明确的 `team-spec/issues/{slug}/{issue-number}-{short-issue-slug}.md` 或外部 issue 链接/编号。若无法从用户请求、当前分支、当前对话或文件路径中唯一判断，应停止并要求用户提供 issue 路径、issue 编号或链接，不要猜测要实现哪个 issue。
+
 ## 输出物
 
 - 代码变更。

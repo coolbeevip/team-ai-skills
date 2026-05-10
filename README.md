@@ -21,15 +21,19 @@ flowchart TD
     C -- 是 --> A
     C -- 否 --> D[team-spec-to-prd]
     D --> E[team-prd-to-issues]
-    E --> F[team-issue-start]
+    E --> F[team-issue-next]
     F --> G[team-issue-implement]
     G --> H[team-issue-verify]
-    H --> I[team-issue-pr]
+    H --> F
+    F -. optional .-> S[team-issue-start]
+    H -. optional .-> P[team-issue-pr]
 ```
 
 `team-spec-refine` 和 `team-spec-review` 可以反复迭代。只有当 P0 和关键 P1 风险被解决或明确接受后，才进入 `team-spec-to-prd` 固化 PRD。
 
 `team-spec/prd/` 中的 PRD 是需求到工程的正式交接边界。`team-prd-to-issues` 应以 PRD 为主输入；`CONTEXT.md`、`decisions/` 和 `reviews/` 只能作为背景参考，不能绕过 PRD 直接拆工程任务。
+
+`team-spec-to-prd` 完成后，应明确提示下一步执行 `team-prd-to-issues`，并把 `team-spec/prd/{slug}.md` 作为主输入。
 
 每个 `SKILL.md` 都声明了 `输入物` 和 `输出物`，用于说明它会读取哪些上游产物，以及会为哪些下游技能提供材料。
 
@@ -63,10 +67,12 @@ team-spec/issues/{slug}/
 
 `team-prd-to-issues` 默认以 `team-spec/prd/{slug}.md` 为主输入，并参考规格上下文、产品决策和评审报告，再将工程 issue 草稿写入 `team-spec/issues/{slug}/`。
 
-`team-issue-start` 为单个 issue 准备干净分支，确保一个 issue 一个分支。
+`team-issue-next` 从 `team-spec/issues/{slug}/` 中选择下一个可开始的 issue。
+
+`team-issue-start` 是可选工程协作技能，用于团队希望 AI 协助管理 issue 分支时准备干净分支。
 
 `team-issue-implement` 默认以 `team-spec/issues/{slug}/` 中的单个 issue 为主输入，通过行为测试和 red-green-refactor 循环完成实现。
 
 `team-issue-verify` 独立检查实现是否满足 issue、PRD 和风险约束，并输出是否 `ready for PR`。
 
-`team-issue-pr` 在验证通过后提交、推送分支并创建 PR。
+`team-issue-pr` 是可选工程协作技能，用于团队允许 AI 协助提交、推送分支并创建 PR 时使用。

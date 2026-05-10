@@ -9,7 +9,9 @@ metadata:
 
 # Issue 提交 PR
 
-这个技能用于在 `team-issue-verify` 通过后，将当前 issue 分支提交并创建 PR。它不负责修复实现问题；如果验证未通过，应回到 `team-issue-implement`。
+这个技能是可选工程协作技能，用于在 `team-issue-verify` 通过后，将当前 issue 分支提交并创建 PR。只有当团队允许 AI 协助提交、推送和创建 PR 时才使用。它不负责修复实现问题；如果验证未通过，应回到 `team-issue-implement`。
+
+如果团队已有 commit、push、PR、review 或 merge 流程，必须优先遵守团队规则。不要为了使用本技能而改变团队既有习惯。
 
 ## 输入物
 
@@ -42,9 +44,11 @@ metadata:
 4. 运行必要的最终测试或检查命令。
 5. 暂存相关文件。
 6. 创建清晰 commit。
-7. 推送当前 issue 分支。
-8. 创建 PR 或 draft PR。
+7. 推送当前 issue 分支。执行 push 前必须确认团队允许 AI 推送，且用户已授权。
+8. 创建 PR 或 draft PR。执行前必须确认目标远程、目标分支、PR 类型和团队规则。
 9. 输出 PR 链接、验证结果和后续动作。
+
+如果用户只想手动提交或开 PR，本技能应输出 PR 文案、commit message 和建议命令，不直接执行 Git 或 GitHub 操作。
 
 ## Commit 规则
 

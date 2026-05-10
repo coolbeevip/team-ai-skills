@@ -10,10 +10,11 @@
 - `skills/spec/team-spec-to-prd/`：用于把 ready 的规格固化成 PRD。
 - `skills/engineering/`：工程阶段技能。
 - `skills/engineering/team-prd-to-issues/`：用于把 PRD 拆解成可独立领取的工程 issue。
-- `skills/engineering/team-issue-start/`：用于同步主干、检查依赖并创建 issue 分支。
+- `skills/engineering/team-issue-next/`：用于从同一个 PRD 的 issue 集合中选择下一个可开始 issue。
+- `skills/engineering/team-issue-start/`：可选技能，用于同步主干、检查依赖并创建 issue 分支。
 - `skills/engineering/team-issue-implement/`：用于按行为测试和 TDD 循环实现单个 issue。
 - `skills/engineering/team-issue-verify/`：用于验证单个 issue 实现是否满足验收标准和 PRD。
-- `skills/engineering/team-issue-pr/`：用于验证通过后提交、推送并创建 PR。
+- `skills/engineering/team-issue-pr/`：可选技能，用于验证通过后提交、推送并创建 PR。
 
 每个技能目录必须包含 `SKILL.md`。只有当辅助文件被 `SKILL.md` 明确引用时才添加，例如 `CONTEXT-FORMAT.md`、`DECISION-FORMAT.md`。
 
@@ -58,6 +59,7 @@
 - 每个技能必须声明 `license: MIT`。
 - 每个技能必须包含 `metadata.author: coolbeevip` 和 `metadata.version: "1.0"`。
 - 每个技能必须声明 `## 输入物` 和 `## 输出物`，明确会读取哪些上游技能产物，以及会给哪些下游技能使用。
+- 依赖上游产物的技能必须先确定唯一 slug 或明确文件路径；无法唯一判断时必须要求用户提供，不得猜测。
 - 用户可见说明优先使用中文。
 - 不要添加无关文档文件，例如 `README.md`，除非仓库规范发生变化。
 
