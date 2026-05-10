@@ -11,9 +11,16 @@ metadata:
 
 这个技能用于把 PRD、技术方案或开发计划拆成工程团队可以直接领取的 issue。拆解目标是让每个 issue 都能独立实现、独立验证，并尽量减少跨 issue 的隐藏耦合。
 
-## 输入
+## 输入物
 
 优先使用当前对话已有材料。如果用户提供 issue 编号、URL、PRD 路径或文档路径，先读取完整内容和相关评论。
+
+优先读取上游技能输出：
+
+- `team-req-to-prd` 生成的 PRD。
+- `team-req-risk-analysis` 输出的阻塞项、HITL 决策点、风险清单和建议改写。
+- `team-req-clarify` 产出的需求上下文和产品决策记录，尤其是 `team-spec/requirements/CONTEXT.md` 与 `team-spec/requirements/decisions/`。
+- 默认从需求人员工作空间读取输入：`team-spec/requirements/prd/`、`team-spec/requirements/risks/`、`team-spec/requirements/CONTEXT.md` 和 `team-spec/requirements/decisions/`。
 
 必要时探索代码库，理解：
 
@@ -23,6 +30,14 @@ metadata:
 - 哪些改动可以作为端到端薄切片交付。
 
 如果缺少足够上下文，不要直接创建 issue。先说明缺少的材料，并提出最少量的澄清问题。
+
+## 输出物
+
+- issue 拆解草案：标题、类型、依赖、覆盖的用户故事和切片理由。
+- 正式 issue，如果用户确认并且 issue tracker 可用。
+- 本地 Markdown issue 草稿，如果没有可用 issue tracker，默认保存到 `team-spec/engineering/issues/{yyyy-mm-dd}-{short-slug}.md`。
+
+这些输出物通常是工程执行入口。下游 agent 或研发人员应能直接领取 `AFK` issue；`HITL` issue 必须先完成指定人工决策。
 
 ## 拆解原则
 
@@ -101,7 +116,7 @@ AFK / HITL
 - 按依赖顺序发布，先发布 blocker，再发布依赖它的 issue。
 - 不要关闭、修改或重写父 issue，除非用户明确要求。
 - 如果发布到 GitHub Issues，使用团队约定的 triage label；如果没有约定，先询问或生成草稿。
-- 本地草稿默认保存到 `issues/{yyyy-mm-dd}-{short-slug}.md`，目录只在需要时创建。
+- 本地草稿默认保存到 `team-spec/engineering/issues/{yyyy-mm-dd}-{short-slug}.md`，目录只在需要时创建。
 
 ## 质量标准
 

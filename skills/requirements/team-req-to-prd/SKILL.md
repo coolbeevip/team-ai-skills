@@ -11,13 +11,31 @@ metadata:
 
 这个技能用于把当前对话、需求上下文和项目现状综合成 PRD。不要进行大范围访谈。只有当缺失信息会导致 PRD 误导研发或无法落地时，才向用户追问。
 
+## 输入物
+
+优先读取上游技能输出：
+
+- `team-req-clarify` 的澄清结论。
+- `team-spec/requirements/CONTEXT.md`。
+- `team-spec/requirements/decisions/`。
+- `team-req-risk-analysis` 的阻塞项、风险清单和建议改写，如果已经执行过。
+- 相关 PRD、规格、任务、设计稿、代码或项目文档。
+
+如果没有澄清结论或需求上下文，先判断是否需要回到 `team-req-clarify`。如果存在未处理的 P0 或关键 P1 风险，先处理风险，不要直接固化到 PRD。
+
+## 输出物
+
+- 结构化 PRD。
+- 如果没有外部任务系统，默认保存到 `team-spec/requirements/prd/{yyyy-mm-dd}-{short-slug}.md`。
+- PRD 中应保留开放问题、风险假设和验收标准，供 `team-eng-to-issues` 继续拆解工程任务。
+
 ## 流程
 
 1. 阅读现有需求上下文：
-   - `requirements/CONTEXT.md`
-   - `requirements/decisions/`
+   - `team-spec/requirements/CONTEXT.md`
+   - `team-spec/requirements/decisions/`
    - 相关 PRD、规格、任务或文档
-2. 执行 `req-risk-analysis` 风格的前置检查，只识别会阻塞 PRD 的 P0/P1 风险。
+2. 执行 `team-req-risk-analysis` 风格的前置检查，只识别会阻塞 PRD 的 P0/P1 风险。
 3. 如果存在 P0 或关键 P1，先向用户说明阻塞项，不要继续写完整 PRD，除非用户明确要求带风险起草。
 4. 探索仓库，理解当前产品行为和实现边界。
 5. 使用上下文中的规范术语，并遵守已有产品决策。
@@ -138,7 +156,7 @@ metadata:
 如果无法发布到外部任务系统，就按仓库已有 PRD 规范保存到本地。若没有现成规范，使用：
 
 ```text
-requirements/prd/{yyyy-mm-dd}-{short-slug}.md
+team-spec/requirements/prd/{yyyy-mm-dd}-{short-slug}.md
 ```
 
 目录只在需要时创建。

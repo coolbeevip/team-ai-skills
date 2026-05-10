@@ -13,6 +13,15 @@
 
 每个技能目录必须包含 `SKILL.md`。只有当辅助文件被 `SKILL.md` 明确引用时才添加，例如 `CONTEXT-FORMAT.md`、`DECISION-FORMAT.md`。
 
+## Team Spec 工作空间
+
+所有技能产物统一写入项目根目录下的 `team-spec/`。角色拥有独立工作空间：
+
+- `team-spec/requirements/`：需求角色产物，包括 `CONTEXT.md`、`decisions/`、`prd/`、`risks/`。
+- `team-spec/engineering/`：工程角色产物，包括 `issues/`。
+
+下游技能应优先读取上游角色工作空间。例如 `team-eng-to-issues` 默认从 `team-spec/requirements/` 读取 PRD、风险报告、需求上下文和产品决策。
+
 ## 构建、测试与开发命令
 
 当前仓库是 Markdown 技能库，没有构建系统和自动化测试配置。
@@ -20,6 +29,7 @@
 所有 shell 命令都必须通过 `rtk` 执行：
 
 - `rtk find skills -maxdepth 4 -type f`：列出技能文件。
+- `rtk find team-spec -maxdepth 4 -type f`：列出技能产物。
 - `rtk sed -n '1,120p' skills/requirements/team-req-clarify/SKILL.md`：查看技能内容。
 - `rtk git status --short`：查看本地变更。
 - `rtk git diff`：提交前检查修改。
@@ -38,6 +48,7 @@
 - `description` 必须同时包含中文和英文描述，便于 AI 在不同语言上下文中识别触发场景。
 - 每个技能必须声明 `license: MIT`。
 - 每个技能必须包含 `metadata.author: coolbeevip` 和 `metadata.version: "1.0"`。
+- 每个技能必须声明 `## 输入物` 和 `## 输出物`，明确会读取哪些上游技能产物，以及会给哪些下游技能使用。
 - `skills/requirements/` 下的用户可见说明优先使用中文。
 - 不要添加无关文档文件，例如 `README.md`，除非仓库规范发生变化。
 

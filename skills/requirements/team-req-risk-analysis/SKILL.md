@@ -20,17 +20,27 @@ metadata:
 
 不要在 `req-clarify` 的每一轮问答后自动执行完整风险分析。那会打断澄清节奏，并且在信息尚不稳定时制造噪音。
 
-## 输入
+## 输入物
 
 优先读取：
 
 - 当前对话中的需求、澄清结论或 PRD。
-- `requirements/CONTEXT.md`。
-- `requirements/decisions/`。
+- `team-req-clarify` 的澄清结论。
+- `team-req-to-prd` 生成的 PRD，如果已经存在。
+- `team-spec/requirements/CONTEXT.md`。
+- `team-spec/requirements/decisions/`。
 - 相关 PRD、任务、设计稿、接口说明、测试计划或上线计划。
 - 当前仓库中能证明现状的代码或文档。
 
 如果输入不足，不要编造风险。先说明缺少什么材料，并只基于已有证据输出可判断的风险。
+
+## 输出物
+
+- 对话中的风险分析报告：结论、阻塞项、风险清单、需要补充的问题和建议改写。
+- 可被 `team-req-to-prd` 读取的 PRD 前置检查结果。
+- 可被 `team-eng-to-issues` 读取的工程拆解风险提示，例如需要先处理的 blocker、HITL 决策点和验收风险。
+
+如果项目需要沉淀风险报告，默认保存到 `team-spec/requirements/risks/{yyyy-mm-dd}-{short-slug}.md`，目录只在需要时创建。
 
 ## 分析维度
 

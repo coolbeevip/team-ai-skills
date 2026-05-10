@@ -27,19 +27,36 @@ metadata:
 ```text
 /
 ├── REQUIREMENTS.md
-├── requirements/
-│   ├── CONTEXT.md
-│   └── decisions/
-│       ├── 0001-requirement-boundary.md
-│       └── 0002-launch-scope.md
+├── team-spec/
+│   ├── requirements/
+│   │   ├── CONTEXT.md
+│   │   └── decisions/
+│   │       ├── 0001-requirement-boundary.md
+│   │       └── 0002-launch-scope.md
+│   └── engineering/
 └── docs/
 ```
 
-如果 `requirements/CONTEXT.md` 不存在，等第一个产品术语、角色、流程或业务规则被确认后再创建。不要提前创建空文件。
+如果 `team-spec/requirements/CONTEXT.md` 不存在，等第一个产品术语、角色、流程或业务规则被确认后再创建。不要提前创建空文件。
 
-如果 `requirements/decisions/` 不存在，等第一个长期有效、值得保留的产品决策出现后再创建。
+如果 `team-spec/requirements/decisions/` 不存在，等第一个长期有效、值得保留的产品决策出现后再创建。
 
 需求上下文使用 [CONTEXT-FORMAT.md](./CONTEXT-FORMAT.md)，产品决策记录使用 [DECISION-FORMAT.md](./DECISION-FORMAT.md)。
+
+## 输入物
+
+- 当前对话中的初始需求、用户问题、业务背景或功能想法。
+- 现有 `team-spec/requirements/CONTEXT.md`，如果项目已有需求上下文。
+- 现有 `team-spec/requirements/decisions/`，如果项目已有产品决策记录。
+- 相关 PRD、业务文档、任务、设计稿或代码现状。
+
+## 输出物
+
+- 对话中的澄清结论：需求摘要、规范术语、范围内/范围外、开放问题和轻量风险扫尾。
+- `team-spec/requirements/CONTEXT.md`：当产品术语、角色、流程或业务规则被确认后更新。
+- `team-spec/requirements/decisions/{number}-{slug}.md`：当出现长期有效的产品决策时创建。
+
+下游技能会读取这些输出物：`team-req-risk-analysis` 用于风险检查，`team-req-to-prd` 用于生成 PRD。
 
 ## 澄清原则
 
@@ -49,7 +66,7 @@ metadata:
 - 重点追问用户角色、权限、状态变化、异常路径和业务规则。
 - 用具体场景压测边界。主动构造边缘案例，让概念边界暴露出来。
 - 有多个方案时，给出推荐方案，再让用户确认或否定。
-- 维护一套规范术语。术语一旦确认，立即更新 `requirements/CONTEXT.md`，不要攒到最后。
+- 维护一套规范术语。术语一旦确认，立即更新 `team-spec/requirements/CONTEXT.md`，不要攒到最后。
 
 ## 追问顺序
 
