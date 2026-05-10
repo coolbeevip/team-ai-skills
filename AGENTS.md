@@ -8,8 +8,12 @@
 - `skills/spec/team-spec-refine/`：用于与用户反复确认并打磨规格。
 - `skills/spec/team-spec-review/`：用于评审规格风险和 ready 状态。
 - `skills/spec/team-spec-to-prd/`：用于把 ready 的规格固化成 PRD。
-- `skills/prd/`：以 PRD 为输入的转换类技能。
-- `skills/prd/team-prd-to-issues/`：用于把 PRD 拆解成可独立领取的工程 issue。
+- `skills/engineering/`：工程阶段技能。
+- `skills/engineering/team-prd-to-issues/`：用于把 PRD 拆解成可独立领取的工程 issue。
+- `skills/engineering/team-issue-start/`：用于同步主干、检查依赖并创建 issue 分支。
+- `skills/engineering/team-issue-implement/`：用于按行为测试和 TDD 循环实现单个 issue。
+- `skills/engineering/team-issue-verify/`：用于验证单个 issue 实现是否满足验收标准和 PRD。
+- `skills/engineering/team-issue-pr/`：用于验证通过后提交、推送并创建 PR。
 
 每个技能目录必须包含 `SKILL.md`。只有当辅助文件被 `SKILL.md` 明确引用时才添加，例如 `CONTEXT-FORMAT.md`、`DECISION-FORMAT.md`。
 
@@ -45,7 +49,7 @@
 - 目录名使用 kebab-case，例如 `team-spec-review`。
 - 所有技能名必须以 `team-` 开头。
 - 规格类技能使用 `team-spec-` 前缀，例如 `team-spec-refine`。
-- PRD 转换类技能使用 `team-prd-` 前缀，例如 `team-prd-to-issues`。
+- 工程阶段技能可按输入产物使用 `team-prd-` 或 `team-issue-` 前缀，例如 `team-prd-to-issues`、`team-issue-implement`。
 - 必需技能文件命名为 `SKILL.md`。
 - `SKILL.md` 必须包含 YAML frontmatter，并提供 `name`、`description`、`license` 和 `metadata`。
 - `description` 必须同时包含中文和英文描述，便于 AI 在不同语言上下文中识别触发场景。
