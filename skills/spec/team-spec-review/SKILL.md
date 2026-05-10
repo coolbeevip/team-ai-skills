@@ -1,34 +1,34 @@
 ---
-name: team-req-risk-analysis
-description: 分析 PRD、需求说明或澄清结果中的产品、交付、数据、合规、运营和协作风险，并输出分级风险清单、补救动作和阻塞项。适用于需求评审、PRD 评审、开发前风险排查、上线前需求完整性检查，以及 req-to-prd 前置检查。Analyze product, delivery, data, compliance, operational, and collaboration risks in requirements, PRDs, or clarification results, and produce prioritized risks, mitigations, blockers, owners, and deadlines.
+name: team-spec-review
+description: 评审已细化的需求规格，检查产品、交付、数据、合规、运营和协作风险，并输出分级风险、阻塞项、补救动作和是否 ready 的结论。Review refined specs for product, delivery, data, compliance, operational, and collaboration risks, then produce readiness findings, blockers, mitigations, owners, and deadlines.
 license: MIT
 metadata:
   author: coolbeevip
   version: "1.0"
 ---
 
-# 需求风险分析
+# 规格评审
 
 这个技能用于找出会导致需求方向错误、返工、延期、线上事故、合规问题或协作失效的风险。不要只输出泛泛的风险列表；每个重要风险都必须落到处理动作、负责人和截止点。
 
 ## 触发时机
 
-- `req-clarify` 结束时：只做轻量风险扫尾，检查是否还有会阻塞 PRD 的明显缺口。
-- `req-to-prd` 开始前：作为前置检查，先识别 P0/P1 风险，再决定是否可以进入 PRD 起草。
+- `team-spec-refine` 阶段中：反复评审规格是否还有会阻塞 PRD 的明显缺口。
+- `team-spec-to-prd` 开始前：作为 ready gate，先识别 P0/P1 风险，再决定是否可以固化 PRD。
 - PRD 完成后：做完整评审，检查 PRD 是否足够支持研发、测试、运营和上线。
 - 开发前或上线前：复查未关闭风险，确认是否仍然可接受。
 
-不要在 `req-clarify` 的每一轮问答后自动执行完整风险分析。那会打断澄清节奏，并且在信息尚不稳定时制造噪音。
+不要在 `team-spec-refine` 的每一轮问答后自动执行完整评审。那会打断细化节奏，并且在信息尚不稳定时制造噪音。
 
 ## 输入物
 
 优先读取：
 
 - 当前对话中的需求、澄清结论或 PRD。
-- `team-req-clarify` 的澄清结论。
-- `team-req-to-prd` 生成的 PRD，如果已经存在。
-- `team-spec/requirements/CONTEXT.md`。
-- `team-spec/requirements/decisions/`。
+- `team-spec-refine` 的澄清结论。
+- `team-spec-to-prd` 生成的 PRD，如果已经存在。
+- `team-spec/spec/CONTEXT.md`。
+- `team-spec/spec/decisions/`。
 - 相关 PRD、任务、设计稿、接口说明、测试计划或上线计划。
 - 当前仓库中能证明现状的代码或文档。
 
@@ -36,11 +36,13 @@ metadata:
 
 ## 输出物
 
-- 对话中的风险分析报告：结论、阻塞项、风险清单、需要补充的问题和建议改写。
-- 可被 `team-req-to-prd` 读取的 PRD 前置检查结果。
-- 可被 `team-eng-to-issues` 读取的工程拆解风险提示，例如需要先处理的 blocker、HITL 决策点和验收风险。
+- 对话中的规格评审报告：ready 结论、阻塞项、风险清单、需要补充的问题和建议改写。
+- 可被 `team-spec-to-prd` 读取的 PRD 前置检查结果。
+- 可被 `team-prd-to-issues` 参考的工程拆解风险提示，例如 blocker、HITL 决策点和验收风险。
 
-如果项目需要沉淀风险报告，默认保存到 `team-spec/requirements/risks/{yyyy-mm-dd}-{short-slug}.md`，目录只在需要时创建。
+如果项目需要沉淀评审报告，默认保存到 `team-spec/spec/reviews/{yyyy-mm-dd}-{short-slug}.md`，目录只在需要时创建。
+
+本技能可以与 `team-spec-refine` 反复迭代。发现 P0 或关键 P1 时，默认建议回到 `team-spec-refine` 修正规格；只有风险已解决或被明确接受后，才建议进入 `team-spec-to-prd`。
 
 ## 分析维度
 
@@ -70,8 +72,8 @@ metadata:
 
 用三句话以内说明：
 
+- 是否 ready 进入 PRD 固化。
 - 是否存在阻塞项。
-- 是否建议继续进入 PRD、开发或发布。
 - 最大风险来自哪个维度。
 
 ### 阻塞项
@@ -100,5 +102,5 @@ metadata:
 - 不要把“不确定”伪装成“风险已确认”。明确写出证据缺口。
 - 不要只说“需要明确”。必须说明要明确什么、谁来明确、何时必须明确。
 - 不要输出无法行动的建议。每条 P0/P1 风险必须有建议动作、Owner 和截止点。
-- 如果风险来自术语混乱，建议回到 `req-clarify` 继续澄清。
-- 如果风险可通过 PRD 明确表达解决，建议在 `req-to-prd` 中直接补入对应章节。
+- 如果风险来自术语混乱，建议回到 `team-spec-refine` 继续细化。
+- 如果风险可通过 PRD 明确表达解决，建议在 `team-spec-to-prd` 中直接补入对应章节。

@@ -1,15 +1,15 @@
 ---
-name: team-req-clarify
-description: 用结构化追问澄清模糊需求，挑战术语、边界、业务规则和验收口径，并在澄清过程中更新需求上下文或产品决策记录。适用于产品经理、需求负责人或业务方在写 PRD 前细化想法、功能请求、用户问题或需求。Clarify vague product requirements through structured questioning, challenge terminology, scope, business rules, and acceptance criteria, and update requirement context or product decision records during clarification.
+name: team-spec-refine
+description: 通过与用户反复确认来细化需求规格，澄清术语、边界、业务规则和验收口径，并更新需求上下文或产品决策记录。适用于 PRD 前的需求探索、规格打磨和用户访谈。Refine product specs through iterative user confirmation, clarifying terminology, scope, business rules, and acceptance criteria before PRD creation.
 license: MIT
 metadata:
   author: coolbeevip
   version: "1.0"
 ---
 
-# 需求澄清
+# 规格细化
 
-这个技能用于把模糊需求变成团队共享、可验证的理解。一次只问一个问题。不要在关键假设尚未稳定时直接写 PRD。
+这个技能用于把模糊需求打磨成团队共享、可验证的规格。一次只问一个问题。不要在关键假设尚未稳定时直接写 PRD。
 
 ## 首轮动作
 
@@ -28,37 +28,38 @@ metadata:
 /
 ├── REQUIREMENTS.md
 ├── team-spec/
-│   ├── requirements/
+│   ├── spec/
 │   │   ├── CONTEXT.md
 │   │   └── decisions/
-│   │       ├── 0001-requirement-boundary.md
-│   │       └── 0002-launch-scope.md
-│   └── engineering/
+│   ├── prd/
+│   └── issues/
 └── docs/
 ```
 
-如果 `team-spec/requirements/CONTEXT.md` 不存在，等第一个产品术语、角色、流程或业务规则被确认后再创建。不要提前创建空文件。
+如果 `team-spec/spec/CONTEXT.md` 不存在，等第一个产品术语、角色、流程或业务规则被确认后再创建。不要提前创建空文件。
 
-如果 `team-spec/requirements/decisions/` 不存在，等第一个长期有效、值得保留的产品决策出现后再创建。
+如果 `team-spec/spec/decisions/` 不存在，等第一个长期有效、值得保留的产品决策出现后再创建。
 
 需求上下文使用 [CONTEXT-FORMAT.md](./CONTEXT-FORMAT.md)，产品决策记录使用 [DECISION-FORMAT.md](./DECISION-FORMAT.md)。
 
 ## 输入物
 
 - 当前对话中的初始需求、用户问题、业务背景或功能想法。
-- 现有 `team-spec/requirements/CONTEXT.md`，如果项目已有需求上下文。
-- 现有 `team-spec/requirements/decisions/`，如果项目已有产品决策记录。
+- 现有 `team-spec/spec/CONTEXT.md`，如果项目已有需求上下文。
+- 现有 `team-spec/spec/decisions/`，如果项目已有产品决策记录。
 - 相关 PRD、业务文档、任务、设计稿或代码现状。
 
 ## 输出物
 
 - 对话中的澄清结论：需求摘要、规范术语、范围内/范围外、开放问题和轻量风险扫尾。
-- `team-spec/requirements/CONTEXT.md`：当产品术语、角色、流程或业务规则被确认后更新。
-- `team-spec/requirements/decisions/{number}-{slug}.md`：当出现长期有效的产品决策时创建。
+- `team-spec/spec/CONTEXT.md`：当产品术语、角色、流程或业务规则被确认后更新。
+- `team-spec/spec/decisions/{number}-{slug}.md`：当出现长期有效的产品决策时创建。
 
-下游技能会读取这些输出物：`team-req-risk-analysis` 用于风险检查，`team-req-to-prd` 用于生成 PRD。
+下游技能会读取这些输出物：`team-spec-review` 用于规格评审，`team-spec-to-prd` 用于生成 PRD。
 
-## 澄清原则
+`team-spec-refine` 可以与 `team-spec-review` 反复迭代。如果评审发现 P0 或关键 P1，应回到本技能继续修正术语、范围、业务规则、异常路径或验收口径。
+
+## 细化原则
 
 - 发现一词多义时立即指出。例如：“你说的账号，是登录账号、客户账户，还是计费账户？”
 - 把模糊表述改成可观察行为。例如：把“审批要快”改成“95% 的审批在 2 分钟内完成”。
@@ -66,7 +67,7 @@ metadata:
 - 重点追问用户角色、权限、状态变化、异常路径和业务规则。
 - 用具体场景压测边界。主动构造边缘案例，让概念边界暴露出来。
 - 有多个方案时，给出推荐方案，再让用户确认或否定。
-- 维护一套规范术语。术语一旦确认，立即更新 `team-spec/requirements/CONTEXT.md`，不要攒到最后。
+- 维护一套规范术语。术语一旦确认，立即更新 `team-spec/spec/CONTEXT.md`，不要攒到最后。
 
 ## 追问顺序
 
@@ -100,11 +101,11 @@ metadata:
 - 当前剩余风险最高的歧义。
 - 下一个单一问题。
 
-澄清完成后，总结：
+细化完成后，总结：
 
 - 用自然语言描述需求。
 - 规范术语。
 - 范围内和范围外内容。
 - 仍未解决的问题。
 - 轻量风险扫尾：指出是否存在会阻塞 PRD 的明显 P0/P1 缺口。
-- 推荐下一步：如果没有明显阻塞，使用 `req-to-prd`；如果仍有高风险歧义，先使用 `req-risk-analysis` 或继续澄清。
+- 推荐下一步：如果没有明显阻塞，使用 `team-spec-review`；如果仍有高风险歧义，继续细化。

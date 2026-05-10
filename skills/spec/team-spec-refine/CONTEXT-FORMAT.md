@@ -1,6 +1,6 @@
 # 需求上下文格式
 
-`team-spec/requirements/CONTEXT.md` 用于沉淀在 PRD、任务和研发讨论中应保持一致的产品语言。
+`team-spec/spec/CONTEXT.md` 用于沉淀在 PRD、任务和研发讨论中应保持一致的产品语言。
 
 ## 模板
 

@@ -1,6 +1,6 @@
 # 产品决策记录格式
 
-产品决策记录存放在 `team-spec/requirements/decisions/`，按顺序编号：
+产品决策记录存放在 `team-spec/spec/decisions/`，按顺序编号：
 
 ```text
 0001-short-slug.md

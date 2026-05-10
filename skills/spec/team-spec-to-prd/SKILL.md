@@ -1,13 +1,13 @@
 ---
-name: team-req-to-prd
-description: 将已澄清的需求上下文和当前对话整理成结构化 PRD，用于产品和研发协作。适用于产品经理或需求负责人在已有讨论基础上产出 PRD，而不是重新做需求访谈。Turn clarified requirement context and the current conversation into a structured PRD for product and engineering collaboration without restarting discovery.
+name: team-spec-to-prd
+description: 将已细化且通过评审的规格整理成结构化 PRD，作为需求到工程的正式交接边界。适用于规格 ready 后的 PRD 固化，而不是重新做需求访谈。Turn refined and reviewed specs into a structured PRD as the formal handoff boundary from product requirements to engineering.
 license: MIT
 metadata:
   author: coolbeevip
   version: "1.0"
 ---
 
-# 需求转 PRD
+# 规格转 PRD
 
 这个技能用于把当前对话、需求上下文和项目现状综合成 PRD。不要进行大范围访谈。只有当缺失信息会导致 PRD 误导研发或无法落地时，才向用户追问。
 
@@ -15,27 +15,30 @@ metadata:
 
 优先读取上游技能输出：
 
-- `team-req-clarify` 的澄清结论。
-- `team-spec/requirements/CONTEXT.md`。
-- `team-spec/requirements/decisions/`。
-- `team-req-risk-analysis` 的阻塞项、风险清单和建议改写，如果已经执行过。
+- `team-spec-refine` 的澄清结论。
+- `team-spec/spec/CONTEXT.md`。
+- `team-spec/spec/decisions/`。
+- `team-spec-review` 的阻塞项、风险清单和建议改写，如果已经执行过。
 - 相关 PRD、规格、任务、设计稿、代码或项目文档。
 
-如果没有澄清结论或需求上下文，先判断是否需要回到 `team-req-clarify`。如果存在未处理的 P0 或关键 P1 风险，先处理风险，不要直接固化到 PRD。
+如果没有澄清结论或需求上下文，先判断是否需要回到 `team-spec-refine`。如果存在未处理的 P0 或关键 P1 风险，先处理风险，不要直接固化到 PRD。
+
+本技能是阶段性固化步骤，不是需求探索步骤。进入本技能前，`team-spec-refine` 与 `team-spec-review` 应已完成必要迭代，P0 和关键 P1 风险应已解决或被明确接受。
 
 ## 输出物
 
 - 结构化 PRD。
-- 如果没有外部任务系统，默认保存到 `team-spec/requirements/prd/{yyyy-mm-dd}-{short-slug}.md`。
-- PRD 中应保留开放问题、风险假设和验收标准，供 `team-eng-to-issues` 继续拆解工程任务。
+- 如果没有外部任务系统，默认保存到 `team-spec/prd/{yyyy-mm-dd}-{short-slug}.md`。
+- PRD 中应保留开放问题、风险假设和验收标准，供 `team-prd-to-issues` 继续拆解工程任务。
+- PRD 是需求到工程的正式交接边界。工程拆解技能应以 PRD 为主输入，而不是直接基于澄清过程材料拆任务。
 
 ## 流程
 
 1. 阅读现有需求上下文：
-   - `team-spec/requirements/CONTEXT.md`
-   - `team-spec/requirements/decisions/`
+   - `team-spec/spec/CONTEXT.md`
+   - `team-spec/spec/decisions/`
    - 相关 PRD、规格、任务或文档
-2. 执行 `team-req-risk-analysis` 风格的前置检查，只识别会阻塞 PRD 的 P0/P1 风险。
+2. 执行 `team-spec-review` 风格的前置检查，只识别会阻塞 PRD 的 P0/P1 风险。
 3. 如果存在 P0 或关键 P1，先向用户说明阻塞项，不要继续写完整 PRD，除非用户明确要求带风险起草。
 4. 探索仓库，理解当前产品行为和实现边界。
 5. 使用上下文中的规范术语，并遵守已有产品决策。
@@ -156,7 +159,7 @@ metadata:
 如果无法发布到外部任务系统，就按仓库已有 PRD 规范保存到本地。若没有现成规范，使用：
 
 ```text
-team-spec/requirements/prd/{yyyy-mm-dd}-{short-slug}.md
+team-spec/prd/{yyyy-mm-dd}-{short-slug}.md
 ```
 
 目录只在需要时创建。

@@ -1,26 +1,27 @@
 ---
-name: team-eng-to-issues
-description: 将 PRD、技术方案、需求说明或开发计划拆解为可独立领取、可验证、按依赖排序的工程 issue，强调端到端 vertical slice，而不是按层拆任务。Break PRDs, specs, requirements, or implementation plans into independently grabbable engineering issues using end-to-end vertical slices instead of horizontal layer-based tasks.
+name: team-prd-to-issues
+description: 将 PRD 拆解为可独立领取、可验证、按依赖排序的工程 issue，强调端到端 vertical slice，而不是按层拆任务。Break PRDs into independently grabbable engineering issues using end-to-end vertical slices instead of horizontal layer-based tasks.
 license: MIT
 metadata:
   author: coolbeevip
   version: "1.0"
 ---
 
-# 工程任务拆解
+# PRD 转工程 Issues
 
-这个技能用于把 PRD、技术方案或开发计划拆成工程团队可以直接领取的 issue。拆解目标是让每个 issue 都能独立实现、独立验证，并尽量减少跨 issue 的隐藏耦合。
+这个技能用于把 PRD 拆成工程团队可以直接领取的 issue。拆解目标是让每个 issue 都能独立实现、独立验证，并尽量减少跨 issue 的隐藏耦合。
 
 ## 输入物
 
 优先使用当前对话已有材料。如果用户提供 issue 编号、URL、PRD 路径或文档路径，先读取完整内容和相关评论。
 
-优先读取上游技能输出：
+主输入必须是 `team-spec-to-prd` 生成的 PRD，默认来自 `team-spec/prd/`。没有 PRD 时，不要直接基于澄清记录或风险清单拆工程任务；应先要求执行 `team-spec-to-prd`，除非用户明确要求生成临时工程草案。
 
-- `team-req-to-prd` 生成的 PRD。
-- `team-req-risk-analysis` 输出的阻塞项、HITL 决策点、风险清单和建议改写。
-- `team-req-clarify` 产出的需求上下文和产品决策记录，尤其是 `team-spec/requirements/CONTEXT.md` 与 `team-spec/requirements/decisions/`。
-- 默认从需求人员工作空间读取输入：`team-spec/requirements/prd/`、`team-spec/requirements/risks/`、`team-spec/requirements/CONTEXT.md` 和 `team-spec/requirements/decisions/`。
+参考输入可以包括：
+
+- `team-spec-review` 输出的阻塞项、HITL 决策点、风险清单和建议改写。
+- `team-spec-refine` 产出的规格上下文和产品决策记录，尤其是 `team-spec/spec/CONTEXT.md` 与 `team-spec/spec/decisions/`。
+- 默认从规格工作空间读取参考材料：`team-spec/spec/reviews/`、`team-spec/spec/CONTEXT.md` 和 `team-spec/spec/decisions/`。
 
 必要时探索代码库，理解：
 
@@ -35,7 +36,7 @@ metadata:
 
 - issue 拆解草案：标题、类型、依赖、覆盖的用户故事和切片理由。
 - 正式 issue，如果用户确认并且 issue tracker 可用。
-- 本地 Markdown issue 草稿，如果没有可用 issue tracker，默认保存到 `team-spec/engineering/issues/{yyyy-mm-dd}-{short-slug}.md`。
+- 本地 Markdown issue 草稿，如果没有可用 issue tracker，默认保存到 `team-spec/issues/{yyyy-mm-dd}-{short-slug}.md`。
 
 这些输出物通常是工程执行入口。下游 agent 或研发人员应能直接领取 `AFK` issue；`HITL` issue 必须先完成指定人工决策。
 
@@ -60,7 +61,7 @@ metadata:
 
 ## 流程
 
-1. 汇总源材料的目标、用户故事、约束、验收标准和非目标。
+1. 汇总 PRD 的目标、用户故事、约束、验收标准和非目标。
 2. 探索代码库或文档，确认当前系统边界。
 3. 先草拟 issue 拆解，不要立即发布。
 4. 用编号列表向用户确认粒度和依赖。
@@ -80,7 +81,7 @@ metadata:
 ```md
 ## Parent
 
-{父 issue、PRD 或需求来源；如果没有则省略}
+{父 PRD 或需求来源；如果没有则省略}
 
 ## What to build
 
@@ -114,9 +115,9 @@ AFK / HITL
 ## 发布规则
 
 - 按依赖顺序发布，先发布 blocker，再发布依赖它的 issue。
-- 不要关闭、修改或重写父 issue，除非用户明确要求。
+- 不要关闭、修改或重写父 PRD，除非用户明确要求。
 - 如果发布到 GitHub Issues，使用团队约定的 triage label；如果没有约定，先询问或生成草稿。
-- 本地草稿默认保存到 `team-spec/engineering/issues/{yyyy-mm-dd}-{short-slug}.md`，目录只在需要时创建。
+- 本地草稿默认保存到 `team-spec/issues/{yyyy-mm-dd}-{short-slug}.md`，目录只在需要时创建。
 
 ## 质量标准
 
