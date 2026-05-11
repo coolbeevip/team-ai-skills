@@ -36,7 +36,8 @@ metadata:
 - 未覆盖验收标准。
 - 回归风险和建议补测项。
 - 实际运行的验证命令和结果。
-- 如需沉淀报告，写入 `team-spec/issues/{slug}/{issue-number}-{short-issue-slug}.verification.md`。
+- 优先回写原 issue 文件中的 `## Acceptance Criteria Coverage`、`## Status`、`## Findings`、`## Notes` 或同类章节。
+- 如果原 issue 文件不可修改，或外部 issue tracker 不支持回写，再写入 `team-spec/issues/{slug}/{issue-number}-{short-issue-slug}.verification.md`。
 
 ## 验证原则
 
@@ -54,7 +55,8 @@ metadata:
 4. 运行相关自动化测试；如果测试命令未知，先查项目文档或 package 配置。
 5. 做验收标准逐项映射：每项对应哪个测试、代码路径或手工验证。
 6. 检查边界情况、权限、数据状态、错误路径和回归风险。
-7. 输出 ready 判断和需要补充的具体行动。
+7. 优先更新原 issue 文件，把通过的验收项勾选，未通过的验收项保留未勾选并写明原因。
+8. 输出 ready 判断和需要补充的具体行动。
 
 ## 输出格式
 
@@ -90,6 +92,13 @@ ready for PR / needs changes / blocked
 
 - Assumptions, skipped checks, or manual verification needs.
 ```
+
+## 原 Issue 回写规则
+
+- 通过的验收项应在原 issue 文件中勾选。
+- 未通过的验收项应保留未勾选，并在对应条目后写明失败原因，或在 `## Findings` 中逐条说明。
+- 如果 issue tracker 不允许编辑原内容，则用单独 verification 报告承载同样的信息。
+- 不要因为验证失败而删除原 issue 内容，只能补充状态、原因和修订建议。
 
 ## 完成标准
 

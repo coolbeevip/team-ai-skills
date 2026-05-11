@@ -18,16 +18,17 @@ metadata:
 主输入：
 
 - 当前 issue 分支上的代码和测试变更。
-- `team-issue-verify` 的验证报告，状态应为 `ready for PR`。
+- `team-issue-verify` 的验证结果，状态应为 `ready for PR`。
 - 当前 issue，来自 `team-spec/issues/{slug}/` 或外部 issue tracker。
 
 参考输入：
 
 - `team-spec/prd/{slug}.md` 中的关联 PRD。
 - `team-spec/spec/reviews/{slug}.md` 中的风险评审。
+- 原 issue 文件中的 `## Status`、`## Acceptance Criteria Coverage`、`## Findings`、`## Notes` 或同类章节。
 - 项目 PR 模板、贡献指南、CI 要求和分支保护规则。
 
-如果验证状态不是 `ready for PR`，不要提交 PR。先说明应回到 `team-issue-implement` 或 `team-issue-verify`。
+如果验证状态不是 `ready for PR`，或原 issue 文件中仍有未勾选的非延期验收项，不要提交 PR。先说明应回到 `team-issue-implement` 或 `team-issue-verify`。
 
 ## 输出物
 
@@ -35,18 +36,20 @@ metadata:
 - 推送后的远程 issue 分支。
 - PR 或 draft PR。
 - PR 摘要，包括 issue、验证命令和风险说明。
+- 原 issue 文件如可编辑，可补充 `## Status` 为 `pr-open` 或写入 PR 链接；如果不可编辑，至少在 PR 描述中体现。
 
 ## 工作流
 
 1. 确认当前不在主干分支。
 2. 检查 git diff，确认变更只围绕当前 issue。
 3. 读取验证报告，确认 `ready for PR`。
-4. 运行必要的最终测试或检查命令。
-5. 暂存相关文件。
-6. 创建清晰 commit。
-7. 推送当前 issue 分支。执行 push 前必须确认团队允许 AI 推送，且用户已授权。
-8. 创建 PR 或 draft PR。执行前必须确认目标远程、目标分支、PR 类型和团队规则。
-9. 输出 PR 链接、验证结果和后续动作。
+4. 读取原 issue 文件，确认所有非延期验收项均已勾选，且没有新的未解决 findings。
+5. 运行必要的最终测试或检查命令。
+6. 暂存相关文件。
+7. 创建清晰 commit。
+8. 推送当前 issue 分支。执行 push 前必须确认团队允许 AI 推送，且用户已授权。
+9. 创建 PR 或 draft PR。执行前必须确认目标远程、目标分支、PR 类型和团队规则。
+10. 输出 PR 链接、验证结果和后续动作。
 
 如果用户只想手动提交或开 PR，本技能应输出 PR 文案、commit message 和建议命令，不直接执行 Git 或 GitHub 操作。
 
@@ -74,6 +77,7 @@ PR 描述至少包含：
 
 - PR 已创建或 draft PR 已创建。
 - PR 描述包含验证结果。
+- 原 issue 文件中的验收项已全部勾选，或已在 PR 描述中明确列出例外并获得用户确认。
 - 当前分支已推送到远程。
 - 用户知道下一步是 review、CI 或 merge。
 

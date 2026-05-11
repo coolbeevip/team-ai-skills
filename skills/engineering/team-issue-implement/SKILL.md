@@ -35,7 +35,8 @@ metadata:
 - 代码变更。
 - 测试变更。
 - 验证结果，包括运行了哪些测试、是否通过。
-- 如需沉淀实现记录，写入 `team-spec/issues/{slug}/{issue-number}-{short-issue-slug}.implementation.md`，目录只在需要时创建。
+- 优先回写原 issue 文件中的 `## Status`、`## Implementation Notes`、`## Acceptance Criteria Coverage` 或同类章节。
+- 如果原 issue 文件不可修改，再写入 `team-spec/issues/{slug}/{issue-number}-{short-issue-slug}.implementation.md`，目录只在需要时创建。
 
 不要修改 PRD、规格评审或产品决策，除非用户明确要求。发现需求问题时，应反馈给上游技能，而不是在实现中隐式改需求。
 
@@ -61,6 +62,7 @@ metadata:
 8. 重复 red-green，直到验收标准覆盖完成。
 9. 所有测试通过后再重构。
 10. 汇总变更、测试和残余风险。
+11. 不要勾选验收项；验收项的勾选应由 `team-issue-verify` 完成。
 
 ## TDD 循环
 
