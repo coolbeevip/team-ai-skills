@@ -522,68 +522,6 @@ pre.tree .slug { color: #a5d6ff; font-style: italic; }
   margin: .3rem 0;
 }
 
-/* ── Quickstart ──────────────────────────────────── */
-.qs-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 1.25rem;
-  margin-top: 2rem;
-}
-
-.qs-card {
-  background: linear-gradient(180deg, rgba(79,110,247,.05) 0%, transparent 60%), var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 1.5rem;
-  display: flex;
-  flex-direction: column;
-  gap: .5rem;
-  box-shadow: 0 2px 8px rgba(0,0,0,.3);
-  transition: border-color .25s, box-shadow .25s;
-}
-
-.qs-card:hover {
-  border-color: rgba(79,110,247,.4);
-  box-shadow: 0 4px 16px rgba(79,110,247,.1);
-}
-
-.qs-icon { font-size: 1.6rem; }
-.qs-card h3 { font-size: 1rem; font-weight: 700; }
-.qs-card p  { color: var(--text-muted); font-size: .88rem; }
-
-.qs-install {
-  display: flex;
-  align-items: center;
-  gap: .5rem;
-  font-family: var(--font-mono);
-  font-size: .82rem;
-  color: var(--text-code);
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: .5rem .75rem;
-  margin-top: .5rem;
-  position: relative;
-  cursor: pointer;
-  transition: border-color .25s;
-}
-
-.qs-install:hover { border-color: rgba(79,110,247,.4); }
-
-.qs-install .copy-btn {
-  margin-left: auto;
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: var(--text-muted);
-  font-size: .8rem;
-  display: flex;
-  align-items: center;
-  transition: color .25s;
-}
-
-.qs-install .copy-btn:hover { color: var(--brand); }
-
 /* ── Footer ──────────────────────────────────────── */
 footer {
   border-top: 1px solid var(--border);
