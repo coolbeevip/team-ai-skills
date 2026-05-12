@@ -27,6 +27,12 @@ flowchart TD
     F --> G[team-issue-implement]
     G --> I[team-issue-verify]
     I -- 验证未通过 --> G
+
+    J[team-tech-debt-refine] --> K[team-tech-debt-review]
+    K --> L{存在阻塞风险?}
+    L -- 是 --> J
+    L -- 否 --> M[team-tech-debt-to-issues]
+    M --> G
 ```
 
 `team-spec-refine` 和 `team-spec-review` 可以反复迭代。只有当 P0 和关键 P1 风险被解决或明确接受后，才进入 `team-spec-to-prd` 固化 PRD。
@@ -35,9 +41,12 @@ flowchart TD
 
 `team-prd-to-issues` 应以 PRD 为主输入；`CONTEXT.md`、`decisions/` 和 `reviews/` 只能作为背景参考，不能绕过 PRD 直接拆工程任务。
 
+技术债链路使用 `team-tech-debt-refine -> team-tech-debt-review -> team-tech-debt-to-issues`，并统一收敛到 `team-spec/issues/{slug}/`。技术债链路的 slug 必须包含 `debt`，建议格式 `{yyyy-mm-dd}-debt-{short-english-slug}`，以便后续复用工程实现与验证流程。
+
 每个 `SKILL.md` 都声明了 `输入物` 和 `输出物`，用于说明它会读取哪些上游产物，以及会为哪些下游技能提供材料。
 
 每个需求使用一个唯一 slug 串联全流程，格式为 `{yyyy-mm-dd}-{short-english-slug}`，例如 `2026-05-10-export-filter`。
+技术债需求也使用唯一 slug，但必须包含 `debt`，例如 `2026-05-12-debt-cache-cleanup`。
 
 ## Workspace
 
