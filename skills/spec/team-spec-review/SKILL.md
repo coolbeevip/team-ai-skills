@@ -56,7 +56,7 @@ metadata:
 # Review: {slug}
 
 ## Status
-ready | needs refinement | blocked
+{ready | needs refinement | blocked，三选一}
 
 ## Blockers
 - [P0/P1] ...

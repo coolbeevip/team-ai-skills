@@ -53,7 +53,7 @@ metadata:
 
 ```md
 ## Implemented Issue
-{issue path}
+{team-spec/issues/{slug}/{issue-number}-{short-issue-slug}.md}
 
 ## Files Changed
 - ...
