@@ -368,6 +368,21 @@ section { padding: 5rem 1rem; }
   background: #79c0ff;
 }
 
+.phase-debt .phase-label {
+  color: #bc8cff;
+  background: rgba(188,140,255,.1);
+  border: 1px solid rgba(188,140,255,.2);
+}
+
+.phase-debt .phase-label::before {
+  content: '';
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #bc8cff;
+}
+
 .phase-handoff .phase-label {
   color: #f0883e;
   background: rgba(240,136,62,.1);

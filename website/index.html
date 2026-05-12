@@ -60,9 +60,9 @@
     </div>
 
     <div class="hero-stats">
-      <span>7 Skills</span>
+      <span>10 Skills</span>
       <span class="stat-sep">·</span>
-      <span>3 Phases</span>
+      <span>4 Phases</span>
       <span class="stat-sep">·</span>
       <span>MIT Licensed</span>
       <span class="stat-sep">·</span>
@@ -80,15 +80,22 @@
     <div class="mermaid-wrap">
       <div class="mermaid">
 flowchart TD
-    A[team-spec-refine] --> B[team-spec-review]
-    B --> C{存在 P0 或关键 P1 风险?}
-    C -- 是 --> A
-    C -- 否 --> D[team-spec-to-prd]
-    D --> H[team-prd-handoff]
-    H --> E{三方评审通过?}
-    E -- 否 --> D
-    E -- 是 --> F[team-prd-to-issues]
+    subgraph S [需求流程]
+      A[team-spec-refine] --> B[team-spec-review]
+      B --> C{存在 P0 或关键 P1 风险?}
+      C -- 是 --> A
+      C -- 否 --> D[team-spec-to-prd]
+      D --> H[team-prd-handoff]
+      H --> R{三方评审通过?}
+      R -- 否 --> D
+      R -- 是 --> F[team-prd-to-issues]
+    end
+    subgraph T [技术债流程]
+      T1[team-tech-debt-refine] --> T2[team-tech-debt-review]
+      T2 --> T3[team-tech-debt-to-issues]
+    end
     F --> G[team-issue-implement]
+    T3 --> G
     G --> I[team-issue-verify]
     I -- 验证未通过 --> G
       </div>
@@ -100,8 +107,8 @@ flowchart TD
 <section id="skills">
   <div class="container">
     <span class="section-tag">技能列表</span>
-    <h2 class="section-title">7 个开箱即用的 AI 技能</h2>
-    <p class="section-desc">每个技能都声明了输入物和输出物，可单独使用，也可按工作流串联。交接评审技能作为规格与工程的正式门控。</p>
+    <h2 class="section-title">10 个开箱即用的 AI 技能</h2>
+    <p class="section-desc">每个技能都声明了输入物和输出物，可单独使用，也可按工作流串联。技术债与新需求各有独立流程，最终汇入同一工程实现链。</p>
 
     <!-- Spec Phase -->
     <div class="phase-spec">
@@ -127,6 +134,35 @@ flowchart TD
           <div class="skill-title">生成 PRD</div>
           <div class="skill-desc-zh">将已细化且通过评审的规格整理成结构化 PRD，作为需求到工程的正式交接边界。适用于规格 ready 后的 PRD 固化，而不是重新做需求访谈。</div>
           <div class="skill-desc-en">Turn refined and reviewed specs into a structured PRD as the formal handoff boundary from product requirements to engineering.</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Tech Debt Phase -->
+    <div class="phase-debt">
+      <div class="phase-label">技术债 · Tech Debt</div>
+      <div class="skills-grid">
+
+        <div class="skill-card">
+          <div class="skill-name">team-tech-debt-refine</div>
+          <div class="skill-title">技术债细化</div>
+          <div class="skill-desc-zh">通过与用户反复确认来细化技术债需求，明确问题证据、影响范围、风险等级和验收口径，再进入评审。</div>
+          <div class="skill-desc-en">Refine technical debt requests through iterative confirmation, clarifying evidence, scope, risk, and acceptance criteria before review.</div>
+        </div>
+
+        <div class="skill-card">
+          <div class="skill-name">team-tech-debt-review</div>
+          <div class="skill-title">技术债评审</div>
+          <div class="skill-desc-zh">评审技术债规格的风险与可执行性，确认优先级、阻塞项、处理动作和是否可进入工程拆解。</div>
+          <div class="skill-desc-en">Review technical debt specs for risk and execution readiness, then output blockers, mitigations, and readiness for issue breakdown.</div>
+        </div>
+
+        <div class="skill-card">
+          <div class="skill-name">team-tech-debt-to-issues</div>
+          <div class="skill-title">拆解技术债 Issues</div>
+          <div class="skill-desc-zh">将已细化并通过评审的技术债规格拆解为可独立领取、可验证、按依赖排序的工程 issue，并写入 team-spec/issues。</div>
+          <div class="skill-desc-en">Break reviewed technical debt specs into independently grabbable, verifiable engineering issues ordered by dependencies and save under team-spec/issues.</div>
         </div>
 
       </div>
