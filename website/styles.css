@@ -325,23 +325,6 @@ section { padding: 5rem 1rem; }
   border-bottom: 1px solid var(--border);
 }
 
-/* ── Flow Diagram ──────────────────────────────────── */
-.flow-pre-wrap {
-  margin-top: 1.5rem;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  overflow-x: auto;
-}
-.flow-pre {
-  margin: 0;
-  padding: 1.5rem 2rem;
-  font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
-  font-size: .82rem;
-  line-height: 1.9;
-  color: var(--text);
-  white-space: pre;
-}
-
 /* ── Skills Grid ──────────────────────────────────── */
 .phase-label {
   font-size: .78rem;
