@@ -1,6 +1,6 @@
 ---
 name: team-spec-refine
-description: 通过与用户反复确认来细化需求规格，澄清术语、边界、业务规则和验收口径，并更新需求上下文或产品决策记录。适用于 PRD 前的需求探索、规格打磨和用户访谈。Refine product specs through iterative user confirmation, clarifying terminology, scope, business rules, and acceptance criteria before PRD creation.
+description: 通过与用户迭代澄清需求规格，在 PRD 前固化术语、范围、规则和验收口径。触发词：细化需求、澄清规格、补齐边界。Refine specs before PRD by clarifying terms, scope, rules, and acceptance criteria. Keywords: refine spec, clarify scope, requirement discovery.
 license: MIT
 metadata:
   author: coolbeevip
@@ -9,112 +9,67 @@ metadata:
 
 # 规格细化
 
-这个技能用于把模糊需求打磨成团队共享、可验证的规格。一次只问一个问题。不要在关键假设尚未稳定时直接写 PRD。
+用于把模糊需求收敛为可评审、可固化的规格，不直接替代 PRD。
 
-## 首轮动作
+## 通用规则（引用）
 
-1. 用一到两句话复述当前需求。
-2. 找出最阻碍共识的一个未知点。
-3. 提出一个聚焦问题，并给出你的推荐答案。
-4. 等用户回答后再继续。
-
-如果答案可以从现有项目文档或代码中获得，先查资料，不要把问题抛给用户。
-
-## 需求上下文
-
-探索时优先寻找已有需求语言和产品决策：
-
-```text
-/
-├── REQUIREMENTS.md
-├── team-spec/
-│   ├── spec/
-│   │   ├── CONTEXT.md
-│   │   └── decisions/
-│   │   └── refine/
-│   ├── prd/
-│   └── issues/
-└── docs/
-```
-
-如果 `team-spec/spec/CONTEXT.md` 不存在，等第一个产品术语、角色、流程或业务规则被确认后再创建。不要提前创建空文件。
-
-如果 `team-spec/spec/decisions/` 不存在，等第一个长期有效、值得保留的产品决策出现后再创建。
-
-需求上下文使用 [CONTEXT-FORMAT.md](./CONTEXT-FORMAT.md)，产品决策记录使用 [DECISION-FORMAT.md](./DECISION-FORMAT.md)。
+- [COMMON-RULES.md](../../COMMON-RULES.md)
 
 ## 输入物
 
-- 当前对话中的初始需求、用户问题、业务背景或功能想法。
-- 现有 `team-spec/spec/CONTEXT.md`，如果项目已有需求上下文。
-- 现有 `team-spec/spec/decisions/`，如果项目已有产品决策记录。
-- 相关 PRD、业务文档、任务、设计稿或代码现状。
-- 如果存在 `team-spec/spec/reviews/{slug}.md` 且状态为 `needs refinement`，必须优先读取它，并围绕其中的问题继续追问用户。
+- 当前对话中的需求描述与业务背景。
+- `team-spec/spec/refine/{slug}.md`（同一需求的历史版本，如存在）。
+- `team-spec/spec/reviews/{slug}.md`（如存在且为 `needs refinement`，优先处理）。
+- `team-spec/spec/CONTEXT.md`、`team-spec/spec/decisions/`（如存在）。
+- 相关文档或代码证据。
 
 ## 输出物
 
-- 对话中的澄清结论：需求摘要、规范术语、范围内/范围外、开放问题和轻量风险扫尾。
-- `team-spec/spec/refine/{yyyy-mm-dd}-{english-slug}.md`：单次规格细化的主输出物。
-- `team-spec/spec/CONTEXT.md`：当产品术语、角色、流程或业务规则被确认后更新。
-- `team-spec/spec/decisions/{number}-{slug}.md`：当出现长期有效的产品决策时创建。
+- `team-spec/spec/refine/{slug}.md`（主输出，持续更新同一文件）。
+- `team-spec/spec/CONTEXT.md`（术语/流程/规则确认后更新）。
+- `team-spec/spec/decisions/{number}-{slug}.md`（仅长期有效且高反悔成本决策）。
+- 对话中的短结论：已确认点、剩余最高风险、下一个问题。
 
-下游技能会读取这些输出物：`team-spec-review` 用于规格评审，`team-spec-to-prd` 用于生成 PRD。
+## 执行步骤
 
-`team-spec-refine` 可以与 `team-spec-review` 反复迭代。如果评审发现 P0 或关键 P1，应回到本技能继续修正术语、范围、业务规则、异常路径或验收口径。
+1. 先校验唯一 `{slug}` 或明确 refine 文件路径；不唯一则停止并要求用户补充。
+2. 复述需求并提出当前“最大不确定点”的单一问题（一次只问一个关键问题）。
+3. 基于用户回答更新 refine 主文件，并同步术语到 `CONTEXT.md`（如已确认）。
+4. 若出现高反悔成本产品判断，再记录到 `decisions/`。
+5. 形成最小收敛结论并建议下一步：继续 refine 或进入 `team-spec-review`。
 
-每个需求必须使用唯一 slug 串联全流程。格式为 `{yyyy-mm-dd}-{short-english-slug}`，例如 `2026-05-10-export-filter`。如果同一天同名，追加序号，例如 `2026-05-10-export-filter-2`。`CONTEXT.md` 和 `decisions/` 是长期共享上下文，不替代单次 `refine/{slug}.md`。
+## 规则清单（必须/禁止）
 
-修订同一个需求时，不要新建 slug。继续更新 `team-spec/spec/refine/{slug}.md`，并在文件中的 `## Change Log` 记录本轮修订原因和日期。
+- 必须把模糊表述改成可观察行为。
+- 必须区分范围内、范围外、延期项。
+- 必须优先查现有文档/代码，再向用户追问。
+- 禁止在关键假设不稳定时直接产出 PRD。
+- 禁止为同一需求重复新建 slug。
 
-## 细化原则
+## 失败与回退
 
-- 发现一词多义时立即指出。例如：“你说的账号，是登录账号、客户账户，还是计费账户？”
-- 把模糊表述改成可观察行为。例如：把“审批要快”改成“95% 的审批在 2 分钟内完成”。
-- 区分用户问题和解决方案。先确认要解决什么问题，再接受页面、流程或系统设计。
-- 重点追问用户角色、权限、状态变化、异常路径和业务规则。
-- 用具体场景压测边界。主动构造边缘案例，让概念边界暴露出来。
-- 有多个方案时，给出推荐方案，再让用户确认或否定。
-- 维护一套规范术语。术语一旦确认，立即更新 `team-spec/spec/CONTEXT.md`，不要攒到最后。
+- 无法唯一确定 slug：停止并索要 slug 或 refine 路径。
+- 缺少关键输入导致无法判断：仅输出已确认事实和缺失清单，不编造结论。
+- 评审反馈为 `needs refinement`：回到本技能继续更新同一 `refine/{slug}.md`。
 
-## 追问顺序
+## 最小输出模板
 
-除非对话中有更高优先级，否则按这个顺序推进：
+```md
+# Refine: {slug}
 
-1. 问题：这个需求由什么用户痛点、业务机会或产品判断触发？
-2. 用户：谁遇到问题，谁使用方案，谁运营或审批？
-3. 结果：什么可衡量变化能证明需求有效？
-4. 范围：哪些必须包含，哪些明确排除，哪些延期？
-5. 流程：从触发到完成的主路径是什么？
-6. 数据：涉及哪些对象、字段、状态和规则？
-7. 异常：什么会失败、冲突、过期、取消或需要人工介入？
-8. 约束：合规、隐私、性能、灰度、迁移、运营限制是什么？
-9. 验收：哪些例子应该通过，哪些应该失败？
+## 已确认
+- ...
 
-## 产品决策记录
+## 待确认
+- ...
 
-只有同时满足以下三点，才建议创建产品决策记录：
+## 变更记录
+- {date}: {reason}
+```
 
-1. 这个决策以后反悔成本较高。
-2. 未来同事只看 PRD 或代码时不容易理解为什么这么选。
-3. 当时确实存在多个备选方案，并且选择依赖产品判断。
+## 完成前检查
 
-不要为显而易见的措辞、临时备注或实现阶段很可能改变的细节创建决策记录。
-
-## 会话输出
-
-每轮回答后，简短说明本轮解决了什么：
-
-- 已确认的术语、规则、角色或范围边界。
-- 当前剩余风险最高的歧义。
-- 下一个单一问题。
-
-细化完成后，总结：
-
-- 用自然语言描述需求。
-- 规范术语。
-- 范围内和范围外内容。
-- 仍未解决的问题。
-- 轻量风险扫尾：指出是否存在会阻塞 PRD 的明显 P0/P1 缺口。
-- 写入或更新 `team-spec/spec/refine/{slug}.md`。
-- 在 `## Change Log` 中记录本次澄清或修订。
-- 推荐下一步：如果没有明显阻塞，使用 `team-spec-review`；如果仍有高风险歧义，继续细化。
+- slug 与文件路径唯一且一致。
+- 输出仅写入 `team-spec/spec/` 工作空间。
+- 术语与规则已同步到可复用上下文（如适用）。
+- 下游 `team-spec-review` 可直接读取本次输出。

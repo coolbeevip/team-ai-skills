@@ -1,6 +1,6 @@
 ---
 name: team-issue-start
-description: 为单个 issue 开始开发前准备干净工作区、同步主干、检查依赖和创建 issue 分支，确保后续实现只围绕一个明确 issue。Prepare a clean workspace for a single issue by syncing the main branch, checking dependencies, and creating an issue branch before implementation.
+description: 在实现前为单个 issue 准备干净工作区与 issue 分支，确认依赖已满足并可安全开工。触发词：开始 issue、准备分支、同步主干。Prepare a clean workspace and issue branch before implementation. Keywords: start issue, prepare branch, clean workspace.
 license: MIT
 metadata:
   author: coolbeevip
@@ -9,65 +9,61 @@ metadata:
 
 # Issue 开始
 
-这个技能是可选工程协作技能，用于在实现单个 issue 前建立清晰的开发边界。只有当团队希望 AI 协助管理 Git 分支时才使用。它不负责编写代码，只负责确认当前 issue 可以开始、工作区干净、分支正确。
+可选技能：只做开工准备，不写实现代码。
 
-如果团队已有分支流程、命名规则或 issue 工作流，必须优先遵守团队规则。不要为了使用本技能而改变团队既有习惯。
+## 通用规则（引用）
+
+- [COMMON-RULES.md](../../COMMON-RULES.md)
 
 ## 输入物
 
-主输入：
-
-- `team-spec/issues/{slug}/{issue-number}-{short-issue-slug}.md`
-- 或外部 issue tracker 中的单个 issue。
-
-参考输入：
-
-- `team-spec/prd/{slug}.md` 中的关联 PRD。
-- `team-spec/spec/reviews/{slug}.md` 中的风险评审。
-- 当前 git 状态、主干分支、远程仓库和已有分支。
-
-如果 issue 仍有未完成依赖、HITL 决策点或阻塞项，不要创建开发分支。先说明阻塞原因。
+- `team-spec/issues/{slug}/{issue-number}-{short-issue-slug}.md`（主输入）。
+- `team-spec/prd/{slug}.md`、`team-spec/spec/reviews/{slug}.md`（参考）。
+- 当前 git 状态与分支规则。
 
 ## 输出物
 
-- 一个基于最新主干的 issue 分支。
-- 开始记录，可选写入 `team-spec/issues/{slug}/{issue-number}-{short-issue-slug}.start.md`。
-- 明确的下一步：进入 `team-issue-implement`。
+- 已确认可开始的 issue 分支信息。
+- 可选记录：`team-spec/issues/{slug}/{issue-number}-{short-issue-slug}.start.md`。
+- 下一步建议：`team-issue-implement`。
 
-## 分支规则
+## 执行步骤
 
-- 一个 issue 一个分支。
-- 一个分支只服务一个 PR。
-- 不要直接在主干开发。
-- 不要在脏工作区切换或创建分支，除非用户明确确认如何处理未提交变更。
+1. 校验唯一 issue 路径与 `{slug}`。
+2. 检查 `Blocked by`、HITL 决策点、验收标准完整性。
+3. 检查工作区是否干净，确认主干同步策略。
+4. 按团队规则创建 issue 分支（若用户授权且需要自动执行）。
+5. 输出分支名与开工摘要。
 
-推荐分支名：
+## 规则清单（必须/禁止）
 
-```text
+- 必须一个 issue 对应一个分支。
+- 必须在脏工作区时先暂停并让用户决策。
+- 必须遵守团队既有分支命名与流程。
+- 禁止在依赖未满足时开工。
+- 禁止把本技能用于代码实现。
+
+## 失败与回退
+
+- issue 不唯一：停止并要求提供 issue 路径或编号。
+- 依赖未满足：回退 `team-issue-next` 或上游决策。
+- 用户不希望自动 Git 操作：只输出建议命令与检查清单。
+
+## 最小输出模板
+
+```md
+## Issue
+{path}
+
+## Branch
 issue-{number}-{short-slug}
+
+## Next Step
+Run team-issue-implement
 ```
 
-如果没有 issue 编号：
+## 完成前检查
 
-```text
-issue-{yyyy-mm-dd}-{short-slug}
-```
-
-## 工作流
-
-1. 读取 issue，确认 `Blocked by`、`Type` 和验收标准。
-2. 检查当前 git 状态。
-3. 如果工作区有无关变更，停止并要求用户决定如何处理。
-4. 确认主干分支名称，通常是 `main`。
-5. 同步最新主干。涉及远程拉取时，先说明动作；如环境要求授权，等待用户确认。
-6. 基于主干创建 issue 分支。不要在用户未确认分支命名或团队规则时强行创建。
-7. 输出分支名、issue 摘要和下一步。
-
-如果用户只想手动管理分支，本技能应输出建议命令和检查清单，不直接执行 Git 操作。
-
-## 完成标准
-
-- 当前分支是 issue 分支。
-- issue 依赖已满足。
-- 工作区没有无关变更。
-- 可以安全进入 `team-issue-implement`。
+- 当前 issue 与分支映射明确。
+- 依赖状态已确认。
+- 工作区状态可安全进入实现阶段。

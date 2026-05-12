@@ -1,6 +1,6 @@
 ---
 name: team-spec-to-prd
-description: 将已细化且通过评审的规格整理成结构化 PRD，作为需求到工程的正式交接边界。适用于规格 ready 后的 PRD 固化，而不是重新做需求访谈。Turn refined and reviewed specs into a structured PRD as the formal handoff boundary from product requirements to engineering.
+description: 将已细化且通过评审的规格固化为结构化 PRD，作为需求到工程的正式交接边界。触发词：生成 PRD、固化需求、进入工程。Convert ready refined specs into a structured PRD for engineering handoff. Keywords: generate PRD, requirement handoff, spec to PRD.
 license: MIT
 metadata:
   author: coolbeevip
@@ -9,181 +9,71 @@ metadata:
 
 # 规格转 PRD
 
-这个技能用于把当前对话、需求上下文和项目现状综合成 PRD。不要进行大范围访谈。只有当缺失信息会导致 PRD 误导研发或无法落地时，才向用户追问。
+用于把 `ready` 规格固化为 PRD，不重新做需求探索。
+
+## 通用规则（引用）
+
+- [COMMON-RULES.md](../../COMMON-RULES.md)
 
 ## 输入物
 
-优先读取上游技能输出：
-
-- `team-spec-refine` 的澄清结论。
-- `team-spec/spec/refine/{slug}.md`。
-- `team-spec/spec/CONTEXT.md`。
-- `team-spec/spec/decisions/`。
-- `team-spec/spec/reviews/{slug}.md`，或 `team-spec-review` 的阻塞项、风险清单和建议改写。
-- 相关 PRD、规格、任务、设计稿、代码或项目文档。
-
-如果没有澄清结论或需求上下文，先判断是否需要回到 `team-spec-refine`。如果存在未处理的 P0 或关键 P1 风险，先处理风险，不要直接固化到 PRD。
-
-本技能是阶段性固化步骤，不是需求探索步骤。进入本技能前，`team-spec-refine` 与 `team-spec-review` 应已完成必要迭代，P0 和关键 P1 风险应已解决或被明确接受。
-
-只允许基于 `Status: ready` 的 `team-spec/spec/reviews/{slug}.md` 生成 PRD。如果 review 状态为 `needs refinement` 或 `blocked`，不要生成 PRD；应要求回到 `team-spec-refine` 或处理阻塞项，除非用户明确要求带风险草稿。
-
-必须先确定本次 PRD 对应的 `{slug}`，以及明确的 `team-spec/spec/refine/{slug}.md` 和 `team-spec/spec/reviews/{slug}.md`。如果无法从用户请求、当前对话或文件路径中唯一判断，应停止并要求用户提供 slug、refine 文件路径或 review 文件路径，不要猜测要固化哪个规格。
+- `team-spec/spec/refine/{slug}.md`（主输入）。
+- `team-spec/spec/reviews/{slug}.md`（必须可读，且优先 `Status: ready`）。
+- `team-spec/spec/CONTEXT.md`、`team-spec/spec/decisions/`（参考）。
 
 ## 输出物
 
-- 结构化 PRD。
-- 如果没有外部任务系统，默认保存到 `team-spec/prd/{slug}.md`。
-- PRD 中应保留开放问题、风险假设和验收标准，供 `team-prd-to-issues` 继续拆解工程任务。
-- PRD 是需求到工程的正式交接边界。工程拆解技能应以 PRD 为主输入，而不是直接基于澄清过程材料拆任务。
+- `team-spec/prd/{slug}.md`（主输出）。
+- 对话短结论：是否基于 `ready` review 生成、开放问题、已接受风险。
+- 下一步指引：`team-prd-to-issues`。
 
-## 流程
+## 执行步骤
 
-1. 阅读现有需求上下文：
-   - `team-spec/spec/CONTEXT.md`
-   - `team-spec/spec/decisions/`
-   - `team-spec/spec/refine/{slug}.md`
-   - `team-spec/spec/reviews/{slug}.md`
-   - 相关 PRD、规格、任务或文档
-2. 执行 `team-spec-review` 风格的前置检查，只识别会阻塞 PRD 的 P0/P1 风险。
-3. 检查 `team-spec/spec/reviews/{slug}.md` 的 `Status`。如果不是 `ready`，先向用户说明原因，不要继续写完整 PRD，除非用户明确要求带风险起草。
-4. 探索仓库，理解当前产品行为和实现边界。
-5. 使用上下文中的规范术语，并遵守已有产品决策。
-6. 识别受影响的产品模块、流程、权限、数据对象和运营界面。
-7. 寻找可由研发独立测试的深模块或清晰 ownership 边界。
-8. 按下面模板起草 PRD。
-9. 如果项目已配置 issue tracker 或任务系统，将 PRD 发布到对应系统，并打上团队约定的 `ready-for-agent` 或 `ready-for-engineering` 标签；如果没有外部系统，就按仓库惯例创建或更新本地 Markdown PRD。
-10. PRD 成功固化后，必须明确引导下一步使用 `team-prd-to-issues`，并给出 PRD 路径 `team-spec/prd/{slug}.md`。
+1. 校验唯一 `{slug}`，并确认 refine 与 review 文件路径。
+2. 检查 review 状态；若非 `ready`，默认停止并要求先修复风险。
+3. 基于上游产物起草最小 PRD，覆盖目标、范围、行为、验收标准。
+4. 写入 `team-spec/prd/{slug}.md`。
+5. 输出下一步：使用 `team-prd-to-issues` 拆解工程 issue。
 
-## PRD 模板
+## 规则清单（必须/禁止）
+
+- 必须以 `refine/{slug}.md` + `reviews/{slug}.md` 为主证据。
+- 必须显式保留开放问题与风险假设。
+- 必须保持术语与 `CONTEXT.md` 一致。
+- 禁止在 review 为 `needs refinement/blocked` 时默认生成正式 PRD。
+- 禁止引入与上游不一致的新需求。
+
+## 失败与回退
+
+- slug 或输入路径不唯一：停止并要求补充。
+- review 非 `ready`：回退 `team-spec-refine` 或先处理阻塞项。
+- 信息不足：生成“带风险草稿”前需用户明确确认。
+
+## 最小输出模板
 
 ```md
-# {功能/需求名称}
-
-## 问题陈述
-
-从用户视角描述当前问题、业务需求或产品机会。
+# {需求名称}
 
 ## 目标
-
-- 可衡量目标 1
-- 可衡量目标 2
-
-## 非目标
-
-- 明确不做的事项
-- 延后处理的事项
-
-## 用户与场景
-
-1. 作为{用户或角色}，我希望{能力}，以便{结果}。
-2. 作为{用户或角色}，我希望{能力}，以便{结果}。
-
-## 当前状态
-
-总结当前已有能力、相关流程、约束和缺口。
-
-## 方案描述
-
-从用户视角描述产品行为。包括主路径、重要变体，以及方案如何改变当前流程。
+- ...
 
 ## 范围
-
-### 范围内
-
-- 包含的行为、用户群体、平台、流程或数据对象。
-
-### 范围外
-
-- 排除的行为、用户群体、平台、流程或数据对象。
+- 范围内：...
+- 范围外：...
 
 ## 功能需求
-
-1. 系统必须……
-2. 用户可以……
-3. 管理员可以……
-
-## 业务规则
-
-- 带有角色、条件和预期结果的规则。
-
-## 边界情况与错误状态
-
-- 场景：预期行为。
-
-## 数据与状态
-
-- 对象：关键字段、生命周期状态、归属、保留或可见性。
-
-## 权限与合规
-
-- 谁可以查看、创建、更新、审批、导出或删除。
-- 隐私、审计、法律或合规约束。
-
-## 发布与运营
-
-- 迁移、功能开关、发布分群、监控、客服支持和回滚预期。
-
-## 实现决策
-
-- 可能变更的模块或 ownership 区域。
-- 需要存在的接口或契约。
-- 已确认的架构或 schema 决策。
-- 不要写容易过期的文件路径或代码片段；除非原型片段比文字更能准确表达决策。
-
-## 测试决策
-
-- 测外部行为，不测实现细节。
-- 需要自动化测试的模块或流程。
-- 研发应参考的现有测试模式。
-- 产品可以手工验收的例子。
+- ...
 
 ## 验收标准
-
-- Given {上下文}，When {动作}，Then {可观察结果}。
-- Given {上下文}，When {动作}，Then {可观察结果}。
+- Given ... When ... Then ...
 
 ## 开放问题
-
-- 问题、负责人，以及不解决会造成的影响。
-
-## 补充说明
-
-- 链接、假设、依赖或参考材料。
+- ...
 ```
 
-## 质量标准
+## 完成前检查
 
-- 研发不看原始对话也能理解 PRD。
-- 用户故事覆盖主要用户、运营人员、管理员、审核者和失败场景。
-- 验收标准必须可观察、可测试。
-- 规范术语保持一致，不在同一概念上引入新同义词。
-- 区分“本次必须交付”和“以后可以做”。
-- 明确写出假设，不把假设藏进需求描述。
-- 优先使用具体例子，不只写抽象判断。
-
-## 发布方式
-
-如果无法发布到外部任务系统，就按仓库已有 PRD 规范保存到本地。若没有现成规范，使用：
-
-```text
-team-spec/prd/{slug}.md
-```
-
-目录只在需要时创建。
-
-## 完成输出
-
-完成时必须输出：
-
-- PRD 路径：`team-spec/prd/{slug}.md`。
-- 是否基于 `Status: ready` 的 review 生成。
-- 仍保留的开放问题或已接受风险。
-- 下一步：使用 `team-prd-to-issues` 将该 PRD 拆解为工程 issue。
-
-推荐结尾：
-
-```text
-PRD 已固化到 team-spec/prd/{slug}.md。
-下一步请使用 team-prd-to-issues，以该 PRD 为主输入拆解工程 issues。
-```
+- PRD 路径为 `team-spec/prd/{slug}.md`。
+- 明确记录 review 状态来源。
+- 术语与上游一致，无隐式新增需求。
+- 已给出 `team-prd-to-issues` 下一步指引。

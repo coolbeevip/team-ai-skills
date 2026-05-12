@@ -1,6 +1,6 @@
 ---
 name: team-issue-verify
-description: 独立验证单个 issue 的实现是否满足验收标准、关联 PRD 和风险约束，输出验证报告、遗漏项、回归风险和是否 ready for PR 的结论。Verify whether a single issue implementation satisfies acceptance criteria, the linked PRD, and risk constraints, producing a verification report, gaps, regression risks, and readiness status.
+description: 独立验证单个 issue 实现是否满足验收标准、PRD 约束与风险要求，并输出 ready 结论。触发词：验证 issue、验收检查、ready for PR。Verify a single issue against acceptance criteria, PRD constraints, and risks, then decide readiness. Keywords: verify issue, acceptance check, ready for PR.
 license: MIT
 metadata:
   author: coolbeevip
@@ -9,105 +9,64 @@ metadata:
 
 # Issue 验证
 
-这个技能用于确认 `team-issue-implement` 的结果是否真的满足 issue 和 PRD，而不是只确认“代码写完了”。它应尽量独立于实现过程进行判断，优先检查外部行为、验收标准和回归风险。
+用于独立判断实现是否可进入 PR 阶段。
+
+## 通用规则（引用）
+
+- [COMMON-RULES.md](../../COMMON-RULES.md)
 
 ## 输入物
 
-主输入：
-
-- 已实现的单个 issue，来自 `team-spec/issues/` 或外部 issue tracker。
-- 当前代码变更和测试变更。
-- `team-issue-implement` 的验证结果或实现总结，如果已有。
-
-参考输入：
-
-- `team-spec/prd/{slug}.md` 中的关联 PRD。
-- `team-spec/spec/CONTEXT.md` 中的规范术语和业务规则。
-- `team-spec/spec/decisions/` 中的产品决策。
-- `team-spec/spec/reviews/{slug}.md` 中的风险评审。
-- 项目现有测试、CI 配置、发布说明、迁移说明或操作文档。
-
-如果无法确认关联 issue 或验收标准，不要给出 ready 结论。先说明缺少的输入。
+- 单个已实现 issue（`team-spec/issues/{slug}/...`）。
+- 当前代码与测试变更。
+- `team-spec/prd/{slug}.md`、`team-spec/spec/reviews/{slug}.md`（参考）。
+- `team-issue-implement` 的实现总结（如有）。
 
 ## 输出物
 
-- 验证报告。
-- Ready 状态：`ready for PR`、`needs changes`、`blocked`。
-- 未覆盖验收标准。
-- 回归风险和建议补测项。
-- 实际运行的验证命令和结果。
-- 优先回写原 issue 文件中的 `## Acceptance Criteria Coverage`、`## Status`、`## Findings`、`## Notes` 或同类章节。
-- 如果原 issue 文件不可修改，或外部 issue tracker 不支持回写，再写入 `team-spec/issues/{slug}/{issue-number}-{short-issue-slug}.verification.md`。
+- 验证结论：`ready for PR` / `needs changes` / `blocked`。
+- 验收覆盖映射、回归风险、补救动作。
+- issue 回写：`Status`、`Acceptance Criteria Coverage`、`Findings`。
+- 如不可回写：`team-spec/issues/{slug}/{issue-number}-{short-issue-slug}.verification.md`。
 
-## 验证原则
+## 执行步骤
 
-- 验证外部行为，不验证实现偏好。
-- 先对照 issue 验收标准，再对照 PRD 目标和非目标。
-- 不因为测试通过就自动判定 ready；还要检查验收标准是否覆盖完整。
-- 不因为代码风格偏好阻塞，除非影响可维护性、正确性或团队约定。
-- 发现需求不一致时，标记为上游问题，不在验证阶段隐式改需求。
+1. 校验唯一 issue 与 `{slug}`。
+2. 列出全部验收标准并逐项映射测试/证据。
+3. 运行相关验证命令并记录结果。
+4. 识别回归风险与未覆盖项。
+5. 输出状态并回写 issue。
 
-## 工作流
+## 规则清单（必须/禁止）
 
-1. 读取 issue，列出所有验收标准。
-2. 读取关联 PRD 和风险评审，确认上下文和约束。
-3. 检查当前代码变更是否只围绕该 issue，是否混入无关改动。
-4. 运行相关自动化测试；如果测试命令未知，先查项目文档或 package 配置。
-5. 做验收标准逐项映射：每项对应哪个测试、代码路径或手工验证。
-6. 检查边界情况、权限、数据状态、错误路径和回归风险。
-7. 优先更新原 issue 文件，把通过的验收项勾选，未通过的验收项保留未勾选并写明原因。
-8. 输出 ready 判断和需要补充的具体行动。
+- 必须先看验收覆盖，再给 ready 结论。
+- 必须报告实际执行命令与结果。
+- 必须把需求不一致标记为上游问题。
+- 禁止“测试通过=自动 ready”。
+- 禁止删除原 issue 内容。
 
-## 输出格式
+## 失败与回退
+
+- issue 或验收标准不完整：停止并索要缺失输入。
+- 关键验证无法运行：说明原因并输出 `needs changes` 或 `blocked`。
+- 出现未解决 P0/P1 风险：不得给 `ready for PR`。
+
+## 最小输出模板
 
 ```md
-# Verification Report: {issue title}
-
 ## Status
+ready for PR | needs changes | blocked
 
-ready for PR / needs changes / blocked
-
-## Acceptance Criteria Coverage
-
-- [x] {criterion}: covered by {test or verification}
-- [ ] {criterion}: missing because {reason}
+## Acceptance Coverage
+- [x] ...
+- [ ] ...
 
 ## Commands Run
-
-- `{command}`: passed / failed / not run
-
-## Findings
-
-- Severity: issue, evidence, recommended fix.
-
-## Regression Risks
-
-- Risk and suggested test or mitigation.
-
-## Required Changes
-
-- Actionable item, owner if known.
-
-## Notes
-
-- Assumptions, skipped checks, or manual verification needs.
+- ...
 ```
 
-## 原 Issue 回写规则
+## 完成前检查
 
-- 通过的验收项应在原 issue 文件中勾选。
-- 未通过的验收项应保留未勾选，并在对应条目后写明失败原因，或在 `## Findings` 中逐条说明。
-- 如果 issue tracker 不允许编辑原内容，则用单独 verification 报告承载同样的信息。
-- 不要因为验证失败而删除原 issue 内容，只能补充状态、原因和修订建议。
-
-## 完成标准
-
-只有同时满足以下条件，才能给出 `ready for PR`：
-
-- 所有非延期验收标准都有验证证据。
-- 相关测试通过，或未运行测试的原因可接受且已说明。
-- 没有未处理的 P0/P1 回归风险。
-- 没有未解决的 HITL 决策点。
-- 代码变更范围与 issue 匹配。
-
-否则输出 `needs changes` 或 `blocked`，并给出具体补救动作。
+- 所有非延期验收项有证据或有明确缺失说明。
+- 状态结论与证据一致。
+- issue 已回写可执行的后续动作。

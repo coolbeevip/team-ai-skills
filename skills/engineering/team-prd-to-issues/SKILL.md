@@ -1,6 +1,6 @@
 ---
 name: team-prd-to-issues
-description: 将 PRD 拆解为可独立领取、可验证、按依赖排序的工程 issue，强调端到端 vertical slice，而不是按层拆任务。Break PRDs into independently grabbable engineering issues using end-to-end vertical slices instead of horizontal layer-based tasks.
+description: 将 PRD 拆解成可独立领取、可验证、按依赖排序的工程 issues，优先端到端 vertical slice。触发词：拆解任务、PRD 转 issue、工程切片。Break a PRD into independently actionable, testable issues using dependency-ordered vertical slices. Keywords: PRD to issues, task breakdown, vertical slice.
 license: MIT
 metadata:
   author: coolbeevip
@@ -9,122 +9,65 @@ metadata:
 
 # PRD 转工程 Issues
 
-这个技能用于把 PRD 拆成工程团队可以直接领取的 issue。拆解目标是让每个 issue 都能独立实现、独立验证，并尽量减少跨 issue 的隐藏耦合。
+用于把 PRD 转成可执行 issue 列表。
+
+## 通用规则（引用）
+
+- [COMMON-RULES.md](../../COMMON-RULES.md)
 
 ## 输入物
 
-优先使用当前对话已有材料。如果用户提供 issue 编号、URL、PRD 路径或文档路径，先读取完整内容和相关评论。
-
-主输入必须是 `team-spec-to-prd` 生成的 PRD，默认来自 `team-spec/prd/{slug}.md`。没有 PRD 时，不要直接基于澄清记录或风险清单拆工程任务；应先要求执行 `team-spec-to-prd`，除非用户明确要求生成临时工程草案。
-
-必须先确定要拆解的 PRD，即明确的 `{slug}` 或 `team-spec/prd/{slug}.md`。如果无法从用户请求、当前对话或文件路径中唯一判断，应停止并要求用户提供 slug 或 PRD 文件路径，不要猜测要拆哪个 PRD。
-
-参考输入可以包括：
-
-- `team-spec-review` 输出的阻塞项、HITL 决策点、风险清单和建议改写。
-- `team-spec-refine` 产出的规格上下文和产品决策记录，尤其是 `team-spec/spec/CONTEXT.md` 与 `team-spec/spec/decisions/`。
-- 默认从规格工作空间读取同 slug 参考材料：`team-spec/spec/refine/{slug}.md`、`team-spec/spec/reviews/{slug}.md`、`team-spec/spec/CONTEXT.md` 和 `team-spec/spec/decisions/`。
-
-必要时探索代码库，理解：
-
-- 当前实现状态。
-- 模块边界和 owner。
-- 已有术语、ADR、测试模式和发布约束。
-- 哪些改动可以作为端到端薄切片交付。
-
-如果缺少足够上下文，不要直接创建 issue。先说明缺少的材料，并提出最少量的澄清问题。
+- `team-spec/prd/{slug}.md`（主输入，必需）。
+- `team-spec/spec/reviews/{slug}.md`、`team-spec/spec/refine/{slug}.md`（参考）。
+- `team-spec/spec/CONTEXT.md`、`team-spec/spec/decisions/`（参考）。
 
 ## 输出物
 
-- issue 拆解草案：标题、类型、依赖、覆盖的用户故事和切片理由。
-- 正式 issue，如果用户确认并且 issue tracker 可用。
-- 本地 Markdown issue 草稿，如果没有可用 issue tracker，默认保存到 `team-spec/issues/{slug}/{issue-number}-{short-issue-slug}.md`。
+- `team-spec/issues/{slug}/{issue-number}-{short-issue-slug}.md`（默认输出）。
+- 对话中的 issue 草案清单：标题、类型、依赖、覆盖场景、切片理由。
+- 下游可用的 issue 执行入口（供 `team-issue-next` 选择）。
 
-这些输出物通常是工程执行入口。下游 agent 或研发人员应能直接领取 `AFK` issue；`HITL` issue 必须先完成指定人工决策。
+## 执行步骤
 
-## 拆解原则
+1. 校验唯一 `{slug}` 或明确 PRD 路径；不唯一则停止。
+2. 读取 PRD 主目标、范围、验收标准、约束。
+3. 按 vertical slice 草拟 issue，并标注 `AFK/HITL` 与依赖。
+4. 先向用户确认粒度与顺序，再落盘到 `team-spec/issues/{slug}/`。
+5. 输出“下一步使用 `team-issue-next`”。
 
-- 使用 vertical slice：每个 issue 覆盖一条窄但完整的端到端路径。
-- 不按层拆分，例如“只做数据库”“只做 API”“只做 UI”通常不是好 issue。
-- 每个 issue 完成后应可演示、可测试或可被产品验收。
-- 优先拆成多个薄切片，而不是少量大任务。
-- 明确依赖关系，阻塞项必须排在前面。
-- 使用项目已有领域语言，不引入新术语。
-- 不写易过期的文件路径或代码片段，除非原型片段比文字更能表达关键决策。
+## 规则清单（必须/禁止）
 
-## HITL 与 AFK
+- 必须以 PRD 为主输入，不绕过到澄清材料。
+- 必须确保每个 issue 可独立验证，有可观察结果。
+- 必须先发布 blocker，再发布被依赖 issue。
+- 禁止按纯分层任务拆解（仅 DB/API/UI）。
+- 禁止创建循环依赖。
 
-每个 issue 必须标注类型：
+## 失败与回退
 
-- `AFK`：工程 agent 或研发可以独立完成，不需要中途人工决策。
-- `HITL`：需要人工介入，例如产品确认、设计评审、架构决策、合规判断或跨团队排期。
+- 无 PRD 或 PRD 不明确：停止并要求提供 `team-spec/prd/{slug}.md`。
+- 关键上下文缺失：输出最少澄清问题后暂停，不直接发布 issue。
+- 用户未确认粒度：保留草案，不进入正式输出。
 
-优先把任务设计成 `AFK`。如果必须是 `HITL`，说明具体需要谁做什么决定。
-
-## 流程
-
-1. 汇总 PRD 的目标、用户故事、约束、验收标准和非目标。
-2. 探索代码库或文档，确认当前系统边界。
-3. 先草拟 issue 拆解，不要立即发布。
-4. 用编号列表向用户确认粒度和依赖。
-5. 根据用户反馈合并、拆分或重排。
-6. 用户确认后，再发布到 issue tracker；如果没有可用 issue tracker，则生成本地 Markdown issue 草稿。
-
-确认时每个候选 issue 都要展示：
-
-- `Title`：短标题。
-- `Type`：`AFK` 或 `HITL`。
-- `Blocked by`：依赖哪些 issue，或 `None`。
-- `User stories covered`：覆盖哪些用户故事或验收场景。
-- `Why this slice`：为什么它是一个可独立验证的端到端切片。
-
-## Issue 模板
+## 最小输出模板
 
 ```md
-## Parent
-
-{父 PRD 或需求来源；如果没有则省略}
-
 ## What to build
-
-用简洁语言描述这个 vertical slice 的端到端行为。描述用户可见行为和系统边界，不写分层任务清单。
+- ...
 
 ## Type
-
-AFK / HITL
-
-如果是 HITL，说明需要谁做什么决定。
+AFK | HITL
 
 ## Acceptance criteria
-
-- [ ] Given {上下文}，When {动作}，Then {可观察结果}。
-- [ ] Given {上下文}，When {动作}，Then {可观察结果}。
-- [ ] 相关自动化或手工验证路径明确。
+- [ ] Given ... When ... Then ...
 
 ## Blocked by
-
-- None - can start immediately
-
-或：
-
-- #{blocking-issue-id}
-
-## Notes
-
-- 关键约束、假设、测试建议或发布注意事项。
+- None | #{id}
 ```
 
-## 发布规则
+## 完成前检查
 
-- 按依赖顺序发布，先发布 blocker，再发布依赖它的 issue。
-- 不要关闭、修改或重写父 PRD，除非用户明确要求。
-- 如果发布到 GitHub Issues，使用团队约定的 triage label；如果没有约定，先询问或生成草稿。
-- 本地草稿默认保存到 `team-spec/issues/{slug}/{issue-number}-{short-issue-slug}.md`，目录只在需要时创建。
-
-## 质量标准
-
-- issue 能被工程师或 agent 独立领取。
-- issue 完成后有可观察结果，而不是只有内部重构。
-- 依赖关系清楚，没有循环依赖。
-- HITL issue 的人工决策点具体、可执行。
-- AFK issue 不需要额外产品、设计或架构判断即可开始。
+- 输出目录为 `team-spec/issues/{slug}/`。
+- 每个 issue 都有类型与依赖。
+- 依赖顺序可执行、无环。
+- 下游 `team-issue-next` 可直接选择下一项。
