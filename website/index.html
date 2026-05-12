@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="Skills For Real Teams — AI 驱动的团队协作技能库，覆盖需求→产品→工程全流程。AI-powered team collaboration skill library covering spec, product, and engineering workflows." />
   <title>Skills For Real Teams</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
   <!-- Mermaid for workflow diagram -->
   <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
@@ -31,26 +34,40 @@
 
 <!-- ── Hero ─────────────────────────────────────── -->
 <header class="hero">
-  <div class="hero-badge">MIT Licensed · Open Source</div>
-  <h1>Skills For <span class="accent">Real Teams</span></h1>
-  <p class="hero-sub">AI 驱动的团队协作技能库，覆盖需求 → 产品 → 工程全流程</p>
-  <p class="hero-sub-en">AI-powered skill library for real teams, spanning spec refinement, product definition, and engineering delivery.</p>
+  <div class="hero-grid-bg"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-content">
+    <div class="hero-badge">MIT Licensed · Open Source</div>
+    <h1>Skills For <span class="accent">Real Teams</span></h1>
+    <p class="hero-sub">AI 驱动的团队协作技能库，覆盖需求 → 产品 → 工程全流程</p>
+    <p class="hero-sub-en">AI-powered skill library for real teams, spanning spec refinement, product definition, and engineering delivery.</p>
 
-  <div class="install-box" id="hero-install">
-    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
-    npx skills@latest add coolbeevip/team-ai-skills --all
-    <button class="copy-btn" aria-label="Copy install command" onclick="copyCmd(this, 'npx skills@latest add coolbeevip/team-ai-skills --all')">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
-    </button>
-    <span class="copy-toast">已复制！</span>
-  </div>
+    <div class="install-box" id="hero-install">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+      npx skills@latest add coolbeevip/team-ai-skills --all
+      <button class="copy-btn" aria-label="Copy install command" onclick="copyCmd(this, 'npx skills@latest add coolbeevip/team-ai-skills --all')">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+      </button>
+      <span class="copy-toast">已复制！</span>
+    </div>
 
-  <div class="hero-actions">
-    <a class="btn btn-primary" href="#quickstart">快速上手</a>
-    <a class="btn btn-secondary" href="https://github.com/coolbeevip/team-ai-skills" target="_blank" rel="noopener">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.387.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 21.795 24 17.295 24 12c0-6.63-5.37-12-12-12"/></svg>
-      查看源码
-    </a>
+    <div class="hero-actions">
+      <a class="btn btn-primary" href="#quickstart">快速上手</a>
+      <a class="btn btn-secondary" href="https://github.com/coolbeevip/team-ai-skills" target="_blank" rel="noopener">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.387.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 21.795 24 17.295 24 12c0-6.63-5.37-12-12-12"/></svg>
+        查看源码
+      </a>
+    </div>
+
+    <div class="hero-stats">
+      <span>6 Skills</span>
+      <span class="stat-sep">·</span>
+      <span>2 Phases</span>
+      <span class="stat-sep">·</span>
+      <span>MIT Licensed</span>
+      <span class="stat-sep">·</span>
+      <span>Open Source</span>
+    </div>
   </div>
 </header>
 
@@ -68,12 +85,9 @@ flowchart TD
     C -- 是 --> A
     C -- 否 --> D[team-spec-to-prd]
     D --> E[team-prd-to-issues]
-    E --> F[team-issue-next]
-    F --> G[team-issue-implement]
-    G --> H[team-issue-verify]
-    H --> F
-    F -. optional .-> S[team-issue-start]
-    H -. optional .-> P[team-issue-pr]
+    E --> F[team-issue-implement]
+    F --> G[team-issue-verify]
+    G -- 验证未通过 --> F
       </div>
     </div>
   </div>
@@ -83,7 +97,7 @@ flowchart TD
 <section id="skills">
   <div class="container">
     <span class="section-tag">技能列表</span>
-    <h2 class="section-title">9 个开箱即用的 AI 技能</h2>
+    <h2 class="section-title">6 个开箱即用的 AI 技能</h2>
     <p class="section-desc">每个技能都声明了输入物和输出物，可单独使用，也可按工作流串联。</p>
 
     <!-- Spec Phase -->
@@ -128,13 +142,6 @@ flowchart TD
         </div>
 
         <div class="skill-card">
-          <div class="skill-name">team-issue-next</div>
-          <div class="skill-title">选择下一个 Issue</div>
-          <div class="skill-desc-zh">从 team-spec/issues/{slug}/ 中识别下一个可开始的 issue，基于状态、依赖和优先级输出明确的下一步，不写代码、不建分支。</div>
-          <div class="skill-desc-en">Select the next actionable issue from team-spec/issues/{slug}/ based on status, dependencies, and priority, without writing code or creating branches.</div>
-        </div>
-
-        <div class="skill-card">
           <div class="skill-name">team-issue-implement</div>
           <div class="skill-title">实现 Issue</div>
           <div class="skill-desc-zh">根据 team-spec/issues/ 中的单个工程 issue 进行实现，优先采用行为测试和 TDD 的 red-green-refactor 循环，最终输出代码变更、测试变更和验证结果。</div>
@@ -146,20 +153,6 @@ flowchart TD
           <div class="skill-title">验证 Issue</div>
           <div class="skill-desc-zh">独立验证单个 issue 的实现是否满足验收标准、关联 PRD 和风险约束，输出验证报告、遗漏项、回归风险和是否 ready for PR 的结论。</div>
           <div class="skill-desc-en">Verify whether a single issue implementation satisfies acceptance criteria, the linked PRD, and risk constraints, producing a verification report, gaps, regression risks, and readiness status.</div>
-        </div>
-
-        <div class="skill-card">
-          <div class="skill-name">team-issue-start <span class="skill-optional">可选</span></div>
-          <div class="skill-title">准备分支</div>
-          <div class="skill-desc-zh">为单个 issue 开始开发前准备干净工作区、同步主干、检查依赖和创建 issue 分支，确保后续实现只围绕一个明确 issue。</div>
-          <div class="skill-desc-en">Prepare a clean workspace for a single issue by syncing the main branch, checking dependencies, and creating an issue branch before implementation.</div>
-        </div>
-
-        <div class="skill-card">
-          <div class="skill-name">team-issue-pr <span class="skill-optional">可选</span></div>
-          <div class="skill-title">提交 PR</div>
-          <div class="skill-desc-zh">在单个 issue 实现并验证后，整理变更、提交、推送分支并创建 PR，确保 PR 描述关联 issue、验证结果和风险说明。</div>
-          <div class="skill-desc-en">After a single issue is implemented and verified, commit changes, push the issue branch, and open a PR with linked issue context, verification results, and risk notes.</div>
         </div>
 
       </div>
@@ -269,6 +262,8 @@ flowchart TD
 
 <!-- ── Footer ────────────────────────────────────── -->
 <footer>
+  <div class="footer-line"></div>
+  <p class="footer-tagline">Powered by AI · Built for real teams</p>
   <p>
     Built with ❤️ by
     <a href="https://github.com/coolbeevip" target="_blank" rel="noopener">coolbeevip</a>
