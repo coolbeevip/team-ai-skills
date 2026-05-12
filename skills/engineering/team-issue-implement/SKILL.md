@@ -1,6 +1,6 @@
 ---
 name: team-issue-implement
-description: 基于单个工程 issue 实现代码与测试，优先行为测试和 TDD red-green-refactor 循环。触发词：实现 issue、写代码、补测试。Implement one issue with behavior-focused tests and a red-green-refactor loop. Keywords: implement issue, TDD, behavior tests.
+description: 基于单个工程 issue 实现代码与测试，优先行为测试和 TDD red-green-refactor 循环。 触发词：实现 issue、写代码、补测试。Implement one issue with behavior-focused tests and a red-green-refactor loop. Keywords: implement issue, TDD, behavior tests.
 license: MIT
 metadata:
   author: coolbeevip

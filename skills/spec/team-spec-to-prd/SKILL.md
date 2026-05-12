@@ -1,6 +1,6 @@
 ---
 name: team-spec-to-prd
-description: 将已细化且通过评审的规格固化为结构化 PRD，作为需求到工程的正式交接边界。触发词：生成 PRD、固化需求、进入工程。Convert ready refined specs into a structured PRD for engineering handoff. Keywords: generate PRD, requirement handoff, spec to PRD.
+description: 将已细化且通过评审的规格固化为结构化 PRD，作为需求到工程的正式交接边界。 触发词：生成 PRD、固化需求、进入工程。Convert ready refined specs into a structured PRD for engineering handoff. Keywords: generate PRD, requirement handoff, spec to PRD.
 license: MIT
 metadata:
   author: coolbeevip

@@ -1,6 +1,6 @@
 ---
 name: team-issue-next
-description: 从 team-spec/issues/{slug}/ 中选择下一个可开始 issue，基于状态、依赖和优先级输出明确下一步。触发词：下一个任务、选 issue、依赖排程。Pick the next actionable issue from team-spec/issues/{slug}/ using status, dependencies, and priority. Keywords: next issue, issue scheduling, dependency selection.
+description: 从 team-spec/issues/{slug}/ 中选择下一个可开始 issue，基于状态、依赖和优先级输出明确下一步。 触发词：下一个任务、选 issue、依赖排程。Pick the next actionable issue from team-spec/issues/{slug}/ using status, dependencies, and priority. Keywords: next issue, issue scheduling, dependency selection.
 license: MIT
 metadata:
   author: coolbeevip

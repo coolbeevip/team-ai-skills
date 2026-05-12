@@ -1,6 +1,6 @@
 ---
 name: team-issue-pr
-description: 在单个 issue 验证通过后，提交变更、推送分支并创建 PR，确保 PR 描述包含 issue 关联与验证结果。触发词：开 PR、提交 issue、推送分支。After issue verification passes, commit, push, and open a PR with linked issue context and verification evidence. Keywords: open PR, submit issue, push branch.
+description: 在单个 issue 验证通过后，提交变更、推送分支并创建 PR，确保 PR 描述包含 issue 关联与验证结果。 触发词：开 PR、提交 issue、推送分支。After issue verification passes, commit, push, and open a PR with linked issue context and verification evidence. Keywords: open PR, submit issue, push branch.
 license: MIT
 metadata:
   author: coolbeevip

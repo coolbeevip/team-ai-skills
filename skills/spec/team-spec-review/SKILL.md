@@ -1,6 +1,6 @@
 ---
 name: team-spec-review
-description: 评审已细化规格的风险与 ready 状态，输出阻塞项、风险分级和补救动作。触发词：规格评审、ready gate、风险检查。Review refined specs for readiness, blockers, and mitigations. Keywords: spec review, readiness gate, risk assessment.
+description: 评审已细化规格的风险与 ready 状态，输出阻塞项、风险分级和补救动作。 触发词：规格评审、ready gate、风险检查。Review refined specs for readiness, blockers, and mitigations. Keywords: spec review, readiness gate, risk assessment.
 license: MIT
 metadata:
   author: coolbeevip

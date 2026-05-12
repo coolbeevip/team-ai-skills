@@ -1,6 +1,6 @@
 ---
 name: team-issue-verify
-description: 独立验证单个 issue 实现是否满足验收标准、PRD 约束与风险要求，并输出 ready 结论。触发词：验证 issue、验收检查、ready for PR。Verify a single issue against acceptance criteria, PRD constraints, and risks, then decide readiness. Keywords: verify issue, acceptance check, ready for PR.
+description: 独立验证单个 issue 实现是否满足验收标准、PRD 约束与风险要求，并输出 ready 结论。 触发词：验证 issue、验收检查、ready for PR。Verify a single issue against acceptance criteria, PRD constraints, and risks, then decide readiness. Keywords: verify issue, acceptance check, ready for PR.
 license: MIT
 metadata:
   author: coolbeevip

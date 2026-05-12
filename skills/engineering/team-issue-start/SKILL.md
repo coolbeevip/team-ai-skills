@@ -1,6 +1,6 @@
 ---
 name: team-issue-start
-description: 在实现前为单个 issue 准备干净工作区与 issue 分支，确认依赖已满足并可安全开工。触发词：开始 issue、准备分支、同步主干。Prepare a clean workspace and issue branch before implementation. Keywords: start issue, prepare branch, clean workspace.
+description: 在实现前为单个 issue 准备干净工作区与 issue 分支，确认依赖已满足并可安全开工。 触发词：开始 issue、准备分支、同步主干。Prepare a clean workspace and issue branch before implementation. Keywords: start issue, prepare branch, clean workspace.
 license: MIT
 metadata:
   author: coolbeevip

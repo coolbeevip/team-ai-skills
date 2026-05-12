@@ -1,6 +1,6 @@
 ---
 name: team-prd-to-issues
-description: 将 PRD 拆解成可独立领取、可验证、按依赖排序的工程 issues，优先端到端 vertical slice。触发词：拆解任务、PRD 转 issue、工程切片。Break a PRD into independently actionable, testable issues using dependency-ordered vertical slices. Keywords: PRD to issues, task breakdown, vertical slice.
+description: 将 PRD 拆解成可独立领取、可验证、按依赖排序的工程 issues，优先端到端 vertical slice。 触发词：拆解任务、PRD 转 issue、工程切片。Break a PRD into independently actionable, testable issues using dependency-ordered vertical slices. Keywords: PRD to issues, task breakdown, vertical slice.
 license: MIT
 metadata:
   author: coolbeevip

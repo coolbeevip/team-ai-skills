@@ -1,6 +1,6 @@
 ---
 name: team-spec-refine
-description: 通过与用户迭代澄清需求规格，在 PRD 前固化术语、范围、规则和验收口径。触发词：细化需求、澄清规格、补齐边界。Refine specs before PRD by clarifying terms, scope, rules, and acceptance criteria. Keywords: refine spec, clarify scope, requirement discovery.
+description: 通过与用户迭代澄清需求规格，在 PRD 前固化术语、范围、规则和验收口径。 触发词：细化需求、澄清规格、补齐边界。Refine specs before PRD by clarifying terms, scope, rules, and acceptance criteria. Keywords: refine spec, clarify scope, requirement discovery.
 license: MIT
 metadata:
   author: coolbeevip
