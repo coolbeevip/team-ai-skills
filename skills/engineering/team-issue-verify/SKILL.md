@@ -57,7 +57,7 @@ metadata:
 ## Status
 ready for PR | needs changes | blocked
 
-## Acceptance Coverage
+## Acceptance Criteria Coverage
 - [x] ...
 - [ ] ...
 
