@@ -74,43 +74,39 @@
   <div class="container">
     <h2 class="section-title">端到端技能串联</h2>
     <p class="section-desc">技能按上下游顺序串联，每个技能的输出物是下一个技能的输入物。规格与评审可以反复迭代，消除 P0/P1 风险后进入 PRD 固化，再经三方交接评审签字后方可进入工程阶段。</p>
-    <div class="flow-grid">
+    <div class="flow-lanes">
 
-      <div class="flow-block">
-        <div class="flow-title">📋 需求流程</div>
-        <div class="flow-steps">
+      <div class="flow-lane">
+        <div class="flow-lane-title">📋 需求流程</div>
+        <div class="flow-row">
           <div class="flow-step spec">team-spec-refine</div>
-          <div class="flow-arrow">↓</div>
+          <div class="flow-h-arrow"><span class="h-arr">→</span><span class="h-note">P0/P1↩</span></div>
           <div class="flow-step spec">team-spec-review</div>
-          <div class="flow-note">↩ P0 / P1 风险 → 返回细化</div>
-          <div class="flow-arrow">↓ 无阻塞</div>
+          <div class="flow-h-arrow"><span class="h-arr">→</span><span class="h-note">无阻塞</span></div>
           <div class="flow-step spec">team-spec-to-prd</div>
-          <div class="flow-arrow">↓</div>
+          <div class="flow-h-arrow"><span class="h-arr">→</span></div>
           <div class="flow-step handoff">team-prd-handoff</div>
-          <div class="flow-note">↩ 评审未通过 → 回到 PRD</div>
-          <div class="flow-arrow">↓ 三方签字</div>
+          <div class="flow-h-arrow"><span class="h-arr">→</span><span class="h-note">评审↩</span></div>
           <div class="flow-step eng">team-prd-to-issues</div>
-          <div class="flow-arrow">↓</div>
+          <div class="flow-h-arrow"><span class="h-arr">→</span></div>
           <div class="flow-step eng merge">team-issue-implement</div>
-          <div class="flow-arrow">↓</div>
+          <div class="flow-h-arrow"><span class="h-arr">→</span><span class="h-note">验证↩</span></div>
           <div class="flow-step eng">team-issue-verify</div>
-          <div class="flow-note">↩ 验证未通过 → 重新实现</div>
         </div>
       </div>
 
-      <div class="flow-block">
-        <div class="flow-title">🔧 技术债流程</div>
-        <div class="flow-steps">
+      <div class="flow-lane">
+        <div class="flow-lane-title">🔧 技术债流程</div>
+        <div class="flow-row">
           <div class="flow-step debt">team-tech-debt-refine</div>
-          <div class="flow-arrow">↓</div>
+          <div class="flow-h-arrow"><span class="h-arr">→</span></div>
           <div class="flow-step debt">team-tech-debt-review</div>
-          <div class="flow-arrow">↓</div>
+          <div class="flow-h-arrow"><span class="h-arr">→</span></div>
           <div class="flow-step debt">team-tech-debt-to-issues</div>
-          <div class="flow-arrow">↓ 汇入需求流程</div>
+          <div class="flow-h-arrow"><span class="h-arr">→</span><span class="h-note">汇入</span></div>
           <div class="flow-step eng merge">team-issue-implement</div>
-          <div class="flow-arrow">↓</div>
+          <div class="flow-h-arrow"><span class="h-arr">→</span><span class="h-note">验证↩</span></div>
           <div class="flow-step eng">team-issue-verify</div>
-          <div class="flow-note">↩ 验证未通过 → 重新实现</div>
         </div>
       </div>
 
