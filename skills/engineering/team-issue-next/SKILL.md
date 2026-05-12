@@ -41,13 +41,16 @@ metadata:
 ```md
 ## Status
 
-todo / in-progress / pr-open / merged / blocked
+todo / in-progress / ready for PR / pr-open / merged / blocked
 ```
+
+如果 issue 文件或验证结果中出现 `ready for PR`，将其视为“实现与验证已完成”的完成态；在没有明确 `pr-open` 或 `merged` 证据时，不要把它当作仍在开发中的 issue。
 
 如果没有状态字段，按以下方式推断：
 
 - `merged`：关联 PR 已合并，或用户明确说明已完成。
 - `pr-open`：已有未合并 PR。
+- `ready for PR`：实现和验证已完成，若团队不依赖 PR 流程，可作为依赖已满足的完成态。
 - `blocked`：`Blocked by` 中存在未完成依赖。
 - `todo`：没有未完成依赖，且未开始。
 - `unknown`：无法判断。
@@ -56,7 +59,7 @@ todo / in-progress / pr-open / merged / blocked
 
 ## 选择规则
 
-1. 排除 `merged` 和 `pr-open`。
+1. 排除 `merged`、`pr-open` 和 `ready for PR`。
 2. 排除仍有未完成依赖的 `blocked`。
 3. 在 `todo` 中选择优先级最高的 issue。
 4. 如果没有显式优先级，选择编号最小的 issue。
