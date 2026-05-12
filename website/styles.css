@@ -368,6 +368,21 @@ section { padding: 5rem 1rem; }
   background: #79c0ff;
 }
 
+.phase-handoff .phase-label {
+  color: #f0883e;
+  background: rgba(240,136,62,.1);
+  border: 1px solid rgba(240,136,62,.2);
+}
+
+.phase-handoff .phase-label::before {
+  content: '';
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #f0883e;
+}
+
 .phase-eng .phase-label {
   color: #3fb950;
   background: rgba(63,185,80,.1);
