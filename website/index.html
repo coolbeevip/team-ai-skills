@@ -9,8 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
-  <!-- Mermaid for workflow diagram -->
-  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+
 </head>
 <body>
 
@@ -75,28 +74,46 @@
   <div class="container">
     <h2 class="section-title">端到端技能串联</h2>
     <p class="section-desc">技能按上下游顺序串联，每个技能的输出物是下一个技能的输入物。规格与评审可以反复迭代，消除 P0/P1 风险后进入 PRD 固化，再经三方交接评审签字后方可进入工程阶段。</p>
-    <div class="mermaid-wrap">
-      <div class="mermaid">
-flowchart TD
-    subgraph S [需求流程]
-      A[team-spec-refine] --> B[team-spec-review]
-      B --> C{存在 P0 或关键 P1 风险?}
-      C -- 是 --> A
-      C -- 否 --> D[team-spec-to-prd]
-      D --> H[team-prd-handoff]
-      H --> R{三方评审通过?}
-      R -- 否 --> D
-      R -- 是 --> F[team-prd-to-issues]
-    end
-    subgraph T [技术债流程]
-      T1[team-tech-debt-refine] --> T2[team-tech-debt-review]
-      T2 --> T3[team-tech-debt-to-issues]
-    end
-    F --> G[team-issue-implement]
-    T3 --> G
-    G --> I[team-issue-verify]
-    I -- 验证未通过 --> G
+    <div class="flow-grid">
+
+      <div class="flow-block">
+        <div class="flow-title">📋 需求流程</div>
+        <div class="flow-steps">
+          <div class="flow-step spec">team-spec-refine</div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-step spec">team-spec-review</div>
+          <div class="flow-note">↩ P0 / P1 风险 → 返回细化</div>
+          <div class="flow-arrow">↓ 无阻塞</div>
+          <div class="flow-step spec">team-spec-to-prd</div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-step handoff">team-prd-handoff</div>
+          <div class="flow-note">↩ 评审未通过 → 回到 PRD</div>
+          <div class="flow-arrow">↓ 三方签字</div>
+          <div class="flow-step eng">team-prd-to-issues</div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-step eng merge">team-issue-implement</div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-step eng">team-issue-verify</div>
+          <div class="flow-note">↩ 验证未通过 → 重新实现</div>
+        </div>
       </div>
+
+      <div class="flow-block">
+        <div class="flow-title">🔧 技术债流程</div>
+        <div class="flow-steps">
+          <div class="flow-step debt">team-tech-debt-refine</div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-step debt">team-tech-debt-review</div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-step debt">team-tech-debt-to-issues</div>
+          <div class="flow-arrow">↓ 汇入需求流程</div>
+          <div class="flow-step eng merge">team-issue-implement</div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-step eng">team-issue-verify</div>
+          <div class="flow-note">↩ 验证未通过 → 重新实现</div>
+        </div>
+      </div>
+
     </div>
   </div>
 </section>
@@ -271,24 +288,6 @@ flowchart TD
 </footer>
 
 <script>
-  // Initialize Mermaid with dark theme
-  mermaid.initialize({
-    startOnLoad: true,
-    theme: 'dark',
-    themeVariables: {
-      background: '#0d1117',
-      primaryColor: '#4f6ef7',
-      primaryTextColor: '#e6edf3',
-      primaryBorderColor: '#30363d',
-      lineColor: '#8b949e',
-      secondaryColor: '#161b22',
-      tertiaryColor: '#1c2330',
-      edgeLabelBackground: '#161b22',
-      clusterBkg: '#161b22',
-    },
-    flowchart: { curve: 'basis' }
-  });
-
   // Copy command helper
   function copyCmd(btn, text) {
     navigator.clipboard.writeText(text).then(() => {

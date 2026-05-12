@@ -325,19 +325,69 @@ section { padding: 5rem 1rem; }
   border-bottom: 1px solid var(--border);
 }
 
-.mermaid-wrap {
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-top: 3px solid;
-  border-image: var(--brand-gradient) 1;
-  border-radius: 0 0 var(--radius) var(--radius);
-  padding: 2rem;
-  overflow-x: auto;
-  text-align: center;
-  box-shadow: 0 2px 8px rgba(0,0,0,.3);
+/* ── Flow Diagram ──────────────────────────────────── */
+.flow-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin-top: 1.5rem;
+}
+@media (max-width: 700px) {
+  .flow-grid { grid-template-columns: 1fr; }
 }
 
-.mermaid { display: inline-block; }
+.flow-block {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.75rem 1.5rem;
+  font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
+}
+
+.flow-title {
+  font-size: .95rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 1.25rem;
+  letter-spacing: .01em;
+}
+
+.flow-steps {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: .25rem;
+}
+
+.flow-step {
+  font-size: .82rem;
+  font-weight: 600;
+  padding: .45rem .9rem;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  letter-spacing: .01em;
+  white-space: nowrap;
+}
+.flow-step.spec    { color: #79c0ff; border-color: #79c0ff44; background: #79c0ff0d; }
+.flow-step.debt    { color: #bc8cff; border-color: #bc8cff44; background: #bc8cff0d; }
+.flow-step.handoff { color: #f0883e; border-color: #f0883e44; background: #f0883e0d; }
+.flow-step.eng     { color: #3fb950; border-color: #3fb95044; background: #3fb9500d; }
+.flow-step.merge   { outline: 2px dashed currentColor; outline-offset: 2px; }
+
+.flow-arrow {
+  font-size: .78rem;
+  color: var(--text-muted);
+  padding-left: 1.1rem;
+  line-height: 1;
+}
+
+.flow-note {
+  font-size: .72rem;
+  color: var(--text-muted);
+  font-style: italic;
+  padding-left: 1rem;
+  margin-bottom: .15rem;
+}
 
 /* ── Skills Grid ──────────────────────────────────── */
 .phase-label {
