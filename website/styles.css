@@ -326,63 +326,21 @@ section { padding: 5rem 1rem; }
 }
 
 /* ── Flow Diagram ──────────────────────────────────── */
-.flow-lanes {
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
+.flow-pre-wrap {
   margin-top: 1.5rem;
-}
-
-.flow-lane {
-  background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 1.25rem 1.5rem;
-  font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
-}
-
-.flow-lane-title {
-  font-size: .85rem;
-  font-weight: 700;
-  color: var(--text-muted);
-  margin-bottom: .9rem;
-  letter-spacing: .04em;
-  text-transform: uppercase;
-}
-
-.flow-row {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: .35rem;
   overflow-x: auto;
 }
-
-.flow-step {
-  font-size: .78rem;
-  font-weight: 600;
-  padding: .4rem .8rem;
-  border-radius: 6px;
-  border: 1px solid var(--border);
-  letter-spacing: .01em;
-  white-space: nowrap;
-  flex-shrink: 0;
+.flow-pre {
+  margin: 0;
+  padding: 1.5rem 2rem;
+  font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
+  font-size: .82rem;
+  line-height: 1.9;
+  color: var(--text);
+  white-space: pre;
 }
-.flow-step.spec    { color: #79c0ff; border-color: #79c0ff44; background: #79c0ff0d; }
-.flow-step.debt    { color: #bc8cff; border-color: #bc8cff44; background: #bc8cff0d; }
-.flow-step.handoff { color: #f0883e; border-color: #f0883e44; background: #f0883e0d; }
-.flow-step.eng     { color: #3fb950; border-color: #3fb95044; background: #3fb9500d; }
-.flow-step.merge   { outline: 2px dashed currentColor; outline-offset: 2px; }
-
-.flow-h-arrow {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  flex-shrink: 0;
-  gap: .1rem;
-}
-.h-arr  { color: var(--text-muted); font-size: .9rem; line-height: 1; }
-.h-note { font-size: .62rem; color: var(--text-muted); font-style: italic; white-space: nowrap; }
 
 /* ── Skills Grid ──────────────────────────────────── */
 .phase-label {
