@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Skills For Real Teams — AI 驱动的团队协作技能库，覆盖需求→产品→工程全流程。AI-powered team collaboration skill library covering spec, product, and engineering workflows." />
+  <meta name="description" content="Skills For Real Teams — AI 驱动的团队协作技能库，按产品、架构、交付、技术债和文档职责域组织。AI-powered team collaboration skill library organized by product, architecture, delivery, tech debt, and documentation domains." />
   <title>Skills For Real Teams</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -36,8 +36,8 @@
   <div class="hero-content">
     <div class="hero-badge">MIT Licensed · Open Source</div>
     <h1>Skills For <span class="accent">Real Teams</span></h1>
-    <p class="hero-sub">AI 驱动的团队协作技能库，覆盖需求 → 产品 → 工程全流程</p>
-    <p class="hero-sub-en">AI-powered skill library for real teams, spanning spec refinement, product definition, and engineering delivery.</p>
+    <p class="hero-sub">AI 驱动的团队协作技能库，按团队职责域组织需求到交付流程</p>
+    <p class="hero-sub-en">AI-powered skill library for real teams, organized by product, architecture, delivery, tech debt, and documentation domains.</p>
 
     <div class="install-box" id="hero-install">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
@@ -57,9 +57,9 @@
     </div>
 
     <div class="hero-stats">
-      <span>10 Skills</span>
+      <span>12 Skills</span>
       <span class="stat-sep">·</span>
-      <span>4 Phases</span>
+      <span>5 Domains</span>
       <span class="stat-sep">·</span>
       <span>MIT Licensed</span>
       <span class="stat-sep">·</span>
@@ -72,12 +72,12 @@
 <!-- ── Skills ────────────────────────────────────── -->
 <section id="skills">
   <div class="container">
-    <h2 class="section-title">10 个开箱即用的 AI 技能</h2>
-    <p class="section-desc">每个技能都声明了输入物和输出物，可单独使用，也可按工作流串联。技术债与新需求各有独立流程，最终汇入同一工程实现链。</p>
+    <h2 class="section-title">12 个开箱即用的 AI 技能</h2>
+    <p class="section-desc">每个技能都声明了输入物和输出物，可单独使用，也可按职责域串联。技术债与新需求各有独立流程，最终汇入同一交付执行链。</p>
 
-    <!-- Spec Phase -->
+    <!-- Product Domain -->
     <div class="phase-spec">
-      <div class="phase-label">规格阶段 · Spec</div>
+      <div class="phase-label">产品职责 · Product</div>
       <div class="skills-grid">
 
         <div class="skill-card">
@@ -104,7 +104,22 @@
       </div>
     </div>
 
-    <!-- Tech Debt Phase -->
+    <!-- Architecture Domain -->
+    <div class="phase-arch">
+      <div class="phase-label">架构职责 · Architecture</div>
+      <div class="skills-grid">
+
+        <div class="skill-card">
+          <div class="skill-name">team-spec-to-functional-design</div>
+          <div class="skill-title">生成设计说明书</div>
+          <div class="skill-desc-zh">基于需求规格说明书与源代码自动生成企业级功能设计说明书。用于文档工程师把需求、现状实现和系统约束整理为正式设计文档。</div>
+          <div class="skill-desc-en">Generate enterprise functional design specs from requirement specifications and source code.</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Tech Debt Domain -->
     <div class="phase-debt">
       <div class="phase-label">技术债 · Tech Debt</div>
       <div class="skills-grid">
@@ -133,9 +148,9 @@
       </div>
     </div>
 
-    <!-- Handoff Phase -->
+    <!-- Delivery Gate -->
     <div class="phase-handoff">
-      <div class="phase-label">交接评审 · Handoff</div>
+      <div class="phase-label">交付门禁 · Delivery Gate</div>
       <div class="skills-grid">
 
         <div class="skill-card">
@@ -148,9 +163,9 @@
       </div>
     </div>
 
-    <!-- Engineering Phase -->
+    <!-- Delivery Execution -->
     <div class="phase-eng">
-      <div class="phase-label">工程阶段 · Engineering</div>
+      <div class="phase-label">交付执行 · Delivery</div>
       <div class="skills-grid">
 
         <div class="skill-card">
@@ -172,6 +187,21 @@
           <div class="skill-title">验证 Issue</div>
           <div class="skill-desc-zh">独立验证单个 issue 的实现是否满足验收标准、关联 PRD 和风险约束，输出验证报告、遗漏项、回归风险和是否 ready for PR 的结论。</div>
           <div class="skill-desc-en">Verify whether a single issue implementation satisfies acceptance criteria, the linked PRD, and risk constraints, producing a verification report, gaps, regression risks, and readiness status.</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Documentation Domain -->
+    <div class="phase-doc">
+      <div class="phase-label">文档职责 · Documentation</div>
+      <div class="skills-grid">
+
+        <div class="skill-card">
+          <div class="skill-name">team-md-style-check</div>
+          <div class="skill-title">Markdown 风格检查</div>
+          <div class="skill-desc-zh">检查 Markdown 文档是否符合飞书文档上传后的样式映射规则，适用于将云文档写作样式转换为可导出的 Markdown 检查。</div>
+          <div class="skill-desc-en">Check whether Markdown documents conform to Feishu-compatible style mapping rules after upload.</div>
         </div>
 
       </div>

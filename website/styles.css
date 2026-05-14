@@ -354,6 +354,21 @@ section { padding: 5rem 1rem; }
   background: #79c0ff;
 }
 
+.phase-arch .phase-label {
+  color: #ffa657;
+  background: rgba(255,166,87,.1);
+  border: 1px solid rgba(255,166,87,.2);
+}
+
+.phase-arch .phase-label::before {
+  content: '';
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #ffa657;
+}
+
 .phase-debt .phase-label {
   color: #bc8cff;
   background: rgba(188,140,255,.1);
@@ -397,6 +412,21 @@ section { padding: 5rem 1rem; }
   height: 7px;
   border-radius: 50%;
   background: #3fb950;
+}
+
+.phase-doc .phase-label {
+  color: #f2cc60;
+  background: rgba(242,204,96,.1);
+  border: 1px solid rgba(242,204,96,.2);
+}
+
+.phase-doc .phase-label::before {
+  content: '';
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #f2cc60;
 }
 
 .skills-grid {

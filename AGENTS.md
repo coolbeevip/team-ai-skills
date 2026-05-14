@@ -2,19 +2,25 @@
 
 ## 项目结构与模块组织
 
-本仓库是团队大语言模型技能库。技能统一放在标准目录 `skills/` 下，`skills/` 的一级子目录代表工作流领域。
+本仓库是团队大语言模型技能库。技能统一放在标准目录 `skills/` 下，`skills/` 的一级子目录代表团队职责域。
 
-- `skills/spec/`：规格细化、评审和 PRD 固化相关技能。
-- `skills/spec/team-spec-refine/`：用于与用户反复确认并打磨规格。
-- `skills/spec/team-spec-review/`：用于评审规格风险和 ready 状态。
-- `skills/spec/team-spec-to-prd/`：用于把 ready 的规格固化成 PRD。
-- `skills/engineering/`：工程阶段技能。
-- `skills/engineering/team-prd-to-issues/`：用于把 PRD 拆解成可独立领取的工程 issue。
-- `skills/engineering/team-issue-next/`：用于从同一个 PRD 的 issue 集合中选择下一个可开始 issue。
-- `skills/engineering/team-issue-start/`：可选技能，用于同步主干、检查依赖并创建 issue 分支。
-- `skills/engineering/team-issue-implement/`：用于按行为测试和 TDD 循环实现单个 issue。
-- `skills/engineering/team-issue-verify/`：用于验证单个 issue 实现是否满足验收标准和 PRD。
-- `skills/engineering/team-issue-pr/`：可选技能，用于验证通过后提交、推送并创建 PR。
+- `skills/product/`：产品定义职责，包括需求细化、规格评审和 PRD 固化。
+- `skills/product/team-spec-refine/`：用于与用户反复确认并打磨规格。
+- `skills/product/team-spec-review/`：用于评审规格风险和 ready 状态。
+- `skills/product/team-spec-to-prd/`：用于把 ready 的规格固化成 PRD。
+- `skills/architecture/`：架构与方案设计职责。
+- `skills/architecture/team-spec-to-functional-design/`：用于基于需求规格与代码生成企业级功能设计说明书。
+- `skills/delivery/`：交付执行职责，包括 PRD 交接、issue 拆解、实现和验证。
+- `skills/delivery/team-prd-handoff/`：用于把 AI 结构化 PRD 转换为人类可评审的三方交接文档。
+- `skills/delivery/team-prd-to-issues/`：用于把 PRD 拆解成可独立领取的工程 issue。
+- `skills/delivery/team-issue-implement/`：用于按行为测试和 TDD 循环实现单个 issue。
+- `skills/delivery/team-issue-verify/`：用于验证单个 issue 实现是否满足验收标准和 PRD。
+- `skills/tech-debt/`：技术债治理职责，包括技术债细化、评审和工程拆解。
+- `skills/tech-debt/team-tech-debt-refine/`：用于把模糊技术债诉求细化为可评审规格。
+- `skills/tech-debt/team-tech-debt-review/`：用于评审技术债风险、优先级和可执行性。
+- `skills/tech-debt/team-tech-debt-to-issues/`：用于把已评审技术债拆解为工程 issue。
+- `skills/documentation/`：文档质量与格式规范职责。
+- `skills/documentation/team-md-style-check/`：用于检查 Markdown 是否符合飞书文档导入后的样式映射规则。
 
 每个技能目录必须包含 `SKILL.md`。只有当辅助文件被 `SKILL.md` 明确引用时才添加，例如 `CONTEXT-FORMAT.md`、`DECISION-FORMAT.md`。
 
@@ -40,7 +46,7 @@
 
 - `rtk find skills -maxdepth 4 -type f`：列出技能文件。
 - `rtk find team-spec -maxdepth 4 -type f`：列出技能产物。
-- `rtk sed -n '1,120p' skills/spec/team-spec-refine/SKILL.md`：查看技能内容。
+- `rtk sed -n '1,120p' skills/product/team-spec-refine/SKILL.md`：查看技能内容。
 - `rtk git status --short`：查看本地变更。
 - `rtk git diff`：提交前检查修改。
 
@@ -51,8 +57,9 @@
 - 技能目录名必须与 `SKILL.md` frontmatter 中的 `name` 完全一致。
 - 目录名使用 kebab-case，例如 `team-spec-review`。
 - 所有技能名必须以 `team-` 开头。
-- 规格类技能使用 `team-spec-` 前缀，例如 `team-spec-refine`。
-- 工程阶段技能可按输入产物使用 `team-prd-` 或 `team-issue-` 前缀，例如 `team-prd-to-issues`、`team-issue-implement`。
+- 产品规格类技能使用 `team-spec-` 前缀，例如 `team-spec-refine`。
+- 交付执行类技能可按输入产物使用 `team-prd-` 或 `team-issue-` 前缀，例如 `team-prd-to-issues`、`team-issue-implement`。
+- 技术债类技能使用 `team-tech-debt-` 前缀，例如 `team-tech-debt-refine`。
 - 必需技能文件命名为 `SKILL.md`。
 - `SKILL.md` 必须包含 YAML frontmatter，并提供 `name`、`description`、`triggers`、`license` 和 `metadata`。
 - `description` 必须同时包含中文和英文描述，便于 AI 在不同语言上下文中识别触发场景。

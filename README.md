@@ -1,6 +1,6 @@
 # Skills For Real Teams
 
-团队协作使用的大语言模型技能库，覆盖需求、产品和工程协作流程。
+团队协作使用的大语言模型技能库，按产品、架构、交付、技术债和文档职责域组织，覆盖需求到工程交付的协作流程。
 
 ## Quickstart
 
@@ -8,6 +8,31 @@
 
 ```bash
 npx skills@latest add coolbeevip/team-ai-skills --all
+```
+
+## Skill Domains
+
+技能目录按团队职责域组织：
+
+```text
+skills/
+├── product/
+│   ├── team-spec-refine/
+│   ├── team-spec-review/
+│   └── team-spec-to-prd/
+├── architecture/
+│   └── team-spec-to-functional-design/
+├── delivery/
+│   ├── team-prd-handoff/
+│   ├── team-prd-to-issues/
+│   ├── team-issue-implement/
+│   └── team-issue-verify/
+├── tech-debt/
+│   ├── team-tech-debt-refine/
+│   ├── team-tech-debt-review/
+│   └── team-tech-debt-to-issues/
+└── documentation/
+    └── team-md-style-check/
 ```
 
 ## Workflow
