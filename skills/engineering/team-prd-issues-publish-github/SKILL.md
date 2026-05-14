@@ -69,7 +69,7 @@ v1 仅支持 GitHub。不要在同一个技能中混合 GitHub 与 GitLab 发布
 
 每个本地 issue 在发布前必须做唯一性检查。推荐组合键：
 
-- 本地 issue 文件名（例如 `{local-seq}-{short-issue-slug}.md`，其中 `local-seq` 是本地草稿顺序编号，不是远端 GitHub issue 编号；该编号应直接取自现有本地文件名前缀）。
+- 本地 issue 文件名（`team-prd-to-issues` 已生成的 `{local-seq}-{short-issue-slug}.md` 格式，其中 `local-seq` 直接取自现有文件名前缀，用作本地唯一标识，不是远端 GitHub issue 编号）。
 - issue 标题（`Title`）。
 
 若远端已存在匹配项，则标记为 `skipped` 并回写现有 issue URL，不重复创建。
