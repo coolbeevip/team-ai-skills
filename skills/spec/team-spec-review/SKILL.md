@@ -5,6 +5,16 @@ license: MIT
 metadata:
   author: coolbeevip
   version: "1.0"
+triggers:
+  - 评审规格
+  - 规格准备好了吗
+  - 检查需求风险
+  - 这个需求有没有风险
+  - 规格 ready 了吗
+  - review spec
+  - spec ready check
+  - check requirement risks
+  - is the spec ready
 ---
 
 # 规格评审

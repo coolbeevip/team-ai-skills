@@ -52,6 +52,8 @@ flowchart TD
 
 每个 `SKILL.md` 都声明了 `输入物` 和 `输出物`，用于说明它会读取哪些上游产物，以及会为哪些下游技能提供材料。
 
+每个 `SKILL.md` 还包含 `triggers` 字段，列出用户触发该技能时常用的自然语言短语（中英双语）。AI 可通过匹配用户输入与 `triggers` 自动推荐合适的技能，无需用户预先知道技能名称。
+
 每个需求使用一个唯一 slug 串联全流程，格式为 `{yyyy-mm-dd}-{short-english-slug}`，例如 `2026-05-10-export-filter`。
 技术债需求也使用唯一 slug，但必须包含 `debt`，例如 `2026-05-12-debt-cache-cleanup`。
 

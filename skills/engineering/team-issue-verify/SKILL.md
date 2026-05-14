@@ -5,6 +5,15 @@ license: MIT
 metadata:
   author: coolbeevip
   version: "1.0"
+triggers:
+  - 验证实现
+  - 检查 issue 是否完成
+  - 能提 PR 了吗
+  - 实现完了帮我验一下
+  - verify issue
+  - check implementation
+  - ready for PR
+  - is this implementation complete
 ---
 
 # Issue 验证

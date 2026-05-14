@@ -5,6 +5,16 @@ license: MIT
 metadata:
   author: coolbeevip
   version: "1.0"
+triggers:
+  - PRD 交接
+  - 准备交接文档
+  - 三方评审
+  - PRD 写完了准备交接
+  - 需要让产研项目确认 PRD
+  - PRD handoff
+  - prepare handoff document
+  - three-party PRD review
+  - get sign-off on PRD
 ---
 
 # PRD 交接评审
