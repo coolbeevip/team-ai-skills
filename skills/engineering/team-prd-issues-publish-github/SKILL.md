@@ -35,7 +35,7 @@ v1 仅支持 GitHub。不要在同一个技能中混合 GitHub 与 GitLab 发布
 
 前置条件：
 
-- `team-prd-handoff` 已通过三方签字。
+- PRD 交接评审已通过三方签字。
 - `team-prd-to-issues` 已产出可发布草稿。
 - 需要有效 token 且具备 GitHub Issues 写权限（常见为 `repo` 或等效最小权限）。
 
