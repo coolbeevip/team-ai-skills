@@ -307,6 +307,21 @@ section { padding: 5rem 1rem; }
   background: #ffa657;
 }
 
+.phase-harness .phase-label {
+  color: #ff7b72;
+  background: rgba(255,123,114,.1);
+  border: 1px solid rgba(255,123,114,.2);
+}
+
+.phase-harness .phase-label::before {
+  content: '';
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #ff7b72;
+}
+
 .phase-debt .phase-label {
   color: #bc8cff;
   background: rgba(188,140,255,.1);

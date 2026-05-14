@@ -5,6 +5,15 @@ license: MIT
 metadata:
   author: coolbeevip
   version: "1.0"
+triggers:
+  - 检查 Markdown 样式
+  - 检查飞书文档格式
+  - Markdown 导入飞书
+  - 文档格式不对
+  - check Markdown style
+  - check Feishu formatting
+  - Markdown import style
+  - fix document formatting
 ---
 
 # Markdown 文档风格检查

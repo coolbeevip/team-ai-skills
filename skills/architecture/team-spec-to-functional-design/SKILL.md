@@ -5,6 +5,15 @@ license: MIT
 metadata:
   author: coolbeevip
   version: "1.0"
+triggers:
+  - 生成设计说明书
+  - 生成功能设计
+  - 写功能设计文档
+  - 需求转设计文档
+  - generate functional design
+  - create design spec
+  - write functional design document
+  - turn requirements into design
 ---
 
 # 功能设计说明书生成

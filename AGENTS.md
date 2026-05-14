@@ -10,6 +10,8 @@
 - `skills/product/team-spec-to-prd/`：用于把 ready 的规格固化成 PRD。
 - `skills/architecture/`：架构与方案设计职责。
 - `skills/architecture/team-spec-to-functional-design/`：用于基于需求规格与代码生成企业级功能设计说明书。
+- `skills/harness/`：Agent harness 职责，包括项目级 agent 工作环境、知识地图、验证命令和失败反馈闭环。
+- `skills/harness/team-harness-refine/`：用于随真实代码和工程演进反复细化 `AGENTS.md` / `CLAUDE.md` 与 `docs/agent-harness/`。
 - `skills/delivery/`：交付执行职责，包括 PRD 交接、issue 拆解、实现和验证。
 - `skills/delivery/team-prd-handoff/`：用于把 AI 结构化 PRD 转换为人类可评审的三方交接文档。
 - `skills/delivery/team-prd-to-issues/`：用于把 PRD 拆解成可独立领取的工程 issue。
@@ -62,6 +64,7 @@
 - 产品规格类技能使用 `team-spec-` 前缀，例如 `team-spec-refine`。
 - 交付执行类技能可按输入产物使用 `team-prd-` 或 `team-issue-` 前缀，例如 `team-prd-to-issues`、`team-issue-implement`。
 - 技术债类技能使用 `team-tech-debt-` 前缀，例如 `team-tech-debt-refine`。
+- Harness 类技能使用 `team-harness-` 前缀，例如 `team-harness-refine`。
 - 必需技能文件命名为 `SKILL.md`。
 - `SKILL.md` 必须包含 YAML frontmatter，并提供 `name`、`description`、`triggers`、`license` 和 `metadata`。
 - `description` 必须同时包含中文和英文描述，便于 AI 在不同语言上下文中识别触发场景。
