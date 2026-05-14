@@ -12,8 +12,7 @@
 - `skills/architecture/team-spec-to-functional-design/`：用于基于需求规格与代码生成企业级功能设计说明书。
 - `skills/harness/`：Agent harness 职责，包括项目级 agent 工作环境、知识地图、验证命令和失败反馈闭环。
 - `skills/harness/team-harness-refine/`：用于随真实代码和工程演进反复细化 `AGENTS.md` / `CLAUDE.md` 与 `docs/agent-harness/`。
-- `skills/delivery/`：交付执行职责，包括 PRD 交接、issue 拆解、实现和验证。
-- `skills/delivery/team-prd-handoff/`：用于把 AI 结构化 PRD 转换为人类可评审的三方交接文档。
+- `skills/delivery/`：交付执行职责，包括 issue 拆解、发布、实现和验证。
 - `skills/delivery/team-prd-to-issues/`：用于把 PRD 拆解成可独立领取的工程 issue。
 - `skills/delivery/team-prd-issues-publish-github/`：用于把本地 issue 草稿按依赖顺序批量发布到 GitHub Issues。
 - `skills/delivery/team-prd-issues-publish-gitlab/`：用于把本地 issue 草稿按依赖顺序批量发布到 GitLab Issues。
@@ -24,6 +23,7 @@
 - `skills/tech-debt/team-tech-debt-review/`：用于评审技术债风险、优先级和可执行性。
 - `skills/tech-debt/team-tech-debt-to-issues/`：用于把已评审技术债拆解为工程 issue。
 - `skills/documentation/`：文档质量与格式规范职责。
+- `skills/documentation/team-prd-to-alignment/`：用于把 AI 结构化 PRD 转换为需求、研发和项目管理可评审的演示文稿式对齐材料。
 - `skills/documentation/team-md-style-check/`：用于检查 Markdown 是否符合飞书文档导入后的样式映射规则。
 
 每个技能目录必须包含 `SKILL.md`。只有当辅助文件被 `SKILL.md` 明确引用时才添加，例如 `CONTEXT-FORMAT.md`、`DECISION-FORMAT.md`。

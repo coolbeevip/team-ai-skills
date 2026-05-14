@@ -36,9 +36,8 @@ Agent Harness 域用于让真实项目更适合 AI agent 长期工作，适合�
 
 ### 交付执行
 
-交付执行域用于把 PRD 交接给研发团队，拆成可领取的 issue，并把实现结果验证到可提交 PR 的状态，适合研发负责人、工程师、测试人员和工程 agent 使用。
+交付执行域用于把 PRD 拆成可领取的 issue，并把实现结果验证到可提交 PR 的状态，适合研发负责人、工程师、测试人员和工程 agent 使用。
 
-- `team-prd-handoff`：将 AI 结构化 PRD 转换为面向产品、研发和项目管理三方的交接评审文档。
 - `team-prd-to-issues`：把 PRD 拆解成可独立领取、可验证、按依赖排序的工程 issue。
 - `team-prd-issues-publish-github`：将本地 issue 草稿按依赖顺序批量发布到 GitHub Issues，并回写远端编号、URL 和发布状态。
 - `team-prd-issues-publish-gitlab`：将本地 issue 草稿按依赖顺序批量发布到 GitLab Issues，并回写远端 IID/ID、URL 和发布状态。
@@ -57,6 +56,7 @@ Agent Harness 域用于让真实项目更适合 AI agent 长期工作，适合�
 
 文档质量域用于保证团队产物在云文档、评审材料和导出场景中保持结构清晰、样式稳定，适合文档维护者、项目管理人员和需要发布正式材料的团队使用。
 
+- `team-prd-to-alignment`：将 AI 结构化 PRD 转换为适合需求、研发和项目管理进行人类评审与共识对齐的演示文稿式材料。
 - `team-md-style-check`：检查 Markdown 文档是否符合飞书文档导入后的样式映射规则，并给出可直接修改的格式建议。
 
 ## 工作流
@@ -69,10 +69,9 @@ flowchart TD
     B --> C{存在 P0 或关键 P1 风险?}
     C -- 是 --> A
     C -- 否 --> D[team-spec-to-prd]
-    D --> H[team-prd-handoff]
-    H --> E{三方评审通过?}
-    E -- 否 --> D
-    E -- 是 --> F[team-prd-to-issues]
+    D --> F[team-prd-to-issues]
+    D -. 可选：人类对齐材料 .-> H[team-prd-to-alignment]
+    H -. 对齐结论反馈 .-> D
     F --> N[team-prd-issues-publish-github]
     F --> O[team-prd-issues-publish-gitlab]
     N --> G[team-issue-implement]
@@ -89,7 +88,7 @@ flowchart TD
 
 `team-spec-refine` 和 `team-spec-review` 可以反复迭代。只有当 P0 和关键 P1 风险被解决或明确接受后，才进入 `team-spec-to-prd` 固化 PRD。
 
-`team-spec/prd/` 中的 PRD 是需求到工程的正式交接边界。`team-prd-handoff` 将 AI 结构化 PRD 转换为人类可评审的交接文档，产品、研发、项目管理三方签字确认后，方可执行 `team-prd-to-issues`。
+`team-spec/prd/` 中的 PRD 是需求到工程的正式交接边界。`team-prd-to-alignment` 可将 AI 结构化 PRD 转换为适合需求、研发和项目管理讨论的人类对齐材料；`team-prd-to-issues` 仍应以 PRD 为主输入。
 
 `team-prd-to-issues` 应以 PRD 为主输入；`CONTEXT.md`、`decisions/` 和 `reviews/` 只能作为背景参考，不能绕过 PRD 直接拆工程任务。
 
@@ -127,7 +126,7 @@ team-spec/
 team-spec/spec/refine/{slug}.md
 team-spec/spec/reviews/{slug}.md
 team-spec/prd/{slug}.md
-team-spec/prd/{slug}-handoff.md
+team-spec/prd/{slug}-alignment.md
 team-spec/issues/{slug}/
 ```
 

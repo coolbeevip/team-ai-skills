@@ -42,8 +42,7 @@ v1 仅支持 GitLab。不要在同一个技能中混合 GitHub 与 GitLab 发布
 
 前置条件：
 
-- PRD 交接评审已获得三方签字确认。
-- 可追溯的交接文档已存在（通常为 `team-spec/prd/{slug}-handoff.md`）。
+- 如团队需要人类对齐，建议先使用 `team-prd-to-alignment` 生成 `team-spec/prd/{slug}-alignment.md` 并完成评审讨论。
 - `team-prd-to-issues` 已产出可发布草稿。
 - 需要有效 token 且具备 GitLab Issues 写权限。
 

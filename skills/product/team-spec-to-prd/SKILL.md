@@ -1,6 +1,6 @@
 ---
 name: team-spec-to-prd
-description: 将已细化且通过评审的规格整理成结构化 PRD，作为需求到工程的正式交接边界。适用于规格 ready 后的 PRD 固化，而不是重新做需求访谈。Turn refined and reviewed specs into a structured PRD as the formal handoff boundary from product requirements to engineering.
+description: 将已细化且通过评审的规格整理成结构化 PRD，作为需求到工程的正式交接边界。适用于规格 ready 后的 PRD 固化，而不是重新做需求访谈。Turn refined and reviewed specs into a structured PRD as the formal boundary from product requirements to engineering.
 license: MIT
 metadata:
   author: coolbeevip
@@ -63,7 +63,7 @@ triggers:
 7. 寻找可由研发独立测试的深模块或清晰 ownership 边界。
 8. 按下面模板起草 PRD。
 9. 如果项目已配置 issue tracker 或任务系统，将 PRD 发布到对应系统，并打上团队约定的 `ready-for-agent` 或 `ready-for-engineering` 标签；如果没有外部系统，就按仓库惯例创建或更新本地 Markdown PRD。
-10. PRD 成功固化后，必须明确引导下一步使用 `team-prd-to-issues`，并给出 PRD 路径 `team-spec/prd/{slug}.md`。
+10. PRD 成功固化后，必须明确给出 PRD 路径 `team-spec/prd/{slug}.md`，并提示下一步可选：需要人类评审对齐时使用 `team-prd-to-alignment`，准备工程拆解时使用 `team-prd-to-issues`。
 
 ## PRD 模板
 
@@ -189,11 +189,11 @@ team-spec/prd/{slug}.md
 - PRD 路径：`team-spec/prd/{slug}.md`。
 - 是否基于 `Status: ready` 的 review 生成。
 - 仍保留的开放问题或已接受风险。
-- 下一步：使用 `team-prd-to-issues` 将该 PRD 拆解为工程 issue。
+- 下一步可选：使用 `team-prd-to-alignment` 生成需求和研发对齐材料，或使用 `team-prd-to-issues` 将该 PRD 拆解为工程 issue。
 
 推荐结尾：
 
 ```text
 PRD 已固化到 team-spec/prd/{slug}.md。
-下一步请使用 team-prd-to-issues，以该 PRD 为主输入拆解工程 issues。
+下一步如需人类评审对齐，请使用 team-prd-to-alignment；如已准备进入工程拆解，请使用 team-prd-to-issues。
 ```
