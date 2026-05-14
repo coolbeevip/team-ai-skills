@@ -5,6 +5,13 @@ license: MIT
 metadata:
   author: coolbeevip
   version: "1.0"
+triggers:
+  - 发布到 GitLab
+  - 批量创建 GitLab Issues
+  - 把 issue 草稿发布到 GitLab
+  - publish to GitLab
+  - create GitLab issues from drafts
+  - batch publish issues to GitLab
 ---
 
 # 批量发布 GitLab Issues

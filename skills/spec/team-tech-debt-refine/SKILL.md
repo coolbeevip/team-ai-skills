@@ -5,6 +5,14 @@ license: MIT
 metadata:
   author: coolbeevip
   version: "1.0"
+triggers:
+  - 技术债细化
+  - 梳理技术债
+  - 技术债需求说不清楚
+  - 帮我想清楚这个技术债
+  - refine tech debt
+  - clarify tech debt
+  - tech debt is unclear
 ---
 
 # 技术债细化

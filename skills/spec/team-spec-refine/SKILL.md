@@ -5,6 +5,16 @@ license: MIT
 metadata:
   author: coolbeevip
   version: "1.0"
+triggers:
+  - 细化需求
+  - 需求不清楚
+  - 打磨规格
+  - 帮我想清楚这个需求
+  - 需求还没想好
+  - refine spec
+  - clarify requirements
+  - spec is unclear
+  - help me think through this requirement
 ---
 
 # 规格细化

@@ -5,6 +5,14 @@ license: MIT
 metadata:
   author: coolbeevip
   version: "1.0"
+triggers:
+  - 拆 issue
+  - 把 PRD 拆成任务
+  - 工程 issue 拆解
+  - PRD 已经确认了开始拆工程任务
+  - break PRD into issues
+  - create issues from PRD
+  - PRD is approved start issue breakdown
 ---
 
 # PRD 转工程 Issues

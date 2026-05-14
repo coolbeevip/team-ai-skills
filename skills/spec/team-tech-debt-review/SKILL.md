@@ -5,6 +5,14 @@ license: MIT
 metadata:
   author: coolbeevip
   version: "1.0"
+triggers:
+  - 评审技术债
+  - 技术债有没有风险
+  - 技术债准备好了吗
+  - 技术债 ready 了吗
+  - review tech debt
+  - tech debt risk review
+  - is tech debt ready for breakdown
 ---
 
 # 技术债评审

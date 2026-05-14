@@ -5,6 +5,16 @@ license: MIT
 metadata:
   author: coolbeevip
   version: "1.0"
+triggers:
+  - 写 PRD
+  - 生成 PRD
+  - 规格转 PRD
+  - 固化 PRD
+  - 规格已经 ready 了
+  - write PRD
+  - generate PRD
+  - turn spec into PRD
+  - spec is ready produce PRD
 ---
 
 # 规格转 PRD

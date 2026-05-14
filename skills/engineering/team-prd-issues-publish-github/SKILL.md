@@ -5,6 +5,13 @@ license: MIT
 metadata:
   author: coolbeevip
   version: "1.0"
+triggers:
+  - 发布到 GitHub
+  - 批量创建 GitHub Issues
+  - 把 issue 草稿发布到 GitHub
+  - publish to GitHub
+  - create GitHub issues from drafts
+  - batch publish issues to GitHub
 ---
 
 # 批量发布 GitHub Issues

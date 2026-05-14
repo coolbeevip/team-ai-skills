@@ -54,8 +54,9 @@
 - 规格类技能使用 `team-spec-` 前缀，例如 `team-spec-refine`。
 - 工程阶段技能可按输入产物使用 `team-prd-` 或 `team-issue-` 前缀，例如 `team-prd-to-issues`、`team-issue-implement`。
 - 必需技能文件命名为 `SKILL.md`。
-- `SKILL.md` 必须包含 YAML frontmatter，并提供 `name`、`description`、`license` 和 `metadata`。
+- `SKILL.md` 必须包含 YAML frontmatter，并提供 `name`、`description`、`triggers`、`license` 和 `metadata`。
 - `description` 必须同时包含中文和英文描述，便于 AI 在不同语言上下文中识别触发场景。
+- `triggers` 是一个自然语言短语列表，用于提升技能的可发现性。AI 可通过匹配用户输入与 `triggers` 自动推荐合适的技能，无需用户知道技能名称。每个技能至少包含 3 条中文短语和 3 条英文短语，覆盖用户最常见的表达方式。
 - 每个技能必须声明 `license: MIT`。
 - 每个技能必须包含 `metadata.author: coolbeevip` 和 `metadata.version: "1.0"`。
 - 每个技能必须声明 `## 输入物` 和 `## 输出物`，明确会读取哪些上游技能产物，以及会给哪些下游技能使用。
@@ -73,6 +74,13 @@ license: MIT
 metadata:
   author: coolbeevip
   version: "1.0"
+triggers:
+  - 细化需求
+  - 打磨规格
+  - 需求不清楚
+  - refine spec
+  - clarify requirements
+  - spec is unclear
 ---
 ```
 

@@ -5,6 +5,12 @@ license: MIT
 metadata:
   author: coolbeevip
   version: "1.0"
+triggers:
+  - 技术债拆 issue
+  - 把技术债拆成任务
+  - 技术债转工程任务
+  - break tech debt into issues
+  - create issues from tech debt
 ---
 
 # 技术债转工程 Issues

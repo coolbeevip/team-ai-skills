@@ -5,6 +5,15 @@ license: MIT
 metadata:
   author: coolbeevip
   version: "1.0"
+triggers:
+  - 实现 issue
+  - 开始写代码
+  - 按 issue 编码
+  - 实现这个功能
+  - implement issue
+  - start coding
+  - implement this feature
+  - code this issue
 ---
 
 # Issue 实现
