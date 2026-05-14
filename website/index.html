@@ -57,7 +57,7 @@
     </div>
 
     <div class="hero-stats">
-      <span>12 Skills</span>
+      <span>14 Skills</span>
       <span class="stat-sep">·</span>
       <span>5 Domains</span>
       <span class="stat-sep">·</span>
@@ -72,7 +72,7 @@
 <!-- ── Skills ────────────────────────────────────── -->
 <section id="skills">
   <div class="container">
-    <h2 class="section-title">12 个开箱即用的 AI 技能</h2>
+    <h2 class="section-title">14 个开箱即用的 AI 技能</h2>
     <p class="section-desc">每个技能都声明了输入物和输出物，可单独使用，也可按职责域串联。技术债与新需求各有独立流程，最终汇入同一交付执行链。</p>
 
     <!-- Product Domain -->
@@ -173,6 +173,20 @@
           <div class="skill-title">拆解 Issues</div>
           <div class="skill-desc-zh">将 PRD 拆解为可独立领取、可验证、按依赖排序的工程 issue，强调端到端 vertical slice，而不是按层拆任务。</div>
           <div class="skill-desc-en">Break PRDs into independently grabbable engineering issues using end-to-end vertical slices instead of horizontal layer-based tasks.</div>
+        </div>
+
+        <div class="skill-card">
+          <div class="skill-name">team-prd-issues-publish-github</div>
+          <div class="skill-title">发布 GitHub Issues</div>
+          <div class="skill-desc-zh">将 team-spec/issues/{slug}/ 下的本地 issue 草稿按依赖顺序批量发布到 GitHub Issues，并回写发布结果，支持 dry-run、幂等检查与部分失败重试。</div>
+          <div class="skill-desc-en">Batch publish local issue drafts under team-spec/issues/{slug}/ to GitHub Issues in dependency order, with write-back status, dry-run, idempotency checks, and retry support.</div>
+        </div>
+
+        <div class="skill-card">
+          <div class="skill-name">team-prd-issues-publish-gitlab</div>
+          <div class="skill-title">发布 GitLab Issues</div>
+          <div class="skill-desc-zh">将 team-spec/issues/{slug}/ 下的本地 issue 草稿按依赖顺序批量发布到 GitLab Issues，并回写发布结果，支持 dry-run、幂等检查与部分失败重试。</div>
+          <div class="skill-desc-en">Batch publish local issue drafts under team-spec/issues/{slug}/ to GitLab Issues in dependency order, with write-back status, dry-run, idempotency checks, and retry support.</div>
         </div>
 
         <div class="skill-card">

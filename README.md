@@ -25,6 +25,8 @@ skills/
 ├── delivery/
 │   ├── team-prd-handoff/
 │   ├── team-prd-to-issues/
+│   ├── team-prd-issues-publish-github/
+│   ├── team-prd-issues-publish-gitlab/
 │   ├── team-issue-implement/
 │   └── team-issue-verify/
 ├── tech-debt/

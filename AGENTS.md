@@ -13,6 +13,8 @@
 - `skills/delivery/`：交付执行职责，包括 PRD 交接、issue 拆解、实现和验证。
 - `skills/delivery/team-prd-handoff/`：用于把 AI 结构化 PRD 转换为人类可评审的三方交接文档。
 - `skills/delivery/team-prd-to-issues/`：用于把 PRD 拆解成可独立领取的工程 issue。
+- `skills/delivery/team-prd-issues-publish-github/`：用于把本地 issue 草稿按依赖顺序批量发布到 GitHub Issues。
+- `skills/delivery/team-prd-issues-publish-gitlab/`：用于把本地 issue 草稿按依赖顺序批量发布到 GitLab Issues。
 - `skills/delivery/team-issue-implement/`：用于按行为测试和 TDD 循环实现单个 issue。
 - `skills/delivery/team-issue-verify/`：用于验证单个 issue 实现是否满足验收标准和 PRD。
 - `skills/tech-debt/`：技术债治理职责，包括技术债细化、评审和工程拆解。
