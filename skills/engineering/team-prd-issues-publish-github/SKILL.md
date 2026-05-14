@@ -36,6 +36,7 @@ v1 仅支持 GitHub。不要在同一个技能中混合 GitHub 与 GitLab 发布
 前置条件：
 
 - PRD 交接评审已获得三方签字确认。
+- 可追溯的交接文档已存在（通常为 `team-spec/prd/{slug}-handoff.md`）。
 - `team-prd-to-issues` 已产出可发布草稿。
 - 需要有效 token 且具备 GitHub Issues 写权限（常见为 `repo` 或等效最小权限）。
 
@@ -68,7 +69,7 @@ v1 仅支持 GitHub。不要在同一个技能中混合 GitHub 与 GitLab 发布
 
 每个本地 issue 在发布前必须做唯一性检查。推荐组合键：
 
-- 本地 issue 文件名（例如 `{local-seq}-{short-issue-slug}.md`，其中 `local-seq` 是本地草稿顺序编号，不是远端 GitHub issue 编号）。
+- 本地 issue 文件名（例如 `{local-seq}-{short-issue-slug}.md`，其中 `local-seq` 是本地草稿顺序编号，不是远端 GitHub issue 编号；该编号应直接取自现有本地文件名前缀）。
 - issue 标题（`Title`）。
 
 若远端已存在匹配项，则标记为 `skipped` 并回写现有 issue URL，不重复创建。
