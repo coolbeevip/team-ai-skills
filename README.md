@@ -2,7 +2,7 @@
 
 团队协作使用的大语言模型技能库，按产品、架构、交付、技术债和文档职责域组织，覆盖需求到工程交付的协作流程。
 
-## Quickstart
+## 快速开始
 
 安装全部技能：
 
@@ -10,34 +10,50 @@
 npx skills@latest add coolbeevip/team-ai-skills --all
 ```
 
-## Skill Domains
+## 技能职责域
 
-技能目录按团队职责域组织：
+本技能库将团队协作拆成五个职责域：产品定义、架构设计、交付执行、技术债治理和文档质量。每个职责域都可以独立使用，也可以沿着需求到交付的流程串联起来，帮助团队把想法稳定成可评审、可拆解、可实现、可验证的工作。
 
-```text
-skills/
-├── product/
-│   ├── team-spec-refine/
-│   ├── team-spec-review/
-│   └── team-spec-to-prd/
-├── architecture/
-│   └── team-spec-to-functional-design/
-├── delivery/
-│   ├── team-prd-handoff/
-│   ├── team-prd-to-issues/
-│   ├── team-prd-issues-publish-github/
-│   ├── team-prd-issues-publish-gitlab/
-│   ├── team-issue-implement/
-│   └── team-issue-verify/
-├── tech-debt/
-│   ├── team-tech-debt-refine/
-│   ├── team-tech-debt-review/
-│   └── team-tech-debt-to-issues/
-└── documentation/
-    └── team-md-style-check/
-```
+### 产品定义
 
-## Workflow
+产品定义域用于把模糊需求变成团队可以共同理解和评审的产品规格，适合产品经理、业务负责人和需求分析人员在 PRD 形成前使用。
+
+- `team-spec-refine`：通过连续澄清术语、边界、业务规则和验收口径，把初始想法整理成可评审的需求规格。
+- `team-spec-review`：从产品、数据、合规、运营、交付和协作角度检查规格风险，并给出是否已准备好进入下一阶段的结论。
+- `team-spec-to-prd`：将已经细化并通过评审的规格固化为结构化 PRD，作为需求进入交付阶段的正式输入。
+
+### 架构设计
+
+架构设计域用于把已确认的需求与当前代码、接口、数据和系统约束对齐，适合架构师、技术负责人或文档工程师在方案评审前使用。
+
+- `team-spec-to-functional-design`：基于需求规格、PRD 和源代码生成企业级功能设计说明书，帮助团队形成可评审的实现方案。
+
+### 交付执行
+
+交付执行域用于把 PRD 交接给研发团队，拆成可领取的 issue，并把实现结果验证到可提交 PR 的状态，适合研发负责人、工程师、测试人员和工程 agent 使用。
+
+- `team-prd-handoff`：将 AI 结构化 PRD 转换为面向产品、研发和项目管理三方的交接评审文档。
+- `team-prd-to-issues`：把 PRD 拆解成可独立领取、可验证、按依赖排序的工程 issue。
+- `team-prd-issues-publish-github`：将本地 issue 草稿按依赖顺序批量发布到 GitHub Issues，并回写远端编号、URL 和发布状态。
+- `team-prd-issues-publish-gitlab`：将本地 issue 草稿按依赖顺序批量发布到 GitLab Issues，并回写远端 IID/ID、URL 和发布状态。
+- `team-issue-implement`：围绕单个 issue 采用行为测试和 TDD 循环完成代码与测试变更。
+- `team-issue-verify`：独立检查实现是否满足 issue、PRD 和风险约束，并给出是否可提交 PR 的结论。
+
+### 技术债治理
+
+技术债治理域用于把“代码需要重构”“系统不稳定”“维护成本太高”这类模糊诉求变成有证据、有优先级、有验收标准的工程工作，适合技术负责人、平台团队和稳定性负责人使用。
+
+- `team-tech-debt-refine`：将技术债诉求细化为包含证据、影响范围、风险等级和验收口径的技术债规格。
+- `team-tech-debt-review`：评审技术债规格的风险、优先级、阻塞项和可执行性，判断是否可以进入工程拆解。
+- `team-tech-debt-to-issues`：把已评审的技术债规格拆解为可独立领取、可验证、按依赖排序的工程 issue。
+
+### 文档质量
+
+文档质量域用于保证团队产物在云文档、评审材料和导出场景中保持结构清晰、样式稳定，适合文档维护者、项目管理人员和需要发布正式材料的团队使用。
+
+- `team-md-style-check`：检查 Markdown 文档是否符合飞书文档导入后的样式映射规则，并给出可直接修改的格式建议。
+
+## 工作流
 
 这些技能可以串联使用。下游技能会读取上游技能的输出物：
 
@@ -84,7 +100,7 @@ flowchart TD
 每个需求使用一个唯一 slug 串联全流程，格式为 `{yyyy-mm-dd}-{short-english-slug}`，例如 `2026-05-10-export-filter`。
 技术债需求也使用唯一 slug，但必须包含 `debt`，例如 `2026-05-12-debt-cache-cleanup`。
 
-## Workspace
+## 工作空间
 
 技能默认在目标项目根目录的 `team-spec/` 下协作。`team-spec/` 是运行时工作空间，不属于本技能库的固定内容；它会在安装技能后的业务项目中按需创建。
 
@@ -113,10 +129,10 @@ team-spec/issues/{slug}/
 
 `team-prd-to-issues` 默认以 `team-spec/prd/{slug}.md` 为主输入，并参考规格上下文、产品决策和评审报告，再将工程 issue 草稿写入 `team-spec/issues/{slug}/`。
 
-`team-prd-issues-publish-github` 默认读取 `team-spec/issues/{slug}/` 中的本地 issue 草稿，执行依赖排序、dry-run 预览、幂等检查与批量发布，并回写远端 issue 编号、URL 和状态。
+`team-prd-issues-publish-github` 默认读取 `team-spec/issues/{slug}/` 中的本地 issue 草稿，执行依赖排序、试运行预览、幂等检查与批量发布，并回写远端 issue 编号、URL 和状态。
 
-`team-prd-issues-publish-gitlab` 默认读取 `team-spec/issues/{slug}/` 中的本地 issue 草稿，执行依赖排序、dry-run 预览、幂等检查与批量发布，并回写远端 issue IID/ID、URL 和状态。
+`team-prd-issues-publish-gitlab` 默认读取 `team-spec/issues/{slug}/` 中的本地 issue 草稿，执行依赖排序、试运行预览、幂等检查与批量发布，并回写远端 issue IID/ID、URL 和状态。
 
 `team-issue-implement` 默认以 `team-spec/issues/{slug}/` 中的单个 issue 为主输入，通过行为测试和 red-green-refactor 循环完成实现。
 
-`team-issue-verify` 独立检查实现是否满足 issue、PRD 和风险约束，并输出是否 `ready for PR`。
+`team-issue-verify` 独立检查实现是否满足 issue、PRD 和风险约束，并输出是否可提交 PR。
