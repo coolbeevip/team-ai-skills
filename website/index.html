@@ -3,25 +3,23 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Skills For Real Teams — AI 驱动的团队协作技能库，按产品、架构、Harness、交付、技术债和文档职责域组织。AI-powered team collaboration skill library organized by product, architecture, harness, delivery, tech debt, and documentation domains." />
+  <meta name="description" content="Skills For Real Teams — 从模糊需求到可验证代码的团队 AI 工作流，覆盖产品规格、工程交付、技术债治理、Agent Harness 和文档化场景。" />
   <title>Skills For Real Teams</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
-
 </head>
 <body>
 
-<!-- ── Hero ─────────────────────────────────────── -->
 <header class="hero">
   <div class="hero-grid-bg"></div>
   <div class="hero-glow"></div>
   <div class="hero-content">
-    <div class="hero-badge">MIT Licensed · Open Source</div>
+    <div class="hero-badge">MIT Licensed · 15 Skills · 4 Usage Scenarios</div>
     <h1>Skills For <span class="accent">Real Teams</span></h1>
-    <p class="hero-sub">AI 驱动的团队协作技能库，按团队职责域组织需求到交付流程</p>
-    <p class="hero-sub-en">AI-powered skill library for real teams, organized by product, architecture, harness, delivery, tech debt, and documentation domains.</p>
+    <p class="hero-sub">从模糊需求到可验证代码的团队 AI 工作流</p>
+    <p class="hero-sub-en">围绕真实团队场景组织：产品规格、研发交付、技术债治理、Agent Harness 和文档化对齐。</p>
 
     <div class="install-box" id="hero-install">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
@@ -33,188 +31,205 @@
     </div>
 
     <div class="hero-actions">
-      <a class="btn btn-primary" href="#skills">浏览技能</a>
+      <a class="btn btn-primary" href="#main-path">查看主线</a>
       <a class="btn btn-secondary" href="https://github.com/coolbeevip/team-ai-skills" target="_blank" rel="noopener">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.387.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 21.795 24 17.295 24 12c0-6.63-5.37-12-12-12"/></svg>
         查看源码
       </a>
     </div>
-
-    <div class="hero-stats">
-      <span>15 Skills</span>
-      <span class="stat-sep">·</span>
-      <span>6 Domains</span>
-      <span class="stat-sep">·</span>
-      <span>MIT Licensed</span>
-      <span class="stat-sep">·</span>
-      <span>Open Source</span>
-    </div>
   </div>
 </header>
 
-<!-- ── Workflow ──────────────────────────────────── -->
-<!-- ── Skills ────────────────────────────────────── -->
-<section id="skills">
+<section id="main-path" class="main-path">
   <div class="container">
-    <h2 class="section-title">15 个开箱即用的 AI 技能</h2>
-    <p class="section-desc">每个技能都声明了输入物和输出物，可单独使用，也可按职责域串联。技术债与新需求各有独立流程，最终汇入同一交付执行链。</p>
+    <div class="section-kicker">核心路径</div>
+    <h2 class="section-title">产品三件套，接研发三件套</h2>
+    <p class="section-desc">常规需求交付时，先把需求打磨成 PRD，再把 PRD 拆成可领取的工程 issue，最后按单个 issue 实现和验证。</p>
 
-    <!-- Product Domain -->
-    <div class="phase-spec">
-      <div class="phase-label">产品职责 · Product</div>
-      <div class="skills-grid">
-
-        <div class="skill-card">
-          <div class="skill-name">team-spec-refine</div>
-          <div class="skill-title">需求细化</div>
-          <div class="skill-desc-zh">通过与用户反复确认来细化需求规格，澄清术语、边界、业务规则和验收口径，并更新需求上下文或产品决策记录。适用于 PRD 前的需求探索、规格打磨和用户访谈。</div>
-          <div class="skill-desc-en">Refine product specs through iterative user confirmation, clarifying terminology, scope, business rules, and acceptance criteria before PRD creation.</div>
+    <div class="flow-lane">
+      <div class="flow-group product-flow">
+        <div class="group-label">产品侧</div>
+        <div class="flow-step">
+          <span class="step-index">01</span>
+          <strong>team-spec-refine</strong>
+          <small>澄清需求、术语、边界和验收口径</small>
         </div>
-
-        <div class="skill-card">
-          <div class="skill-name">team-spec-review</div>
-          <div class="skill-title">规格评审</div>
-          <div class="skill-desc-zh">评审已细化的需求规格，检查产品、交付、数据、合规、运营和协作风险，并输出分级风险、阻塞项、补救动作和是否 ready 的结论。</div>
-          <div class="skill-desc-en">Review refined specs for product, delivery, data, compliance, operational, and collaboration risks, then produce readiness findings, blockers, mitigations, owners, and deadlines.</div>
+        <div class="flow-step">
+          <span class="step-index">02</span>
+          <strong>team-spec-review</strong>
+          <small>评审风险，确认是否 ready</small>
         </div>
-
-        <div class="skill-card">
-          <div class="skill-name">team-spec-to-prd</div>
-          <div class="skill-title">生成 PRD</div>
-          <div class="skill-desc-zh">将已细化且通过评审的规格整理成结构化 PRD，作为需求到工程的正式交接边界。适用于规格 ready 后的 PRD 固化，而不是重新做需求访谈。</div>
-          <div class="skill-desc-en">Turn refined and reviewed specs into a structured PRD as the formal boundary from product requirements to engineering.</div>
+        <div class="flow-step">
+          <span class="step-index">03</span>
+          <strong>team-spec-to-prd</strong>
+          <small>固化成结构化 PRD</small>
         </div>
+      </div>
 
+      <div class="flow-bridge">PRD</div>
+
+      <div class="flow-group delivery-flow">
+        <div class="group-label">研发侧</div>
+        <div class="flow-step">
+          <span class="step-index">04</span>
+          <strong>team-prd-to-issues</strong>
+          <small>拆成可独立领取的工程 issue</small>
+        </div>
+        <div class="flow-step">
+          <span class="step-index">05</span>
+          <strong>team-issue-implement</strong>
+          <small>按行为测试和 TDD 实现单个 issue</small>
+        </div>
+        <div class="flow-step">
+          <span class="step-index">06</span>
+          <strong>team-issue-verify</strong>
+          <small>独立验证是否满足验收标准</small>
+        </div>
       </div>
     </div>
 
-    <!-- Architecture Domain -->
-    <div class="phase-arch">
-      <div class="phase-label">架构职责 · Architecture</div>
-      <div class="skills-grid">
-
-        <div class="skill-card">
-          <div class="skill-name">team-spec-to-functional-design</div>
-          <div class="skill-title">生成设计说明书</div>
-          <div class="skill-desc-zh">基于需求规格说明书与源代码自动生成企业级功能设计说明书。用于文档工程师把需求、现状实现和系统约束整理为正式设计文档。</div>
-          <div class="skill-desc-en">Generate enterprise functional design specs from requirement specifications and source code.</div>
-        </div>
-
-      </div>
+    <div class="optional-row">
+      <span>需要人类评审 PRD：<code>team-prd-to-alignment</code></span>
+      <span>需要同步到平台：<code>team-prd-issues-publish-github</code> / <code>team-prd-issues-publish-gitlab</code></span>
     </div>
+  </div>
+</section>
 
-    <!-- Harness Domain -->
-    <div class="phase-harness">
-      <div class="phase-label">Harness 职责 · Agent Harness</div>
-      <div class="skills-grid">
+<section id="scenarios" class="scenarios">
+  <div class="container">
+    <div class="section-kicker">使用场景</div>
+    <h2 class="section-title">主线之外的三条支线</h2>
+    <p class="section-desc">不同团队问题进入不同场景：治理技术债、演进 Agent Harness，或者把 PRD 和设计产物转成适合人类评审的材料。</p>
 
-        <div class="skill-card">
-          <div class="skill-name">team-harness-refine</div>
-          <div class="skill-title">细化 Agent Harness</div>
-          <div class="skill-desc-zh">通过真实代码、开发任务和失败反馈反复细化项目级 agent harness，维护 AGENTS.md / CLAUDE.md、docs 知识地图、验证命令、反馈循环和 harness debt。</div>
-          <div class="skill-desc-en">Refine project-level agent harnesses through real code, development tasks, and failure feedback, maintaining AGENTS.md / CLAUDE.md, docs maps, verification commands, feedback loops, and harness debt.</div>
+    <div class="scenario-grid">
+      <article class="scenario-card debt-card">
+        <div class="scenario-label">场景 1</div>
+        <h3>技术债治理</h3>
+        <p>当问题不是新功能，而是系统不稳定、测试不可依赖、维护成本太高时，把技术债变成可评审、可排期、可验收的工程工作。</p>
+        <div class="scenario-flow">
+          <code>team-tech-debt-refine</code>
+          <span>→</span>
+          <code>team-tech-debt-review</code>
+          <span>→</span>
+          <code>team-tech-debt-to-issues</code>
         </div>
+      </article>
 
-      </div>
+      <article class="scenario-card harness-card">
+        <div class="scenario-label">场景 2</div>
+        <h3>Agent Harness 演进</h3>
+        <p>当 agent 经常卡在启动、测试、上下文、验证或失败定位上，维护项目级 harness，并用真实开发任务的反馈持续更新 AGENTS.md、CLAUDE.md 和 docs。</p>
+        <div class="scenario-flow">
+          <code>team-harness-refine</code>
+          <span>→</span>
+          <code>真实开发任务试跑</code>
+          <span>→</span>
+          <code>harness debt</code>
+        </div>
+      </article>
+
+      <article class="scenario-card doc-card">
+        <div class="scenario-label">场景 3</div>
+        <h3>人类对齐与文档化</h3>
+        <p>当 AI 产物需要给人评审、给会议讨论、进入正式文档体系时，把机器友好的结构转成更适合人类理解的材料。</p>
+        <div class="scenario-flow">
+          <code>team-prd-to-alignment</code>
+          <span>+</span>
+          <code>team-spec-to-functional-design</code>
+          <span>+</span>
+          <code>team-md-style-check</code>
+        </div>
+      </article>
     </div>
+  </div>
+</section>
 
-    <!-- Tech Debt Domain -->
-    <div class="phase-debt">
-      <div class="phase-label">技术债 · Tech Debt</div>
-      <div class="skills-grid">
+<section id="skills" class="skill-index-section">
+  <div class="container">
+    <div class="section-kicker">完整索引</div>
+    <h2 class="section-title">15 个技能，一张表查完</h2>
+    <p class="section-desc">主线优先使用前 6 个技能；其他技能按治理、Harness、文档化和发布场景接入。</p>
 
-        <div class="skill-card">
-          <div class="skill-name">team-tech-debt-refine</div>
-          <div class="skill-title">技术债细化</div>
-          <div class="skill-desc-zh">通过与用户反复确认来细化技术债需求，明确问题证据、影响范围、风险等级和验收口径，再进入评审。</div>
-          <div class="skill-desc-en">Refine technical debt requests through iterative confirmation, clarifying evidence, scope, risk, and acceptance criteria before review.</div>
-        </div>
-
-        <div class="skill-card">
-          <div class="skill-name">team-tech-debt-review</div>
-          <div class="skill-title">技术债评审</div>
-          <div class="skill-desc-zh">评审技术债规格的风险与可执行性，确认优先级、阻塞项、处理动作和是否可进入工程拆解。</div>
-          <div class="skill-desc-en">Review technical debt specs for risk and execution readiness, then output blockers, mitigations, and readiness for issue breakdown.</div>
-        </div>
-
-        <div class="skill-card">
-          <div class="skill-name">team-tech-debt-to-issues</div>
-          <div class="skill-title">拆解技术债 Issues</div>
-          <div class="skill-desc-zh">将已细化并通过评审的技术债规格拆解为可独立领取、可验证、按依赖排序的工程 issue，并写入 team-spec/issues。</div>
-          <div class="skill-desc-en">Break reviewed technical debt specs into independently grabbable, verifiable engineering issues ordered by dependencies and save under team-spec/issues.</div>
-        </div>
-
+    <div class="skill-index">
+      <div class="index-row">
+        <span class="index-domain">产品</span>
+        <code>team-spec-refine</code>
+        <p>把模糊需求细化成可评审规格。</p>
       </div>
-    </div>
-
-    <!-- Delivery Execution -->
-    <div class="phase-eng">
-      <div class="phase-label">交付执行 · Delivery</div>
-      <div class="skills-grid">
-
-        <div class="skill-card">
-          <div class="skill-name">team-prd-to-issues</div>
-          <div class="skill-title">拆解 Issues</div>
-          <div class="skill-desc-zh">将 PRD 拆解为可独立领取、可验证、按依赖排序的工程 issue，强调端到端 vertical slice，而不是按层拆任务。</div>
-          <div class="skill-desc-en">Break PRDs into independently grabbable engineering issues using end-to-end vertical slices instead of horizontal layer-based tasks.</div>
-        </div>
-
-        <div class="skill-card">
-          <div class="skill-name">team-prd-issues-publish-github</div>
-          <div class="skill-title">发布 GitHub Issues</div>
-          <div class="skill-desc-zh">将 team-spec/issues/{slug}/ 下的本地 issue 草稿按依赖顺序批量发布到 GitHub Issues，并回写发布结果，支持 dry-run、幂等检查与部分失败重试。</div>
-          <div class="skill-desc-en">Batch publish local issue drafts under team-spec/issues/{slug}/ to GitHub Issues in dependency order, with write-back status, dry-run, idempotency checks, and retry support.</div>
-        </div>
-
-        <div class="skill-card">
-          <div class="skill-name">team-prd-issues-publish-gitlab</div>
-          <div class="skill-title">发布 GitLab Issues</div>
-          <div class="skill-desc-zh">将 team-spec/issues/{slug}/ 下的本地 issue 草稿按依赖顺序批量发布到 GitLab Issues，并回写发布结果，支持 dry-run、幂等检查与部分失败重试。</div>
-          <div class="skill-desc-en">Batch publish local issue drafts under team-spec/issues/{slug}/ to GitLab Issues in dependency order, with write-back status, dry-run, idempotency checks, and retry support.</div>
-        </div>
-
-        <div class="skill-card">
-          <div class="skill-name">team-issue-implement</div>
-          <div class="skill-title">实现 Issue</div>
-          <div class="skill-desc-zh">根据 team-spec/issues/ 中的单个工程 issue 进行实现，优先采用行为测试和 TDD 的 red-green-refactor 循环，最终输出代码变更、测试变更和验证结果。</div>
-          <div class="skill-desc-en">Implement a single engineering issue from team-spec/issues/ using behavior-focused tests and a red-green-refactor loop, producing code changes, tests, and verification results.</div>
-        </div>
-
-        <div class="skill-card">
-          <div class="skill-name">team-issue-verify</div>
-          <div class="skill-title">验证 Issue</div>
-          <div class="skill-desc-zh">独立验证单个 issue 的实现是否满足验收标准、关联 PRD 和风险约束，输出验证报告、遗漏项、回归风险和是否 ready for PR 的结论。</div>
-          <div class="skill-desc-en">Verify whether a single issue implementation satisfies acceptance criteria, the linked PRD, and risk constraints, producing a verification report, gaps, regression risks, and readiness status.</div>
-        </div>
-
+      <div class="index-row">
+        <span class="index-domain">产品</span>
+        <code>team-spec-review</code>
+        <p>评审规格风险和 ready 状态。</p>
       </div>
-    </div>
-
-    <!-- Documentation Domain -->
-    <div class="phase-doc">
-      <div class="phase-label">文档职责 · Documentation</div>
-      <div class="skills-grid">
-
-        <div class="skill-card">
-          <div class="skill-name">team-prd-to-alignment</div>
-          <div class="skill-title">PRD 对齐材料</div>
-          <div class="skill-desc-zh">将 AI 结构化 PRD 转换为适合需求、研发和项目管理进行人类评审与共识对齐的演示文稿式材料。</div>
-          <div class="skill-desc-en">Turn AI-structured PRDs into slide-style alignment materials for product, engineering, and project management review.</div>
-        </div>
-
-        <div class="skill-card">
-          <div class="skill-name">team-md-style-check</div>
-          <div class="skill-title">Markdown 风格检查</div>
-          <div class="skill-desc-zh">检查 Markdown 文档是否符合飞书文档上传后的样式映射规则，适用于将云文档写作样式转换为可导出的 Markdown 检查。</div>
-          <div class="skill-desc-en">Check whether Markdown documents conform to Feishu-compatible style mapping rules after upload.</div>
-        </div>
-
+      <div class="index-row">
+        <span class="index-domain">产品</span>
+        <code>team-spec-to-prd</code>
+        <p>将 ready 规格固化为结构化 PRD。</p>
+      </div>
+      <div class="index-row">
+        <span class="index-domain">研发</span>
+        <code>team-prd-to-issues</code>
+        <p>将 PRD 拆成可独立领取的工程 issue。</p>
+      </div>
+      <div class="index-row">
+        <span class="index-domain">研发</span>
+        <code>team-issue-implement</code>
+        <p>按单个 issue 完成代码和测试变更。</p>
+      </div>
+      <div class="index-row">
+        <span class="index-domain">研发</span>
+        <code>team-issue-verify</code>
+        <p>独立验证实现是否满足验收标准。</p>
+      </div>
+      <div class="index-row">
+        <span class="index-domain">发布</span>
+        <code>team-prd-issues-publish-github</code>
+        <p>批量发布本地 issue 草稿到 GitHub Issues。</p>
+      </div>
+      <div class="index-row">
+        <span class="index-domain">发布</span>
+        <code>team-prd-issues-publish-gitlab</code>
+        <p>批量发布本地 issue 草稿到 GitLab Issues。</p>
+      </div>
+      <div class="index-row">
+        <span class="index-domain">治理</span>
+        <code>team-tech-debt-refine</code>
+        <p>把技术债诉求细化成可评审规格。</p>
+      </div>
+      <div class="index-row">
+        <span class="index-domain">治理</span>
+        <code>team-tech-debt-review</code>
+        <p>评审技术债风险、优先级和可执行性。</p>
+      </div>
+      <div class="index-row">
+        <span class="index-domain">治理</span>
+        <code>team-tech-debt-to-issues</code>
+        <p>将技术债规格拆成工程 issue。</p>
+      </div>
+      <div class="index-row">
+        <span class="index-domain">Harness</span>
+        <code>team-harness-refine</code>
+        <p>持续维护项目级 agent harness。</p>
+      </div>
+      <div class="index-row">
+        <span class="index-domain">文档</span>
+        <code>team-prd-to-alignment</code>
+        <p>将 PRD 转成人类评审对齐材料。</p>
+      </div>
+      <div class="index-row">
+        <span class="index-domain">文档</span>
+        <code>team-spec-to-functional-design</code>
+        <p>基于规格和代码生成设计说明书。</p>
+      </div>
+      <div class="index-row">
+        <span class="index-domain">文档</span>
+        <code>team-md-style-check</code>
+        <p>检查 Markdown 到飞书文档的样式映射。</p>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ── Footer ────────────────────────────────────── -->
 <footer>
   <div class="footer-line"></div>
   <p class="footer-tagline">Powered by AI · Built for real teams</p>
@@ -229,7 +244,6 @@
 </footer>
 
 <script>
-  // Copy command helper
   function copyCmd(btn, text) {
     navigator.clipboard.writeText(text).then(() => {
       const box = btn.closest('.install-box');
