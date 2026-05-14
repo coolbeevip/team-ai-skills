@@ -24,7 +24,10 @@ flowchart TD
     H --> E{三方评审通过?}
     E -- 否 --> D
     E -- 是 --> F[team-prd-to-issues]
-    F --> G[team-issue-implement]
+    F --> N[team-prd-issues-publish-github]
+    F --> O[team-prd-issues-publish-gitlab]
+    N --> G[team-issue-implement]
+    O --> G
     G --> I[team-issue-verify]
     I -- 验证未通过 --> G
 
@@ -40,6 +43,10 @@ flowchart TD
 `team-spec/prd/` 中的 PRD 是需求到工程的正式交接边界。`team-prd-handoff` 将 AI 结构化 PRD 转换为人类可评审的交接文档，产品、研发、项目管理三方签字确认后，方可执行 `team-prd-to-issues`。
 
 `team-prd-to-issues` 应以 PRD 为主输入；`CONTEXT.md`、`decisions/` 和 `reviews/` 只能作为背景参考，不能绕过 PRD 直接拆工程任务。
+
+`team-prd-issues-publish-github` 用于把 `team-spec/issues/{slug}/` 下的本地 issue 草稿按依赖顺序批量发布到 GitHub Issues，并回写发布结果。该技能仅处理 GitHub。
+
+`team-prd-issues-publish-gitlab` 用于把 `team-spec/issues/{slug}/` 下的本地 issue 草稿按依赖顺序批量发布到 GitLab Issues，并回写发布结果。该技能仅处理 GitLab。
 
 技术债链路使用 `team-tech-debt-refine -> team-tech-debt-review -> team-tech-debt-to-issues`，并统一收敛到 `team-spec/issues/{slug}/`。技术债链路的 slug 必须包含 `debt`，建议格式 `{yyyy-mm-dd}-debt-{short-english-slug}`，以便后续复用工程实现与验证流程。
 
@@ -76,6 +83,10 @@ team-spec/issues/{slug}/
 `CONTEXT.md` 和 `decisions/` 是长期共享上下文，不替代单次需求的 `refine/{slug}.md`。
 
 `team-prd-to-issues` 默认以 `team-spec/prd/{slug}.md` 为主输入，并参考规格上下文、产品决策和评审报告，再将工程 issue 草稿写入 `team-spec/issues/{slug}/`。
+
+`team-prd-issues-publish-github` 默认读取 `team-spec/issues/{slug}/` 中的本地 issue 草稿，执行依赖排序、dry-run 预览、幂等检查与批量发布，并回写远端 issue 编号、URL 和状态。
+
+`team-prd-issues-publish-gitlab` 默认读取 `team-spec/issues/{slug}/` 中的本地 issue 草稿，执行依赖排序、dry-run 预览、幂等检查与批量发布，并回写远端 issue IID/ID、URL 和状态。
 
 `team-issue-implement` 默认以 `team-spec/issues/{slug}/` 中的单个 issue 为主输入，通过行为测试和 red-green-refactor 循环完成实现。
 
