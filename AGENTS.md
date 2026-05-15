@@ -93,6 +93,17 @@
 - 脚本不得把 token、密钥或用户数据写入仓库配置；敏感信息必须从环境变量或运行时参数读取，并且不得回显。
 - 修改脚本后应至少执行语法检查或 `--help` 等轻量验证，并在最终回复中说明验证结果。
 
+### Vendored 公共脚本规范
+
+为了保持技能目录可独立复制，技能运行时不得依赖仓库根目录的公共 Python 模块。跨多个技能复用的稳定辅助代码采用 vendored copy 方式维护：
+
+- 根目录 `scripts/_team_common.py` 是公共辅助代码的唯一源文件。
+- 各技能如需使用公共辅助代码，应在本技能自己的 `scripts/` 目录下放置 `_team_common.py` 副本，例如 `skills/delivery/team-gitlab-mr-create/scripts/_team_common.py`。
+- 修改公共辅助代码时，只修改根目录 `scripts/_team_common.py`，然后执行 `rtk python3 scripts/check_vendored_common.py`，用根目录源文件覆盖所有不一致的技能目录副本。
+- 提交前执行 `rtk python3 scripts/check_vendored_common.py --check`，确保所有 vendored `_team_common.py` 与根目录源文件一致。
+- 根目录 `scripts/check_vendored_common.py` 只用于仓库维护；技能 `SKILL.md` 中不得把它写成业务项目运行时依赖。
+- `_team_common.py` 只放跨技能稳定基础能力，例如 HTTP 请求、`no_proxy` 处理、请求调试输出和通用错误包装；不要放 issue、PR、MR 的业务流程逻辑。
+
 最小 frontmatter 示例：
 
 ```yaml
