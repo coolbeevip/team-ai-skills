@@ -44,6 +44,7 @@ triggers:
 - 代码变更。
 - 测试变更。
 - 验证结果，包括运行了哪些测试、是否通过。
+- 默认保持变更停留在本地工作区，不要执行 `git commit`、`git push` 或任何会提前固化历史的操作；后续交给 `team-issue-verify` 再确认和收尾。
 - 优先回写原 issue 文件中的 `## Status`、`## Implementation Notes`、`## Acceptance Criteria Coverage` 或同类章节。
 - 如果原 issue 文件不可修改，再写入 `team-spec/issues/{slug}/{issue-number}-{short-issue-slug}.implementation.md`，目录只在需要时创建。
 
@@ -72,6 +73,7 @@ triggers:
 9. 所有测试通过后再重构。
 10. 汇总变更、测试和残余风险。
 11. 不要勾选验收项；验收项的勾选应由 `team-issue-verify` 完成。
+12. 不要执行 `git commit`、`git push`、创建 PR/MR 或其他提交收尾动作；保持工作区可供 `team-issue-verify` 继续检查。
 
 ## TDD 循环
 
@@ -102,6 +104,7 @@ REFACTOR: 所有相关测试通过后，再整理结构
 - Mock 只用于外部系统、时间、随机性、网络或昂贵依赖。
 - 不为了覆盖率测试无意义分支。
 - 测试失败时，应能说明哪个验收行为没有满足。
+- 如果已经完成实现和测试，也不要用提交来表示“完成”；把状态、说明和残余风险留给后续验证步骤。
 
 ## 完成标准
 
@@ -112,5 +115,6 @@ REFACTOR: 所有相关测试通过后，再整理结构
 - 覆盖了哪些验收标准。
 - 运行了哪些测试和命令。
 - 是否还有未解决风险、跳过测试或需要人工确认的事项。
+- 明确说明没有执行任何 `git commit` / `git push`，并保留了哪些待验证的本地变更。
 
 如果不能完成，不要伪装成功。说明阻塞原因、已完成部分和下一步建议。
