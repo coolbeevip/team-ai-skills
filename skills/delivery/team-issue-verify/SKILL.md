@@ -122,3 +122,8 @@ ready for PR / needs changes / blocked
 - 代码变更范围与 issue 匹配。
 
 否则输出 `needs changes` 或 `blocked`，并给出具体补救动作。
+
+当输出 `ready for PR` 时，最终回复必须推荐下一步：
+
+- 目标平台是 GitLab 时，使用 `team-gitlab-mr-create` 推送当前 issue 分支并创建关联 issue 的 Merge Request。
+- 目标平台是 GitHub 时，使用 `team-github-pr-create` 推送当前 issue 分支并创建关联 issue 的 Pull Request。

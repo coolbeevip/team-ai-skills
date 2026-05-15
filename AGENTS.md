@@ -14,10 +14,12 @@
 - `skills/harness/team-harness-refine/`：用于随真实代码和工程演进反复细化 `AGENTS.md` / `CLAUDE.md` 与 `docs/agent-harness/`。
 - `skills/delivery/`：交付执行职责，包括 issue 拆解、发布、实现和验证。
 - `skills/delivery/team-prd-to-issues/`：用于把 PRD 拆解成可独立领取的工程 issue。
-- `skills/delivery/team-issues-publish-github/`：用于把本地 issue 草稿按依赖顺序批量发布到 GitHub Issues。
-- `skills/delivery/team-issues-publish-gitlab/`：用于把本地 issue 草稿按依赖顺序批量发布到 GitLab Issues。
+- `skills/delivery/team-github-issue-publish/`：用于把本地 issue 草稿发布到 GitHub Issues，支持整目录批量发布或指定单个 issue。
+- `skills/delivery/team-gitlab-issue-publish/`：用于把本地 issue 草稿发布到 GitLab Issues，支持整目录批量发布或指定单个 issue。
 - `skills/delivery/team-issue-implement/`：用于按行为测试和 TDD 循环实现单个 issue。
 - `skills/delivery/team-issue-verify/`：用于验证单个 issue 实现是否满足验收标准和 PRD。
+- `skills/delivery/team-gitlab-mr-create/`：用于推送已完成的 issue 分支并创建关联 issue 的 GitLab Merge Request。
+- `skills/delivery/team-github-pr-create/`：用于推送已完成的 issue 分支并创建关联 issue 的 GitHub Pull Request。
 - `skills/tech-debt/`：技术债治理职责，包括技术债细化、评审和工程拆解。
 - `skills/tech-debt/team-tech-debt-refine/`：用于把模糊技术债诉求细化为可评审规格。
 - `skills/tech-debt/team-tech-debt-review/`：用于评审技术债风险、优先级和可执行性。
@@ -82,7 +84,7 @@
 
 当技能需要 `scripts/` 辅助脚本时，遵守以下规则：
 
-- `scripts/` 只能放在具体技能目录内，例如 `skills/delivery/team-issues-publish-github/scripts/`。
+- `scripts/` 只能放在具体技能目录内，例如 `skills/delivery/team-github-issue-publish/scripts/`。
 - 脚本用于沉淀确定性流程，例如远端 API 操作、批量文件处理、格式转换、依赖排序、幂等检查和回写状态。
 - `SKILL.md` 必须说明脚本用途、主要参数、默认 dry-run 行为、正式执行开关和安全要求。
 - `SKILL.md` 内引用脚本时必须使用相对 `SKILL.md` 的路径，例如 `./scripts/publish_gitlab_issues.py`。

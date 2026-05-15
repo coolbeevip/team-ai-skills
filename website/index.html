@@ -132,12 +132,23 @@
           <strong>team-issue-verify</strong>
           <small>独立验证是否满足验收标准</small>
         </div>
+        <div class="flow-step">
+          <span class="step-index">07</span>
+          <strong>team-gitlab-mr-create</strong>
+          <small>推送分支并创建关联 issue 的 MR</small>
+        </div>
+        <div class="flow-step">
+          <span class="step-index">08</span>
+          <strong>team-github-pr-create</strong>
+          <small>推送分支并创建关联 issue 的 PR</small>
+        </div>
       </div>
     </div>
 
     <div class="optional-row">
       <span>需要人类评审 PRD：<code>team-prd-to-alignment</code></span>
-      <span>需要同步到平台：<code>team-issues-publish-github</code> / <code>team-issues-publish-gitlab</code></span>
+      <span>需要同步到平台：<code>team-github-issue-publish</code> / <code>team-gitlab-issue-publish</code></span>
+      <span>完成后创建合并请求：<code>team-gitlab-mr-create</code> / <code>team-github-pr-create</code></span>
     </div>
   </div>
 </section>
@@ -230,13 +241,23 @@
       </div>
       <div class="index-row">
         <span class="index-domain">发布</span>
-        <code>team-issues-publish-github</code>
-        <p>批量发布本地 issue 草稿到 GitHub Issues。</p>
+        <code>team-gitlab-mr-create</code>
+        <p>推送 issue 分支并创建关联 issue 编号的 GitLab MR。</p>
       </div>
       <div class="index-row">
         <span class="index-domain">发布</span>
-        <code>team-issues-publish-gitlab</code>
-        <p>批量发布本地 issue 草稿到 GitLab Issues。</p>
+        <code>team-github-pr-create</code>
+        <p>推送 issue 分支并创建关联 issue 编号的 GitHub PR。</p>
+      </div>
+      <div class="index-row">
+        <span class="index-domain">发布</span>
+        <code>team-github-issue-publish</code>
+        <p>发布本地 issue 草稿到 GitHub Issues，可整批或单个。</p>
+      </div>
+      <div class="index-row">
+        <span class="index-domain">发布</span>
+        <code>team-gitlab-issue-publish</code>
+        <p>发布本地 issue 草稿到 GitLab Issues，可整批或单个。</p>
       </div>
       <div class="index-row">
         <span class="index-domain">治理</span>

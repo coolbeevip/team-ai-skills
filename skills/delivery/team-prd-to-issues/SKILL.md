@@ -138,8 +138,8 @@ AFK（可独立执行，无需人工决策） / HITL（需要人工介入）
 根据当前状态推荐：
 
 - 如果已生成本地 issue 草稿但尚未发布到远端：
-  - `team-issues-publish-github`：将本地 issue 草稿批量发布到 GitHub Issues。
-  - `team-issues-publish-gitlab`：将本地 issue 草稿批量发布到 GitLab Issues。
+  - `team-github-issue-publish`：将本地 issue 草稿发布到 GitHub Issues，支持整目录批量发布或指定单个 issue。
+  - `team-gitlab-issue-publish`：将本地 issue 草稿发布到 GitLab Issues，支持整目录批量发布或指定单个 issue。
 - 如果用户不需要远端 issue tracker，或已经有明确的本地 issue：
   - `team-issue-implement`：选择一个 `AFK` issue 开始实现。
 - 如果 issue 中存在 `HITL`：
@@ -154,8 +154,8 @@ AFK（可独立执行，无需人工决策） / HITL（需要人工介入）
 ```md
 ## 下一步可选
 
-1. `team-issues-publish-github`：发布到 GitHub Issues。
-2. `team-issues-publish-gitlab`：发布到 GitLab Issues。
+1. `team-github-issue-publish`：发布到 GitHub Issues。
+2. `team-gitlab-issue-publish`：发布到 GitLab Issues。
 3. `team-issue-implement`：从第一个可开始的 `AFK` issue 进入实现。
 4. `team-harness-refine`：如果验证命令或 agent 工作环境不清楚，先完善 harness。
 ```

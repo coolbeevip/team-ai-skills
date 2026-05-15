@@ -1,22 +1,26 @@
 ---
-name: team-issues-publish-gitlab
-description: 将 team-spec/issues/{slug}/ 下的本地 issue 草稿按依赖顺序批量发布到 GitLab Issues，并回写发布结果，支持 dry-run、幂等检查与部分失败重试。Batch publish local issue drafts under team-spec/issues/{slug}/ to GitLab Issues in dependency order, with write-back status, dry-run, idempotency checks, and retry support.
+name: team-gitlab-issue-publish
+description: 将 team-spec/issues/{slug}/ 下的本地 issue 草稿发布到 GitLab Issues，默认按依赖顺序处理整个目录，也可指定单个 issue，并回写发布结果，支持 dry-run、幂等检查与部分失败重试。Publish local issue drafts under team-spec/issues/{slug}/ to GitLab Issues, either as a full dependency-ordered batch or as a single selected issue, with write-back status, dry-run, idempotency checks, and retry support.
 license: MIT
 metadata:
   author: coolbeevip
   version: "1.0"
 triggers:
   - 发布到 GitLab
+  - 发布 issue 到 GitLab
   - 批量创建 GitLab Issues
   - 把 issue 草稿发布到 GitLab
+  - 发布单个 issue 到 GitLab
   - publish to GitLab
+  - publish issue to GitLab
   - create GitLab issues from drafts
+  - create GitLab issue from draft
   - batch publish issues to GitLab
 ---
 
-# 批量发布 GitLab Issues
+# 发布 GitLab Issue
 
-这个技能用于把 `team-prd-to-issues` 生成的本地 issue 草稿，批量发布到 GitLab Issues。它关注“可重复执行、可追踪、可恢复”，避免重复创建和依赖顺序错误。
+这个技能用于把 `team-prd-to-issues` 生成的本地 issue 草稿发布到 GitLab Issues。默认会按依赖顺序发布整个 slug 下的所有 issue；如果用户指定单个 issue，则只发布那一个。它关注“可重复执行、可追踪、可恢复”，避免重复创建和依赖顺序错误。
 
 v1 仅支持 GitLab。不要在同一个技能中混合 GitHub 与 GitLab 发布逻辑；GitHub 请使用独立技能。
 
@@ -31,6 +35,7 @@ v1 仅支持 GitLab。不要在同一个技能中混合 GitHub 与 GitLab 发布
 脚本能力：
 
 - 读取 `team-spec/issues/{slug}/` 或显式 `--issues-dir`。
+- 默认发布该目录下全部 issue；也可以通过 `--issue` 只发布指定的单个 issue。
 - 按 `Blocked by` 生成依赖顺序。
 - 从显式 `--project` 或 git remote 推断 GitLab 项目，多个 remote 时优先 `upstream`。
 - 默认 dry-run，只输出发布计划。
@@ -53,6 +58,7 @@ GITLAB_TOKEN=... python3 {skill_dir}/scripts/publish_gitlab_issues.py --slug {sl
 
 常用参数：
 
+- `--issue 001-add-export-filter.md`：只发布指定的单个 issue，可传入文件名、文件路径或草稿标识。
 - `--gitlab-url https://gitlab.example.com`：自建 GitLab。
 - `--project namespace/project`：显式指定项目，优先级高于 remote 推断。
 - `--remote upstream`：显式指定用于推断项目的 remote。
@@ -66,6 +72,7 @@ GITLAB_TOKEN=... python3 {skill_dir}/scripts/publish_gitlab_issues.py --slug {sl
 主输入：
 
 - `team-spec/issues/{slug}/` 下的 issue 草稿文件。
+- `--issue` 可选参数：只发布指定的单个 issue 草稿。
 
 必须参数：
 
@@ -84,7 +91,7 @@ GITLAB_TOKEN=... python3 {skill_dir}/scripts/publish_gitlab_issues.py --slug {sl
 前置条件：
 
 - 如团队需要人类对齐，建议先使用 `team-prd-to-alignment` 生成 `team-spec/prd/{slug}-alignment.md` 并完成评审讨论。
-- `team-prd-to-issues` 已产出可发布草稿。
+- `team-prd-to-issues` 已产出可发布草稿；如果只发单个 issue，则该 issue 草稿已存在。
 - 需要有效 token 且具备 GitLab Issues 写权限。
 
 如果无法唯一确定 slug、项目或 token 来源，必须停止并向用户确认，不得猜测。
@@ -107,7 +114,7 @@ GITLAB_TOKEN=... python3 {skill_dir}/scripts/publish_gitlab_issues.py --slug {sl
 
 ## 输出物
 
-- GitLab Issues（按依赖顺序批量创建）。
+- GitLab Issue 或 GitLab Issues（默认按依赖顺序批量创建；指定单个 issue 时只创建一个）。
 - 本地回写结果（每个 issue 草稿都应记录）：
   - 远端 issue IID/ID。
   - 远端 issue URL。
@@ -122,7 +129,8 @@ GITLAB_TOKEN=... python3 {skill_dir}/scripts/publish_gitlab_issues.py --slug {sl
 
 ## 发布规则
 
-- 按依赖顺序发布：先 blocker，再依赖它的 issue。
+- 默认按依赖顺序发布：先 blocker，再依赖它的 issue。
+- 如果用户通过 `--issue` 指定单个 issue，则只发布该 issue，不会发布同 slug 下其它草稿。
 - 先做参数与权限检查，再执行真正发布。
 - 默认先执行 `dry-run` 预览发布计划，用户确认后再正式发布。
 - 幂等优先：重复执行时，不应重复创建同一 issue。
@@ -174,7 +182,7 @@ GITLAB_TOKEN=... python3 {skill_dir}/scripts/publish_gitlab_issues.py --slug {sl
 
 ## 完成标准
 
-- 目标 slug 下 issue 已按依赖顺序处理完成（创建/跳过/失败均有记录）。
+- 目标 slug 下 issue 已按依赖顺序处理完成，或指定的单个 issue 已处理完成（创建/跳过/失败均有记录）。
 - 每个本地 issue 草稿都有可追踪的回写状态。
 - 输出了可执行的失败重试清单。
 - 结果可重复执行，且不会产生重复 issue。

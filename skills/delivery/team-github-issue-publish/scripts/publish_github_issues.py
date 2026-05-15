@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Publish local team-spec issue drafts to GitLab Issues.
+"""Publish local team-spec issue drafts to GitHub Issues.
 
-The script is intentionally dependency-free so agents can run it in most
-project repositories without generating ad hoc GitLab API code.
+The script is dependency-free so agents can reuse a stable implementation
+instead of generating ad hoc GitHub API code for every publishing run.
 """
 
 from __future__ import annotations
@@ -34,16 +34,47 @@ class IssueDraft:
     path: Path
     key: str
     title: str
-    description: str
+    body: str
     blocked_by: list[str] = field(default_factory=list)
     status: str = "pending"
     remote_url: str | None = None
-    remote_iid: int | None = None
+    remote_number: int | None = None
     error: str | None = None
 
 
-class GitLabError(RuntimeError):
+class GitHubError(RuntimeError):
     pass
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description="Publish team-spec issue drafts to GitHub Issues."
+    )
+    parser.add_argument("--issues-dir", help="Directory containing local issue drafts.")
+    parser.add_argument(
+        "--slug",
+        help="Slug under team-spec/issues/{slug}. Ignored when --issues-dir is set.",
+    )
+    parser.add_argument(
+        "--issue",
+        action="append",
+        default=[],
+        help="Specific issue draft to publish. Can be a filename, path, or draft identifier. Repeat to publish multiple specific issues.",
+    )
+    parser.add_argument("--github-url", default="https://github.com")
+    parser.add_argument("--repo", help="GitHub repo path owner/repo.")
+    parser.add_argument("--token-env", default="GITHUB_TOKEN")
+    parser.add_argument(
+        "--execute",
+        action="store_true",
+        help="Create issues. Omit for dry-run preview.",
+    )
+    parser.add_argument("--label", action="append", default=[], help="Label to add.")
+    parser.add_argument("--milestone", type=int, help="Milestone number.")
+    parser.add_argument("--assignee", action="append", default=[], help="Assignee login.")
+    parser.add_argument("--remote", help="Force a git remote name for repo inference.")
+    parser.add_argument("--json", action="store_true", help="Print machine-readable JSON.")
+    return parser.parse_args()
 
 
 def run_git(args: list[str]) -> str | None:
@@ -60,34 +91,6 @@ def run_git(args: list[str]) -> str | None:
     return result.stdout.strip()
 
 
-def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(
-        description="Publish team-spec issue drafts to GitLab Issues."
-    )
-    parser.add_argument("--issues-dir", help="Directory containing local issue drafts.")
-    parser.add_argument(
-        "--slug",
-        help="Slug under team-spec/issues/{slug}. Ignored when --issues-dir is set.",
-    )
-    parser.add_argument("--gitlab-url", default="https://gitlab.com")
-    parser.add_argument(
-        "--project",
-        help="GitLab project path namespace/project or numeric project ID.",
-    )
-    parser.add_argument("--token-env", default="GITLAB_TOKEN")
-    parser.add_argument(
-        "--execute",
-        action="store_true",
-        help="Create issues. Omit for dry-run preview.",
-    )
-    parser.add_argument("--label", action="append", default=[], help="Label to add.")
-    parser.add_argument("--milestone-id", type=int)
-    parser.add_argument("--assignee-id", action="append", type=int, default=[])
-    parser.add_argument("--remote", help="Force a git remote name for project inference.")
-    parser.add_argument("--json", action="store_true", help="Print machine-readable JSON.")
-    return parser.parse_args()
-
-
 def issue_dir_from_args(args: argparse.Namespace) -> Path:
     if args.issues_dir:
         return Path(args.issues_dir)
@@ -96,8 +99,15 @@ def issue_dir_from_args(args: argparse.Namespace) -> Path:
     raise SystemExit("Provide --issues-dir or --slug.")
 
 
-def normalize_gitlab_url(url: str) -> str:
+def normalize_github_url(url: str) -> str:
     return url.rstrip("/")
+
+
+def api_base(github_url: str) -> str:
+    normalized = normalize_github_url(github_url)
+    if normalized == "https://github.com":
+        return "https://api.github.com"
+    return normalized + "/api/v3"
 
 
 def remote_urls() -> dict[str, str]:
@@ -112,7 +122,7 @@ def remote_urls() -> dict[str, str]:
     return remotes
 
 
-def remote_host_and_project(url: str) -> tuple[str, str] | None:
+def remote_host_and_repo(url: str) -> tuple[str, str] | None:
     if url.startswith("git@"):
         match = re.match(r"git@([^:]+):(.+?)(?:\.git)?$", url)
         if not match:
@@ -121,72 +131,72 @@ def remote_host_and_project(url: str) -> tuple[str, str] | None:
 
     parsed = urllib.parse.urlparse(url)
     if parsed.scheme in {"http", "https", "ssh"} and parsed.netloc and parsed.path:
-        project = parsed.path.strip("/")
-        if project.endswith(".git"):
-            project = project[:-4]
-        return parsed.hostname or parsed.netloc, project
+        repo = parsed.path.strip("/")
+        if repo.endswith(".git"):
+            repo = repo[:-4]
+        return parsed.hostname or parsed.netloc, repo
 
     return None
-
-
-def infer_project(args: argparse.Namespace) -> str:
-    if args.project:
-        return args.project.strip()
-
-    remotes = remote_urls()
-    if not remotes:
-        raise SystemExit("Cannot infer project: no git remotes found.")
-
-    gitlab_host = urllib.parse.urlparse(args.gitlab_url).hostname or "gitlab.com"
-
-    def as_project(remote_name: str) -> tuple[str, str] | None:
-        url = remotes.get(remote_name)
-        parsed = remote_host_and_project(url) if url else None
-        if not parsed:
-            return None
-        host, project = parsed
-        if host != gitlab_host:
-            raise SystemExit(
-                f"Remote {remote_name} host {host} does not match GitLab host {gitlab_host}."
-            )
-        return remote_name, project
-
-    if args.remote:
-        forced = as_project(args.remote)
-        if not forced:
-            raise SystemExit(f"Remote {args.remote} is not a valid GitLab remote.")
-        return forced[1]
-
-    upstream = as_project("upstream")
-    if upstream:
-        return upstream[1]
-
-    branch_remote = run_git(["config", "--get", "branch." + current_branch() + ".remote"])
-    if branch_remote:
-        tracked = as_project(branch_remote)
-        if tracked:
-            return tracked[1]
-
-    gitlab_projects: list[tuple[str, str]] = []
-    for name in remotes:
-        parsed = remote_host_and_project(remotes[name])
-        if parsed and parsed[0] == gitlab_host:
-            gitlab_projects.append((name, parsed[1]))
-
-    unique_projects = sorted(set(project for _, project in gitlab_projects))
-    if len(unique_projects) == 1:
-        return unique_projects[0]
-
-    details = ", ".join(f"{name}={project}" for name, project in gitlab_projects)
-    raise SystemExit(
-        "Cannot infer a unique GitLab project. Provide --project or --remote. "
-        f"Candidates: {details or 'none'}"
-    )
 
 
 def current_branch() -> str:
     branch = run_git(["branch", "--show-current"])
     return branch or "HEAD"
+
+
+def infer_repo(args: argparse.Namespace) -> str:
+    if args.repo:
+        return args.repo.strip()
+
+    remotes = remote_urls()
+    if not remotes:
+        raise SystemExit("Cannot infer repo: no git remotes found.")
+
+    github_host = urllib.parse.urlparse(args.github_url).hostname or "github.com"
+
+    def as_repo(remote_name: str) -> tuple[str, str] | None:
+        url = remotes.get(remote_name)
+        parsed = remote_host_and_repo(url) if url else None
+        if not parsed:
+            return None
+        host, repo = parsed
+        if host != github_host:
+            raise SystemExit(
+                f"Remote {remote_name} host {host} does not match GitHub host {github_host}."
+            )
+        return remote_name, repo
+
+    if args.remote:
+        forced = as_repo(args.remote)
+        if not forced:
+            raise SystemExit(f"Remote {args.remote} is not a valid GitHub remote.")
+        return forced[1]
+
+    upstream = as_repo("upstream")
+    if upstream:
+        return upstream[1]
+
+    branch_remote = run_git(["config", "--get", "branch." + current_branch() + ".remote"])
+    if branch_remote:
+        tracked = as_repo(branch_remote)
+        if tracked:
+            return tracked[1]
+
+    github_repos: list[tuple[str, str]] = []
+    for name, url in remotes.items():
+        parsed = remote_host_and_repo(url)
+        if parsed and parsed[0] == github_host:
+            github_repos.append((name, parsed[1]))
+
+    unique_repos = sorted(set(repo for _, repo in github_repos))
+    if len(unique_repos) == 1:
+        return unique_repos[0]
+
+    details = ", ".join(f"{name}={repo}" for name, repo in github_repos)
+    raise SystemExit(
+        "Cannot infer a unique GitHub repo. Provide --repo or --remote. "
+        f"Candidates: {details or 'none'}"
+    )
 
 
 def split_sections(text: str) -> dict[str, str]:
@@ -224,6 +234,12 @@ def parse_blockers(section: str, known_keys: set[str]) -> list[str]:
     return sorted(set(blockers))
 
 
+def ensure_local_key(text: str, key: str) -> str:
+    if f"Local-Issue-Key: {key}" in text:
+        return text
+    return text.rstrip() + "\n\n---\n\nLocal-Issue-Key: " + key + "\n"
+
+
 def load_drafts(issue_dir: Path) -> list[IssueDraft]:
     if not issue_dir.exists():
         raise SystemExit(f"Issue directory does not exist: {issue_dir}")
@@ -239,44 +255,76 @@ def load_drafts(issue_dir: Path) -> list[IssueDraft]:
             continue
         text = path.read_text(encoding="utf-8")
         sections = split_sections(text)
-        blocked_by = parse_blockers(sections.get("Blocked by", ""), known_keys)
-        description = ensure_local_key(text, path.name)
         drafts.append(
             IssueDraft(
                 path=path,
                 key=path.name,
                 title=title_from_text(path, text, sections),
-                description=description,
-                blocked_by=blocked_by,
+                body=ensure_local_key(text, path.name),
+                blocked_by=parse_blockers(sections.get("Blocked by", ""), known_keys),
             )
         )
     return drafts
 
 
-def ensure_local_key(text: str, key: str) -> str:
-    if f"Local-Issue-Key: {key}" in text:
-        return text
-    return text.rstrip() + "\n\n---\n\nLocal-Issue-Key: " + key + "\n"
+def draft_matches_selector(draft: IssueDraft, selector: str) -> bool:
+    normalized = selector.strip()
+    path_str = draft.path.as_posix()
+    candidates = {
+        draft.key,
+        draft.path.name,
+        draft.path.stem,
+        path_str,
+        str(draft.path),
+    }
+    if normalized in candidates:
+        return True
+    if normalized.endswith(".md") and Path(normalized).name == draft.path.name:
+        return True
+    if normalized.isdigit():
+        prefix = draft.path.stem.split("-", 1)[0]
+        return prefix == normalized
+    return False
+
+
+def filter_drafts(drafts: list[IssueDraft], selectors: list[str]) -> list[IssueDraft]:
+    if not selectors:
+        return drafts
+    selected: list[IssueDraft] = []
+    missing: list[str] = []
+    for selector in selectors:
+        matched = [draft for draft in drafts if draft_matches_selector(draft, selector)]
+        if not matched:
+            missing.append(selector)
+            continue
+        if len(matched) > 1:
+            raise SystemExit(
+                f"Selector {selector!r} matched multiple issues: {', '.join(draft.key for draft in matched)}"
+            )
+        selected.append(matched[0])
+    if missing:
+        raise SystemExit(f"Could not find issue draft(s): {', '.join(missing)}")
+    return selected
 
 
 def topo_sort(drafts: list[IssueDraft]) -> list[IssueDraft]:
     by_key = {draft.key: draft for draft in drafts}
-    temp: set[str] = set()
-    perm: set[str] = set()
+    temporary: set[str] = set()
+    permanent: set[str] = set()
     ordered: list[IssueDraft] = []
 
     def visit(key: str, stack: list[str]) -> None:
-        if key in perm:
+        if key in permanent:
             return
-        if key in temp:
+        if key in temporary:
             cycle = " -> ".join([*stack, key])
             raise SystemExit(f"Cycle detected in Blocked by dependencies: {cycle}")
-        temp.add(key)
+        temporary.add(key)
         for blocker in by_key[key].blocked_by:
             if blocker in by_key:
                 visit(blocker, [*stack, key])
-        temp.remove(key)
-        perm.add(key)
+        temporary.remove(key)
+        permanent.add(key)
         ordered.append(by_key[key])
 
     for draft in drafts:
@@ -291,7 +339,12 @@ def api_request(
     payload: dict[str, Any] | None = None,
 ) -> Any:
     data = None
-    headers = {"PRIVATE-TOKEN": token}
+    headers = {
+        "Accept": "application/vnd.github+json",
+        "Authorization": f"Bearer {token}",
+        "X-GitHub-Api-Version": "2022-11-28",
+        "User-Agent": "team-ai-skills-publish-github-issues",
+    }
     if payload is not None:
         data = json.dumps(payload).encode("utf-8")
         headers["Content-Type"] = "application/json"
@@ -302,29 +355,39 @@ def api_request(
             return json.loads(body) if body else None
     except urllib.error.HTTPError as exc:
         body = exc.read().decode("utf-8", errors="replace")
-        raise GitLabError(f"GitLab API {method} {url} failed: {exc.code} {body}") from exc
+        raise GitHubError(f"GitHub API {method} {url} failed: {exc.code} {body}") from exc
     except urllib.error.URLError as exc:
-        raise GitLabError(f"GitLab API {method} {url} failed: {exc.reason}") from exc
+        raise GitHubError(f"GitHub API {method} {url} failed: {exc.reason}") from exc
 
 
-def project_api_base(gitlab_url: str, project: str) -> str:
-    encoded = urllib.parse.quote(project, safe="")
-    return f"{normalize_gitlab_url(gitlab_url)}/api/v4/projects/{encoded}"
+def repo_api_base(github_url: str, repo: str) -> str:
+    return f"{api_base(github_url)}/repos/{repo}"
 
 
 def find_existing_issue(
-    gitlab_url: str,
-    project: str,
+    github_url: str,
+    repo: str,
     token: str,
     draft: IssueDraft,
 ) -> dict[str, Any] | None:
-    query = urllib.parse.urlencode({"search": draft.key, "scope": "all", "per_page": "100"})
-    url = f"{project_api_base(gitlab_url, project)}/issues?{query}"
-    issues = api_request("GET", url, token)
+    issues: list[dict[str, Any]] = []
+    page = 1
+    while True:
+        query = urllib.parse.urlencode(
+            {"state": "all", "per_page": "100", "page": str(page)}
+        )
+        url = f"{repo_api_base(github_url, repo)}/issues?{query}"
+        batch = api_request("GET", url, token)
+        issues.extend(batch)
+        if len(batch) < 100:
+            break
+        page += 1
+
     candidates = [
         issue
         for issue in issues
-        if f"Local-Issue-Key: {draft.key}" in (issue.get("description") or "")
+        if "pull_request" not in issue
+        and f"Local-Issue-Key: {draft.key}" in (issue.get("body") or "")
     ]
     title_matches = [
         issue for issue in candidates if (issue.get("title") or "").strip() == draft.title
@@ -334,33 +397,28 @@ def find_existing_issue(
     if len(candidates) == 1:
         return candidates[0]
     if len(candidates) > 1:
-        raise GitLabError(f"Multiple remote issues match Local-Issue-Key {draft.key}.")
+        raise GitHubError(f"Multiple remote issues match Local-Issue-Key {draft.key}.")
     return None
 
 
 def create_issue(
-    gitlab_url: str,
-    project: str,
+    github_url: str,
+    repo: str,
     token: str,
     draft: IssueDraft,
     args: argparse.Namespace,
 ) -> dict[str, Any]:
     payload: dict[str, Any] = {
         "title": draft.title,
-        "description": draft.description,
+        "body": draft.body,
     }
     if args.label:
-        payload["labels"] = ",".join(args.label)
-    if args.milestone_id is not None:
-        payload["milestone_id"] = args.milestone_id
-    if args.assignee_id:
-        payload["assignee_ids"] = args.assignee_id
-    return api_request(
-        "POST",
-        f"{project_api_base(gitlab_url, project)}/issues",
-        token,
-        payload,
-    )
+        payload["labels"] = args.label
+    if args.milestone is not None:
+        payload["milestone"] = args.milestone
+    if args.assignee:
+        payload["assignees"] = args.assignee
+    return api_request("POST", f"{repo_api_base(github_url, repo)}/issues", token, payload)
 
 
 def write_status(draft: IssueDraft) -> None:
@@ -371,10 +429,10 @@ def write_status(draft: IssueDraft) -> None:
         f"- Status: {draft.status}",
         f"- Updated At: {time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime())}",
     ]
-    if draft.remote_iid is not None:
-        body.append(f"- GitLab IID: {draft.remote_iid}")
+    if draft.remote_number is not None:
+        body.append(f"- GitHub Number: {draft.remote_number}")
     if draft.remote_url:
-        body.append(f"- GitLab URL: {draft.remote_url}")
+        body.append(f"- GitHub URL: {draft.remote_url}")
     if draft.error:
         body.append(f"- Error: {draft.error}")
     replacement = "\n".join(body).rstrip() + "\n"
@@ -392,8 +450,8 @@ def write_status(draft: IssueDraft) -> None:
 
 def publish(args: argparse.Namespace) -> dict[str, Any]:
     issue_dir = issue_dir_from_args(args)
-    project = infer_project(args)
-    drafts = topo_sort(load_drafts(issue_dir))
+    repo = infer_repo(args)
+    drafts = topo_sort(filter_drafts(load_drafts(issue_dir), args.issue))
     token = os.environ.get(args.token_env)
 
     if args.execute and not token:
@@ -405,18 +463,18 @@ def publish(args: argparse.Namespace) -> dict[str, Any]:
             continue
         try:
             assert token is not None
-            existing = find_existing_issue(args.gitlab_url, project, token, draft)
+            existing = find_existing_issue(args.github_url, repo, token, draft)
             if existing:
                 draft.status = "skipped"
-                draft.remote_iid = existing.get("iid")
-                draft.remote_url = existing.get("web_url")
+                draft.remote_number = existing.get("number")
+                draft.remote_url = existing.get("html_url")
             else:
-                created = create_issue(args.gitlab_url, project, token, draft, args)
+                created = create_issue(args.github_url, repo, token, draft, args)
                 draft.status = "created"
-                draft.remote_iid = created.get("iid")
-                draft.remote_url = created.get("web_url")
+                draft.remote_number = created.get("number")
+                draft.remote_url = created.get("html_url")
             write_status(draft)
-        except GitLabError as exc:
+        except GitHubError as exc:
             draft.status = "failed"
             draft.error = str(exc)
             write_status(draft)
@@ -427,9 +485,10 @@ def publish(args: argparse.Namespace) -> dict[str, Any]:
 
     return {
         "mode": "execute" if args.execute else "dry-run",
-        "gitlab_url": normalize_gitlab_url(args.gitlab_url),
-        "project": project,
+        "github_url": normalize_github_url(args.github_url),
+        "repo": repo,
         "issues_dir": str(issue_dir),
+        "selected_issues": args.issue,
         "counts": counts,
         "issues": [
             {
@@ -437,7 +496,7 @@ def publish(args: argparse.Namespace) -> dict[str, Any]:
                 "title": draft.title,
                 "blocked_by": draft.blocked_by,
                 "status": draft.status,
-                "remote_iid": draft.remote_iid,
+                "remote_number": draft.remote_number,
                 "remote_url": draft.remote_url,
                 "error": draft.error,
             }
@@ -448,8 +507,8 @@ def publish(args: argparse.Namespace) -> dict[str, Any]:
 
 def print_text_summary(result: dict[str, Any]) -> None:
     print(f"Mode: {result['mode']}")
-    print(f"GitLab: {result['gitlab_url']}")
-    print(f"Project: {result['project']}")
+    print(f"GitHub: {result['github_url']}")
+    print(f"Repo: {result['repo']}")
     print(f"Issues: {result['issues_dir']}")
     print(f"Counts: {result['counts']}")
     print("")

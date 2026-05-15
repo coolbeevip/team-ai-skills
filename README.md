@@ -39,10 +39,12 @@ Agent Harness 域用于让真实项目更适合 AI agent 长期工作，适合�
 交付执行域用于把 PRD 拆成可领取的 issue，并把实现结果验证到可提交 PR 的状态，适合研发负责人、工程师、测试人员和工程 agent 使用。
 
 - `team-prd-to-issues`：把 PRD 拆解成可独立领取、可验证、按依赖排序的工程 issue。
-- `team-issues-publish-github`：将本地 issue 草稿按依赖顺序批量发布到 GitHub Issues，并回写远端编号、URL 和发布状态。
-- `team-issues-publish-gitlab`：将本地 issue 草稿按依赖顺序批量发布到 GitLab Issues，并回写远端 IID/ID、URL 和发布状态。
+- `team-github-issue-publish`：将本地 issue 草稿发布到 GitHub Issues，支持整目录批量发布或指定单个 issue，并回写远端编号、URL 和发布状态。
+- `team-gitlab-issue-publish`：将本地 issue 草稿发布到 GitLab Issues，支持整目录批量发布或指定单个 issue，并回写远端 IID/ID、URL 和发布状态。
 - `team-issue-implement`：围绕单个 issue 采用行为测试和 TDD 循环完成代码与测试变更。
 - `team-issue-verify`：独立检查实现是否满足 issue、PRD 和风险约束，并给出是否可提交 PR 的结论。
+- `team-gitlab-mr-create`：推送已完成的 issue 分支，并创建标题和正文都关联 issue 编号的 GitLab Merge Request。
+- `team-github-pr-create`：推送已完成的 issue 分支，并创建标题和正文都关联 issue 编号的 GitHub Pull Request。
 
 ### 技术债治理
 
@@ -72,12 +74,14 @@ flowchart TD
     D --> F[team-prd-to-issues]
     D -. 可选：人类对齐材料 .-> H[team-prd-to-alignment]
     H -. 对齐结论反馈 .-> D
-    F --> N[team-issues-publish-github]
-    F --> O[team-issues-publish-gitlab]
+    F --> N[team-github-issue-publish]
+    F --> O[team-gitlab-issue-publish]
     N --> G[team-issue-implement]
     O --> G
     G --> I[team-issue-verify]
     I -- 验证未通过 --> G
+    I -- GitLab --> P[team-gitlab-mr-create]
+    I -- GitHub --> Q[team-github-pr-create]
 
     J[team-tech-debt-refine] --> K[team-tech-debt-review]
     K --> L{存在阻塞风险?}
@@ -92,9 +96,9 @@ flowchart TD
 
 `team-prd-to-issues` 应以 PRD 为主输入；`CONTEXT.md`、`decisions/` 和 `reviews/` 只能作为背景参考，不能绕过 PRD 直接拆工程任务。
 
-`team-issues-publish-github` 用于把 `team-spec/issues/{slug}/` 下的本地 issue 草稿按依赖顺序批量发布到 GitHub Issues，并回写发布结果。该技能仅处理 GitHub。
+`team-github-issue-publish` 用于把 `team-spec/issues/{slug}/` 下的本地 issue 草稿发布到 GitHub Issues，并回写发布结果。默认按依赖顺序批量发布，也可通过 `--issue` 指定单个 issue。该技能仅处理 GitHub。
 
-`team-issues-publish-gitlab` 用于把 `team-spec/issues/{slug}/` 下的本地 issue 草稿按依赖顺序批量发布到 GitLab Issues，并回写发布结果。该技能仅处理 GitLab。
+`team-gitlab-issue-publish` 用于把 `team-spec/issues/{slug}/` 下的本地 issue 草稿发布到 GitLab Issues，并回写发布结果。默认按依赖顺序批量发布，也可通过 `--issue` 指定单个 issue。该技能仅处理 GitLab。
 
 技术债链路使用 `team-tech-debt-refine -> team-tech-debt-review -> team-tech-debt-to-issues`，并统一收敛到 `team-spec/issues/{slug}/`。技术债链路的 slug 必须包含 `debt`，建议格式 `{yyyy-mm-dd}-debt-{short-english-slug}`，以便后续复用工程实现与验证流程。
 
@@ -134,10 +138,14 @@ team-spec/issues/{slug}/
 
 `team-prd-to-issues` 默认以 `team-spec/prd/{slug}.md` 为主输入，并参考规格上下文、产品决策和评审报告，再将工程 issue 草稿写入 `team-spec/issues/{slug}/`。
 
-`team-issues-publish-github` 默认读取 `team-spec/issues/{slug}/` 中的本地 issue 草稿，执行依赖排序、试运行预览、幂等检查与批量发布，并回写远端 issue 编号、URL 和状态。
+`team-github-issue-publish` 默认读取 `team-spec/issues/{slug}/` 中的本地 issue 草稿，执行依赖排序、试运行预览、幂等检查与批量发布；如果通过 `--issue` 指定单个 issue，则只处理该草稿，并回写远端 issue 编号、URL 和状态。
 
-`team-issues-publish-gitlab` 默认读取 `team-spec/issues/{slug}/` 中的本地 issue 草稿，执行依赖排序、试运行预览、幂等检查与批量发布，并回写远端 issue IID/ID、URL 和状态。
+`team-gitlab-issue-publish` 默认读取 `team-spec/issues/{slug}/` 中的本地 issue 草稿，执行依赖排序、试运行预览、幂等检查与批量发布；如果通过 `--issue` 指定单个 issue，则只处理该草稿，并回写远端 issue IID/ID、URL 和状态。
 
 `team-issue-implement` 默认以 `team-spec/issues/{slug}/` 中的单个 issue 为主输入，通过行为测试和 red-green-refactor 循环完成实现。
 
 `team-issue-verify` 独立检查实现是否满足 issue、PRD 和风险约束，并输出是否可提交 PR。
+
+`team-gitlab-mr-create` 默认从当前分支推断 issue 编号，推送分支，并创建包含 `Closes #{issue}` 的 GitLab Merge Request。该技能仅处理 GitLab MR；GitHub PR 应使用独立技能。
+
+`team-github-pr-create` 默认从当前分支推断 issue 编号，推送分支，并创建包含 `Closes #{issue}` 的 GitHub Pull Request。该技能仅处理 GitHub PR；GitLab MR 应使用独立技能。
