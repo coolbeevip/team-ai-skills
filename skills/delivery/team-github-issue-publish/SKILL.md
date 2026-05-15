@@ -67,6 +67,7 @@ GITHUB_TOKEN=... python3 {skill_dir}/scripts/publish_github_issues.py --slug {sl
 - `--label label-name`：可重复传入多个 label。
 - `--milestone 123`：指定 milestone number。
 - `--assignee octocat`：可重复传入多个 assignee login。
+- `--force`：忽略本地 `Publish Status`，重新检查 GitHub；仍会使用远端 `Local-Issue-Key` 做幂等检查，不应直接重复创建。
 - `--json`：输出机器可读 JSON。
 
 标题规则：
@@ -167,9 +168,10 @@ GitHub Enterprise 场景下，remote host 必须与平台地址一致；如果�
 
 推荐匹配逻辑：
 
-- 第一步：按远端 issue 描述中的 `Local-Issue-Key` 精确匹配（完全一致）。
-- 第二步：在同一 `Local-Issue-Key` 候选内按标题精确匹配（去除首尾空白后比较）。
-- 第三步：若仍有多个候选，停止自动发布该条并标记为 `failed`，要求人工确认，避免误关联。
+- 第一步：读取本地草稿 `## Publish Status`。如果 `Status` 为 `created` 或 `skipped`，且已有 `GitHub URL` 或 `GitHub Number`，默认标记为 `skipped`，不再创建远端 issue。
+- 第二步：如果用户显式传入 `--force`，或本地没有有效发布记录，则按远端 issue 描述中的 `Local-Issue-Key` 精确匹配（完全一致）。
+- 第三步：在同一 `Local-Issue-Key` 候选内按标题精确匹配（去除首尾空白后比较）。
+- 第四步：若仍有多个候选，停止自动发布该条并标记为 `failed`，要求人工确认，避免误关联。
 
 ## 建议流程
 

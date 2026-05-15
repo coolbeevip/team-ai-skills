@@ -56,6 +56,12 @@ class IssueDraft:
     remote_iid: int | None = None
     error: str | None = None
 
+    @property
+    def has_publish_record(self) -> bool:
+        return self.status in {"created", "skipped"} and (
+            self.remote_url is not None or self.remote_iid is not None
+        )
+
 
 class GitLabError(RuntimeError):
     pass
@@ -105,6 +111,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--milestone-id", type=int)
     parser.add_argument("--assignee-id", action="append", type=int, default=[])
     parser.add_argument("--remote", help="Force a git remote name for project inference.")
+    parser.add_argument(
+        "--force",
+        action="store_true",
+        help="Ignore local Publish Status and re-check GitLab before creating.",
+    )
     parser.add_argument("--json", action="store_true", help="Print machine-readable JSON.")
     return parser.parse_args()
 
@@ -258,6 +269,16 @@ def validate_title(title: str, source: str, path: Path) -> list[str]:
     return issues
 
 
+def parse_publish_status(sections: dict[str, str]) -> dict[str, str]:
+    publish_status = sections.get("Publish Status", "")
+    values: dict[str, str] = {}
+    for line in publish_status.splitlines():
+        match = re.match(r"^\s*[-*]\s+([^:]+):\s*(.*?)\s*$", line)
+        if match:
+            values[match.group(1).strip().lower()] = match.group(2).strip()
+    return values
+
+
 def parse_blockers(section: str, known_keys: set[str]) -> list[str]:
     blockers: list[str] = []
     for line in section.splitlines():
@@ -291,6 +312,10 @@ def load_drafts(issue_dir: Path) -> list[IssueDraft]:
         blocked_by = parse_blockers(sections.get("Blocked by", ""), known_keys)
         title, title_source = resolve_title(path, text, sections)
         description = render_issue_body(path.name, sections)
+        publish_status = parse_publish_status(sections)
+        remote_iid = None
+        if publish_status.get("gitlab iid", "").isdigit():
+            remote_iid = int(publish_status["gitlab iid"])
         drafts.append(
             IssueDraft(
                 path=path,
@@ -300,6 +325,10 @@ def load_drafts(issue_dir: Path) -> list[IssueDraft]:
                 description=description,
                 blocked_by=blocked_by,
                 title_issues=validate_title(title, title_source, path),
+                status=publish_status.get("status", "pending").lower() or "pending",
+                remote_url=publish_status.get("gitlab url") or None,
+                remote_iid=remote_iid,
+                error=publish_status.get("error") or None,
             )
         )
     return drafts
@@ -403,6 +432,7 @@ def api_request(
     if payload is not None:
         data = json.dumps(payload).encode("utf-8")
         headers["Content-Type"] = "application/json"
+    print_request_debug(method, url, payload)
     request = urllib.request.Request(url, data=data, headers=headers, method=method)
     try:
         with urllib.request.urlopen(request, timeout=30) as response:
@@ -413,6 +443,23 @@ def api_request(
         raise GitLabError(f"GitLab API {method} {url} failed: {exc.code} {body}") from exc
     except urllib.error.URLError as exc:
         raise GitLabError(f"GitLab API {method} {url} failed: {exc.reason}") from exc
+
+
+def print_request_debug(
+    method: str,
+    url: str,
+    payload: dict[str, Any] | None,
+) -> None:
+    request_info = {
+        "method": method,
+        "url": url,
+        "payload": payload or {},
+    }
+    print(
+        "GitLab request: "
+        + json.dumps(request_info, ensure_ascii=False, sort_keys=True),
+        file=sys.stderr,
+    )
 
 
 def project_api_base(gitlab_url: str, project: str) -> str:
@@ -514,6 +561,9 @@ def publish(args: argparse.Namespace) -> dict[str, Any]:
         raise SystemExit(message)
 
     for draft in drafts:
+        if draft.has_publish_record and not args.force:
+            draft.status = "skipped"
+            continue
         if not args.execute:
             draft.status = "planned"
             continue

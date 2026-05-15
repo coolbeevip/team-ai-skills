@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import ipaddress
 import json
 import os
 import re
@@ -285,15 +286,52 @@ def normalize_gitlab_url(url: str) -> str:
     return url.rstrip("/")
 
 
+def no_proxy_entries() -> list[str]:
+    value = os.environ.get("no_proxy") or os.environ.get("NO_PROXY") or ""
+    return [entry.strip() for entry in value.split(",") if entry.strip()]
+
+
+def host_matches_no_proxy(host: str, entry: str) -> bool:
+    host = host.lower().strip("[]")
+    entry = entry.lower()
+    if entry == "*":
+        return True
+    if "/" in entry:
+        try:
+            return ipaddress.ip_address(host) in ipaddress.ip_network(entry, strict=False)
+        except ValueError:
+            return False
+    if entry.startswith("*."):
+        suffix = entry[1:]
+        return host.endswith(suffix)
+    if entry.startswith("."):
+        return host == entry[1:] or host.endswith(entry)
+    return host == entry or host.endswith(f".{entry}")
+
+
+def should_bypass_proxy(url: str) -> bool:
+    parsed = urllib.parse.urlparse(url)
+    host = parsed.hostname
+    if not host:
+        return False
+    return any(host_matches_no_proxy(host, entry) for entry in no_proxy_entries())
+
+
 def api_request(method: str, url: str, token: str, payload: dict[str, Any] | None = None) -> Any:
     data = None
     headers = {"PRIVATE-TOKEN": token}
     if payload is not None:
         data = json.dumps(payload).encode("utf-8")
         headers["Content-Type"] = "application/json"
+    print_request_debug(method, url, payload)
     request = urllib.request.Request(url, data=data, headers=headers, method=method)
+    opener = (
+        urllib.request.build_opener(urllib.request.ProxyHandler({}))
+        if should_bypass_proxy(url)
+        else urllib.request.build_opener()
+    )
     try:
-        with urllib.request.urlopen(request, timeout=30) as response:
+        with opener.open(request, timeout=30) as response:
             body = response.read().decode("utf-8")
             return json.loads(body) if body else None
     except urllib.error.HTTPError as exc:
@@ -301,6 +339,23 @@ def api_request(method: str, url: str, token: str, payload: dict[str, Any] | Non
         raise GitLabError(f"GitLab API {method} {url} failed: {exc.code} {body}") from exc
     except urllib.error.URLError as exc:
         raise GitLabError(f"GitLab API {method} {url} failed: {exc.reason}") from exc
+
+
+def print_request_debug(
+    method: str,
+    url: str,
+    payload: dict[str, Any] | None,
+) -> None:
+    request_info = {
+        "method": method,
+        "url": url,
+        "payload": payload or {},
+    }
+    print(
+        "GitLab request: "
+        + json.dumps(request_info, ensure_ascii=False, sort_keys=True),
+        file=sys.stderr,
+    )
 
 
 def project_api_base(gitlab_url: str, project: str) -> str:
@@ -315,16 +370,22 @@ def get_project_id(gitlab_url: str, project: str, token: str) -> int:
 
 def existing_mr(
     gitlab_url: str,
-    source_project: str,
+    target_project: str,
     token: str,
     source_branch: str,
+    source_project_id: int | None = None,
 ) -> dict[str, Any] | None:
     query = urllib.parse.urlencode(
         {"state": "opened", "source_branch": source_branch, "per_page": "20"}
     )
-    url = f"{project_api_base(gitlab_url, source_project)}/merge_requests?{query}"
+    url = f"{project_api_base(gitlab_url, target_project)}/merge_requests?{query}"
     items = api_request("GET", url, token)
-    return items[0] if items else None
+    if source_project_id is None:
+        return items[0] if items else None
+    for item in items:
+        if item.get("source_project_id") == source_project_id:
+            return item
+    return None
 
 
 def create_mr(
@@ -433,7 +494,16 @@ def execute(args: argparse.Namespace, plan: dict[str, Any]) -> dict[str, Any]:
 
     confirm_execution(plan)
     push_branch(plan["source_remote"], plan["source_branch"])
-    existing = existing_mr(args.gitlab_url, plan["source_project"], token, plan["source_branch"])
+    source_project_id = None
+    if plan["source_project"] != plan["target_project"]:
+        source_project_id = get_project_id(args.gitlab_url, plan["source_project"], token)
+    existing = existing_mr(
+        args.gitlab_url,
+        plan["target_project"],
+        token,
+        plan["source_branch"],
+        source_project_id,
+    )
     if existing:
         plan["status"] = "skipped"
         plan["mr_url"] = existing.get("web_url")

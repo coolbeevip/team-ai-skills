@@ -56,6 +56,12 @@ class IssueDraft:
     remote_number: int | None = None
     error: str | None = None
 
+    @property
+    def has_publish_record(self) -> bool:
+        return self.status in {"created", "skipped"} and (
+            self.remote_url is not None or self.remote_number is not None
+        )
+
 
 class GitHubError(RuntimeError):
     pass
@@ -88,6 +94,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--milestone", type=int, help="Milestone number.")
     parser.add_argument("--assignee", action="append", default=[], help="Assignee login.")
     parser.add_argument("--remote", help="Force a git remote name for repo inference.")
+    parser.add_argument(
+        "--force",
+        action="store_true",
+        help="Ignore local Publish Status and re-check GitHub before creating.",
+    )
     parser.add_argument("--json", action="store_true", help="Print machine-readable JSON.")
     return parser.parse_args()
 
@@ -262,6 +273,16 @@ def validate_title(title: str, source: str, path: Path) -> list[str]:
     return issues
 
 
+def parse_publish_status(sections: dict[str, str]) -> dict[str, str]:
+    publish_status = sections.get("Publish Status", "")
+    values: dict[str, str] = {}
+    for line in publish_status.splitlines():
+        match = re.match(r"^\s*[-*]\s+([^:]+):\s*(.*?)\s*$", line)
+        if match:
+            values[match.group(1).strip().lower()] = match.group(2).strip()
+    return values
+
+
 def parse_blockers(section: str, known_keys: set[str]) -> list[str]:
     blockers: list[str] = []
     for line in section.splitlines():
@@ -315,6 +336,10 @@ def load_drafts(issue_dir: Path) -> list[IssueDraft]:
         text = path.read_text(encoding="utf-8")
         sections = split_sections(text)
         title, title_source = resolve_title(path, text, sections)
+        publish_status = parse_publish_status(sections)
+        remote_number = None
+        if publish_status.get("github number", "").isdigit():
+            remote_number = int(publish_status["github number"])
         drafts.append(
             IssueDraft(
                 path=path,
@@ -324,6 +349,10 @@ def load_drafts(issue_dir: Path) -> list[IssueDraft]:
                 body=render_issue_body(path.name, sections),
                 blocked_by=parse_blockers(sections.get("Blocked by", ""), known_keys),
                 title_issues=validate_title(title, title_source, path),
+                status=publish_status.get("status", "pending").lower() or "pending",
+                remote_url=publish_status.get("github url") or None,
+                remote_number=remote_number,
+                error=publish_status.get("error") or None,
             )
         )
     return drafts
@@ -526,6 +555,9 @@ def publish(args: argparse.Namespace) -> dict[str, Any]:
         raise SystemExit(message)
 
     for draft in drafts:
+        if draft.has_publish_record and not args.force:
+            draft.status = "skipped"
+            continue
         if not args.execute:
             draft.status = "planned"
             continue
