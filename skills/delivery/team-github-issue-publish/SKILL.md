@@ -112,6 +112,15 @@ GITHUB_TOKEN=... python3 {skill_dir}/scripts/publish_github_issues.py --slug {sl
 
 GitHub Enterprise 场景下，remote host 必须与平台地址一致；如果不一致，应要求用户确认平台地址和目标仓库。
 
+## 多 Remote 模式
+
+当仓库中存在多个 remote 时，先结合 remote 名称判断工作模式：
+
+- fork-pull 模式：通常会同时存在 `origin` 和 `upstream`，并且 `origin` 指向开发者 fork、`upstream` 指向上游仓库。此时 issue 应默认创建到 `upstream` 对应的上游仓库。
+- 单仓模式：如果只有一个远端或无法判断 fork-pull，则按仓库定位规则继续推断。
+
+无论是哪种模式，真正执行 `--execute` 之前，都必须先输出 dry-run 结果，并由人类确认目标仓库、issue 列表和发布计划没有问题。
+
 ## 输出物
 
 - GitHub Issue 或 GitHub Issues（默认按依赖顺序批量创建；指定单个 issue 时只创建一个）。
