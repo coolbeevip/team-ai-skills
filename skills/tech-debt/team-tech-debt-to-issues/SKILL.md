@@ -38,6 +38,7 @@ triggers:
 - 每个 issue 完成后必须有可观察结果（稳定性、性能、复杂度、错误率、维护成本等）。
 - 明确 blocker，先拆并先做阻塞 issue。
 - 每个 issue 标注 `AFK` 或 `HITL`；若为 `HITL`，必须写清楚需要谁做什么决策。
+- 用户可见输出中不要只写缩写。首次出现时写成 `AFK（可独立执行，无需人工决策）` 或 `HITL（需要人工介入）`。
 - 使用项目已有术语，不引入新同义词。
 
 ## 最小 issue 模板
@@ -53,7 +54,7 @@ team-spec/spec/refine/{slug}.md
 
 ## Type
 
-AFK / HITL
+AFK（可独立执行，无需人工决策） / HITL（需要人工介入）
 
 ## Acceptance criteria
 

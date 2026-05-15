@@ -68,6 +68,7 @@ triggers:
 - `HITL`：需要人工介入，例如产品确认、设计评审、架构决策、合规判断或跨团队排期。
 
 优先把任务设计成 `AFK`。如果必须是 `HITL`，说明具体需要谁做什么决定。
+用户可见输出中不要只写缩写。首次出现时写成 `AFK（可独立执行，无需人工决策）` 或 `HITL（需要人工介入）`。
 
 ## 流程
 
@@ -82,7 +83,7 @@ triggers:
 确认时每个候选 issue 都要展示：
 
 - `Title`：短标题。
-- `Type`：`AFK` 或 `HITL`。
+- `Type`：`AFK（可独立执行，无需人工决策）` 或 `HITL（需要人工介入）`。
 - `Blocked by`：依赖哪些 issue，或 `None`。
 - `User stories covered`：覆盖哪些用户故事或验收场景。
 - `Why this slice`：为什么它是一个可独立验证的端到端切片。
@@ -100,7 +101,7 @@ triggers:
 
 ## Type
 
-AFK / HITL
+AFK（可独立执行，无需人工决策） / HITL（需要人工介入）
 
 如果是 HITL，说明需要谁做什么决定。
 
