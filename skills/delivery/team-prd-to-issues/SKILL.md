@@ -83,10 +83,43 @@ triggers:
 确认时每个候选 issue 都要展示：
 
 - `Title`：短标题。
+- `Title example`：给出一个更自然、更具体的示例标题，尽量符合“动词 + 对象 + 范围”的结构。
 - `Type`：`AFK（可独立执行，无需人工决策）` 或 `HITL（需要人工介入）`。
 - `Blocked by`：依赖哪些 issue，或 `None`。
 - `User stories covered`：覆盖哪些用户故事或验收场景。
 - `Why this slice`：为什么它是一个可独立验证的端到端切片。
+
+确认时先按下面顺序检查标题：
+
+1. 先问自己：这个标题能不能脱离正文单独看懂。
+2. 再问自己：标题里有没有动作、对象和范围。
+3. 再检查：标题是不是退化成了文件名、模块名或 PRD 章节名。
+4. 最后检查：是否只剩 `Fix`、`Update`、`Refactor`、`Improve` 这类空泛词。
+
+## 标题规则
+
+每个 issue 的标题必须足够清晰，拆解时就要满足下面约束：
+
+- 标题必须一行内读完，不要带换行。
+- 标题优先使用“动词 + 对象 + 范围”的结构。
+- 标题必须能单独看懂，不依赖正文来补语义。
+- 标题要避免空泛词，例如 `Fix`、`Update`、`Refactor`、`Improve`，除非后面紧跟明确对象和范围。
+- 标题过长时，优先缩短范围而不是堆叠更多背景。
+- 如果草拟标题退化成文件名、模块名或 PRD 章节名，说明切片不够具体，需要重写。
+- 中文标题同样要具体，建议包含动作、对象和结果，不要只写“优化 XXX”或“处理 XXX”。
+
+如果标题不满足这些规则，在确认候选 issue 时应直接重写，而不是把不清晰的标题带到发布阶段。
+
+推荐展示格式：
+
+- `Title`：`Allow CSV export to respect active row filters`
+- `Title example`：`Export filtered rows to CSV`
+- `Type`：`AFK（可独立执行，无需人工决策）`
+- `Blocked by`：`None`
+- `User stories covered`：`As a user, I can export only the rows I filtered in the table.`
+- `Why this slice`：`This is a self-contained end-to-end export path with a clear verification step.`
+
+如果检查结果不通过，优先重写标题，再决定这个 issue 是否要拆得更薄。
 
 ## Issue 模板
 
@@ -167,4 +200,5 @@ AFK（可独立执行，无需人工决策） / HITL（需要人工介入）
 - 依赖关系清楚，没有循环依赖。
 - HITL issue 的人工决策点具体、可执行。
 - AFK issue 不需要额外产品、设计或架构判断即可开始。
+- issue 标题清晰、具体、可一眼理解，且不会在发布阶段依赖兜底修正。
 - 最终回复包含“下一步可选技能”，且推荐与当前输出状态一致。

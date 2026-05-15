@@ -217,6 +217,16 @@ def default_target_branch(target: ProjectRef) -> str:
     return "main"
 
 
+def target_branch_source(target: ProjectRef, explicit: str | None) -> str:
+    if explicit:
+        return "explicit"
+    if target.remote:
+        ref = run_git(["symbolic-ref", f"refs/remotes/{target.remote}/HEAD"], check=False)
+        if ref:
+            return f"inferred from {target.remote}/HEAD"
+    return "fallback main"
+
+
 def branch_summary(branch: str, issue_iid: str) -> str:
     cleaned = branch
     cleaned = re.sub(rf"(^|[-_/])#?{re.escape(issue_iid)}([-_/]|$)", " ", cleaned)
@@ -262,6 +272,13 @@ def build_body(args: argparse.Namespace, issue_iid: str, branch: str) -> str:
     if not re.search(rf"\b(close[sd]?|fix(e[sd])?|resolve[sd]?)\s+#{re.escape(issue_iid)}\b", body, re.I):
         body = f"Closes #{issue_iid}\n\n" + body
     return body
+
+
+def tracked_ignored_files() -> list[str]:
+    output = run_git(["ls-files", "-ci", "--exclude-standard"], check=False)
+    if not output:
+        return []
+    return [line.strip() for line in output.splitlines() if line.strip()]
 
 
 def normalize_gitlab_url(url: str) -> str:
@@ -360,6 +377,7 @@ def build_plan(args: argparse.Namespace) -> dict[str, Any]:
     target_branch = args.target_branch or default_target_branch(target)
     title = build_title(args, issue_iid, source_branch)
     body = build_body(args, issue_iid, source_branch)
+    ignored_files = tracked_ignored_files()
 
     if not source.remote and not args.source_project:
         raise SystemExit("Cannot infer source remote. Provide --source-remote or --source-project.")
@@ -375,8 +393,33 @@ def build_plan(args: argparse.Namespace) -> dict[str, Any]:
         "target_project": target.path,
         "title": title,
         "body": body,
+        "target_branch_source": target_branch_source(target, args.target_branch),
+        "tracked_ignored_files": ignored_files,
         "dirty_worktree": dirty_worktree(),
     }
+
+
+def confirm_execution(plan: dict[str, Any]) -> None:
+    needs_confirmation = plan["target_branch_source"] != "explicit"
+    ignored_files = plan.get("tracked_ignored_files") or []
+
+    if not needs_confirmation and not ignored_files:
+        return
+
+    print("Execution confirmation required.")
+    if needs_confirmation:
+        print(f"- Target branch was {plan['target_branch_source']}: {plan['target_branch']}")
+    if ignored_files:
+        print("- Tracked files matching ignore rules were found:")
+        for path in ignored_files:
+            print(f"  - {path}")
+    if not sys.stdin.isatty():
+        raise SystemExit(
+            "Interactive confirmation required. Rerun in a TTY or pass an explicit --target-branch after reviewing ignored tracked files."
+        )
+    answer = input("Continue with push and creation? [y/N] ").strip().lower()
+    if answer not in {"y", "yes"}:
+        raise SystemExit("Aborted by user.")
 
 
 def execute(args: argparse.Namespace, plan: dict[str, Any]) -> dict[str, Any]:
@@ -388,6 +431,7 @@ def execute(args: argparse.Namespace, plan: dict[str, Any]) -> dict[str, Any]:
     if not plan["source_remote"]:
         raise SystemExit("Cannot push without a source remote.")
 
+    confirm_execution(plan)
     push_branch(plan["source_remote"], plan["source_branch"])
     existing = existing_mr(args.gitlab_url, plan["source_project"], token, plan["source_branch"])
     if existing:
@@ -419,8 +463,13 @@ def print_text(plan: dict[str, Any]) -> None:
     print(f"Issue: #{plan['issue_iid']}")
     print(f"Source: {plan['source_project']}:{plan['source_branch']}")
     print(f"Target: {plan['target_project']}:{plan['target_branch']}")
+    print(f"Target branch source: {plan['target_branch_source']}")
     print(f"Source remote: {plan['source_remote']}")
     print(f"Dirty worktree: {plan['dirty_worktree']}")
+    if plan.get("tracked_ignored_files"):
+        print("Tracked files matching ignore rules:")
+        for path in plan["tracked_ignored_files"]:
+            print(f"- {path}")
     print(f"Title: {plan['title']}")
     if plan.get("mr_url"):
         print(f"MR: {plan['mr_url']}")

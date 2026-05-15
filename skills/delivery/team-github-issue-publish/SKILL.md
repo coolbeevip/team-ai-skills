@@ -37,6 +37,8 @@ v1 仅支持 GitHub。不要在同一个技能中混合 GitHub 与 GitLab 发布
 - 读取 `team-spec/issues/{slug}/` 或显式 `--issues-dir`。
 - 默认发布该目录下全部 issue；也可以通过 `--issue` 只发布指定的单个 issue。
 - 按 `Blocked by` 生成依赖顺序。
+- 使用 `./scripts/templates/issue_body.md.tpl` 渲染平台正文，正文只保留对 GitHub 协作有用的摘要字段，不再直接发布完整草稿原文。
+- 发布前会校验 issue 标题是否足够清晰：必须来自明确的 `#` 标题或 `Title` 段，不能回退到文件名；标题过短、过泛或缺少对象时会拒绝发布。
 - 从显式 `--repo` 或 git remote 推断 GitHub 仓库，多个 remote 时优先 `upstream`。
 - 默认 dry-run，只输出发布计划。
 - `--execute` 时创建 GitHub Issues，并把发布结果回写到本地 issue 草稿。
@@ -66,6 +68,13 @@ GITHUB_TOKEN=... python3 {skill_dir}/scripts/publish_github_issues.py --slug {sl
 - `--milestone 123`：指定 milestone number。
 - `--assignee octocat`：可重复传入多个 assignee login。
 - `--json`：输出机器可读 JSON。
+
+标题规则：
+
+- 优先使用 issue 草稿里的 `# 标题`，其次使用 `Title` 段的首行。
+- 不允许退回到文件名作为标题来源。
+- 标题建议至少包含动作、对象和范围，不要只写 `Fix`、`Update`、`Refactor` 这类泛化词。
+- 标题过短、过长或缺少足够语义时，脚本会停止发布并提示修正。
 
 ## 输入物
 

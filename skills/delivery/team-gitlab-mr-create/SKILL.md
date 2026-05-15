@@ -35,9 +35,10 @@ v1 仅支持 GitLab Merge Request。GitHub Pull Request 应使用独立技能。
 - 读取当前 git 分支，默认从分支名推断 issue IID。
 - 从显式参数或 git remote 推断 source project 与 target project。
 - 默认 dry-run，只输出将推送的分支和将创建的 MR。
-- `--execute` 时先 push 当前分支，再创建 GitLab Merge Request。
+- `--execute` 时先做执行前确认，再 push 当前分支并创建 GitLab Merge Request。
 - MR 标题和正文都包含 issue 编号，正文默认使用 `Closes #{issue_iid}` 以便 GitLab 自动关联并在合并后关闭 issue。
 - 可指定 target branch、source remote、target remote、title、draft、label、assignee 和 reviewer。
+- 执行前会检查被 Git 追踪但又命中 `.gitignore` 规则的文件，并要求人类确认是否继续。
 
 推荐 dry-run：
 
@@ -56,7 +57,7 @@ GITLAB_TOKEN=... python3 {skill_dir}/scripts/create_gitlab_mr.py --execute
 常用参数：
 
 - `--issue-iid 123`：显式指定要关联的 GitLab issue IID。
-- `--target-branch main`：指定目标分支。
+- `--target-branch master`：指定目标分支；如果不传，脚本会推断并在 `--execute` 前要求人类确认。
 - `--source-remote origin`：指定推送当前分支的 remote。
 - `--target-remote upstream`：指定 MR 目标项目 remote。
 - `--target-project namespace/project`：显式指定目标项目，优先级高于 remote 推断。
@@ -122,8 +123,9 @@ GITLAB_TOKEN=... python3 {skill_dir}/scripts/create_gitlab_mr.py --execute
 1. 确认当前分支、issue IID、source remote、target project 和 target branch。
 2. 检查工作区状态；如果存在未提交变更，先提示用户提交或确认是否继续。
 3. 使用固定脚本执行默认 dry-run，预览 push 和 MR 创建计划。
-4. 用户确认后，用固定脚本追加 `--execute` 推送分支并创建 MR。
-5. 输出 MR URL、关联 issue、source/target branch、验证结果和下一步建议。
+4. 如果目标分支是推断出来的，或工作区里存在被追踪但命中 `.gitignore` 的文件，执行前必须向人类确认。
+5. 用户确认后，用固定脚本追加 `--execute` 推送分支并创建 MR。
+6. 输出 MR URL、关联 issue、source/target branch、验证结果和下一步建议。
 
 ## 安全要求
 

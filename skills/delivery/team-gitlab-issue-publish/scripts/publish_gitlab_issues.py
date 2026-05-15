@@ -20,6 +20,7 @@ import urllib.request
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
+from string import Template
 
 
 SECTION_RE = re.compile(r"^##\s+(.+?)\s*$", re.MULTILINE)
@@ -27,6 +28,18 @@ LOCAL_KEY_RE = re.compile(r"^(\d+[-_][A-Za-z0-9][A-Za-z0-9_.-]*\.md)$")
 ISSUE_REF_RE = re.compile(r"#(\d+)")
 LOCAL_REF_RE = re.compile(r"(\d+[-_][A-Za-z0-9][A-Za-z0-9_.-]*\.md)")
 PUBLISH_SECTION = "## Publish Status"
+BODY_TEMPLATE_PATH = Path(__file__).resolve().parent / "templates" / "issue_body.md.tpl"
+GENERIC_TITLE_PREFIXES = {
+    "fix",
+    "update",
+    "change",
+    "improve",
+    "refactor",
+    "task",
+    "todo",
+    "work",
+    "misc",
+}
 
 
 @dataclass
@@ -34,8 +47,10 @@ class IssueDraft:
     path: Path
     key: str
     title: str
+    title_source: str
     description: str
     blocked_by: list[str] = field(default_factory=list)
+    title_issues: list[str] = field(default_factory=list)
     status: str = "pending"
     remote_url: str | None = None
     remote_iid: int | None = None
@@ -206,13 +221,41 @@ def split_sections(text: str) -> dict[str, str]:
     return sections
 
 
-def title_from_text(path: Path, text: str, sections: dict[str, str]) -> str:
+def resolve_title(path: Path, text: str, sections: dict[str, str]) -> tuple[str, str]:
     first_heading = re.search(r"^#\s+(.+?)\s*$", text, re.MULTILINE)
     if first_heading:
-        return first_heading.group(1).strip()
+        return first_heading.group(1).strip(), "heading"
     if "Title" in sections and sections["Title"].strip():
-        return sections["Title"].splitlines()[0].strip()
-    return path.stem
+        return sections["Title"].splitlines()[0].strip(), "title_section"
+    return path.stem, "filename"
+
+
+def validate_title(title: str, source: str, path: Path) -> list[str]:
+    normalized = re.sub(r"\s+", " ", title).strip()
+    issues: list[str] = []
+    if not normalized:
+        issues.append(f"{path.name}: title is empty.")
+        return issues
+    if source == "filename":
+        issues.append(f"{path.name}: title falls back to the filename; add an explicit # heading or Title section.")
+    if len(normalized) < 12:
+        issues.append(f"{path.name}: title is too short ({len(normalized)} chars).")
+    if len(normalized) > 120:
+        issues.append(f"{path.name}: title is too long ({len(normalized)} chars).")
+
+    contains_cjk = bool(re.search(r"[\u4e00-\u9fff]", normalized))
+    words = [word for word in normalized.split(" ") if word]
+    if contains_cjk:
+        if len(normalized) < 6:
+            issues.append(f"{path.name}: Chinese title is too short to be clear.")
+    else:
+        if len(words) < 3:
+            issues.append(f"{path.name}: title should use at least 3 words.")
+        first_word = words[0].rstrip(":").lower() if words else ""
+        if first_word in GENERIC_TITLE_PREFIXES and len(words) < 4:
+            issues.append(f"{path.name}: title is too generic; include a clearer object or scope.")
+
+    return issues
 
 
 def parse_blockers(section: str, known_keys: set[str]) -> list[str]:
@@ -246,14 +289,17 @@ def load_drafts(issue_dir: Path) -> list[IssueDraft]:
         text = path.read_text(encoding="utf-8")
         sections = split_sections(text)
         blocked_by = parse_blockers(sections.get("Blocked by", ""), known_keys)
-        description = ensure_local_key(text, path.name)
+        title, title_source = resolve_title(path, text, sections)
+        description = render_issue_body(path.name, sections)
         drafts.append(
             IssueDraft(
                 path=path,
                 key=path.name,
-                title=title_from_text(path, text, sections),
+                title=title,
+                title_source=title_source,
                 description=description,
                 blocked_by=blocked_by,
+                title_issues=validate_title(title, title_source, path),
             )
         )
     return drafts
@@ -299,10 +345,26 @@ def filter_drafts(drafts: list[IssueDraft], selectors: list[str]) -> list[IssueD
     return selected
 
 
-def ensure_local_key(text: str, key: str) -> str:
-    if f"Local-Issue-Key: {key}" in text:
-        return text
-    return text.rstrip() + "\n\n---\n\nLocal-Issue-Key: " + key + "\n"
+def section_block(title: str, text: str | None) -> str:
+    if not text or not text.strip():
+        return ""
+    return f"## {title}\n\n{text.strip()}\n\n"
+
+
+def render_issue_body(key: str, sections: dict[str, str]) -> str:
+    template = Template(BODY_TEMPLATE_PATH.read_text(encoding="utf-8"))
+    rendered = template.safe_substitute(
+        parent_block=section_block("Parent", sections.get("Parent")),
+        what_to_build_block=section_block("What to build", sections.get("What to build")),
+        type_block=section_block("Type", sections.get("Type")),
+        acceptance_criteria_block=section_block(
+            "Acceptance criteria", sections.get("Acceptance criteria")
+        ),
+        blocked_by_block=section_block("Blocked by", sections.get("Blocked by")),
+        notes_block=section_block("Notes", sections.get("Notes")),
+        local_issue_key=key,
+    ).rstrip()
+    return rendered + "\n"
 
 
 def topo_sort(drafts: list[IssueDraft]) -> list[IssueDraft]:
@@ -445,6 +507,12 @@ def publish(args: argparse.Namespace) -> dict[str, Any]:
     if args.execute and not token:
         raise SystemExit(f"Missing token env var: {args.token_env}")
 
+    title_issues = [issue for draft in drafts for issue in draft.title_issues]
+    if title_issues:
+        prefix = "Title validation failed:\n"
+        message = prefix + "\n".join(f"- {issue}" for issue in title_issues)
+        raise SystemExit(message)
+
     for draft in drafts:
         if not args.execute:
             draft.status = "planned"
@@ -482,7 +550,9 @@ def publish(args: argparse.Namespace) -> dict[str, Any]:
             {
                 "key": draft.key,
                 "title": draft.title,
+                "title_source": draft.title_source,
                 "blocked_by": draft.blocked_by,
+                "title_issues": draft.title_issues,
                 "status": draft.status,
                 "remote_iid": draft.remote_iid,
                 "remote_url": draft.remote_url,
