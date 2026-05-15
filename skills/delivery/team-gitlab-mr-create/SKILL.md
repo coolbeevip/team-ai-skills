@@ -7,7 +7,7 @@ metadata:
   version: "1.0"
 triggers:
   - 创建 GitLab MR
-  - 提交合并请求
+  - 创建合并请求
   - 给这个 issue 建 MR
   - 推送分支并创建 MR
   - create GitLab MR
@@ -18,7 +18,7 @@ triggers:
 
 # 创建 GitLab Merge Request
 
-这个技能用于在 `team-issue-implement` 和 `team-issue-verify` 后，把当前 issue 分支推送到 GitLab，并创建关联 issue 的 Merge Request。它关注“少出错、可预览、可追踪”，避免手动复制 issue 编号、标题和正文时遗漏关联。
+这个技能用于在 `team-issue-implement` 和 `team-issue-verify` 后，把已经提交好的当前 issue 分支推送到 GitLab，并创建关联 issue 的 Merge Request。它关注“少出错、可预览、可追踪”，避免手动复制 issue 编号、标题和正文时遗漏关联。
 
 v1 仅支持 GitLab Merge Request。GitHub Pull Request 应使用独立技能。
 
@@ -36,6 +36,7 @@ v1 仅支持 GitLab Merge Request。GitHub Pull Request 应使用独立技能。
 - 从显式参数或 git remote 推断 source project 与 target project。
 - 默认 dry-run，只输出将推送的分支和将创建的 MR。
 - `--execute` 时先做执行前确认，再 push 当前分支并创建 GitLab Merge Request。
+- 脚本只允许推送已有提交，不负责 `git add`、`git commit`、自动暂存或自动生成本地提交。
 - MR 标题和正文都包含 issue 编号，正文默认使用 `Closes #{issue_iid}` 以便 GitLab 自动关联并在合并后关闭 issue。
 - 可指定 target branch、source remote、target remote、title、draft、label、assignee 和 reviewer。
 - 执行前会检查被 Git 追踪但又命中 `.gitignore` 规则的文件，并要求人类确认是否继续。
@@ -73,7 +74,7 @@ GITLAB_TOKEN=... python3 {skill_dir}/scripts/create_gitlab_mr.py --execute
 优先读取：
 
 - 当前 git 分支名，通常应包含或等于 issue 编号，例如 `123`、`issue-123`、`123-add-export-filter`。
-- 当前代码变更与提交历史。
+- 当前提交历史；工作区必须干净，不能包含未提交变更。
 - `team-spec/issues/{slug}/{issue-number}-{short-issue-slug}.md`，如果能从分支、用户输入或对话中确定。
 - GitLab issue IID 或 URL，如果用户提供。
 - Git remote 信息，用于推断 source project 和 target project。
@@ -121,7 +122,7 @@ GITLAB_TOKEN=... python3 {skill_dir}/scripts/create_gitlab_mr.py --execute
 ## 建议流程
 
 1. 确认当前分支、issue IID、source remote、target project 和 target branch。
-2. 检查工作区状态；如果存在未提交变更，先提示用户提交或确认是否继续。
+2. 检查工作区状态；如果存在未提交变更，停止并要求用户先完成实现验证和人工提交，不得代替用户执行 `git add` 或 `git commit`。
 3. 使用固定脚本执行默认 dry-run，预览 push 和 MR 创建计划。
 4. 如果目标分支是推断出来的，或工作区里存在被追踪但命中 `.gitignore` 的文件，执行前必须向人类确认。
 5. 用户确认后，用固定脚本追加 `--execute` 推送分支并创建 MR。
@@ -132,6 +133,7 @@ GITLAB_TOKEN=... python3 {skill_dir}/scripts/create_gitlab_mr.py --execute
 - token 只能从环境变量读取。
 - 不记录、不回显 token。
 - 不把 token 写入仓库文件或 git 配置。
+- 不执行 `git add`、`git commit`、`git stash` 或任何会改变本地提交历史的操作。
 - 默认 dry-run，不应在用户确认前推送分支或创建 MR。
 
 ## 完成标准
