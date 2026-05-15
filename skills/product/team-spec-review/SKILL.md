@@ -126,6 +126,24 @@ triggers:
 
 如果发现 PRD 或需求表述不清，直接给出更清晰的改写版本。改写应尽量可验证、可分工、可验收。
 
+## 完成输出
+
+每次完成评审后，最终回复必须包含：
+
+- 评审报告路径：`team-spec/spec/reviews/{slug}.md`，如果本次已保存。
+- `Status`：`ready`、`needs refinement` 或 `blocked`。
+- 下一步推荐：
+  - 当 `Status: ready` 时，明确推荐使用 `team-spec-to-prd` 固化 PRD。
+  - 当 `Status: needs refinement` 时，明确推荐回到 `team-spec-refine`，并说明需要修订哪些关键内容。
+  - 当 `Status: blocked` 时，明确说明阻塞项和解除阻塞后再使用哪个技能。
+
+推荐结尾：
+
+```text
+规格评审已完成，Status: ready。
+下一步请使用 team-spec-to-prd，将通过评审的规格固化为 PRD。
+```
+
 ## 处理原则
 
 - 优先报告会造成重大返工或上线事故的风险，不要平均用力。
