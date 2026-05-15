@@ -20,6 +20,47 @@ triggers:
 
 v1 仅支持 GitHub。不要在同一个技能中混合 GitHub 与 GitLab 发布逻辑；GitLab 请使用独立技能。
 
+## 固定脚本
+
+发布 GitHub issue 时，优先使用本技能目录下的固定脚本，不要临时重写 GitHub API 调用代码：
+
+```text
+./scripts/publish_github_issues.py
+```
+
+脚本能力：
+
+- 读取 `team-spec/issues/{slug}/` 或显式 `--issues-dir`。
+- 按 `Blocked by` 生成依赖顺序。
+- 从显式 `--repo` 或 git remote 推断 GitHub 仓库，多个 remote 时优先 `upstream`。
+- 默认 dry-run，只输出发布计划。
+- `--execute` 时创建 GitHub Issues，并把发布结果回写到本地 issue 草稿。
+- 使用 `Local-Issue-Key` 做幂等检查，避免重复创建。
+
+推荐 dry-run：
+
+```sh
+python3 {skill_dir}/scripts/publish_github_issues.py --slug {slug}
+```
+
+用户确认后正式发布：
+
+```sh
+GITHUB_TOKEN=... python3 {skill_dir}/scripts/publish_github_issues.py --slug {slug} --execute
+```
+
+其中 `{skill_dir}` 是当前技能目录。技能内部定位脚本时应使用相对 `SKILL.md` 的路径 `./scripts/publish_github_issues.py`，执行命令时再解析成实际文件路径。
+
+常用参数：
+
+- `--github-url https://github.example.com`：GitHub Enterprise。
+- `--repo owner/repo`：显式指定仓库，优先级高于 remote 推断。
+- `--remote upstream`：显式指定用于推断仓库的 remote。
+- `--label label-name`：可重复传入多个 label。
+- `--milestone 123`：指定 milestone number。
+- `--assignee octocat`：可重复传入多个 assignee login。
+- `--json`：输出机器可读 JSON。
+
 ## 输入物
 
 主输入：
@@ -29,7 +70,7 @@ v1 仅支持 GitHub。不要在同一个技能中混合 GitHub 与 GitLab 发布
 必须参数：
 
 - 平台地址（默认 `https://github.com`；GitHub Enterprise 必须提供自定义地址）。
-- 仓库定位：`owner/repo`。
+- 仓库定位：`owner/repo`；如果用户未显式提供，可按下面“仓库定位规则”从 git remote 推断。
 - 认证 token（必须通过环境变量提供，不写入任何文件）。
 - 目标 slug 或明确的 issue 目录路径（如 `team-spec/issues/{slug}/`）。
 
@@ -47,6 +88,22 @@ v1 仅支持 GitHub。不要在同一个技能中混合 GitHub 与 GitLab 发布
 - 需要有效 token 且具备 GitHub Issues 写权限（常见为 `repo` 或等效最小权限）。
 
 如果无法唯一确定 slug、仓库或 token 来源，必须停止并向用户确认，不得猜测。
+
+## 仓库定位规则
+
+当用户没有显式提供 GitHub 仓库 `owner/repo` 时，先读取当前仓库的 git remote：
+
+1. 如果存在名为 `upstream` 的 GitHub remote，默认使用 `upstream` 对应的上游仓库创建 issue。
+2. 如果不存在 `upstream`，但当前分支配置了唯一的 upstream tracking remote，使用该 tracking remote。
+3. 如果只有一个 GitHub remote，使用这个 remote。
+4. 如果存在多个 GitHub remote 且无法按以上规则唯一判断，停止并要求用户指定仓库，不要默认使用 `origin`。
+
+从 remote URL 提取仓库时，兼容 HTTPS 与 SSH 格式，例如：
+
+- `https://github.com/owner/repo.git` -> `owner/repo`
+- `git@github.com:owner/repo.git` -> `owner/repo`
+
+GitHub Enterprise 场景下，remote host 必须与平台地址一致；如果不一致，应要求用户确认平台地址和目标仓库。
 
 ## 输出物
 
@@ -90,13 +147,13 @@ v1 仅支持 GitHub。不要在同一个技能中混合 GitHub 与 GitLab 发布
 
 ## 建议流程
 
-1. 确认 slug、仓库、平台地址、token 来源与权限范围。
+1. 确认 slug、仓库、平台地址、token 来源与权限范围；若仓库来自 git remote，按“仓库定位规则”优先选择上游仓库。
 2. 读取 `team-spec/issues/{slug}/` 下所有待发布 issue 草稿。
 3. 解析 `Blocked by` 关系并生成依赖有向图。
 4. 检查循环依赖；若存在循环依赖，停止并输出冲突清单。
-5. 生成拓扑顺序发布计划。
-6. 先执行 `dry-run`，输出将创建/跳过的完整清单。
-7. 用户确认后执行正式发布。
+5. 使用固定脚本生成拓扑顺序发布计划。
+6. 先执行固定脚本的默认 `dry-run`，输出将创建/跳过的完整清单。
+7. 用户确认后用固定脚本追加 `--execute` 执行正式发布。
 8. 每创建一个 issue 即刻回写本地结果，避免中断后丢失进度。
 9. 对失败项按可配置策略重试；重试后仍失败则保留失败状态并汇总。
 10. 输出批量发布报告和下一步建议（如补充权限、修复依赖或手动处理失败项）。
