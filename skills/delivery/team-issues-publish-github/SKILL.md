@@ -1,5 +1,5 @@
 ---
-name: team-prd-issues-publish-github
+name: team-issues-publish-github
 description: 将 team-spec/issues/{slug}/ 下的本地 issue 草稿按依赖顺序批量发布到 GitHub Issues，并回写发布结果，支持 dry-run、幂等检查与部分失败重试。Batch publish local issue drafts under team-spec/issues/{slug}/ to GitHub Issues in dependency order, with write-back status, dry-run, idempotency checks, and retry support.
 license: MIT
 metadata:
