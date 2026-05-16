@@ -21,6 +21,21 @@ triggers:
 
 这个技能用于找出会导致需求方向错误、返工、延期、线上事故、合规问题或协作失效的风险。不要只输出泛泛的风险列表；每个重要风险都必须落到处理动作、负责人和截止点。
 
+## 运行时语言配置
+
+统一读取目标项目根目录 `team-spec/config.yml`：
+
+```yaml
+language: zh-CN
+```
+
+语言优先级：用户本轮明确指定 > `team-spec/config.yml` > 首次询问并落盘。若配置不存在，不报错，走“询问并创建”流程。
+
+执行要求：
+
+- 对话回复与评审文档 `team-spec/active/spec/reviews/{slug}.md` 均使用 `language`。
+- 用户临时切换语言时，本次立即生效，并询问是否回写配置。
+
 ## 触发时机
 
 - `team-spec-refine` 阶段中：反复评审规格是否还有会阻塞 PRD 的明显缺口。
@@ -35,6 +50,7 @@ triggers:
 优先读取：
 
 - 当前对话中的需求、澄清结论或 PRD。
+- `team-spec/config.yml`（如果存在），用于确定统一语言设置。
 - `team-spec-refine` 的澄清结论。
 - `team-spec/active/spec/refine/{slug}.md`，这是本技能的主输入。
 - `team-spec-to-prd` 生成的 PRD，如果已经存在。
@@ -53,6 +69,7 @@ triggers:
 - `team-spec/active/spec/reviews/{slug}.md`：与 refinement 使用同一个 slug 的规格评审报告。
 - 可被 `team-spec-to-prd` 读取的 PRD 前置检查结果。
 - 可被 `team-prd-to-issues` 参考的工程拆解风险提示，例如 blocker、HITL 决策点和验收风险。
+- 若用户同意回写，更新 `team-spec/config.yml` 的语言设置。
 
 如果项目需要沉淀评审报告，默认保存到 `team-spec/active/spec/reviews/{slug}.md`，目录只在需要时创建。
 

@@ -19,11 +19,28 @@ triggers:
 
 这个技能用于把 PRD 拆成工程团队可以直接领取的 issue。拆解目标是让每个 issue 都能独立实现、独立验证，并尽量减少跨 issue 的隐藏耦合。
 
+## 运行时语言配置
+
+统一读取目标项目根目录 `team-spec/config.yml`：
+
+```yaml
+language: zh-CN
+```
+
+语言优先级：用户本轮明确指定 > `team-spec/config.yml` > 首次询问并落盘。若配置不存在，不报错，走“询问并创建”流程。
+
+执行要求：
+
+- 对话回复与 issue 草稿文档 `team-spec/active/issues/{slug}/` 下内容均使用 `language`。
+- 用户临时切换语言时，本次立即生效，并询问是否回写配置。
+
 ## 输入物
 
 优先使用当前对话已有材料。如果用户提供 issue 编号、URL、PRD 路径或文档路径，先读取完整内容和相关评论。
 
 主输入必须是 `team-spec-to-prd` 生成的 PRD，默认来自 `team-spec/active/prd/{slug}.md`。没有 PRD 时，不要直接基于澄清记录或风险清单拆工程任务；应先要求执行 `team-spec-to-prd`，除非用户明确要求生成临时工程草案。
+
+- `team-spec/config.yml`（如果存在），用于确定统一语言设置。
 
 必须先确定要拆解的 PRD，即明确的 `{slug}` 或 `team-spec/active/prd/{slug}.md`。如果无法从用户请求、当前对话或文件路径中唯一判断，应停止并要求用户提供 slug 或 PRD 文件路径，不要猜测要拆哪个 PRD。
 
@@ -47,6 +64,7 @@ triggers:
 - issue 拆解草案：标题、类型、依赖、覆盖的用户故事和切片理由。
 - 正式 issue，如果用户确认并且 issue tracker 可用。
 - 本地 Markdown issue 草稿，如果没有可用 issue tracker，默认保存到 `team-spec/active/issues/{slug}/{issue-number}-{short-issue-slug}.md`。
+- 若用户同意回写，更新 `team-spec/config.yml` 的语言设置。
 
 这些输出物通常是工程执行入口。下游 agent 或研发人员应能直接领取 `AFK` issue；`HITL` issue 必须先完成指定人工决策。
 
