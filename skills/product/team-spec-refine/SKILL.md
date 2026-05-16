@@ -23,12 +23,40 @@ triggers:
 
 ## 首轮动作
 
+0. 启动检查：优先读取 `team-spec/config.yml`。若不存在，不报错，只询问一次语言偏好后创建配置。
 1. 用一到两句话复述当前需求。
 2. 找出最阻碍共识的一个未知点。
 3. 提出一个聚焦问题，并给出你的推荐答案。
 4. 等用户回答后再继续。
 
 如果答案可以从现有项目文档或代码中获得，先查资料，不要把问题抛给用户。
+
+## 运行时语言配置
+
+`team-spec/` 是运行时工作空间。语言配置统一使用目标项目根目录的 `team-spec/config.yml`：
+
+```yaml
+interaction_language: zh-CN
+document_language: zh-CN
+```
+
+- `interaction_language`：人类交互语言（对话回复、提问、总结）。
+- `document_language`：产物语言（refine/review/prd/issues/design 文档）。
+
+语言优先级必须固定为：
+
+1. 用户本轮明确指定。
+2. `team-spec/config.yml`。
+3. 首次询问用户并落盘到 `team-spec/config.yml`。
+
+显式覆盖规则：
+
+- 用户在单次会话临时要求切换语言时，本次立即生效。
+- 临时切换后，应询问是否回写 `team-spec/config.yml`；用户同意才更新配置。
+
+兼容性兜底：
+
+- 旧项目没有 `team-spec/config.yml` 时，不得报错或中断；走“询问一次并创建配置”的流程。
 
 ## 需求上下文
 
@@ -58,6 +86,7 @@ triggers:
 ## 输入物
 
 - 当前对话中的初始需求、用户问题、业务背景或功能想法。
+- `team-spec/config.yml`（如果存在），用于确定交互语言与文档语言。
 - 现有 `team-spec/active/spec/CONTEXT.md`，如果项目已有需求上下文。
 - 现有 `team-spec/active/spec/decisions/`，如果项目已有产品决策记录。
 - 相关 PRD、业务文档、任务、设计稿或代码现状。
@@ -69,6 +98,7 @@ triggers:
 - `team-spec/active/spec/refine/{yyyy-mm-dd}-{english-slug}.md`：单次规格细化的主输出物。
 - `team-spec/active/spec/CONTEXT.md`：当产品术语、角色、流程或业务规则被确认后更新。
 - `team-spec/active/spec/decisions/{number}-{slug}.md`：当出现长期有效的产品决策时创建。
+- `team-spec/config.yml`：首次进入工作空间且缺失配置时创建；用户明确同意时可更新语言设置。
 
 下游技能会读取这些输出物：`team-spec-review` 用于规格评审，`team-spec-to-prd` 用于生成 PRD。
 
@@ -117,6 +147,8 @@ triggers:
 ## 会话输出
 
 每轮回答后，简短说明本轮解决了什么：
+
+- 对话回复使用 `interaction_language`，文档落盘使用 `document_language`；若用户本轮显式覆盖，按覆盖值执行。
 
 - 已确认的术语、规则、角色或范围边界。
 - 当前剩余风险最高的歧义。

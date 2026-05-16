@@ -21,11 +21,29 @@ triggers:
 
 这个技能用于把当前对话、需求上下文和项目现状综合成 PRD。不要进行大范围访谈。只有当缺失信息会导致 PRD 误导研发或无法落地时，才向用户追问。
 
+## 运行时语言配置
+
+统一读取目标项目根目录 `team-spec/config.yml`：
+
+```yaml
+interaction_language: zh-CN
+document_language: zh-CN
+```
+
+语言优先级：用户本轮明确指定 > `team-spec/config.yml` > 首次询问并落盘。若配置不存在，不报错，走“询问并创建”流程。
+
+执行要求：
+
+- 对话回复使用 `interaction_language`。
+- PRD 文档 `team-spec/active/prd/{slug}.md` 使用 `document_language`。
+- 用户临时切换语言时，本次立即生效，并询问是否回写配置。
+
 ## 输入物
 
 优先读取上游技能输出：
 
 - `team-spec-refine` 的澄清结论。
+- `team-spec/config.yml`（如果存在），用于确定交互语言与文档语言。
 - `team-spec/active/spec/refine/{slug}.md`。
 - `team-spec/active/spec/CONTEXT.md`。
 - `team-spec/active/spec/decisions/`。
@@ -46,6 +64,7 @@ triggers:
 - 如果没有外部任务系统，默认保存到 `team-spec/active/prd/{slug}.md`。
 - PRD 中应保留开放问题、风险假设和验收标准，供 `team-prd-to-issues` 继续拆解工程任务。
 - PRD 是需求到工程的正式交接边界。工程拆解技能应以 PRD 为主输入，而不是直接基于澄清过程材料拆任务。
+- 若用户同意回写，更新 `team-spec/config.yml` 的语言设置。
 
 ## 流程
 
