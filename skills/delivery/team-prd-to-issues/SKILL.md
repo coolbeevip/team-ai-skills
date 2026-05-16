@@ -24,16 +24,14 @@ triggers:
 统一读取目标项目根目录 `team-spec/config.yml`：
 
 ```yaml
-interaction_language: zh-CN
-document_language: zh-CN
+language: zh-CN
 ```
 
 语言优先级：用户本轮明确指定 > `team-spec/config.yml` > 首次询问并落盘。若配置不存在，不报错，走“询问并创建”流程。
 
 执行要求：
 
-- 对话回复使用 `interaction_language`。
-- issue 草稿文档 `team-spec/active/issues/{slug}/` 下内容使用 `document_language`。
+- 对话回复与 issue 草稿文档 `team-spec/active/issues/{slug}/` 下内容均使用 `language`。
 - 用户临时切换语言时，本次立即生效，并询问是否回写配置。
 
 ## 输入物
@@ -42,7 +40,7 @@ document_language: zh-CN
 
 主输入必须是 `team-spec-to-prd` 生成的 PRD，默认来自 `team-spec/active/prd/{slug}.md`。没有 PRD 时，不要直接基于澄清记录或风险清单拆工程任务；应先要求执行 `team-spec-to-prd`，除非用户明确要求生成临时工程草案。
 
-- `team-spec/config.yml`（如果存在），用于确定交互语言与 issue 文档语言。
+- `team-spec/config.yml`（如果存在），用于确定统一语言设置。
 
 必须先确定要拆解的 PRD，即明确的 `{slug}` 或 `team-spec/active/prd/{slug}.md`。如果无法从用户请求、当前对话或文件路径中唯一判断，应停止并要求用户提供 slug 或 PRD 文件路径，不要猜测要拆哪个 PRD。
 

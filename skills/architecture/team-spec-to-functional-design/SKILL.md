@@ -27,16 +27,14 @@ triggers:
 统一读取目标项目根目录 `team-spec/config.yml`：
 
 ```yaml
-interaction_language: zh-CN
-document_language: zh-CN
+language: zh-CN
 ```
 
 语言优先级：用户本轮明确指定 > `team-spec/config.yml` > 首次询问并落盘。若配置不存在，不报错，走“询问并创建”流程。
 
 执行要求：
 
-- 对话回复使用 `interaction_language`。
-- 设计文档 `team-spec/active/design/{slug}.md` 使用 `document_language`。
+- 对话回复与设计文档 `team-spec/active/design/{slug}.md` 均使用 `language`。
 - 用户临时切换语言时，本次立即生效，并询问是否回写配置。
 
 ## 输入物
@@ -44,7 +42,7 @@ document_language: zh-CN
 优先读取以下材料，按可用性从高到低组织分析：
 
 - 需求规格说明书、PRD、规格细化文档。
-- `team-spec/config.yml`（如果存在），用于确定交互语言与文档语言。
+- `team-spec/config.yml`（如果存在），用于确定统一语言设置。
 - 源代码、目录结构、接口定义、数据库定义、配置文件。
 - 现有架构文档、接口文档、设计稿、评审结论、测试用例。
 - 若项目已有 `team-spec` 工作空间，优先读取同一 slug 对应的上游产物。

@@ -36,12 +36,10 @@ triggers:
 `team-spec/` 是运行时工作空间。语言配置统一使用目标项目根目录的 `team-spec/config.yml`：
 
 ```yaml
-interaction_language: zh-CN
-document_language: zh-CN
+language: zh-CN
 ```
 
-- `interaction_language`：人类交互语言（对话回复、提问、总结）。
-- `document_language`：产物语言（refine/review/prd/issues/design 文档）。
+- `language`：统一语言设置（对话回复与 refine/review/prd/issues/design 产物文档）。
 
 语言优先级必须固定为：
 
@@ -86,7 +84,7 @@ document_language: zh-CN
 ## 输入物
 
 - 当前对话中的初始需求、用户问题、业务背景或功能想法。
-- `team-spec/config.yml`（如果存在），用于确定交互语言与文档语言。
+- `team-spec/config.yml`（如果存在），用于确定统一语言设置。
 - 现有 `team-spec/active/spec/CONTEXT.md`，如果项目已有需求上下文。
 - 现有 `team-spec/active/spec/decisions/`，如果项目已有产品决策记录。
 - 相关 PRD、业务文档、任务、设计稿或代码现状。
@@ -148,7 +146,7 @@ document_language: zh-CN
 
 每轮回答后，简短说明本轮解决了什么：
 
-- 对话回复使用 `interaction_language`，文档落盘使用 `document_language`；若用户本轮显式覆盖，按覆盖值执行。
+- 对话回复与文档落盘均使用 `language`；若用户本轮显式覆盖，按覆盖值执行。
 
 - 已确认的术语、规则、角色或范围边界。
 - 当前剩余风险最高的歧义。
