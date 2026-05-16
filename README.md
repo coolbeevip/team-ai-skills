@@ -75,14 +75,17 @@ flowchart TD
     D --> F[team-prd-to-issues]
     D -. 可选：人类对齐材料 .-> H[team-prd-to-alignment]
     H -. 对齐结论反馈 .-> D
+    D -. 可选：功能设计 .-> R[team-spec-to-functional-design]
     F --> N[team-github-issue-publish]
     F --> O[team-gitlab-issue-publish]
+    F -. harness 不清晰时 .-> T[team-harness-refine]
     N --> G[team-issue-implement]
     O --> G
     G --> I[team-issue-verify]
     I -- 验证未通过 --> G
     I -- GitLab --> P[team-gitlab-mr-create]
     I -- GitHub --> Q[team-github-pr-create]
+    D -. 需求完成或废弃时 .-> S[team-spec-archive]
 
     J[team-tech-debt-refine] --> K[team-tech-debt-review]
     K --> L{存在阻塞风险?}
@@ -95,11 +98,15 @@ flowchart TD
 
 `team-spec/active/prd/` 中的 PRD 是需求到工程的正式交接边界。`team-prd-to-alignment` 可将 AI 结构化 PRD 转换为适合需求、研发和项目管理讨论的人类对齐材料；`team-prd-to-issues` 仍应以 PRD 为主输入。
 
-`team-prd-to-issues` 应以 PRD 为主输入；`CONTEXT.md`、`decisions/` 和 `reviews/` 只能作为背景参考，不能绕过 PRD 直接拆工程任务。
+`team-spec-to-functional-design` 基于 PRD 与源代码生成企业级功能设计说明书，供架构师和技术负责人在实现前评审，不影响 PRD 的权威地位。
+
+`team-prd-to-issues` 应以 PRD 为主输入；`CONTEXT.md`、`decisions/` 和 `reviews/` 只能作为背景参考，不能绕过 PRD 直接拆工程任务。拆解过程中如果发现验证命令、项目入口或 agent 工作环境不清晰，可使用 `team-harness-refine` 补全。
 
 `team-github-issue-publish` 用于把 `team-spec/active/issues/{slug}/` 下的本地 issue 草稿发布到 GitHub Issues，并回写发布结果。默认按依赖顺序批量发布，也可通过 `--issue` 指定单个 issue。该技能仅处理 GitHub。
 
 `team-gitlab-issue-publish` 用于把 `team-spec/active/issues/{slug}/` 下的本地 issue 草稿发布到 GitLab Issues，并回写发布结果。默认按依赖顺序批量发布，也可通过 `--issue` 指定单个 issue。该技能仅处理 GitLab。
+
+`team-spec-archive` 用于把 `team-spec/active/` 中已完成、废弃或暂停的需求产物归档到 `team-spec/archive/{slug}/`，清空活跃工作区以避免下一个需求误改旧规格。开始新需求前，若 active 中已有其他 slug，应先归档。
 
 技术债链路使用 `team-tech-debt-refine -> team-tech-debt-review -> team-tech-debt-to-issues`，并统一收敛到 `team-spec/active/issues/{slug}/`。技术债链路的 slug 必须包含 `debt`，建议格式 `{yyyy-mm-dd}-debt-{short-english-slug}`，以便后续复用工程实现与验证流程。
 

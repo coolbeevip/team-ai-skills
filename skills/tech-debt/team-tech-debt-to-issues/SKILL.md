@@ -17,6 +17,21 @@ triggers:
 
 这个技能用于把技术债规格拆解为工程可执行的 issue，确保每个 issue 都能独立启动、独立验收，并且依赖关系清晰。
 
+## 运行时语言配置
+
+统一读取目标项目根目录 `team-spec/config.yml`：
+
+```yaml
+language: zh-CN
+```
+
+语言优先级：用户本轮明确指定 > `team-spec/config.yml` > 首次询问并落盘。若配置不存在，不报错，走"询问并创建"流程。
+
+执行要求：
+
+- 对话回复与 issue 草稿 `team-spec/active/issues/{slug}/` 下内容均使用 `language`。
+- 用户临时切换语言时，本次立即生效，并询问是否回写配置。
+
 ## 输入物
 
 - 主输入：`team-spec/active/spec/refine/{slug}.md`。
@@ -74,3 +89,15 @@ AFK（可独立执行，无需人工决策） / HITL（需要人工介入）
 
 - 产出落地到 `team-spec/active/issues/{slug}/` 的可执行 issue 草稿。
 - issue 可被工程或 agent 直接领取，并具备可验证验收标准。
+
+## 下一步可选技能
+
+完成 issue 拆解后，必须在最终回复中列出可选下一步，帮助用户继续推进：
+
+- 如果已生成本地 issue 草稿但尚未发布到远端：
+  - `team-github-issue-publish`：将本地 issue 草稿发布到 GitHub Issues，支持整目录批量发布或指定单个 issue。
+  - `team-gitlab-issue-publish`：将本地 issue 草稿发布到 GitLab Issues，支持整目录批量发布或指定单个 issue。
+- 如果不需要远端 issue tracker，或已有明确的本地 issue：
+  - `team-issue-implement`：选择一个 `AFK（可独立执行，无需人工决策）` issue 开始实现。
+- 如果 issue 中存在 `HITL（需要人工介入）`：
+  - 先完成对应人工决策，再继续发布或实现。

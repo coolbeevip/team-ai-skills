@@ -19,6 +19,21 @@ triggers:
 
 这个技能用于把模糊的技术债诉求打磨成可评审、可拆解、可验收的技术债规格。
 
+## 运行时语言配置
+
+统一读取目标项目根目录 `team-spec/config.yml`：
+
+```yaml
+language: zh-CN
+```
+
+语言优先级：用户本轮明确指定 > `team-spec/config.yml` > 首次询问并落盘。若配置不存在，不报错，走"询问并创建"流程。
+
+执行要求：
+
+- 对话回复与技术债细化文档 `team-spec/active/spec/refine/{slug}.md` 均使用 `language`。
+- 用户临时切换语言时，本次立即生效，并询问是否回写配置。
+
 ## 输入物
 
 - 当前对话中的技术债诉求、背景、约束和目标。
@@ -27,6 +42,8 @@ triggers:
 - 如果存在 `team-spec/active/spec/reviews/{slug}.md` 且状态为 `needs refinement`，优先读取并围绕问题继续细化。
 
 必须先确定唯一 slug。技术债链路的 slug 必须包含 `debt`，格式建议为 `{yyyy-mm-dd}-debt-{short-english-slug}`。如果无法唯一判断 slug，必须向用户确认，不得猜测。
+
+开始新技术债需求前，必须检查 `team-spec/active/` 是否已有其他 slug 的技术债产物（slug 中包含 `debt` 的 refine 或 review 文档）。如果存在，先要求用户确认继续旧技术债，或使用 `team-spec-archive` 归档后再开始新需求，不得默认修改旧规格。
 
 ## 输出物
 
