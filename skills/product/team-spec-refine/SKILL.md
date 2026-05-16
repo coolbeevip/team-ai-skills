@@ -38,35 +38,37 @@ triggers:
 /
 ├── REQUIREMENTS.md
 ├── team-spec/
-│   ├── spec/
-│   │   ├── CONTEXT.md
-│   │   └── decisions/
-│   │   └── refine/
-│   ├── prd/
-│   └── issues/
+│   ├── active/
+│   │   ├── spec/
+│   │   │   ├── CONTEXT.md
+│   │   │   ├── decisions/
+│   │   │   └── refine/
+│   │   ├── prd/
+│   │   └── issues/
+│   └── archive/
 └── docs/
 ```
 
-如果 `team-spec/spec/CONTEXT.md` 不存在，等第一个产品术语、角色、流程或业务规则被确认后再创建。不要提前创建空文件。
+如果 `team-spec/active/spec/CONTEXT.md` 不存在，等第一个产品术语、角色、流程或业务规则被确认后再创建。不要提前创建空文件。
 
-如果 `team-spec/spec/decisions/` 不存在，等第一个长期有效、值得保留的产品决策出现后再创建。
+如果 `team-spec/active/spec/decisions/` 不存在，等第一个长期有效、值得保留的产品决策出现后再创建。
 
 需求上下文使用 [CONTEXT-FORMAT.md](./CONTEXT-FORMAT.md)，产品决策记录使用 [DECISION-FORMAT.md](./DECISION-FORMAT.md)。
 
 ## 输入物
 
 - 当前对话中的初始需求、用户问题、业务背景或功能想法。
-- 现有 `team-spec/spec/CONTEXT.md`，如果项目已有需求上下文。
-- 现有 `team-spec/spec/decisions/`，如果项目已有产品决策记录。
+- 现有 `team-spec/active/spec/CONTEXT.md`，如果项目已有需求上下文。
+- 现有 `team-spec/active/spec/decisions/`，如果项目已有产品决策记录。
 - 相关 PRD、业务文档、任务、设计稿或代码现状。
-- 如果存在 `team-spec/spec/reviews/{slug}.md` 且状态为 `needs refinement`，必须优先读取它，并围绕其中的问题继续追问用户。
+- 如果存在 `team-spec/active/spec/reviews/{slug}.md` 且状态为 `needs refinement`，必须优先读取它，并围绕其中的问题继续追问用户。
 
 ## 输出物
 
 - 对话中的澄清结论：需求摘要、规范术语、范围内/范围外、开放问题和轻量风险扫尾。
-- `team-spec/spec/refine/{yyyy-mm-dd}-{english-slug}.md`：单次规格细化的主输出物。
-- `team-spec/spec/CONTEXT.md`：当产品术语、角色、流程或业务规则被确认后更新。
-- `team-spec/spec/decisions/{number}-{slug}.md`：当出现长期有效的产品决策时创建。
+- `team-spec/active/spec/refine/{yyyy-mm-dd}-{english-slug}.md`：单次规格细化的主输出物。
+- `team-spec/active/spec/CONTEXT.md`：当产品术语、角色、流程或业务规则被确认后更新。
+- `team-spec/active/spec/decisions/{number}-{slug}.md`：当出现长期有效的产品决策时创建。
 
 下游技能会读取这些输出物：`team-spec-review` 用于规格评审，`team-spec-to-prd` 用于生成 PRD。
 
@@ -74,7 +76,9 @@ triggers:
 
 每个需求必须使用唯一 slug 串联全流程。格式为 `{yyyy-mm-dd}-{short-english-slug}`，例如 `2026-05-10-export-filter`。如果同一天同名，追加序号，例如 `2026-05-10-export-filter-2`。`CONTEXT.md` 和 `decisions/` 是长期共享上下文，不替代单次 `refine/{slug}.md`。
 
-修订同一个需求时，不要新建 slug。继续更新 `team-spec/spec/refine/{slug}.md`，并在文件中的 `## Change Log` 记录本轮修订原因和日期。
+开始新需求前，必须检查 `team-spec/active/` 是否已有其他 slug 的 refine、review、PRD 或 issue 产物。如果存在，先要求用户确认继续旧需求，或使用 `team-spec-archive` 归档后再开始新需求，不得默认修改旧规格。`team-spec/archive/` 默认只读，除非用户显式指定历史 slug 或文件路径。
+
+修订同一个需求时，不要新建 slug。继续更新 `team-spec/active/spec/refine/{slug}.md`，并在文件中的 `## Change Log` 记录本轮修订原因和日期。
 
 ## 细化原则
 
@@ -84,7 +88,7 @@ triggers:
 - 重点追问用户角色、权限、状态变化、异常路径和业务规则。
 - 用具体场景压测边界。主动构造边缘案例，让概念边界暴露出来。
 - 有多个方案时，给出推荐方案，再让用户确认或否定。
-- 维护一套规范术语。术语一旦确认，立即更新 `team-spec/spec/CONTEXT.md`，不要攒到最后。
+- 维护一套规范术语。术语一旦确认，立即更新 `team-spec/active/spec/CONTEXT.md`，不要攒到最后。
 
 ## 追问顺序
 
@@ -125,6 +129,6 @@ triggers:
 - 范围内和范围外内容。
 - 仍未解决的问题。
 - 轻量风险扫尾：指出是否存在会阻塞 PRD 的明显 P0/P1 缺口。
-- 写入或更新 `team-spec/spec/refine/{slug}.md`。
+- 写入或更新 `team-spec/active/spec/refine/{slug}.md`。
 - 在 `## Change Log` 中记录本次澄清或修订。
 - 推荐下一步：如果没有明显阻塞，使用 `team-spec-review`；如果仍有高风险歧义，继续细化。

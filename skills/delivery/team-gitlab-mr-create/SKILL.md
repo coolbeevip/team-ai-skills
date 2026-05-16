@@ -76,7 +76,7 @@ GITLAB_TOKEN=... python3 {skill_dir}/scripts/create_gitlab_mr.py --execute
 
 - 当前 git 分支名，通常应包含或等于 issue 编号，例如 `123`、`issue-123`、`123-add-export-filter`。
 - 当前提交历史；工作区必须干净，不能包含未提交变更。
-- `team-spec/issues/{slug}/{issue-number}-{short-issue-slug}.md`，如果能从分支、用户输入或对话中确定。
+- `team-spec/active/issues/{slug}/{issue-number}-{short-issue-slug}.md`，如果能从分支、用户输入或对话中确定。
 - GitLab issue IID 或 URL，如果用户提供。
 - Git remote 信息，用于推断 source project 和 target project。
 

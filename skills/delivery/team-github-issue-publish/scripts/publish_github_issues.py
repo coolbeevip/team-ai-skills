@@ -75,7 +75,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--issues-dir", help="Directory containing local issue drafts.")
     parser.add_argument(
         "--slug",
-        help="Slug under team-spec/issues/{slug}. Ignored when --issues-dir is set.",
+        help="Slug under team-spec/active/issues/{slug}. Ignored when --issues-dir is set.",
     )
     parser.add_argument(
         "--issue",
@@ -122,7 +122,7 @@ def issue_dir_from_args(args: argparse.Namespace) -> Path:
     if args.issues_dir:
         return Path(args.issues_dir)
     if args.slug:
-        return Path("team-spec") / "issues" / args.slug
+        return Path("team-spec") / "active" / "issues" / args.slug
     raise SystemExit("Provide --issues-dir or --slug.")
 
 

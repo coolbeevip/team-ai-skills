@@ -21,6 +21,7 @@ npx skills@latest add coolbeevip/team-ai-skills --all
 - `team-spec-refine`：通过连续澄清术语、边界、业务规则和验收口径，把初始想法整理成可评审的需求规格。
 - `team-spec-review`：从产品、数据、合规、运营、交付和协作角度检查规格风险，并给出是否已准备好进入下一阶段的结论。
 - `team-spec-to-prd`：将已经细化并通过评审的规格固化为结构化 PRD，作为需求进入交付阶段的正式输入。
+- `team-spec-archive`：把已完成、废弃或暂停的 active 需求产物归档，避免新需求误改旧规格。
 
 ### 架构设计
 
@@ -92,15 +93,15 @@ flowchart TD
 
 `team-spec-refine` 和 `team-spec-review` 可以反复迭代。只有当 P0 和关键 P1 风险被解决或明确接受后，才进入 `team-spec-to-prd` 固化 PRD。
 
-`team-spec/prd/` 中的 PRD 是需求到工程的正式交接边界。`team-prd-to-alignment` 可将 AI 结构化 PRD 转换为适合需求、研发和项目管理讨论的人类对齐材料；`team-prd-to-issues` 仍应以 PRD 为主输入。
+`team-spec/active/prd/` 中的 PRD 是需求到工程的正式交接边界。`team-prd-to-alignment` 可将 AI 结构化 PRD 转换为适合需求、研发和项目管理讨论的人类对齐材料；`team-prd-to-issues` 仍应以 PRD 为主输入。
 
 `team-prd-to-issues` 应以 PRD 为主输入；`CONTEXT.md`、`decisions/` 和 `reviews/` 只能作为背景参考，不能绕过 PRD 直接拆工程任务。
 
-`team-github-issue-publish` 用于把 `team-spec/issues/{slug}/` 下的本地 issue 草稿发布到 GitHub Issues，并回写发布结果。默认按依赖顺序批量发布，也可通过 `--issue` 指定单个 issue。该技能仅处理 GitHub。
+`team-github-issue-publish` 用于把 `team-spec/active/issues/{slug}/` 下的本地 issue 草稿发布到 GitHub Issues，并回写发布结果。默认按依赖顺序批量发布，也可通过 `--issue` 指定单个 issue。该技能仅处理 GitHub。
 
-`team-gitlab-issue-publish` 用于把 `team-spec/issues/{slug}/` 下的本地 issue 草稿发布到 GitLab Issues，并回写发布结果。默认按依赖顺序批量发布，也可通过 `--issue` 指定单个 issue。该技能仅处理 GitLab。
+`team-gitlab-issue-publish` 用于把 `team-spec/active/issues/{slug}/` 下的本地 issue 草稿发布到 GitLab Issues，并回写发布结果。默认按依赖顺序批量发布，也可通过 `--issue` 指定单个 issue。该技能仅处理 GitLab。
 
-技术债链路使用 `team-tech-debt-refine -> team-tech-debt-review -> team-tech-debt-to-issues`，并统一收敛到 `team-spec/issues/{slug}/`。技术债链路的 slug 必须包含 `debt`，建议格式 `{yyyy-mm-dd}-debt-{short-english-slug}`，以便后续复用工程实现与验证流程。
+技术债链路使用 `team-tech-debt-refine -> team-tech-debt-review -> team-tech-debt-to-issues`，并统一收敛到 `team-spec/active/issues/{slug}/`。技术债链路的 slug 必须包含 `debt`，建议格式 `{yyyy-mm-dd}-debt-{short-english-slug}`，以便后续复用工程实现与验证流程。
 
 每个 `SKILL.md` 都声明了 `输入物` 和 `输出物`，用于说明它会读取哪些上游产物，以及会为哪些下游技能提供材料。
 
@@ -115,34 +116,45 @@ flowchart TD
 
 ```text
 team-spec/
-├── spec/
-│   ├── CONTEXT.md
-│   ├── decisions/
-│   ├── refine/
-│   └── reviews/
-├── prd/
-└── issues/
+├── active/
+│   ├── spec/
+│   │   ├── CONTEXT.md
+│   │   ├── decisions/
+│   │   ├── refine/
+│   │   └── reviews/
+│   ├── prd/
+│   ├── issues/
+│   └── design/
+└── archive/
+    └── {slug}/
+        ├── spec/
+        ├── prd/
+        ├── issues/
+        ├── design/
+        └── ARCHIVE.md
 ```
 
 单个需求的产物链路：
 
 ```text
-team-spec/spec/refine/{slug}.md
-team-spec/spec/reviews/{slug}.md
-team-spec/prd/{slug}.md
-team-spec/prd/{slug}-alignment.md
-team-spec/issues/{slug}/
+team-spec/active/spec/refine/{slug}.md
+team-spec/active/spec/reviews/{slug}.md
+team-spec/active/prd/{slug}.md
+team-spec/active/prd/{slug}-alignment.md
+team-spec/active/issues/{slug}/
 ```
 
 `CONTEXT.md` 和 `decisions/` 是长期共享上下文，不替代单次需求的 `refine/{slug}.md`。
 
-`team-prd-to-issues` 默认以 `team-spec/prd/{slug}.md` 为主输入，并参考规格上下文、产品决策和评审报告，再将工程 issue 草稿写入 `team-spec/issues/{slug}/`。
+`team-spec/active/` 只应保留当前活跃需求。开始新需求前，如果 active 中已有其他 slug，应先使用 `team-spec-archive` 归档到 `team-spec/archive/{slug}/`，或明确继续旧需求。`team-spec/archive/` 默认只读，除非用户显式指定历史 slug 或文件路径。
 
-`team-github-issue-publish` 默认读取 `team-spec/issues/{slug}/` 中的本地 issue 草稿，执行依赖排序、试运行预览、幂等检查与批量发布；如果通过 `--issue` 指定单个 issue，则只处理该草稿，并回写远端 issue 编号、URL 和状态。
+`team-prd-to-issues` 默认以 `team-spec/active/prd/{slug}.md` 为主输入，并参考规格上下文、产品决策和评审报告，再将工程 issue 草稿写入 `team-spec/active/issues/{slug}/`。
 
-`team-gitlab-issue-publish` 默认读取 `team-spec/issues/{slug}/` 中的本地 issue 草稿，执行依赖排序、试运行预览、幂等检查与批量发布；如果通过 `--issue` 指定单个 issue，则只处理该草稿，并回写远端 issue IID/ID、URL 和状态。
+`team-github-issue-publish` 默认读取 `team-spec/active/issues/{slug}/` 中的本地 issue 草稿，执行依赖排序、试运行预览、幂等检查与批量发布；如果通过 `--issue` 指定单个 issue，则只处理该草稿，并回写远端 issue 编号、URL 和状态。
 
-`team-issue-implement` 默认以 `team-spec/issues/{slug}/` 中的单个 issue 为主输入，通过行为测试和 red-green-refactor 循环完成实现。
+`team-gitlab-issue-publish` 默认读取 `team-spec/active/issues/{slug}/` 中的本地 issue 草稿，执行依赖排序、试运行预览、幂等检查与批量发布；如果通过 `--issue` 指定单个 issue，则只处理该草稿，并回写远端 issue IID/ID、URL 和状态。
+
+`team-issue-implement` 默认以 `team-spec/active/issues/{slug}/` 中的单个 issue 为主输入，通过行为测试和 red-green-refactor 循环完成实现。
 
 `team-issue-verify` 独立检查实现是否满足 issue、PRD 和风险约束，并输出是否可提交 PR。
 

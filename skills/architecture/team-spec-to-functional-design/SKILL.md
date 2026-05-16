@@ -36,7 +36,7 @@ triggers:
 
 ## 输出物
 
-- 企业级功能设计说明书，默认保存为 `team-spec/design/{slug}.md`。
+- 企业级功能设计说明书，默认保存为 `team-spec/active/design/{slug}.md`。
 - 文档必须可直接进入评审，并可直接导出为 Word。
 - 如用户只要求生成正文，不要求落盘，也必须按同样结构输出。
 

@@ -22,8 +22,8 @@ triggers:
 ## 输入物
 
 - 当前对话中的技术债结论、证据和约束。
-- `team-spec/spec/refine/{slug}.md`，这是主输入。
-- `team-spec/spec/CONTEXT.md` 与 `team-spec/spec/decisions/`（如存在）。
+- `team-spec/active/spec/refine/{slug}.md`，这是主输入。
+- `team-spec/active/spec/CONTEXT.md` 与 `team-spec/active/spec/decisions/`（如存在）。
 - 相关代码、监控、事故、缺陷、性能或运维材料。
 
 必须先确定本次评审对应的 slug。技术债链路的 slug 必须包含 `debt`，如 `{yyyy-mm-dd}-debt-{short-english-slug}`。无法唯一判断时必须要求用户提供，不得猜测。
@@ -31,7 +31,7 @@ triggers:
 ## 输出物
 
 - 对话中的评审结论：`ready` / `needs refinement` / `blocked`。
-- `team-spec/spec/reviews/{slug}.md`：技术债评审报告。
+- `team-spec/active/spec/reviews/{slug}.md`：技术债评审报告。
 - 给下游 `team-tech-debt-to-issues` 的拆解前置结论（阻塞项、依赖、验收风险、HITL 决策点）。
 
 ## 评审维度
@@ -51,6 +51,6 @@ triggers:
 
 ## 完成标准
 
-- 生成 `team-spec/spec/reviews/{slug}.md`。
+- 生成 `team-spec/active/spec/reviews/{slug}.md`。
 - 明确是否可进入 `team-tech-debt-to-issues`。
 - 如果不可进入，明确 Required Refinement 与 Questions For User。

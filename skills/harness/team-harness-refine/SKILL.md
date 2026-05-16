@@ -33,7 +33,7 @@ triggers:
 - 真实代码、目录结构、构建配置、测试配置、脚本、CI 配置和本地开发工具。
 - 最近的工程 issue、PR、失败测试、CI 日志、上线事故、人工修复记录或 agent 执行卡点。
 - 已有 `docs/agent-harness/` 工作区（如存在）。
-- 技术债链路产物，例如 `team-spec/spec/refine/{slug}.md`、`team-spec/spec/reviews/{slug}.md` 或 `team-spec/issues/{slug}/` 中与 harness 相关的条目。
+- 技术债链路产物，例如 `team-spec/active/spec/refine/{slug}.md`、`team-spec/active/spec/reviews/{slug}.md` 或 `team-spec/active/issues/{slug}/` 中与 harness 相关的条目。
 
 如果用户没有提供明确范围，应先判断是要建立新 harness、审查现有 harness，还是根据某次开发任务或失败案例更新 harness。无法唯一判断时，只问一个最关键的问题，不要一次性展开访谈。
 

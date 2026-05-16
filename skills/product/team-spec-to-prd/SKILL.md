@@ -26,44 +26,44 @@ triggers:
 优先读取上游技能输出：
 
 - `team-spec-refine` 的澄清结论。
-- `team-spec/spec/refine/{slug}.md`。
-- `team-spec/spec/CONTEXT.md`。
-- `team-spec/spec/decisions/`。
-- `team-spec/spec/reviews/{slug}.md`，或 `team-spec-review` 的阻塞项、风险清单和建议改写。
+- `team-spec/active/spec/refine/{slug}.md`。
+- `team-spec/active/spec/CONTEXT.md`。
+- `team-spec/active/spec/decisions/`。
+- `team-spec/active/spec/reviews/{slug}.md`，或 `team-spec-review` 的阻塞项、风险清单和建议改写。
 - 相关 PRD、规格、任务、设计稿、代码或项目文档。
 
 如果没有澄清结论或需求上下文，先判断是否需要回到 `team-spec-refine`。如果存在未处理的 P0 或关键 P1 风险，先处理风险，不要直接固化到 PRD。
 
 本技能是阶段性固化步骤，不是需求探索步骤。进入本技能前，`team-spec-refine` 与 `team-spec-review` 应已完成必要迭代，P0 和关键 P1 风险应已解决或被明确接受。
 
-只允许基于 `Status: ready` 的 `team-spec/spec/reviews/{slug}.md` 生成 PRD。如果 review 状态为 `needs refinement` 或 `blocked`，不要生成 PRD；应要求回到 `team-spec-refine` 或处理阻塞项，除非用户明确要求带风险草稿。
+只允许基于 `Status: ready` 的 `team-spec/active/spec/reviews/{slug}.md` 生成 PRD。如果 review 状态为 `needs refinement` 或 `blocked`，不要生成 PRD；应要求回到 `team-spec-refine` 或处理阻塞项，除非用户明确要求带风险草稿。
 
-必须先确定本次 PRD 对应的 `{slug}`，以及明确的 `team-spec/spec/refine/{slug}.md` 和 `team-spec/spec/reviews/{slug}.md`。如果无法从用户请求、当前对话或文件路径中唯一判断，应停止并要求用户提供 slug、refine 文件路径或 review 文件路径，不要猜测要固化哪个规格。
+必须先确定本次 PRD 对应的 `{slug}`，以及明确的 `team-spec/active/spec/refine/{slug}.md` 和 `team-spec/active/spec/reviews/{slug}.md`。如果无法从用户请求、当前对话或文件路径中唯一判断，应停止并要求用户提供 slug、refine 文件路径或 review 文件路径，不要猜测要固化哪个规格。
 
 ## 输出物
 
 - 结构化 PRD。
-- 如果没有外部任务系统，默认保存到 `team-spec/prd/{slug}.md`。
+- 如果没有外部任务系统，默认保存到 `team-spec/active/prd/{slug}.md`。
 - PRD 中应保留开放问题、风险假设和验收标准，供 `team-prd-to-issues` 继续拆解工程任务。
 - PRD 是需求到工程的正式交接边界。工程拆解技能应以 PRD 为主输入，而不是直接基于澄清过程材料拆任务。
 
 ## 流程
 
 1. 阅读现有需求上下文：
-   - `team-spec/spec/CONTEXT.md`
-   - `team-spec/spec/decisions/`
-   - `team-spec/spec/refine/{slug}.md`
-   - `team-spec/spec/reviews/{slug}.md`
+   - `team-spec/active/spec/CONTEXT.md`
+   - `team-spec/active/spec/decisions/`
+   - `team-spec/active/spec/refine/{slug}.md`
+   - `team-spec/active/spec/reviews/{slug}.md`
    - 相关 PRD、规格、任务或文档
 2. 执行 `team-spec-review` 风格的前置检查，只识别会阻塞 PRD 的 P0/P1 风险。
-3. 检查 `team-spec/spec/reviews/{slug}.md` 的 `Status`。如果不是 `ready`，先向用户说明原因，不要继续写完整 PRD，除非用户明确要求带风险起草。
+3. 检查 `team-spec/active/spec/reviews/{slug}.md` 的 `Status`。如果不是 `ready`，先向用户说明原因，不要继续写完整 PRD，除非用户明确要求带风险起草。
 4. 探索仓库，理解当前产品行为和实现边界。
 5. 使用上下文中的规范术语，并遵守已有产品决策。
 6. 识别受影响的产品模块、流程、权限、数据对象和运营界面。
 7. 寻找可由研发独立测试的深模块或清晰 ownership 边界。
 8. 按下面模板起草 PRD。
 9. 如果项目已配置 issue tracker 或任务系统，将 PRD 发布到对应系统，并打上团队约定的 `ready-for-agent` 或 `ready-for-engineering` 标签；如果没有外部系统，就按仓库惯例创建或更新本地 Markdown PRD。
-10. PRD 成功固化后，必须明确给出 PRD 路径 `team-spec/prd/{slug}.md`，并提示下一步可选：需要人类评审对齐时使用 `team-prd-to-alignment`，准备工程拆解时使用 `team-prd-to-issues`。
+10. PRD 成功固化后，必须明确给出 PRD 路径 `team-spec/active/prd/{slug}.md`，并提示下一步可选：需要人类评审对齐时使用 `team-prd-to-alignment`，准备工程拆解时使用 `team-prd-to-issues`。
 
 ## PRD 模板
 
@@ -177,7 +177,7 @@ triggers:
 如果无法发布到外部任务系统，就按仓库已有 PRD 规范保存到本地。若没有现成规范，使用：
 
 ```text
-team-spec/prd/{slug}.md
+team-spec/active/prd/{slug}.md
 ```
 
 目录只在需要时创建。
@@ -186,7 +186,7 @@ team-spec/prd/{slug}.md
 
 完成时必须输出：
 
-- PRD 路径：`team-spec/prd/{slug}.md`。
+- PRD 路径：`team-spec/active/prd/{slug}.md`。
 - 是否基于 `Status: ready` 的 review 生成。
 - 仍保留的开放问题或已接受风险。
 - 下一步可选：使用 `team-prd-to-alignment` 生成需求和研发对齐材料，或使用 `team-prd-to-issues` 将该 PRD 拆解为工程 issue。
@@ -194,6 +194,6 @@ team-spec/prd/{slug}.md
 推荐结尾：
 
 ```text
-PRD 已固化到 team-spec/prd/{slug}.md。
+PRD 已固化到 team-spec/active/prd/{slug}.md。
 下一步如需人类评审对齐，请使用 team-prd-to-alignment；如已准备进入工程拆解，请使用 team-prd-to-issues。
 ```

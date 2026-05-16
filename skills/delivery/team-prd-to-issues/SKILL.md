@@ -23,15 +23,15 @@ triggers:
 
 优先使用当前对话已有材料。如果用户提供 issue 编号、URL、PRD 路径或文档路径，先读取完整内容和相关评论。
 
-主输入必须是 `team-spec-to-prd` 生成的 PRD，默认来自 `team-spec/prd/{slug}.md`。没有 PRD 时，不要直接基于澄清记录或风险清单拆工程任务；应先要求执行 `team-spec-to-prd`，除非用户明确要求生成临时工程草案。
+主输入必须是 `team-spec-to-prd` 生成的 PRD，默认来自 `team-spec/active/prd/{slug}.md`。没有 PRD 时，不要直接基于澄清记录或风险清单拆工程任务；应先要求执行 `team-spec-to-prd`，除非用户明确要求生成临时工程草案。
 
-必须先确定要拆解的 PRD，即明确的 `{slug}` 或 `team-spec/prd/{slug}.md`。如果无法从用户请求、当前对话或文件路径中唯一判断，应停止并要求用户提供 slug 或 PRD 文件路径，不要猜测要拆哪个 PRD。
+必须先确定要拆解的 PRD，即明确的 `{slug}` 或 `team-spec/active/prd/{slug}.md`。如果无法从用户请求、当前对话或文件路径中唯一判断，应停止并要求用户提供 slug 或 PRD 文件路径，不要猜测要拆哪个 PRD。
 
 参考输入可以包括：
 
 - `team-spec-review` 输出的阻塞项、HITL 决策点、风险清单和建议改写。
-- `team-spec-refine` 产出的规格上下文和产品决策记录，尤其是 `team-spec/spec/CONTEXT.md` 与 `team-spec/spec/decisions/`。
-- 默认从规格工作空间读取同 slug 参考材料：`team-spec/spec/refine/{slug}.md`、`team-spec/spec/reviews/{slug}.md`、`team-spec/spec/CONTEXT.md` 和 `team-spec/spec/decisions/`。
+- `team-spec-refine` 产出的规格上下文和产品决策记录，尤其是 `team-spec/active/spec/CONTEXT.md` 与 `team-spec/active/spec/decisions/`。
+- 默认从规格工作空间读取同 slug 参考材料：`team-spec/active/spec/refine/{slug}.md`、`team-spec/active/spec/reviews/{slug}.md`、`team-spec/active/spec/CONTEXT.md` 和 `team-spec/active/spec/decisions/`。
 
 必要时探索代码库，理解：
 
@@ -46,7 +46,7 @@ triggers:
 
 - issue 拆解草案：标题、类型、依赖、覆盖的用户故事和切片理由。
 - 正式 issue，如果用户确认并且 issue tracker 可用。
-- 本地 Markdown issue 草稿，如果没有可用 issue tracker，默认保存到 `team-spec/issues/{slug}/{issue-number}-{short-issue-slug}.md`。
+- 本地 Markdown issue 草稿，如果没有可用 issue tracker，默认保存到 `team-spec/active/issues/{slug}/{issue-number}-{short-issue-slug}.md`。
 
 这些输出物通常是工程执行入口。下游 agent 或研发人员应能直接领取 `AFK` issue；`HITL` issue 必须先完成指定人工决策。
 
@@ -162,7 +162,7 @@ AFK（可独立执行，无需人工决策） / HITL（需要人工介入）
 - 按依赖顺序发布，先发布 blocker，再发布依赖它的 issue。
 - 不要关闭、修改或重写父 PRD，除非用户明确要求。
 - 如果发布到 GitHub Issues，使用团队约定的 triage label；如果没有约定，先询问或生成草稿。
-- 本地草稿默认保存到 `team-spec/issues/{slug}/{issue-number}-{short-issue-slug}.md`，目录只在需要时创建。
+- 本地草稿默认保存到 `team-spec/active/issues/{slug}/{issue-number}-{short-issue-slug}.md`，目录只在需要时创建。
 
 ## 下一步可选技能
 

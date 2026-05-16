@@ -1,6 +1,6 @@
 ---
 name: team-tech-debt-to-issues
-description: 将已细化并通过评审的技术债规格拆解为可独立领取、可验证、按依赖排序的工程 issue，并写入 team-spec/issues。Break reviewed technical debt specs into independently grabbable, verifiable engineering issues ordered by dependencies and save under team-spec/issues.
+description: 将已细化并通过评审的技术债规格拆解为可独立领取、可验证、按依赖排序的工程 issue，并写入 team-spec/active/issues。Break reviewed technical debt specs into independently grabbable, verifiable engineering issues ordered by dependencies and save under team-spec/active/issues.
 license: MIT
 metadata:
   author: coolbeevip
@@ -19,18 +19,18 @@ triggers:
 
 ## 输入物
 
-- 主输入：`team-spec/spec/refine/{slug}.md`。
-- 必要前置：`team-spec/spec/reviews/{slug}.md`，且状态应为 `ready`（除非用户明确接受带风险拆解草案）。
-- 参考输入：`team-spec/spec/CONTEXT.md`、`team-spec/spec/decisions/`、相关代码与运行证据。
+- 主输入：`team-spec/active/spec/refine/{slug}.md`。
+- 必要前置：`team-spec/active/spec/reviews/{slug}.md`，且状态应为 `ready`（除非用户明确接受带风险拆解草案）。
+- 参考输入：`team-spec/active/spec/CONTEXT.md`、`team-spec/active/spec/decisions/`、相关代码与运行证据。
 
 必须先确定唯一 slug。技术债链路 slug 必须包含 `debt`，格式建议 `{yyyy-mm-dd}-debt-{short-english-slug}`。无法唯一判断时必须向用户确认，不得猜测。
 
 ## 输出物
 
 - issue 拆解草案（标题、类型、依赖、验收标准、切片理由）。
-- 本地 issue 草稿默认写入 `team-spec/issues/{slug}/{issue-number}-{short-issue-slug}.md`。
+- 本地 issue 草稿默认写入 `team-spec/active/issues/{slug}/{issue-number}-{short-issue-slug}.md`。
 
-输出目录统一收敛到 `team-spec/issues/{slug}/`。
+输出目录统一收敛到 `team-spec/active/issues/{slug}/`。
 
 ## 拆解原则
 
@@ -46,7 +46,7 @@ triggers:
 ```md
 ## Parent
 
-team-spec/spec/refine/{slug}.md
+team-spec/active/spec/refine/{slug}.md
 
 ## What to build
 
@@ -72,5 +72,5 @@ AFK（可独立执行，无需人工决策） / HITL（需要人工介入）
 
 ## 完成标准
 
-- 产出落地到 `team-spec/issues/{slug}/` 的可执行 issue 草稿。
+- 产出落地到 `team-spec/active/issues/{slug}/` 的可执行 issue 草稿。
 - issue 可被工程或 agent 直接领取，并具备可验证验收标准。

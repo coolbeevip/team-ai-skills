@@ -28,21 +28,21 @@ triggers:
 
 主输入：
 
-- `team-spec/prd/{slug}.md`。
+- `team-spec/active/prd/{slug}.md`。
 
 参考输入：
 
-- `team-spec/spec/refine/{slug}.md`：规格细化产物，用于理解原始诉求和关键背景。
-- `team-spec/spec/reviews/{slug}.md`：规格评审报告，用于提取风险、阻塞项和待决问题。
-- `team-spec/spec/CONTEXT.md`：长期共享上下文，用于保持术语一致。
-- `team-spec/spec/decisions/`：产品决策记录，用于说明范围裁剪和重要决策。
+- `team-spec/active/spec/refine/{slug}.md`：规格细化产物，用于理解原始诉求和关键背景。
+- `team-spec/active/spec/reviews/{slug}.md`：规格评审报告，用于提取风险、阻塞项和待决问题。
+- `team-spec/active/spec/CONTEXT.md`：长期共享上下文，用于保持术语一致。
+- `team-spec/active/spec/decisions/`：产品决策记录，用于说明范围裁剪和重要决策。
 - 相关设计稿、业务文档、历史 PRD、研发方案或讨论记录。
 
 如果无法唯一确定 `{slug}`，应停止并要求用户提供 PRD 路径或 slug，不得猜测。
 
 ## 输出物
 
-- `team-spec/prd/{slug}-alignment.md`：面向人类对齐的演示文稿式评审材料。
+- `team-spec/active/prd/{slug}-alignment.md`：面向人类对齐的演示文稿式评审材料。
 - 对话中的材料摘要：一句话结论、关键范围、待决问题和建议评审关注点。
 
 对齐材料不修改 PRD 内容。PRD 仍是工程拆解的权威输入；对齐材料用于帮助人类快速理解、讨论和确认 PRD。
@@ -106,14 +106,14 @@ triggers:
 3. 读取同 slug 的规格细化、评审报告、上下文和产品决策记录。
 4. 对比 PRD 与上游材料，识别裁剪、变化、冲突和仍需人类确认的问题。
 5. 按演示文稿式结构生成对齐材料，优先使用短段落、列表和明确标题。
-6. 将材料写入 `team-spec/prd/{slug}-alignment.md`。
+6. 将材料写入 `team-spec/active/prd/{slug}-alignment.md`。
 7. 输出摘要，并建议用户用该材料组织需求、研发和项目管理对齐讨论。
 
 生成过程中如发现 PRD 存在逻辑矛盾、范围不清、验收标准缺失或无法支撑工程拆解，应在 `## 7. 风险与待决问题` 中明确列出，不要自行补齐。
 
 ## 完成标准
 
-- `team-spec/prd/{slug}-alignment.md` 已生成。
+- `team-spec/active/prd/{slug}-alignment.md` 已生成。
 - 材料能让需求、研发和项目管理快速理解背景、范围、非目标、用户路径变化和研发关注点。
 - 风险与待决问题已单独列出，并包含影响范围或建议决策人。
 - 明确说明 PRD 仍是 `team-prd-to-issues` 的权威输入，对齐材料只服务于人类讨论。

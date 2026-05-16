@@ -1,6 +1,6 @@
 ---
 name: team-issue-implement
-description: 根据 team-spec/issues/ 中的单个工程 issue 进行实现，优先采用行为测试和 TDD 的 red-green-refactor 循环，最终输出代码变更、测试变更和验证结果。Implement a single engineering issue from team-spec/issues/ using behavior-focused tests and a red-green-refactor loop, producing code changes, tests, and verification results.
+description: 根据 team-spec/active/issues/ 中的单个工程 issue 进行实现，优先采用行为测试和 TDD 的 red-green-refactor 循环，最终输出代码变更、测试变更和验证结果。Implement a single engineering issue from team-spec/active/issues/ using behavior-focused tests and a red-green-refactor loop, producing code changes, tests, and verification results.
 license: MIT
 metadata:
   author: coolbeevip
@@ -24,20 +24,20 @@ triggers:
 
 主输入必须是一个明确的 issue：
 
-- `team-spec/issues/{slug}/{issue-number}-{short-issue-slug}.md`
+- `team-spec/active/issues/{slug}/{issue-number}-{short-issue-slug}.md`
 - 或外部 issue tracker 中的单个 issue。
 
 参考输入可以包括：
 
-- `team-spec/prd/{slug}.md` 中的关联 PRD。
-- `team-spec/spec/CONTEXT.md` 中的规范术语和业务规则。
-- `team-spec/spec/decisions/` 中的产品决策。
-- `team-spec/spec/reviews/{slug}.md` 中的风险评审。
+- `team-spec/active/prd/{slug}.md` 中的关联 PRD。
+- `team-spec/active/spec/CONTEXT.md` 中的规范术语和业务规则。
+- `team-spec/active/spec/decisions/` 中的产品决策。
+- `team-spec/active/spec/reviews/{slug}.md` 中的风险评审。
 - 当前代码库、测试、ADR、接口文档和现有实现。
 
 如果 issue 没有验收标准、依赖未完成、或仍有 HITL 决策点，不要直接实现。先说明阻塞项，并要求回到 `team-prd-to-issues` 或人工决策。
 
-必须先确定要实现的单个 issue，即明确的 `team-spec/issues/{slug}/{issue-number}-{short-issue-slug}.md` 或外部 issue 链接/编号。若无法从用户请求、当前分支、当前对话或文件路径中唯一判断，应停止并要求用户提供 issue 路径、issue 编号或链接，不要猜测要实现哪个 issue。
+必须先确定要实现的单个 issue，即明确的 `team-spec/active/issues/{slug}/{issue-number}-{short-issue-slug}.md` 或外部 issue 链接/编号。若无法从用户请求、当前分支、当前对话或文件路径中唯一判断，应停止并要求用户提供 issue 路径、issue 编号或链接，不要猜测要实现哪个 issue。
 
 ## 输出物
 
@@ -46,7 +46,7 @@ triggers:
 - 验证结果，包括运行了哪些测试、是否通过。
 - 默认保持变更停留在本地工作区，不要执行 `git commit`、`git push` 或任何会提前固化历史的操作；后续交给 `team-issue-verify` 再确认和收尾。
 - 优先回写原 issue 文件中的 `## Status`、`## Implementation Notes`、`## Acceptance Criteria Coverage` 或同类章节。
-- 如果原 issue 文件不可修改，再写入 `team-spec/issues/{slug}/{issue-number}-{short-issue-slug}.implementation.md`，目录只在需要时创建。
+- 如果原 issue 文件不可修改，再写入 `team-spec/active/issues/{slug}/{issue-number}-{short-issue-slug}.implementation.md`，目录只在需要时创建。
 
 不要修改 PRD、规格评审或产品决策，除非用户明确要求。发现需求问题时，应反馈给上游技能，而不是在实现中隐式改需求。
 
@@ -58,7 +58,7 @@ triggers:
 - 不要一次性写完所有测试再实现。
 - 不要在 RED 状态重构。
 - 不要提前实现 speculative feature。
-- 保持测试名称和领域术语一致，优先使用 `team-spec/spec/CONTEXT.md` 中的规范语言。
+- 保持测试名称和领域术语一致，优先使用 `team-spec/active/spec/CONTEXT.md` 中的规范语言。
 
 ## 工作流
 
