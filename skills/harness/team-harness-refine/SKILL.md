@@ -26,6 +26,21 @@ triggers:
 
 本技能可以在项目初始接入 agent 时执行，也可以在工程演进、测试命令变化、架构调整、开发失败或交付事故后反复执行。每次执行都应基于真实代码、真实任务或真实失败反馈更新 harness，而不是只生成模板。
 
+## 运行时语言配置
+
+统一读取目标项目根目录 `team-spec/config.yml`：
+
+```yaml
+language: zh-CN
+```
+
+语言优先级：用户本轮明确指定 > `team-spec/config.yml` > 首次询问并落盘。若配置不存在，不报错，走"询问并创建"流程。
+
+执行要求：
+
+- 对话回复与 harness 文档（`AGENTS.md`、`CLAUDE.md`、`docs/agent-harness/` 下内容）均使用 `language`。
+- 用户临时切换语言时，本次立即生效，并询问是否回写配置。
+
 ## 输入物
 
 - 当前项目中的 `AGENTS.md`、`CLAUDE.md` 或其他 agent 指令文件（如存在）。

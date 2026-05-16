@@ -30,6 +30,8 @@ v1 仅支持 GitLab Merge Request。GitHub Pull Request 应使用独立技能。
 ./scripts/create_gitlab_mr.py
 ```
 
+脚本依赖同目录下的公共辅助模块 `./scripts/_team_common.py`（vendored copy，与仓库根目录 `scripts/_team_common.py` 保持同步）。复制本技能目录时需一并复制该文件。
+
 脚本能力：
 
 - 读取当前 git 分支，默认从分支名推断 issue IID。

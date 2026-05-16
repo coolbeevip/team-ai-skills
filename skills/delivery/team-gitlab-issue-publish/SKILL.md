@@ -32,6 +32,8 @@ v1 仅支持 GitLab。不要在同一个技能中混合 GitHub 与 GitLab 发布
 ./scripts/publish_gitlab_issues.py
 ```
 
+脚本依赖同目录下的公共辅助模块 `./scripts/_team_common.py`（vendored copy，与仓库根目录 `scripts/_team_common.py` 保持同步）。复制本技能目录时需一并复制该文件。
+
 脚本能力：
 
 - 读取 `team-spec/active/issues/{slug}/` 或显式 `--issues-dir`。
