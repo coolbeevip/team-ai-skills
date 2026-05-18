@@ -39,7 +39,6 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Push current branch and create a linked GitLab Merge Request."
     )
-    parser.add_argument("--gitlab-url", default="https://gitlab.com")
     parser.add_argument("--token-env", default="GITLAB_TOKEN")
     parser.add_argument("--execute", action="store_true", help="Push and create MR.")
     parser.add_argument("--issue-iid", help="GitLab issue IID to link.")
@@ -159,6 +158,13 @@ def remote_host_and_project(url: str) -> tuple[str, str] | None:
 
 def gitlab_host(gitlab_url: str) -> str:
     return urllib.parse.urlparse(gitlab_url).hostname or "gitlab.com"
+
+
+def gitlab_url_from_env() -> str:
+    url = os.environ.get("GITLAB_URL", "").strip()
+    if not url:
+        raise SystemExit("Missing GitLab base URL env var: GITLAB_URL")
+    return normalize_gitlab_url(url)
 
 
 def project_from_remote(remote: str, remotes: dict[str, str], host: str) -> ProjectRef | None:
@@ -629,6 +635,7 @@ def push_branch(remote: str, branch: str) -> None:
 
 def build_plan(args: argparse.Namespace) -> dict[str, Any]:
     validate_commit_options(args)
+    args.gitlab_url = gitlab_url_from_env()
     source_branch = args.source_branch or current_branch()
     issue_iid = infer_issue_iid(source_branch, args.issue_iid)
     target = infer_target_project(args, source_branch)

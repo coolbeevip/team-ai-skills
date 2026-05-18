@@ -48,26 +48,26 @@ v1 仅支持 GitLab Merge Request。GitHub Pull Request 应使用独立技能。
 推荐 dry-run：
 
 ```sh
-python3 {skill_dir}/scripts/create_gitlab_mr.py
+GITLAB_URL=https://gitlab.example.com python3 {skill_dir}/scripts/create_gitlab_mr.py
 ```
 
 用户确认后正式执行：
 
 ```sh
-GITLAB_TOKEN=... python3 {skill_dir}/scripts/create_gitlab_mr.py --execute
+GITLAB_URL=https://gitlab.example.com GITLAB_TOKEN=... python3 {skill_dir}/scripts/create_gitlab_mr.py --execute
 ```
 
 如果当前工作区存在已验证但尚未提交的变更，并且用户明确要求由本技能完成提交，可在正式执行时指定提交范围。`--commit-all` 只会暂存非 `team-spec/` 文件：
 
 ```sh
-GITLAB_TOKEN=... python3 {skill_dir}/scripts/create_gitlab_mr.py --execute --commit-message "Resolve #123: add export filter" --commit-all
+GITLAB_URL=https://gitlab.example.com GITLAB_TOKEN=... python3 {skill_dir}/scripts/create_gitlab_mr.py --execute --commit-message "Resolve #123: add export filter" --commit-all
 ```
 
 也可以只提交指定路径或已暂存内容；指定路径不得位于 `team-spec/` 下，已暂存内容中也不得包含 `team-spec/` 文件：
 
 ```sh
-GITLAB_TOKEN=... python3 {skill_dir}/scripts/create_gitlab_mr.py --execute --commit-message "Resolve #123: add export filter" --commit-path src/export.py --commit-path tests/test_export.py
-GITLAB_TOKEN=... python3 {skill_dir}/scripts/create_gitlab_mr.py --execute --commit-message "Resolve #123: add export filter" --commit-staged
+GITLAB_URL=https://gitlab.example.com GITLAB_TOKEN=... python3 {skill_dir}/scripts/create_gitlab_mr.py --execute --commit-message "Resolve #123: add export filter" --commit-path src/export.py --commit-path tests/test_export.py
+GITLAB_URL=https://gitlab.example.com GITLAB_TOKEN=... python3 {skill_dir}/scripts/create_gitlab_mr.py --execute --commit-message "Resolve #123: add export filter" --commit-staged
 ```
 
 其中 `{skill_dir}` 是当前技能目录。技能内部定位脚本时应使用相对 `SKILL.md` 的路径 `./scripts/create_gitlab_mr.py`，执行命令时再解析成实际文件路径。
@@ -90,6 +90,7 @@ GITLAB_TOKEN=... python3 {skill_dir}/scripts/create_gitlab_mr.py --execute --com
 - `--commit-path path`：只暂存并提交指定路径；可重复传入，但路径不得位于 `team-spec/` 下。
 - `--commit-staged`：只提交已经暂存的内容，不额外暂存文件；如果暂存区包含 `team-spec/` 文件，必须停止。
 - `--json`：输出机器可读 JSON。
+- `GITLAB_URL=https://gitlab.example.com`：GitLab 平台地址，必须通过环境变量提供；脚本不提供命令行覆盖参数，也不会默认猜测平台地址。
 
 ## 输入物
 
@@ -103,7 +104,7 @@ GITLAB_TOKEN=... python3 {skill_dir}/scripts/create_gitlab_mr.py --execute --com
 
 必须参数或可推断信息：
 
-- GitLab 平台地址（默认 `https://gitlab.com`；自建 GitLab 必须提供自定义地址）。
+- GitLab 平台地址，必须从环境变量 `GITLAB_URL` 读取；不得通过命令行参数临时覆盖，未设置时脚本必须停止。
 - 认证 token（必须通过环境变量提供，不写入任何文件）。
 - 当前分支名。
 - issue IID。

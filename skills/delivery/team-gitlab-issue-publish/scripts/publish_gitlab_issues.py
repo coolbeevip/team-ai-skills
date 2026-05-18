@@ -98,11 +98,6 @@ def parse_args() -> argparse.Namespace:
         help="Specific issue draft to publish. Can be a filename, path, or draft identifier. Repeat to publish multiple specific issues.",
     )
     parser.add_argument(
-        "--gitlab-url",
-        default=os.environ.get("GITLAB_URL") or "https://gitlab.com",
-        help="GitLab base URL. Defaults to GITLAB_URL, then https://gitlab.com.",
-    )
-    parser.add_argument(
         "--project",
         help="GitLab project path namespace/project or numeric project ID.",
     )
@@ -135,6 +130,13 @@ def issue_dir_from_args(args: argparse.Namespace) -> Path:
 
 def normalize_gitlab_url(url: str) -> str:
     return url.rstrip("/")
+
+
+def gitlab_url_from_env() -> str:
+    url = os.environ.get("GITLAB_URL", "").strip()
+    if not url:
+        raise SystemExit("Missing GitLab base URL env var: GITLAB_URL")
+    return normalize_gitlab_url(url)
 
 
 def remote_urls() -> dict[str, str]:
@@ -587,6 +589,7 @@ def write_status(draft: IssueDraft) -> None:
 
 
 def publish(args: argparse.Namespace) -> dict[str, Any]:
+    args.gitlab_url = gitlab_url_from_env()
     issue_dir = issue_dir_from_args(args)
     project = infer_project(args)
     drafts = topo_sort(filter_drafts(load_drafts(issue_dir), args.issue))
