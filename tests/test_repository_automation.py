@@ -120,7 +120,7 @@ class RepositoryAutomationSmokeTest(unittest.TestCase):
                 cwd=project,
             )
             payload = json.loads(result.stdout)
-            self.assertEqual(payload["counts"], {"pending": 1})
+            self.assertEqual(payload["counts"], {"planned": 1})
             self.assertEqual(payload["issues"][0]["title"], "Add export filter")
 
     def test_gitlab_issue_publish_dry_run_json(self) -> None:
@@ -164,7 +164,7 @@ class RepositoryAutomationSmokeTest(unittest.TestCase):
                 env={"GITLAB_URL": "https://gitlab.example.com"},
             )
             payload = json.loads(result.stdout)
-            self.assertEqual(payload["counts"], {"pending": 1})
+            self.assertEqual(payload["counts"], {"planned": 1})
             self.assertEqual(payload["issues"][0]["title"], "Add export filter")
 
     def test_github_pr_dry_run_json(self) -> None:

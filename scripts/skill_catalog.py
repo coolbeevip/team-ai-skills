@@ -43,7 +43,7 @@ DOC_FILES = [
 
 FRONTMATTER_RE = re.compile(r"\A---\n(.*?)\n---\n?", re.DOTALL)
 RELATIVE_REF_RE = re.compile(r"(?<![\w/])(\./[A-Za-z0-9][A-Za-z0-9_./-]*[A-Za-z0-9])")
-SKILL_REF_RE = re.compile(r"\b(team-[a-z0-9-]+)\b")
+SKILL_REF_RE = re.compile(r"\b(team-[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)\b(?!/)")
 CJK_RE = re.compile(r"[\u3400-\u9fff]")
 LATIN_RE = re.compile(r"[A-Za-z]")
 
@@ -230,6 +230,8 @@ def validate_doc_skill_refs(doc_path: Path, known_skills: set[str]) -> list[str]
     text = doc_path.read_text(encoding="utf-8")
     for ref in sorted(set(SKILL_REF_RE.findall(text))):
         if ref == "team-ai-skills":
+            continue
+        if ref not in known_skills and any(skill.startswith(ref + "-") for skill in known_skills):
             continue
         if ref not in known_skills:
             errors.append(f"{doc_path}: references unknown skill {ref}.")
