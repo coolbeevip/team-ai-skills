@@ -42,7 +42,7 @@ Agent Harness 域用于让真实项目更适合 AI agent 长期工作，适合�
 - `team-prd-to-issues`：把 PRD 拆解成可独立领取、可验证、按依赖排序的工程 issue。
 - `team-github-issue-publish`：将本地 issue 草稿发布到 GitHub Issues，支持整目录批量发布或指定单个 issue，并回写远端编号、URL 和发布状态。
 - `team-gitlab-issue-publish`：将本地 issue 草稿发布到 GitLab Issues，支持整目录批量发布或指定单个 issue，并回写远端 IID/ID、URL 和发布状态。
-- `team-issue-implement`：围绕单个 issue 采用行为测试和 TDD 循环完成代码与测试变更。
+- `team-issue-implement`：围绕单个 issue 采用行为测试和 TDD 循环完成代码与测试变更，完成后自动衔接 `team-issue-verify`。
 - `team-issue-verify`：独立检查实现是否满足 issue、PRD 和风险约束，并给出是否可提交 PR 的结论。
 - `team-gitlab-mr-create`：推送已完成的 issue 分支，并创建标题和正文都关联 issue 编号的 GitLab Merge Request。
 - `team-github-pr-create`：推送已完成的 issue 分支，并创建标题和正文都关联 issue 编号的 GitHub Pull Request。
@@ -161,7 +161,7 @@ team-spec/active/issues/{slug}/
 
 `team-gitlab-issue-publish` 默认读取 `team-spec/active/issues/{slug}/` 中的本地 issue 草稿，执行依赖排序、试运行预览、幂等检查与批量发布；如果通过 `--issue` 指定单个 issue，则只处理该草稿，并回写远端 issue IID/ID、URL 和状态。
 
-`team-issue-implement` 默认以 `team-spec/active/issues/{slug}/` 中的单个 issue 为主输入，通过行为测试和 red-green-refactor 循环完成实现。
+`team-issue-implement` 默认以 `team-spec/active/issues/{slug}/` 中的单个 issue 为主输入，通过行为测试和 red-green-refactor 循环完成实现，并在实现结束后自动衔接 `team-issue-verify`。
 
 `team-issue-verify` 独立检查实现是否满足 issue、PRD 和风险约束，并输出是否可提交 PR。
 
