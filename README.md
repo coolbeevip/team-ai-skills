@@ -10,6 +10,22 @@
 npx skills@latest add coolbeevip/team-ai-skills --all
 ```
 
+## 仓库维护自动化
+
+仓库现在提供轻量自动化校验，用于减少技能元数据、网站索引和脚本维护漂移：
+
+```bash
+python3 scripts/skill_catalog.py validate
+python3 scripts/skill_catalog.py sync-website
+python3 scripts/check_vendored_common.py --check
+python3 -m unittest discover -s tests -p 'test_*.py'
+```
+
+- `scripts/skill_catalog.py validate`：检查 `SKILL.md` frontmatter、`triggers` 中英文数量、`输入物/输出物` 小节、相对引用路径，以及 README / AGENTS / website 中引用的技能名是否存在。
+- `scripts/skill_catalog.py sync-website`：根据 `skills/**/SKILL.md` 自动刷新 `website/index.html` 中的技能数量、分类统计、触发词索引和技能清单。
+- `scripts/check_vendored_common.py --check`：检查 vendored `_team_common.py` 是否与根目录源文件同步。
+- `python3 -m unittest discover -s tests -p 'test_*.py'`：运行关键发布、归档与 PR 脚本的 smoke tests。
+
 ## 技能职责域
 
 本技能库将团队协作拆成六个职责域：产品定义、架构设计、Agent Harness、交付执行、技术债治理和文档质量。每个职责域都可以独立使用，也可以沿着需求到交付的流程串联起来，帮助团队把想法稳定成可评审、可拆解、可实现、可验证的工作。

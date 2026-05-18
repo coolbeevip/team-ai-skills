@@ -53,13 +53,17 @@
 
 ## 构建、测试与开发命令
 
-当前仓库是 Markdown 技能库，没有构建系统和自动化测试配置。
+当前仓库是 Markdown 技能库，没有传统构建系统，但已提供轻量 Python 自动化校验与 smoke tests。
 
 所有 shell 命令都必须通过 `rtk` 执行：
 
 - `rtk find skills -maxdepth 4 -type f`：列出技能文件。
 - `rtk find team-spec -maxdepth 4 -type f`：列出技能产物。
 - `rtk sed -n '1,120p' skills/product/team-spec-refine/SKILL.md`：查看技能内容。
+- `rtk python3 scripts/skill_catalog.py validate`：校验技能 frontmatter、引用路径、跨文档技能引用和网站生成区块。
+- `rtk python3 scripts/skill_catalog.py sync-website`：根据 `skills/**/SKILL.md` 刷新 `website/index.html` 中的技能索引和统计。
+- `rtk python3 scripts/check_vendored_common.py --check`：检查 vendored `_team_common.py` 是否同步。
+- `rtk python3 -m unittest discover -s tests -p 'test_*.py'`：运行关键脚本 smoke tests。
 - `rtk git status --short`：查看本地变更。
 - `rtk git diff`：提交前检查修改。
 
@@ -131,7 +135,13 @@ triggers:
 
 ## 测试与校验
 
-当前没有自动化测试。修改后应手动检查：
+修改后优先运行自动化校验，再补充必要的手动检查：
+
+- `rtk python3 scripts/skill_catalog.py validate`
+- `rtk python3 scripts/check_vendored_common.py --check`
+- `rtk python3 -m unittest discover -s tests -p 'test_*.py'`
+
+同时手动检查：
 
 - frontmatter 是否存在且格式正确。
 - `description` 是否清楚说明技能的触发场景。

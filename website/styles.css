@@ -669,6 +669,61 @@ section { padding: 7rem 1.25rem; }
   background: var(--paper);
 }
 
+.skill-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .7rem;
+  margin: -1.4rem 0 1.2rem;
+}
+
+.skill-stat {
+  display: inline-flex;
+  align-items: center;
+  gap: .3rem;
+  border: 1px solid var(--line);
+  background: rgba(255,255,255,.72);
+  border-radius: 999px;
+  padding: .35rem .72rem;
+  color: var(--ink-soft);
+  font-size: .82rem;
+}
+
+.skill-stat strong {
+  color: var(--ink);
+}
+
+.trigger-cloud {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .55rem;
+  margin-bottom: 1.3rem;
+}
+
+.trigger-cloud-label {
+  display: inline-flex;
+  align-items: center;
+  color: var(--ink-soft);
+  font-size: .84rem;
+  font-weight: 650;
+  margin-right: .2rem;
+}
+
+.trigger-chip {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid rgba(23,107,135,.16);
+  background: rgba(23,107,135,.06);
+  color: var(--brand-dark);
+  border-radius: 999px;
+  padding: .18rem .55rem;
+  font-size: .74rem;
+  line-height: 1.4;
+}
+
+.trigger-chip-cloud {
+  background: rgba(255,255,255,.82);
+}
+
 .skill-index {
   border: 1px solid var(--line);
   border-radius: var(--radius);
@@ -679,9 +734,9 @@ section { padding: 7rem 1.25rem; }
 
 .index-row {
   display: grid;
-  grid-template-columns: 92px minmax(230px, 330px) minmax(0, 1fr);
+  grid-template-columns: 92px minmax(0, 1fr);
   gap: 1.1rem;
-  align-items: center;
+  align-items: start;
   padding: 1rem 1.1rem;
   border-bottom: 1px solid var(--line);
   transition: background .18s ease;
@@ -707,9 +762,22 @@ section { padding: 7rem 1.25rem; }
   word-break: break-word;
 }
 
+.index-main {
+  display: flex;
+  flex-direction: column;
+  gap: .45rem;
+  min-width: 0;
+}
+
 .index-row p {
   color: var(--muted);
   font-size: .9rem;
+}
+
+.index-triggers {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .45rem;
 }
 
 /* -- Footer --------------------------------------------- */
@@ -851,6 +919,10 @@ footer a:hover { color: var(--ink); }
   .index-row {
     grid-template-columns: 1fr;
     gap: .35rem;
+  }
+
+  .skill-stats {
+    margin-top: -1rem;
   }
 
   .index-domain {

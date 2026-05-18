@@ -1,0 +1,122 @@
+name: Repository Automation
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/**"
+      - "AGENTS.md"
+      - "README.md"
+      - "scripts/**"
+      - "skills/**"
+      - "tests/**"
+      - "website/**"
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/**"
+      - "AGENTS.md"
+      - "README.md"
+      - "scripts/**"
+      - "skills/**"
+      - "tests/**"
+      - "website/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  detect-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      docs: ${{ steps.filter.outputs.docs }}
+      root_scripts: ${{ steps.filter.outputs.root_scripts }}
+      skill_scripts: ${{ steps.filter.outputs.skill_scripts }}
+      skill_docs: ${{ steps.filter.outputs.skill_docs }}
+      tests: ${{ steps.filter.outputs.tests }}
+      website: ${{ steps.filter.outputs.website }}
+      workflows: ${{ steps.filter.outputs.workflows }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - id: filter
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            docs:
+              - "README.md"
+              - "AGENTS.md"
+            root_scripts:
+              - "scripts/**"
+            skill_scripts:
+              - "skills/**/scripts/**"
+            skill_docs:
+              - "skills/**/SKILL.md"
+              - "skills/**/*.md"
+            tests:
+              - "tests/**"
+            website:
+              - "website/**"
+            workflows:
+              - ".github/workflows/**"
+
+  metadata-validation:
+    needs: detect-changes
+    if: |
+      github.event_name == 'workflow_dispatch' ||
+      needs.detect-changes.outputs.docs == 'true' ||
+      needs.detect-changes.outputs.root_scripts == 'true' ||
+      needs.detect-changes.outputs.skill_scripts == 'true' ||
+      needs.detect-changes.outputs.skill_docs == 'true' ||
+      needs.detect-changes.outputs.website == 'true' ||
+      needs.detect-changes.outputs.workflows == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Validate skill metadata and cross-document references
+        run: python3 scripts/skill_catalog.py validate
+
+  vendored-common:
+    needs: detect-changes
+    if: |
+      github.event_name == 'workflow_dispatch' ||
+      needs.detect-changes.outputs.root_scripts == 'true' ||
+      needs.detect-changes.outputs.skill_scripts == 'true' ||
+      needs.detect-changes.outputs.workflows == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Check vendored _team_common.py copies
+        run: python3 scripts/check_vendored_common.py --check
+
+  smoke-tests:
+    needs: detect-changes
+    if: |
+      github.event_name == 'workflow_dispatch' ||
+      needs.detect-changes.outputs.root_scripts == 'true' ||
+      needs.detect-changes.outputs.skill_scripts == 'true' ||
+      needs.detect-changes.outputs.tests == 'true' ||
+      needs.detect-changes.outputs.workflows == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Run automation smoke tests
+        run: python3 -m unittest discover -s tests -p 'test_*.py'
