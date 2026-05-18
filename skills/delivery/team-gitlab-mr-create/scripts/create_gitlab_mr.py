@@ -19,6 +19,7 @@ from typing import Any
 
 
 ISSUE_RE = re.compile(r"(?:^|[-_/])#?(\d+)(?:[-_/]|$)")
+TEAM_SPEC_PREFIX = "team-spec/"
 
 
 @dataclass
@@ -53,6 +54,26 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--assignee-id", action="append", type=int, default=[])
     parser.add_argument("--reviewer-id", action="append", type=int, default=[])
     parser.add_argument("--remove-source-branch", action="store_true")
+    parser.add_argument(
+        "--commit-message",
+        help="Commit local changes before pushing. Requires --commit-all, --commit-path, or --commit-staged.",
+    )
+    parser.add_argument(
+        "--commit-all",
+        action="store_true",
+        help="Stage all non-team-spec worktree changes before committing.",
+    )
+    parser.add_argument(
+        "--commit-path",
+        action="append",
+        default=[],
+        help="Stage a specific non-team-spec path before committing. Repeat for multiple paths.",
+    )
+    parser.add_argument(
+        "--commit-staged",
+        action="store_true",
+        help="Commit already staged changes without staging additional paths.",
+    )
     parser.add_argument("--json", action="store_true", help="Print machine-readable JSON.")
     return parser.parse_args()
 
@@ -72,6 +93,16 @@ def run_git(args: list[str], check: bool = True) -> str | None:
             raise SystemExit(f"git {' '.join(args)} failed: {detail}")
         return None
     return result.stdout.strip()
+
+
+def git_succeeds(args: list[str]) -> bool:
+    result = subprocess.run(
+        ["git", *args],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True,
+    )
+    return result.returncode == 0
 
 
 def current_branch() -> str:
@@ -426,11 +457,93 @@ def dirty_worktree() -> bool:
     return bool(run_git(["status", "--porcelain"], check=False))
 
 
+def worktree_status() -> list[str]:
+    output = run_git(["status", "--porcelain"], check=False)
+    if not output:
+        return []
+    return [line for line in output.splitlines() if line]
+
+
+def status_path(line: str) -> str:
+    path = line[3:]
+    if " -> " in path:
+        path = path.split(" -> ", 1)[1]
+    return path
+
+
+def is_team_spec_path(path: str) -> bool:
+    normalized = path.strip().lstrip("./")
+    return normalized == "team-spec" or normalized.startswith(TEAM_SPEC_PREFIX)
+
+
+def non_team_spec_status(status: list[str]) -> list[str]:
+    return [line for line in status if not is_team_spec_path(status_path(line))]
+
+
+def staged_paths() -> list[str]:
+    output = run_git(["diff", "--cached", "--name-only"], check=False)
+    if not output:
+        return []
+    return [line.strip() for line in output.splitlines() if line.strip()]
+
+
+def has_staged_changes() -> bool:
+    return not git_succeeds(["diff", "--cached", "--quiet"])
+
+
+def validate_commit_options(args: argparse.Namespace) -> None:
+    staging_modes = sum(
+        [
+            bool(args.commit_all),
+            bool(args.commit_path),
+            bool(args.commit_staged),
+        ]
+    )
+    if staging_modes > 1:
+        raise SystemExit("Use only one of --commit-all, --commit-path, or --commit-staged.")
+    if args.commit_message and staging_modes == 0:
+        raise SystemExit("--commit-message requires --commit-all, --commit-path, or --commit-staged.")
+    if staging_modes and not args.commit_message:
+        raise SystemExit("--commit-all, --commit-path, and --commit-staged require --commit-message.")
+    blocked_paths = [path for path in args.commit_path if is_team_spec_path(path)]
+    if blocked_paths:
+        raise SystemExit(
+            "Refusing to git add paths under team-spec/: " + ", ".join(blocked_paths)
+        )
+
+
+def commit_requested(args: argparse.Namespace) -> bool:
+    return bool(args.commit_message)
+
+
+def commit_changes(args: argparse.Namespace) -> str:
+    if args.commit_all:
+        run_git(["add", "-A", "--", ".", ":(exclude)team-spec", ":(exclude)team-spec/**"])
+    elif args.commit_path:
+        run_git(["add", "--", *args.commit_path])
+
+    blocked_staged = [path for path in staged_paths() if is_team_spec_path(path)]
+    if blocked_staged:
+        raise SystemExit(
+            "Refusing to commit staged paths under team-spec/. Unstage them first: "
+            + ", ".join(blocked_staged)
+        )
+    if not has_staged_changes():
+        raise SystemExit("No staged non-team-spec changes to commit.")
+
+    run_git(["commit", "-m", args.commit_message])
+    commit_sha = run_git(["rev-parse", "--short", "HEAD"])
+    if not commit_sha:
+        raise SystemExit("Cannot determine created commit SHA.")
+    return commit_sha
+
+
 def push_branch(remote: str, branch: str) -> None:
     run_git(["push", "-u", remote, f"{branch}:{branch}"])
 
 
 def build_plan(args: argparse.Namespace) -> dict[str, Any]:
+    validate_commit_options(args)
     source_branch = args.source_branch or current_branch()
     issue_iid = infer_issue_iid(source_branch, args.issue_iid)
     target = infer_target_project(args, source_branch)
@@ -439,6 +552,7 @@ def build_plan(args: argparse.Namespace) -> dict[str, Any]:
     title = build_title(args, issue_iid, source_branch)
     body = build_body(args, issue_iid, source_branch)
     ignored_files = tracked_ignored_files()
+    status = worktree_status()
 
     if not source.remote and not args.source_project:
         raise SystemExit("Cannot infer source remote. Provide --source-remote or --source-project.")
@@ -456,7 +570,14 @@ def build_plan(args: argparse.Namespace) -> dict[str, Any]:
         "body": body,
         "target_branch_source": target_branch_source(target, args.target_branch),
         "tracked_ignored_files": ignored_files,
-        "dirty_worktree": dirty_worktree(),
+        "dirty_worktree": bool(status),
+        "worktree_status": status,
+        "non_team_spec_worktree_status": non_team_spec_status(status),
+        "commit_requested": commit_requested(args),
+        "commit_message": args.commit_message,
+        "commit_all": args.commit_all,
+        "commit_paths": args.commit_path,
+        "commit_staged": args.commit_staged,
     }
 
 
@@ -487,12 +608,24 @@ def execute(args: argparse.Namespace, plan: dict[str, Any]) -> dict[str, Any]:
     token = os.environ.get(args.token_env)
     if not token:
         raise SystemExit(f"Missing token env var: {args.token_env}")
-    if plan["dirty_worktree"]:
+    if plan["dirty_worktree"] and not plan["commit_requested"]:
         raise SystemExit("Working tree has uncommitted changes. Commit or stash before creating MR.")
     if not plan["source_remote"]:
         raise SystemExit("Cannot push without a source remote.")
 
     confirm_execution(plan)
+    if plan["commit_requested"]:
+        plan["created_commit"] = commit_changes(args)
+        remaining_status = worktree_status()
+        remaining_non_team_spec = non_team_spec_status(remaining_status)
+        plan["dirty_worktree"] = bool(remaining_status)
+        plan["worktree_status"] = remaining_status
+        plan["non_team_spec_worktree_status"] = remaining_non_team_spec
+        if remaining_non_team_spec:
+            raise SystemExit(
+                "Working tree still has uncommitted non-team-spec changes after commit. "
+                "Commit them, stash them, or rerun with a broader non-team-spec staging option."
+            )
     push_branch(plan["source_remote"], plan["source_branch"])
     source_project_id = None
     if plan["source_project"] != plan["target_project"]:
@@ -536,6 +669,21 @@ def print_text(plan: dict[str, Any]) -> None:
     print(f"Target branch source: {plan['target_branch_source']}")
     print(f"Source remote: {plan['source_remote']}")
     print(f"Dirty worktree: {plan['dirty_worktree']}")
+    if plan.get("commit_requested"):
+        if plan.get("commit_all"):
+            commit_scope = "all non-team-spec worktree changes"
+        elif plan.get("commit_staged"):
+            commit_scope = "already staged non-team-spec changes"
+        else:
+            commit_scope = ", ".join(plan.get("commit_paths") or [])
+        print(f"Commit before push: yes ({commit_scope})")
+        print(f"Commit message: {plan['commit_message']}")
+    if plan.get("created_commit"):
+        print(f"Created commit: {plan['created_commit']}")
+    if plan.get("worktree_status"):
+        print("Worktree changes:")
+        for line in plan["worktree_status"]:
+            print(f"- {line}")
     if plan.get("tracked_ignored_files"):
         print("Tracked files matching ignore rules:")
         for path in plan["tracked_ignored_files"]:
