@@ -40,7 +40,7 @@ v1 仅支持 GitLab Merge Request。GitHub Pull Request 应使用独立技能。
 - `--execute` 时先做执行前确认，再 push 当前分支并创建 GitLab Merge Request。
 - 默认只推送已有提交；如果用户明确要求收尾提交，可通过 `--commit-message` 搭配 `--commit-all`、`--commit-path` 或 `--commit-staged` 在 push 前创建本地提交。
 - 执行收尾提交时，绝对不得对 `team-spec/` 下的文件执行 `git add`；如果发现 `team-spec/` 文件已经在暂存区，必须停止并要求先取消暂存。
-- MR 标题和正文都包含 issue 编号，正文默认使用 `Closes #{issue_iid}` 以便 GitLab 自动关联并在合并后关闭 issue。
+- MR 标题和正文都包含 issue 编号；默认标题优先来自本地 issue 草稿的明确标题，正文默认使用 `Closes #{issue_iid}` 以便 GitLab 自动关联并在合并后关闭 issue。
 - 可指定 target branch、source remote、target remote、title、draft、label、assignee 和 reviewer。
 - 执行前会检查被 Git 追踪但又命中 `.gitignore` 规则的文件，并要求人类确认是否继续。
 - 正式请求 GitLab API 前会把 method、URL 和 payload 打印到 stderr，便于失败排查；token 不会输出。
@@ -81,6 +81,7 @@ GITLAB_TOKEN=... python3 {skill_dir}/scripts/create_gitlab_mr.py --execute --com
 - `--target-project namespace/project`：显式指定目标项目，优先级高于 remote 推断。
 - `--source-project namespace/project`：显式指定 source project，用于 fork 工作流。
 - `--title "Resolve #123: ..."`：显式指定 MR 标题。
+- `--issue-file team-spec/active/issues/{slug}/123-short-title.md`：显式指定本地 issue 草稿，用其中的 `# 标题` 或 `## Title` 首行生成 MR 标题。
 - `--draft`：创建 Draft MR。
 - `--label label-name`：可重复传入多个 label。
 - `--assignee-id 123`、`--reviewer-id 456`：可重复传入多个人员 ID。
@@ -131,6 +132,10 @@ GITLAB_TOKEN=... python3 {skill_dir}/scripts/create_gitlab_mr.py --execute --com
 ## MR 标题与正文规则
 
 - 标题必须包含 issue 编号，例如 `Resolve #123: Add export filter`。
+- 如果用户显式提供 `--title`，优先使用该标题；若缺少 issue 编号，脚本会自动补上。
+- 如果没有显式标题，优先从 `--issue-file` 指定的本地 issue 草稿读取标题；其次从 `team-spec/active/issues/*/{issue-iid}-*.md` 的唯一匹配文件读取标题。
+- 本地 issue 草稿标题只允许来自明确的 `# 标题` 或 `## Title` 段首行，不得回退到文件名。
+- 如果找不到本地 issue 标题，才从分支名生成标题；如果分支名去掉 issue 编号后没有语义，例如只剩 `implementation`，必须停止并要求用户提供 `--title` 或 `--issue-file`。
 - 正文必须包含 GitLab closing keyword，例如 `Closes #123`。
 - 正文应包含：
   - 关联 issue。
@@ -138,11 +143,11 @@ GITLAB_TOKEN=... python3 {skill_dir}/scripts/create_gitlab_mr.py --execute --com
   - 验证命令与结果。
   - 风险、未覆盖测试或需要 reviewer 注意的事项。
 
-如果用户没有提供标题，默认标题从 issue IID 和当前分支生成。不要创建没有 issue 关联的 MR，除非用户明确要求。
+不要创建没有 issue 关联的 MR，除非用户明确要求。不要创建空泛标题的 MR，例如 `Resolve #123: implementation`。
 
 ## 建议流程
 
-1. 确认当前分支、issue IID、source remote、target project 和 target branch。
+1. 确认当前分支、issue IID、source remote、target project、target branch 和 MR 标题来源。
 2. 检查工作区状态；如果存在未提交变更，先确认这些变更是否已经实现和验证完成。
 3. 如果用户没有明确要求代为提交，停止并要求用户先完成提交或 stash。
 4. 如果用户明确要求代为提交，必须确认提交信息和提交范围：`--commit-all`、`--commit-path` 或 `--commit-staged` 三选一。
@@ -166,6 +171,7 @@ GITLAB_TOKEN=... python3 {skill_dir}/scripts/create_gitlab_mr.py --execute --com
 
 - 当前分支已推送到正确 source remote。
 - GitLab MR 已创建，标题和正文都关联 issue 编号。
+- MR 标题来自显式标题、本地 issue 草稿标题或有语义的分支名，不是 `implementation` 这类兜底词。
 - 如果执行了收尾提交，最终回复包含创建的 commit SHA 和提交范围。
 - 最终回复包含 MR URL。
 - 若失败，输出失败阶段、错误原因和可重试命令。

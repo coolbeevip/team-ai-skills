@@ -15,10 +15,12 @@ import urllib.error
 import urllib.parse
 import urllib.request
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Any
 
 
 ISSUE_RE = re.compile(r"(?:^|[-_/])#?(\d+)(?:[-_/]|$)")
+SECTION_RE = re.compile(r"^##\s+(.+?)\s*$", re.MULTILINE)
 TEAM_SPEC_PREFIX = "team-spec/"
 
 
@@ -48,6 +50,10 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--source-project", help="Source project namespace/project.")
     parser.add_argument("--target-project", help="Target project namespace/project.")
     parser.add_argument("--title", help="Merge Request title.")
+    parser.add_argument(
+        "--issue-file",
+        help="Local issue markdown file used to derive a meaningful MR title.",
+    )
     parser.add_argument("--body-file", help="Read MR body from file.")
     parser.add_argument("--draft", action="store_true", help="Create a Draft MR.")
     parser.add_argument("--label", action="append", default=[], help="Label to add.")
@@ -266,16 +272,95 @@ def branch_summary(branch: str, issue_iid: str) -> str:
     return cleaned[:80] if cleaned else "implementation"
 
 
-def build_title(args: argparse.Namespace, issue_iid: str, branch: str) -> str:
+def split_sections(text: str) -> dict[str, str]:
+    matches = list(SECTION_RE.finditer(text))
+    sections: dict[str, str] = {}
+    for index, match in enumerate(matches):
+        section_title = match.group(1).strip()
+        start = match.end()
+        end = matches[index + 1].start() if index + 1 < len(matches) else len(text)
+        sections[section_title] = text[start:end].strip()
+    return sections
+
+
+def issue_title_from_file(path: Path) -> tuple[str, str] | None:
+    text = path.read_text(encoding="utf-8")
+    first_heading = re.search(r"^#\s+(.+?)\s*$", text, re.MULTILINE)
+    if first_heading:
+        return first_heading.group(1).strip(), str(path)
+    sections = split_sections(text)
+    if "Title" in sections and sections["Title"].strip():
+        return sections["Title"].splitlines()[0].strip(), str(path)
+    return None
+
+
+def infer_issue_file(issue_iid: str, explicit: str | None) -> Path | None:
+    if explicit:
+        path = Path(explicit)
+        if not path.exists():
+            raise SystemExit(f"Issue file does not exist: {path}")
+        if path.is_dir():
+            raise SystemExit(f"Issue file is a directory: {path}")
+        return path
+
+    issues_root = Path("team-spec/active/issues")
+    if not issues_root.exists():
+        return None
+    candidates = sorted(issues_root.glob(f"*/{issue_iid}-*.md"))
+    candidates = [
+        path
+        for path in candidates
+        if not path.name.endswith((".implementation.md", ".verification.md"))
+    ]
+    if len(candidates) == 1:
+        return candidates[0]
+    return None
+
+
+def infer_issue_title(issue_iid: str, explicit_file: str | None) -> tuple[str, str] | None:
+    path = infer_issue_file(issue_iid, explicit_file)
+    if not path:
+        return None
+    resolved = issue_title_from_file(path)
+    if not resolved:
+        if explicit_file:
+            raise SystemExit(
+                f"Cannot derive title from {path}. Add a '# Title' heading or '## Title' section."
+            )
+        return None
+    return resolved
+
+
+def normalize_title_text(title: str) -> str:
+    return re.sub(r"\s+", " ", title).strip()
+
+
+def build_title(
+    args: argparse.Namespace,
+    issue_iid: str,
+    branch: str,
+    issue_title: str | None,
+) -> tuple[str, str]:
     if args.title:
-        title = args.title.strip()
+        title = normalize_title_text(args.title)
+        title_source = "explicit"
+    elif issue_title:
+        title = f"Resolve #{issue_iid}: {normalize_title_text(issue_title)}"
+        title_source = "issue_file"
     else:
-        title = f"Resolve #{issue_iid}: {branch_summary(branch, issue_iid)}"
+        summary = branch_summary(branch, issue_iid)
+        if summary == "implementation":
+            raise SystemExit(
+                "Cannot build a meaningful MR title from the branch name. "
+                "Provide --title or --issue-file."
+            )
+        title = f"Resolve #{issue_iid}: {summary}"
+        title_source = "branch"
     if f"#{issue_iid}" not in title:
         title = f"Resolve #{issue_iid}: {title}"
     if args.draft and not title.lower().startswith(("draft:", "wip:")):
         title = "Draft: " + title
-    return title
+    return title, title_source
 
 
 def build_body(args: argparse.Namespace, issue_iid: str, branch: str) -> str:
@@ -549,7 +634,13 @@ def build_plan(args: argparse.Namespace) -> dict[str, Any]:
     target = infer_target_project(args, source_branch)
     source = infer_source_project(args, source_branch, target)
     target_branch = args.target_branch or default_target_branch(target)
-    title = build_title(args, issue_iid, source_branch)
+    issue_title = infer_issue_title(issue_iid, args.issue_file)
+    title, title_source = build_title(
+        args,
+        issue_iid,
+        source_branch,
+        issue_title[0] if issue_title else None,
+    )
     body = build_body(args, issue_iid, source_branch)
     ignored_files = tracked_ignored_files()
     status = worktree_status()
@@ -567,6 +658,8 @@ def build_plan(args: argparse.Namespace) -> dict[str, Any]:
         "source_project": source.path,
         "target_project": target.path,
         "title": title,
+        "title_source": title_source,
+        "issue_title_source": issue_title[1] if issue_title else None,
         "body": body,
         "target_branch_source": target_branch_source(target, args.target_branch),
         "tracked_ignored_files": ignored_files,
@@ -689,6 +782,9 @@ def print_text(plan: dict[str, Any]) -> None:
         for path in plan["tracked_ignored_files"]:
             print(f"- {path}")
     print(f"Title: {plan['title']}")
+    print(f"Title source: {plan['title_source']}")
+    if plan.get("issue_title_source"):
+        print(f"Issue title source: {plan['issue_title_source']}")
     if plan.get("mr_url"):
         print(f"MR: {plan['mr_url']}")
     if plan.get("status"):
