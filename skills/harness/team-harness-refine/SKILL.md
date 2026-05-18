@@ -63,6 +63,7 @@ Harness 目录识别规则：
   - `CLAUDE.md`（仅当项目使用 Claude 或用户要求时维护）
 - `{harness_dir}/index.md`：harness 总入口、目录规划、文件命名规范和文档地图。
 - `{harness_dir}/structure.md`：当 harness 文档较多或项目需要稳定约束时，用于明确目录职责、命名规则、增删文档标准和入口链接规则。
+- `{harness_dir}/decisions.md`：记录 harness 目录、命名、规则和维护策略的关键设计决策及取舍原因。
 - `{harness_dir}/commands.md`：常用开发、测试、检查和调试命令。
 - `{harness_dir}/verification.md`：不同变更类型对应的验证策略和最低验证命令。
 - `{harness_dir}/architecture-map.md`：agent 需要理解的模块边界、关键路径和代码入口。
@@ -74,13 +75,13 @@ Harness 目录识别规则：
 
 输出分层：
 
-- Harness 结构层：`AGENTS.md`、`CLAUDE.md`、`{harness_dir}/index.md`、必要时的 `{harness_dir}/structure.md`，用于定义入口、目录、文件名、索引和职责边界。
+- Harness 结构层：`AGENTS.md`、`CLAUDE.md`、`{harness_dir}/index.md`、必要时的 `{harness_dir}/structure.md` 和 `{harness_dir}/decisions.md`，用于定义入口、目录、文件名、索引、职责边界和关键取舍。
 - Harness 知识层：`{harness_dir}/commands.md`、`verification.md`、`architecture-map.md`、`coding-rules.md`、`review-rubric.md`、`known-failures.md` 等，用于改善 agent 如何理解项目、运行命令和处理失败。
 
 落盘规则：
 
 - 新建 harness：先确认 `{harness_dir}`，然后至少创建或更新 `AGENTS.md`，并创建 `{harness_dir}/index.md`、`commands.md`、`verification.md` 中与本轮证据相关的文件。
-- 规划目录：至少更新 `AGENTS.md` 或 `{harness_dir}/index.md`，必要时更新 `{harness_dir}/structure.md`。
+- 规划目录：至少更新 `AGENTS.md` 或 `{harness_dir}/index.md`，必要时更新 `{harness_dir}/structure.md`；如果存在容易被后续误改的结构取舍，必须更新 `{harness_dir}/decisions.md`。
 - 审查现有 harness：至少更新 `{harness_dir}/index.md`、`structure.md` 或被审查后确认需要修订的深层知识文件之一。
 - 根据失败案例更新 harness：至少更新 `{harness_dir}/known-failures.md`；如果失败来自命令、验证、架构地图或规则缺口，还应同步更新对应文档。
 - 根据开发任务更新 harness：至少更新与任务相关的 `{harness_dir}/commands.md`、`{harness_dir}/verification.md`、`{harness_dir}/architecture-map.md`、`{harness_dir}/coding-rules.md` 或 `{harness_dir}/review-rubric.md` 之一。
@@ -108,13 +109,14 @@ Harness 目录识别规则：
 3. 先建立 harness 结构快照：入口文件是否短小，是否能找到 `{harness_dir}`，深层知识目录是否有稳定命名，文件职责是否互斥，索引是否能指导 agent 选择阅读路径。
 4. 规划或修正 `AGENTS.md` / `CLAUDE.md` 与 `{harness_dir}/` 的目录和文件名：明确保留、合并、拆分、新增或废弃哪些 harness 文件。
 5. 将目录规划写入 `{harness_dir}/index.md`；如果规则较复杂，再写入 `{harness_dir}/structure.md`。
-6. 再建立 harness 内容快照：命令是否可执行，验证策略是否明确，架构地图是否覆盖关键代码入口，编码规则是否来自项目事实，失败经验是否可复用。
-7. 选择一个真实任务、真实失败案例或最小代码路径作为校验样本。
-8. 按更新后的 harness 入口和索引尝试理解、执行或验证该样本，记录 agent 会卡住的位置。
-9. 将卡点分类为结构缺口、命名缺口、索引缺口、上下文缺口、命令缺口、验证缺口、架构地图缺口、规则缺口、工具缺口或代码/测试债务。
-10. 先修复结构类问题，再更新对应深层知识文档；已有内容应增量修订，不要无理由重写。
-11. 对照证据等级、过期标记和冲突处理规则，修正或标注无法确认的内容。
-12. 对更新后的 harness 做一次轻量复核：入口是否更短、更清晰，目录和文件名是否稳定，新增文档是否能被入口找到，命令和验证说明是否仍然可执行。
+6. 对关键结构取舍写入 `{harness_dir}/decisions.md`，说明为什么采用当前目录、命名、拆分、合并或维护策略。
+7. 再建立 harness 内容快照：命令是否可执行，验证策略是否明确，架构地图是否覆盖关键代码入口，编码规则是否来自项目事实，失败经验是否可复用。
+8. 选择一个真实任务、真实失败案例或最小代码路径作为校验样本。
+9. 按更新后的 harness 入口和索引尝试理解、执行或验证该样本，记录 agent 会卡住的位置。
+10. 将卡点分类为结构缺口、命名缺口、索引缺口、上下文缺口、命令缺口、验证缺口、架构地图缺口、规则缺口、工具缺口或代码/测试债务。
+11. 先修复结构类问题，再更新对应深层知识文档；已有内容应增量修订，不要无理由重写。
+12. 对照证据等级、过期标记和冲突处理规则，修正或标注无法确认的内容。
+13. 对更新后的 harness 做一次轻量复核：入口是否更短、更清晰，目录和文件名是否稳定，新增文档是否能被入口找到，命令和验证说明是否仍然可执行。
 
 ## 持续维护触发器
 
@@ -155,6 +157,7 @@ Harness 目录识别规则：
 
 - `{harness_dir}/index.md` 是深层知识的目录总表，必须说明每个文件的用途、适用任务、是否必读和主要证据来源。
 - `{harness_dir}/structure.md` 只在目录规则需要稳定维护时创建；它记录命名约定、文件增删标准、迁移记录和禁止新增的含糊文件名。
+- `{harness_dir}/decisions.md` 记录“为什么这样设计”，只写关键取舍，不记录普通任务过程或临时 TODO。
 - 深层知识文件名默认使用 kebab-case，优先使用职责名，例如 `architecture-map.md`、`review-rubric.md`、`known-failures.md`。
 - 新增文件前必须先判断能否合并到现有职责文件；只有当内容有独立读者、独立更新频率或独立验证方式时才新增。
 - 废弃或改名文件时，必须同步更新 `AGENTS.md` / `CLAUDE.md`、`index.md` 和所有内部链接。
@@ -165,6 +168,7 @@ Harness 目录识别规则：
 - 过期命令、废弃入口、已移除模块和不再适用的规则不能静默保留为有效说明。
 - 可以直接删除明显错误且无历史价值的内容；如果删除会影响理解，应在相关文档中记录废弃原因和日期。
 - 文件合并、改名或删除时，必须同步更新 `AGENTS.md` / `CLAUDE.md`、`index.md`、`structure.md` 和所有内部链接。
+- 如果合并、改名或删除背后有重要取舍，应同步写入 `decisions.md`。
 - `known-failures.md` 不应无限增长；长期不再复现的失败应标注为历史记录，保留最后确认日期和不再复现的证据。
 - 不要新增 `misc.md`、`notes.md`、`todo.md` 等无法长期维护的兜底文件；无法归类的内容应先修正目录规划。
 
@@ -232,6 +236,13 @@ Harness 目录识别规则：
 - 入口文件、索引文件和深层知识之间的链接维护规则。
 - 当目录很小且规则已写入 `index.md` 时，可以不创建本文件。
 
+### decisions.md
+
+- 记录 harness 目录、命名、文件拆分、规则边界和维护策略的关键设计决策。
+- 每条决策应包含背景、可选方案、最终选择、取舍原因、日期和影响范围。
+- 适合记录容易被后续 agent 误改或反复争论的设计原因。
+- 不记录普通任务过程、临时 TODO、产品需求、工程 issue 或已能直接写入 `index.md` / `structure.md` 的简单规则。
+
 ### commands.md
 
 - 安装依赖、启动服务、运行测试、格式化、类型检查、构建、调试和清理命令。
@@ -283,6 +294,7 @@ Harness 目录识别规则：
 - 除非用户明确要求只分析不改文件，否则至少有一个 harness 输出物已创建或更新。
 - `AGENTS.md` 或 `CLAUDE.md` 能作为清晰入口，指向必要的 `{harness_dir}/` 文档。
 - `{harness_dir}/index.md` 已明确深层知识目录、文件名、职责边界和任务阅读路径；必要时已创建或更新 `structure.md`。
+- 关键结构和规则取舍已写入 `{harness_dir}/decisions.md`，或已判断本轮没有需要记录的设计决策。
 - 深层知识的目录和命名已经过一次结构复核，不存在明显职责重叠、孤岛文档或入口无法发现的文件。
 - 常用命令、验证策略、架构地图、编码规则和失败记录至少覆盖本轮真实任务或失败案例。
 - 关键 harness 内容已经根据当前代码、脚本、配置、测试或 CI 事实做过校验；未能确认的内容已标注为 `待验证` 或 `待确认`。
