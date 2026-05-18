@@ -97,7 +97,11 @@ def parse_args() -> argparse.Namespace:
         default=[],
         help="Specific issue draft to publish. Can be a filename, path, or draft identifier. Repeat to publish multiple specific issues.",
     )
-    parser.add_argument("--gitlab-url", default="https://gitlab.com")
+    parser.add_argument(
+        "--gitlab-url",
+        default=os.environ.get("GITLAB_URL") or "https://gitlab.com",
+        help="GitLab base URL. Defaults to GITLAB_URL, then https://gitlab.com.",
+    )
     parser.add_argument(
         "--project",
         help="GitLab project path namespace/project or numeric project ID.",

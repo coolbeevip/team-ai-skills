@@ -56,7 +56,7 @@ python3 {skill_dir}/scripts/publish_gitlab_issues.py --slug {slug}
 用户确认后正式发布：
 
 ```sh
-GITLAB_TOKEN=... python3 {skill_dir}/scripts/publish_gitlab_issues.py --slug {slug} --execute
+GITLAB_URL=https://gitlab.example.com GITLAB_TOKEN=... python3 {skill_dir}/scripts/publish_gitlab_issues.py --slug {slug} --execute
 ```
 
 其中 `{skill_dir}` 是当前技能目录。技能内部定位脚本时应使用相对 `SKILL.md` 的路径 `./scripts/publish_gitlab_issues.py`，执行命令时再解析成实际文件路径。
@@ -64,7 +64,8 @@ GITLAB_TOKEN=... python3 {skill_dir}/scripts/publish_gitlab_issues.py --slug {sl
 常用参数：
 
 - `--issue 001-add-export-filter.md`：只发布指定的单个 issue，可传入文件名、文件路径或草稿标识。
-- `--gitlab-url https://gitlab.example.com`：自建 GitLab。
+- `GITLAB_URL=https://gitlab.example.com`：自建 GitLab 平台地址。默认从环境变量读取；未设置时才使用 `https://gitlab.com`。
+- `--gitlab-url https://gitlab.example.com`：仅用于临时覆盖 `GITLAB_URL`，不要在常规执行命令中主动传入。
 - `--project namespace/project`：显式指定项目，优先级高于 remote 推断。
 - `--remote upstream`：显式指定用于推断项目的 remote。
 - `--label label-name`：可重复传入多个 label。
@@ -89,7 +90,7 @@ GITLAB_TOKEN=... python3 {skill_dir}/scripts/publish_gitlab_issues.py --slug {sl
 
 必须参数：
 
-- 平台地址（默认 `https://gitlab.com`；自建 GitLab 必须提供自定义地址）。
+- 平台地址（默认从环境变量 `GITLAB_URL` 读取；未设置时使用 `https://gitlab.com`。自建 GitLab 必须通过 `GITLAB_URL` 提供自定义地址，除非用户明确要求用 `--gitlab-url` 临时覆盖）。
 - 仓库定位：`namespace/project` 或可唯一定位项目的项目 ID；如果用户未显式提供，可按下面“仓库定位规则”从 git remote 推断。
 - 认证 token（必须通过环境变量提供，不写入任何文件）。
 - 目标 slug 或明确的 issue 目录路径（如 `team-spec/active/issues/{slug}/`）。
@@ -178,7 +179,7 @@ GITLAB_TOKEN=... python3 {skill_dir}/scripts/publish_gitlab_issues.py --slug {sl
 
 ## 建议流程
 
-1. 确认 slug、项目、平台地址、token 来源与权限范围；若项目来自 git remote，按“仓库定位规则”优先选择上游仓库。
+1. 确认 slug、项目、平台地址、token 来源与权限范围；平台地址优先读取环境变量 `GITLAB_URL`，不要默认追加 `--gitlab-url`；若项目来自 git remote，按“仓库定位规则”优先选择上游仓库。
 2. 读取 `team-spec/active/issues/{slug}/` 下所有待发布 issue 草稿。
 3. 解析 `Blocked by` 关系并生成依赖有向图。
 4. 检查循环依赖；若存在循环依赖，停止并输出冲突清单。
@@ -200,6 +201,7 @@ GITLAB_TOKEN=... python3 {skill_dir}/scripts/publish_gitlab_issues.py --slug {sl
 ## 安全要求
 
 - token 只能从环境变量读取。
+- 自建 GitLab 平台地址默认从 `GITLAB_URL` 读取；除非用户明确要求覆盖，否则不要把平台地址作为命令行参数传入。
 - 不记录、不回显 token。
 - 不将 token 写入 `team-spec/` 或任何仓库文件。
 
