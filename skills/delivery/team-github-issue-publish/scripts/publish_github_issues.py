@@ -299,23 +299,43 @@ def parse_blockers(section: str, known_keys: set[str]) -> list[str]:
     return sorted(set(blockers))
 
 
-def section_block(title: str, text: str | None) -> str:
-    if not text or not text.strip():
-        return ""
-    return f"## {title}\n\n{text.strip()}\n\n"
+def section_text(text: str | None, fallback: str) -> str:
+    if text and text.strip():
+        return text.strip()
+    return fallback
+
+
+def metadata_lines(sections: dict[str, str]) -> str:
+    lines: list[str] = []
+    parent = sections.get("Parent", "").strip()
+    issue_type = sections.get("Type", "").strip()
+    if parent:
+        lines.append(f"- Parent: {parent}")
+    if issue_type:
+        lines.append(f"- Type: {issue_type}")
+    return "\n".join(lines) if lines else "- No explicit parent or type."
 
 
 def render_issue_body(key: str, sections: dict[str, str]) -> str:
     template = Template(BODY_TEMPLATE_PATH.read_text(encoding="utf-8"))
     rendered = template.safe_substitute(
-        parent_block=section_block("Parent", sections.get("Parent")),
-        what_to_build_block=section_block("What to build", sections.get("What to build")),
-        type_block=section_block("Type", sections.get("Type")),
-        acceptance_criteria_block=section_block(
-            "Acceptance criteria", sections.get("Acceptance criteria")
+        summary=section_text(
+            sections.get("What to build"),
+            "No summary was provided in the local issue draft.",
         ),
-        blocked_by_block=section_block("Blocked by", sections.get("Blocked by")),
-        notes_block=section_block("Notes", sections.get("Notes")),
+        scope=metadata_lines(sections),
+        acceptance_criteria=section_text(
+            sections.get("Acceptance criteria"),
+            "- [ ] Acceptance criteria were not provided in the local issue draft.",
+        ),
+        dependencies=section_text(
+            sections.get("Blocked by"),
+            "- None - can start immediately",
+        ),
+        implementation_notes=section_text(
+            sections.get("Notes"),
+            "- No additional notes.",
+        ),
         local_issue_key=key,
     ).rstrip()
     return rendered + "\n"
