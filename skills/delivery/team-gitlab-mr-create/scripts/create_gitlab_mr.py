@@ -10,18 +10,19 @@ import os
 import re
 import subprocess
 import sys
-import textwrap
 import urllib.error
 import urllib.parse
 import urllib.request
 from dataclasses import dataclass
 from pathlib import Path
+from string import Template
 from typing import Any
 
 
 ISSUE_RE = re.compile(r"(?:^|[-_/])#?(\d+)(?:[-_/]|$)")
 SECTION_RE = re.compile(r"^##\s+(.+?)\s*$", re.MULTILINE)
 TEAM_SPEC_PREFIX = "team-spec/"
+BODY_TEMPLATE_PATH = Path(__file__).resolve().parent / "templates" / "mr_body.md.tpl"
 
 
 @dataclass
@@ -351,7 +352,7 @@ def build_title(
         title = normalize_title_text(args.title)
         title_source = "explicit"
     elif issue_title:
-        title = f"Resolve #{issue_iid}: {normalize_title_text(issue_title)}"
+        title = normalize_title_text(issue_title)
         title_source = "issue_file"
     else:
         summary = branch_summary(branch, issue_iid)
@@ -360,36 +361,73 @@ def build_title(
                 "Cannot build a meaningful MR title from the branch name. "
                 "Provide --title or --issue-file."
             )
-        title = f"Resolve #{issue_iid}: {summary}"
+        title = summary
         title_source = "branch"
-    if f"#{issue_iid}" not in title:
-        title = f"Resolve #{issue_iid}: {title}"
     if args.draft and not title.lower().startswith(("draft:", "wip:")):
         title = "Draft: " + title
     return title, title_source
 
 
-def build_body(args: argparse.Namespace, issue_iid: str, branch: str) -> str:
+def body_section(sections: dict[str, str], title: str, fallback: str) -> str:
+    value = sections.get(title, "").strip()
+    return value if value else fallback
+
+
+def load_issue_sections(issue_file: Path | None) -> dict[str, str]:
+    if not issue_file:
+        return {}
+    return split_sections(issue_file.read_text(encoding="utf-8"))
+
+
+def render_default_body(issue_iid: str, branch: str, issue_file: Path | None) -> str:
+    sections = load_issue_sections(issue_file)
+    template = Template(BODY_TEMPLATE_PATH.read_text(encoding="utf-8"))
+    return template.safe_substitute(
+        issue_iid=issue_iid,
+        branch=branch,
+        summary=body_section(
+            sections,
+            "What to build",
+            f"Implements issue #{issue_iid} from branch `{branch}`.",
+        ),
+        changes=body_section(
+            sections,
+            "Implementation Notes",
+            "- See the commits in this merge request.",
+        ),
+        verification=body_section(
+            sections,
+            "Commands Run",
+            "- [ ] Add the verification commands and results before review.",
+        ),
+        acceptance_coverage=body_section(
+            sections,
+            "Acceptance Criteria Coverage",
+            "- [ ] Acceptance criteria coverage was not found in the local issue file.",
+        ),
+        risks=body_section(
+            sections,
+            "Regression Risks",
+            "- No specific regression risks recorded.",
+        ),
+        reviewer_notes=body_section(
+            sections,
+            "Findings",
+            "- No reviewer notes recorded.",
+        ),
+    ).strip()
+
+
+def build_body(
+    args: argparse.Namespace,
+    issue_iid: str,
+    branch: str,
+    issue_file: Path | None,
+) -> str:
     if args.body_file:
         body = open(args.body_file, encoding="utf-8").read().strip()
     else:
-        body = textwrap.dedent(
-            f"""
-            Closes #{issue_iid}
-
-            ## Summary
-
-            - Implements issue #{issue_iid} from branch `{branch}`.
-
-            ## Verification
-
-            - [ ] Tests or checks completed before review.
-
-            ## Notes
-
-            - Add reviewer notes here if needed.
-            """
-        ).strip()
+        body = render_default_body(issue_iid, branch, issue_file)
     if f"#{issue_iid}" not in body:
         body = f"Closes #{issue_iid}\n\n" + body
     if not re.search(rf"\b(close[sd]?|fix(e[sd])?|resolve[sd]?)\s+#{re.escape(issue_iid)}\b", body, re.I):
@@ -648,7 +686,8 @@ def build_plan(args: argparse.Namespace) -> dict[str, Any]:
         source_branch,
         issue_title[0] if issue_title else None,
     )
-    body = build_body(args, issue_iid, source_branch)
+    issue_file = Path(issue_title[1]) if issue_title else None
+    body = build_body(args, issue_iid, source_branch, issue_file)
     ignored_files = tracked_ignored_files()
     status = worktree_status()
 

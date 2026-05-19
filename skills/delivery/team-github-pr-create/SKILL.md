@@ -39,7 +39,7 @@ v1 仅支持 GitHub Pull Request。GitLab Merge Request 应使用独立技能。
 - 默认 dry-run，只输出将推送的分支和将创建的 PR。
 - `--execute` 时先做执行前确认，再 push 当前分支并创建 GitHub Pull Request。
 - 脚本只允许推送已有提交，不负责 `git add`、`git commit`、自动暂存或自动生成本地提交。
-- PR 标题和正文都包含 issue 编号，正文默认使用 `Closes #123` 以便 GitHub 自动关联并在合并后关闭 issue。
+- PR 标题默认不包含 issue 编号，只描述变更本身；正文使用 `./scripts/templates/pr_body.md.tpl` 渲染，并保留 `Closes #{issue_number}` 以便 GitHub 自动关联并在合并后关闭 issue。
 - 可指定 target branch、source remote、target remote、title、draft 和 assignee。
 - 执行前会检查被 Git 追踪但又命中 `.gitignore` 规则的文件，并要求人类确认是否继续。
 
@@ -65,7 +65,9 @@ GITHUB_TOKEN=... python3 {skill_dir}/scripts/create_github_pr.py --execute
 - `--target-remote upstream`：指定 PR 目标项目 remote。
 - `--target-repo owner/repo`：显式指定目标仓库，优先级高于 remote 推断。
 - `--source-repo owner/repo`：显式指定 source repo，用于 fork 工作流。
-- `--title "Resolve #123: ..."`：显式指定 PR 标题。
+- `--title "Add export filter"`：显式指定 PR 标题；不建议在标题中包含 issue 编号。
+- `--issue-file team-spec/active/issues/{slug}/123-short-title.md`：显式指定本地 issue 草稿，用其中的 `# 标题` 或 `## Title` 首行生成 PR 标题和标准正文。
+- `--body-file path/to/body.md`：显式指定 PR 正文；如未指定，脚本使用 `./scripts/templates/pr_body.md.tpl` 生成标准正文。
 - `--draft`：创建 Draft PR。
 - `--assignee octocat`：可重复传入多个 assignee login。
 - `--json`：输出机器可读 JSON。
@@ -110,15 +112,23 @@ GITHUB_TOKEN=... python3 {skill_dir}/scripts/create_github_pr.py --execute
 
 ## PR 标题与正文规则
 
-- 标题必须包含 issue 编号，例如 `Resolve #123: Add export filter`。
+- 标题默认不包含 issue 编号，默认格式为 `{clear change title}`，例如 `Add export filter`。
+- 如果用户显式提供 `--title`，优先使用该标题；脚本不会自动向标题补 issue 编号。
+- 如果没有显式标题，优先从 `--issue-file` 指定的本地 issue 草稿读取标题；其次从 `team-spec/active/issues/*/{issue-number}-*.md` 的唯一匹配文件读取标题。
+- 本地 issue 草稿标题只允许来自明确的 `# 标题` 或 `## Title` 段首行，不得回退到文件名。
+- 如果找不到本地 issue 标题，才从分支名生成标题；如果分支名去掉 issue 编号后没有语义，例如只剩 `implementation`，必须停止并要求用户提供 `--title` 或 `--issue-file`。
 - 正文必须包含 GitHub closing keyword，例如 `Closes #123`。
-- 正文应包含：
-  - 关联 issue。
-  - 主要变更摘要。
-  - 验证命令与结果。
-  - 风险、未覆盖测试或需要 reviewer 注意的事项。
+- 默认正文必须使用 `./scripts/templates/pr_body.md.tpl`，并包含：
+  - `Summary`：从 issue 的 `What to build` 映射；缺失时用分支和 issue 生成兜底摘要。
+  - `Changes`：优先来自 issue 的 `Implementation Notes`。
+  - `Acceptance criteria`：优先来自 `team-issue-verify` 回写的 `Acceptance Criteria Coverage`。
+  - `Verification`：优先来自 `Commands Run`。
+  - `Risks`：优先来自 `Regression Risks`。
+  - `Reviewer notes`：优先来自 `Findings`。
+  - `Checklist`：提交前人工检查清单。
+- 如果用户传入 `--body-file`，也必须保留 issue closing keyword；脚本会在缺失时自动补 `Closes #{issue_number}`。
 
-如果用户没有提供标题，默认标题从 issue 编号和当前分支生成。不要创建没有 issue 关联的 PR，除非用户明确要求。
+不要创建没有 issue 关联正文的 PR，除非用户明确要求。不要创建空泛标题的 PR，例如 `implementation` 或 `Resolve #123: implementation`。
 
 ## 建议流程
 

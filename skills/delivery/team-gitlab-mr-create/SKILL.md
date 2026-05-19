@@ -40,7 +40,7 @@ v1 仅支持 GitLab Merge Request。GitHub Pull Request 应使用独立技能。
 - `--execute` 时先做执行前确认，再 push 当前分支并创建 GitLab Merge Request。
 - 默认只推送已有提交；如果用户明确要求收尾提交，可通过 `--commit-message` 搭配 `--commit-all`、`--commit-path` 或 `--commit-staged` 在 push 前创建本地提交。
 - 执行收尾提交时，绝对不得对 `team-spec/` 下的文件执行 `git add`；如果发现 `team-spec/` 文件已经在暂存区，必须停止并要求先取消暂存。
-- MR 标题和正文都包含 issue 编号；默认标题优先来自本地 issue 草稿的明确标题，正文默认使用 `Closes #{issue_iid}` 以便 GitLab 自动关联并在合并后关闭 issue。
+- MR 标题默认不包含 issue IID，只描述变更本身；正文使用 `./scripts/templates/mr_body.md.tpl` 渲染，并保留 `Closes #{issue_iid}` 以便 GitLab 自动关联并在合并后关闭 issue。
 - 可指定 target branch、source remote、target remote、title、draft、label、assignee 和 reviewer。
 - 执行前会检查被 Git 追踪但又命中 `.gitignore` 规则的文件，并要求人类确认是否继续。
 - 正式请求 GitLab API 前会把 method、URL 和 payload 打印到 stderr，便于失败排查；token 不会输出。
@@ -80,8 +80,9 @@ GITLAB_URL=https://gitlab.example.com GITLAB_TOKEN=... python3 {skill_dir}/scrip
 - `--target-remote upstream`：指定 MR 目标项目 remote。
 - `--target-project namespace/project`：显式指定目标项目，优先级高于 remote 推断。
 - `--source-project namespace/project`：显式指定 source project，用于 fork 工作流。
-- `--title "Resolve #123: ..."`：显式指定 MR 标题。
+- `--title "Add export filter"`：显式指定 MR 标题；不建议在标题中包含 issue IID。
 - `--issue-file team-spec/active/issues/{slug}/123-short-title.md`：显式指定本地 issue 草稿，用其中的 `# 标题` 或 `## Title` 首行生成 MR 标题。
+- `--body-file path/to/body.md`：显式指定 MR 正文；如未指定，脚本使用 `./scripts/templates/mr_body.md.tpl` 生成标准正文。
 - `--draft`：创建 Draft MR。
 - `--label label-name`：可重复传入多个 label。
 - `--assignee-id 123`、`--reviewer-id 456`：可重复传入多个人员 ID。
@@ -132,19 +133,23 @@ GITLAB_URL=https://gitlab.example.com GITLAB_TOKEN=... python3 {skill_dir}/scrip
 
 ## MR 标题与正文规则
 
-- 标题必须包含 issue 编号，例如 `Resolve #123: Add export filter`。
-- 如果用户显式提供 `--title`，优先使用该标题；若缺少 issue 编号，脚本会自动补上。
+- 标题默认不包含 issue IID，默认格式为 `{clear change title}`，例如 `Add export filter`。
+- 如果用户显式提供 `--title`，优先使用该标题；脚本不会自动向标题补 issue IID。
 - 如果没有显式标题，优先从 `--issue-file` 指定的本地 issue 草稿读取标题；其次从 `team-spec/active/issues/*/{issue-iid}-*.md` 的唯一匹配文件读取标题。
 - 本地 issue 草稿标题只允许来自明确的 `# 标题` 或 `## Title` 段首行，不得回退到文件名。
 - 如果找不到本地 issue 标题，才从分支名生成标题；如果分支名去掉 issue 编号后没有语义，例如只剩 `implementation`，必须停止并要求用户提供 `--title` 或 `--issue-file`。
 - 正文必须包含 GitLab closing keyword，例如 `Closes #123`。
-- 正文应包含：
-  - 关联 issue。
-  - 主要变更摘要。
-  - 验证命令与结果。
-  - 风险、未覆盖测试或需要 reviewer 注意的事项。
+- 默认正文必须使用 `./scripts/templates/mr_body.md.tpl`，并包含：
+  - `Summary`：从 issue 的 `What to build` 映射；缺失时用分支和 issue 生成兜底摘要。
+  - `Changes`：优先来自 issue 的 `Implementation Notes`。
+  - `Acceptance criteria`：优先来自 `team-issue-verify` 回写的 `Acceptance Criteria Coverage`。
+  - `Verification`：优先来自 `Commands Run`。
+  - `Risks`：优先来自 `Regression Risks`。
+  - `Reviewer notes`：优先来自 `Findings`。
+  - `Checklist`：提交前人工检查清单。
+- 如果用户传入 `--body-file`，也必须保留 issue closing keyword；脚本会在缺失时自动补 `Closes #{issue_iid}`。
 
-不要创建没有 issue 关联的 MR，除非用户明确要求。不要创建空泛标题的 MR，例如 `Resolve #123: implementation`。
+不要创建没有 issue 关联正文的 MR，除非用户明确要求。不要创建空泛标题的 MR，例如 `implementation` 或 `Resolve #123: implementation`。
 
 ## 建议流程
 

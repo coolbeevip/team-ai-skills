@@ -10,15 +10,18 @@ import os
 import re
 import subprocess
 import sys
-import textwrap
 import urllib.error
 import urllib.parse
 import urllib.request
 from dataclasses import dataclass
+from pathlib import Path
+from string import Template
 from typing import Any
 
 
 ISSUE_RE = re.compile(r"(?:^|[-_/])#?(\d+)(?:[-_/]|$)")
+SECTION_RE = re.compile(r"^##\s+(.+?)\s*$", re.MULTILINE)
+BODY_TEMPLATE_PATH = Path(__file__).resolve().parent / "templates" / "pr_body.md.tpl"
 
 
 @dataclass
@@ -43,6 +46,10 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--source-repo", help="Source repository owner/repo.")
     parser.add_argument("--target-repo", help="Target repository owner/repo.")
     parser.add_argument("--title", help="Pull Request title.")
+    parser.add_argument(
+        "--issue-file",
+        help="Local issue markdown file used to derive a meaningful PR title and body.",
+    )
     parser.add_argument("--body-file", help="Read PR body from file.")
     parser.add_argument("--draft", action="store_true", help="Create a Draft PR.")
     parser.add_argument("--assignee", action="append", default=[], help="Assignee login.")
@@ -228,40 +235,156 @@ def branch_summary(branch: str, issue_number: str) -> str:
     return cleaned[:80] if cleaned else "implementation"
 
 
-def build_title(args: argparse.Namespace, issue_number: str, branch: str) -> str:
+def split_sections(text: str) -> dict[str, str]:
+    matches = list(SECTION_RE.finditer(text))
+    sections: dict[str, str] = {}
+    for index, match in enumerate(matches):
+        section_title = match.group(1).strip()
+        start = match.end()
+        end = matches[index + 1].start() if index + 1 < len(matches) else len(text)
+        sections[section_title] = text[start:end].strip()
+    return sections
+
+
+def issue_title_from_file(path: Path) -> tuple[str, str] | None:
+    text = path.read_text(encoding="utf-8")
+    first_heading = re.search(r"^#\s+(.+?)\s*$", text, re.MULTILINE)
+    if first_heading:
+        return first_heading.group(1).strip(), str(path)
+    sections = split_sections(text)
+    if "Title" in sections and sections["Title"].strip():
+        return sections["Title"].splitlines()[0].strip(), str(path)
+    return None
+
+
+def infer_issue_file(issue_number: str, explicit: str | None) -> Path | None:
+    if explicit:
+        path = Path(explicit)
+        if not path.exists():
+            raise SystemExit(f"Issue file does not exist: {path}")
+        if path.is_dir():
+            raise SystemExit(f"Issue file is a directory: {path}")
+        return path
+
+    issues_root = Path("team-spec/active/issues")
+    if not issues_root.exists():
+        return None
+    candidates = sorted(issues_root.glob(f"*/{issue_number}-*.md"))
+    candidates = [
+        path
+        for path in candidates
+        if not path.name.endswith((".implementation.md", ".verification.md"))
+    ]
+    if len(candidates) == 1:
+        return candidates[0]
+    return None
+
+
+def infer_issue_title(issue_number: str, explicit_file: str | None) -> tuple[str, str] | None:
+    path = infer_issue_file(issue_number, explicit_file)
+    if not path:
+        return None
+    resolved = issue_title_from_file(path)
+    if not resolved:
+        if explicit_file:
+            raise SystemExit(
+                f"Cannot derive title from {path}. Add a '# Title' heading or '## Title' section."
+            )
+        return None
+    return resolved
+
+
+def normalize_title_text(title: str) -> str:
+    return re.sub(r"\s+", " ", title).strip()
+
+
+def build_title(
+    args: argparse.Namespace,
+    issue_number: str,
+    branch: str,
+    issue_title: str | None,
+) -> tuple[str, str]:
     if args.title:
-        title = args.title.strip()
+        title = normalize_title_text(args.title)
+        title_source = "explicit"
+    elif issue_title:
+        title = normalize_title_text(issue_title)
+        title_source = "issue_file"
     else:
-        title = f"Resolve #{issue_number}: {branch_summary(branch, issue_number)}"
-    if f"#{issue_number}" not in title:
-        title = f"Resolve #{issue_number}: {title}"
+        summary = branch_summary(branch, issue_number)
+        if summary == "implementation":
+            raise SystemExit(
+                "Cannot build a meaningful PR title from the branch name. "
+                "Provide --title or --issue-file."
+            )
+        title = summary
+        title_source = "branch"
     if args.draft and not title.lower().startswith(("draft:", "wip:")):
         title = "Draft: " + title
-    return title
+    return title, title_source
 
 
-def build_body(args: argparse.Namespace, issue_number: str, branch: str) -> str:
+def body_section(sections: dict[str, str], title: str, fallback: str) -> str:
+    value = sections.get(title, "").strip()
+    return value if value else fallback
+
+
+def load_issue_sections(issue_file: Path | None) -> dict[str, str]:
+    if not issue_file:
+        return {}
+    return split_sections(issue_file.read_text(encoding="utf-8"))
+
+
+def render_default_body(issue_number: str, branch: str, issue_file: Path | None) -> str:
+    sections = load_issue_sections(issue_file)
+    template = Template(BODY_TEMPLATE_PATH.read_text(encoding="utf-8"))
+    return template.safe_substitute(
+        issue_number=issue_number,
+        branch=branch,
+        summary=body_section(
+            sections,
+            "What to build",
+            f"Implements issue #{issue_number} from branch `{branch}`.",
+        ),
+        changes=body_section(
+            sections,
+            "Implementation Notes",
+            "- See the commits in this pull request.",
+        ),
+        verification=body_section(
+            sections,
+            "Commands Run",
+            "- [ ] Add the verification commands and results before review.",
+        ),
+        acceptance_coverage=body_section(
+            sections,
+            "Acceptance Criteria Coverage",
+            "- [ ] Acceptance criteria coverage was not found in the local issue file.",
+        ),
+        risks=body_section(
+            sections,
+            "Regression Risks",
+            "- No specific regression risks recorded.",
+        ),
+        reviewer_notes=body_section(
+            sections,
+            "Findings",
+            "- No reviewer notes recorded.",
+        ),
+    ).strip()
+
+
+def build_body(
+    args: argparse.Namespace,
+    issue_number: str,
+    branch: str,
+    issue_file: Path | None,
+) -> str:
     if args.body_file:
         with open(args.body_file, encoding="utf-8") as fh:
             body = fh.read().strip()
     else:
-        body = textwrap.dedent(
-            f"""
-            Closes #{issue_number}
-
-            ## Summary
-
-            - Implements issue #{issue_number} from branch `{branch}`.
-
-            ## Verification
-
-            - [ ] Tests or checks completed before review.
-
-            ## Notes
-
-            - Add reviewer notes here if needed.
-            """
-        ).strip()
+        body = render_default_body(issue_number, branch, issue_file)
     if f"#{issue_number}" not in body:
         body = f"Closes #{issue_number}\n\n" + body
     if not re.search(rf"\b(close[sd]?|fix(e[sd])?|resolve[sd]?)\s+#{re.escape(issue_number)}\b", body, re.I):
@@ -403,8 +526,15 @@ def build_plan(args: argparse.Namespace) -> dict[str, Any]:
     target = infer_target_repo(args, source_branch)
     source = infer_source_repo(args, source_branch, target)
     target_branch = args.target_branch or default_target_branch(target)
-    title = build_title(args, issue_number, source_branch)
-    body = build_body(args, issue_number, source_branch)
+    issue_title = infer_issue_title(issue_number, args.issue_file)
+    title, title_source = build_title(
+        args,
+        issue_number,
+        source_branch,
+        issue_title[0] if issue_title else None,
+    )
+    issue_file = Path(issue_title[1]) if issue_title else None
+    body = build_body(args, issue_number, source_branch, issue_file)
     ignored_files = tracked_ignored_files()
 
     if not source.remote and not args.source_repo:
@@ -420,6 +550,8 @@ def build_plan(args: argparse.Namespace) -> dict[str, Any]:
         "source_repo": source.path,
         "target_repo": target.path,
         "title": title,
+        "title_source": title_source,
+        "issue_title_source": issue_title[1] if issue_title else None,
         "body": body,
         "target_branch_source": target_branch_source(target, args.target_branch),
         "tracked_ignored_files": ignored_files,
@@ -505,6 +637,9 @@ def print_text(plan: dict[str, Any]) -> None:
         for path in plan["tracked_ignored_files"]:
             print(f"- {path}")
     print(f"Title: {plan['title']}")
+    print(f"Title source: {plan['title_source']}")
+    if plan.get("issue_title_source"):
+        print(f"Issue title source: {plan['issue_title_source']}")
     if plan.get("pr_url"):
         print(f"PR: {plan['pr_url']}")
     if plan.get("status"):
