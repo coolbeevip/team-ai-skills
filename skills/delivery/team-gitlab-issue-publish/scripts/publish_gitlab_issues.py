@@ -116,6 +116,10 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="Ignore local Publish Status and re-check GitLab before creating.",
     )
+    parser.add_argument(
+        "--language",
+        help="Output language for rendered issue descriptions. Defaults to team-spec/config.yml language, then en-US.",
+    )
     parser.add_argument("--json", action="store_true", help="Print machine-readable JSON.")
     return parser.parse_args()
 
@@ -286,6 +290,32 @@ def parse_publish_status(sections: dict[str, str]) -> dict[str, str]:
     return values
 
 
+def language_from_config(explicit: str | None) -> str:
+    if explicit:
+        return explicit.strip()
+    config = Path("team-spec") / "config.yml"
+    if not config.exists():
+        return "en-US"
+    for line in config.read_text(encoding="utf-8").splitlines():
+        match = re.match(r"^\s*language\s*:\s*['\"]?([^'\"#]+)", line)
+        if match:
+            return match.group(1).strip() or "en-US"
+    return "en-US"
+
+
+def is_chinese_language(language: str) -> bool:
+    return language.lower().startswith("zh")
+
+
+def section_value(sections: dict[str, str], *names: str) -> str | None:
+    normalized = {key.lower(): value for key, value in sections.items()}
+    for name in names:
+        value = normalized.get(name.lower())
+        if value:
+            return value
+    return None
+
+
 def parse_blockers(section: str, known_keys: set[str]) -> list[str]:
     blockers: list[str] = []
     for line in section.splitlines():
@@ -301,7 +331,7 @@ def parse_blockers(section: str, known_keys: set[str]) -> list[str]:
     return sorted(set(blockers))
 
 
-def load_drafts(issue_dir: Path) -> list[IssueDraft]:
+def load_drafts(issue_dir: Path, language: str) -> list[IssueDraft]:
     if not issue_dir.exists():
         raise SystemExit(f"Issue directory does not exist: {issue_dir}")
 
@@ -316,9 +346,12 @@ def load_drafts(issue_dir: Path) -> list[IssueDraft]:
             continue
         text = path.read_text(encoding="utf-8")
         sections = split_sections(text)
-        blocked_by = parse_blockers(sections.get("Blocked by", ""), known_keys)
+        blocked_by = parse_blockers(
+            section_value(sections, "Blocked by", "依赖", "阻塞项") or "",
+            known_keys,
+        )
         title, title_source = resolve_title(path, text, sections)
-        description = render_issue_body(path.name, sections)
+        description = render_issue_body(path.name, sections, language)
         publish_status = parse_publish_status(sections)
         remote_iid = None
         if publish_status.get("gitlab iid", "").isdigit():
@@ -387,36 +420,69 @@ def section_text(text: str | None, fallback: str) -> str:
     return fallback
 
 
-def metadata_lines(sections: dict[str, str]) -> str:
+def metadata_lines(sections: dict[str, str], language: str) -> str:
     lines: list[str] = []
-    parent = sections.get("Parent", "").strip()
-    issue_type = sections.get("Type", "").strip()
+    parent = (section_value(sections, "Parent", "父需求", "来源") or "").strip()
+    issue_type = (section_value(sections, "Type", "类型") or "").strip()
+    parent_label = "父需求" if is_chinese_language(language) else "Parent"
+    type_label = "类型" if is_chinese_language(language) else "Type"
     if parent:
-        lines.append(f"- Parent: {parent}")
+        lines.append(f"- {parent_label}: {parent}")
     if issue_type:
-        lines.append(f"- Type: {issue_type}")
-    return "\n".join(lines) if lines else "- No explicit parent or type."
+        lines.append(f"- {type_label}: {issue_type}")
+    fallback = "- 未记录父需求或类型。" if is_chinese_language(language) else "- No explicit parent or type."
+    return "\n".join(lines) if lines else fallback
 
 
-def render_issue_body(key: str, sections: dict[str, str]) -> str:
+def issue_body_labels(language: str) -> dict[str, str]:
+    if is_chinese_language(language):
+        return {
+            "summary_heading": "摘要",
+            "scope_heading": "范围",
+            "acceptance_criteria_heading": "验收标准",
+            "dependencies_heading": "依赖",
+            "implementation_notes_heading": "实现备注",
+            "source_heading": "来源",
+            "missing_summary": "本地 issue 草稿未提供摘要。",
+            "missing_acceptance": "- [ ] 本地 issue 草稿未提供验收标准。",
+            "missing_dependencies": "- 无依赖，可立即开始",
+            "missing_notes": "- 无补充说明。",
+        }
+    return {
+        "summary_heading": "Summary",
+        "scope_heading": "Scope",
+        "acceptance_criteria_heading": "Acceptance criteria",
+        "dependencies_heading": "Dependencies",
+        "implementation_notes_heading": "Implementation notes",
+        "source_heading": "Source",
+        "missing_summary": "No summary was provided in the local issue draft.",
+        "missing_acceptance": "- [ ] Acceptance criteria were not provided in the local issue draft.",
+        "missing_dependencies": "- None - can start immediately",
+        "missing_notes": "- No additional notes.",
+    }
+
+
+def render_issue_body(key: str, sections: dict[str, str], language: str) -> str:
     template = Template(BODY_TEMPLATE_PATH.read_text(encoding="utf-8"))
+    labels = issue_body_labels(language)
     rendered = template.safe_substitute(
+        **labels,
         summary=section_text(
-            sections.get("What to build"),
-            "No summary was provided in the local issue draft.",
+            section_value(sections, "What to build", "建设内容", "实现内容", "需求摘要"),
+            labels["missing_summary"],
         ),
-        scope=metadata_lines(sections),
+        scope=metadata_lines(sections, language),
         acceptance_criteria=section_text(
-            sections.get("Acceptance criteria"),
-            "- [ ] Acceptance criteria were not provided in the local issue draft.",
+            section_value(sections, "Acceptance criteria", "验收标准"),
+            labels["missing_acceptance"],
         ),
         dependencies=section_text(
-            sections.get("Blocked by"),
-            "- None - can start immediately",
+            section_value(sections, "Blocked by", "依赖", "阻塞项"),
+            labels["missing_dependencies"],
         ),
         implementation_notes=section_text(
-            sections.get("Notes"),
-            "- No additional notes.",
+            section_value(sections, "Notes", "备注", "实现备注"),
+            labels["missing_notes"],
         ),
         local_issue_key=key,
     ).rstrip()
@@ -609,10 +675,11 @@ def write_status(draft: IssueDraft) -> None:
 
 
 def publish(args: argparse.Namespace) -> dict[str, Any]:
+    args.language = language_from_config(args.language)
     args.gitlab_url = gitlab_url_from_env()
     issue_dir = issue_dir_from_args(args)
     project = infer_project(args)
-    drafts = topo_sort(filter_drafts(load_drafts(issue_dir), args.issue))
+    drafts = topo_sort(filter_drafts(load_drafts(issue_dir, args.language), args.issue))
     token = os.environ.get(args.token_env)
 
     if args.execute and not token:
@@ -656,6 +723,7 @@ def publish(args: argparse.Namespace) -> dict[str, Any]:
     return {
         "mode": "execute" if args.execute else "dry-run",
         "gitlab_url": normalize_gitlab_url(args.gitlab_url),
+        "language": args.language,
         "project": project,
         "issues_dir": str(issue_dir),
         "selected_issues": args.issue,
@@ -680,6 +748,7 @@ def publish(args: argparse.Namespace) -> dict[str, Any]:
 def print_text_summary(result: dict[str, Any]) -> None:
     print(f"Mode: {result['mode']}")
     print(f"GitLab: {result['gitlab_url']}")
+    print(f"Language: {result['language']}")
     print(f"Project: {result['project']}")
     print(f"Issues: {result['issues_dir']}")
     print(f"Counts: {result['counts']}")

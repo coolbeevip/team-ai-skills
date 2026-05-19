@@ -1,31 +1,29 @@
 Closes #${issue_iid}
 
-## Summary
+## ${summary_heading}
 
 ${summary}
 
-## Changes
+## ${changes_heading}
 
 ${changes}
 
-## Acceptance criteria
+## ${acceptance_criteria_heading}
 
 ${acceptance_coverage}
 
-## Verification
+## ${verification_heading}
 
 ${verification}
 
-## Risks
+## ${risks_heading}
 
 ${risks}
 
-## Reviewer notes
+## ${reviewer_notes_heading}
 
 ${reviewer_notes}
 
-## Checklist
+## ${checklist_heading}
 
-- [ ] The MR title clearly describes the change without embedding the issue IID.
-- [ ] The implementation scope matches the linked issue.
-- [ ] Relevant tests or checks are listed above.
+${checklist}

@@ -1,25 +1,25 @@
-## Summary
+## ${summary_heading}
 
 ${summary}
 
-## Scope
+## ${scope_heading}
 
 ${scope}
 
-## Acceptance criteria
+## ${acceptance_criteria_heading}
 
 ${acceptance_criteria}
 
-## Dependencies
+## ${dependencies_heading}
 
 ${dependencies}
 
-## Implementation notes
+## ${implementation_notes_heading}
 
 ${implementation_notes}
 
 <details>
-<summary>Source</summary>
+<summary>${source_heading}</summary>
 
 - Local-Issue-Key: ${local_issue_key}
 

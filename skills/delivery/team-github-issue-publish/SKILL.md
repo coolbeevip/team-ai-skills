@@ -24,6 +24,18 @@ triggers:
 
 v1 仅支持 GitHub。不要在同一个技能中混合 GitHub 与 GitLab 发布逻辑；GitLab 请使用独立技能。
 
+## 语言约定
+
+统一读取目标项目根目录 `team-spec/config.yml`：
+
+```yaml
+language: zh-CN
+```
+
+语言优先级：用户本轮明确指定或脚本 `--language` > `team-spec/config.yml` > `en-US` 兜底。若配置不存在，技能执行时应先按团队规范询问语言偏好并创建配置；固定脚本独立运行时不交互，使用 `en-US` 兜底。
+
+远端 GitHub Issue 正文模板标题、兜底文案和检查项必须使用 `language`；本地草稿已有内容保持原文。
+
 ## 固定脚本
 
 发布 GitHub issue 时，优先使用本技能目录下的固定脚本，不要临时重写 GitHub API 调用代码：
@@ -39,7 +51,7 @@ v1 仅支持 GitHub。不要在同一个技能中混合 GitHub 与 GitLab 发布
 - 读取 `team-spec/active/issues/{slug}/` 或显式 `--issues-dir`。
 - 默认发布该目录下全部 issue；也可以通过 `--issue` 只发布指定的单个 issue。
 - 按 `Blocked by` 生成依赖顺序。
-- 使用 `./scripts/templates/issue_body.md.tpl` 渲染 GitHub 友好的 issue 正文，固定包含 `Summary`、`Scope`、`Acceptance criteria`、`Dependencies`、`Implementation notes` 和折叠的 `Source` 信息；正文只保留对协作有用的摘要字段，不直接发布完整草稿原文。
+- 使用 `./scripts/templates/issue_body.md.tpl` 按 `language` 渲染 GitHub 友好的 issue 正文，固定包含摘要、范围、验收标准、依赖、实现备注和折叠的来源信息；正文只保留对协作有用的摘要字段，不直接发布完整草稿原文。
 - 发布前会校验 issue 标题是否足够清晰：必须来自明确的 `#` 标题或 `Title` 段，不能回退到文件名；标题过短、过泛或缺少对象时会拒绝发布。
 - 从显式 `--repo` 或 git remote 推断 GitHub 仓库，多个 remote 时优先 `upstream`。
 - 默认 dry-run，只输出发布计划。
@@ -70,6 +82,7 @@ GITHUB_TOKEN=... python3 {skill_dir}/scripts/publish_github_issues.py --slug {sl
 - `--milestone 123`：指定 milestone number。
 - `--assignee octocat`：可重复传入多个 assignee login。
 - `--force`：忽略本地 `Publish Status`，重新检查 GitHub；仍会使用远端 `Local-Issue-Key` 做幂等检查，不应直接重复创建。
+- `--language zh-CN`：显式覆盖远端 issue 正文模板语言；不传时读取 `team-spec/config.yml`。
 - `--json`：输出机器可读 JSON。
 
 标题规则：
@@ -82,12 +95,12 @@ GITHUB_TOKEN=... python3 {skill_dir}/scripts/publish_github_issues.py --slug {sl
 正文模板规则：
 
 - 远端 GitHub Issue 正文应面向人类协作阅读，不要把本地草稿 Markdown 原样作为正文。
-- `What to build` 映射为 `Summary`。
-- `Parent` 与 `Type` 映射为 `Scope` 列表。
+- `What to build` 映射为 `Summary` / `摘要`。
+- `Parent` 与 `Type` 映射为 `Scope` / `范围` 列表。
 - `Acceptance criteria` 保留为可勾选清单。
-- `Blocked by` 映射为 `Dependencies`。
-- `Notes` 映射为 `Implementation notes`。
-- `Local-Issue-Key` 只放在折叠的 `Source` 区域，用于幂等检查和问题追踪。
+- `Blocked by` 映射为 `Dependencies` / `依赖`。
+- `Notes` 映射为 `Implementation notes` / `实现备注`。
+- `Local-Issue-Key` 只放在折叠的 `Source` / `来源` 区域，用于幂等检查和问题追踪。
 
 ## 输入物
 

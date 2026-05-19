@@ -22,6 +22,18 @@ triggers:
 
 v1 仅支持 GitHub Pull Request。GitLab Merge Request 应使用独立技能。
 
+## 语言约定
+
+统一读取目标项目根目录 `team-spec/config.yml`：
+
+```yaml
+language: zh-CN
+```
+
+语言优先级：用户本轮明确指定或脚本 `--language` > `team-spec/config.yml` > `en-US` 兜底。若配置不存在，技能执行时应先按团队规范询问语言偏好并创建配置；固定脚本独立运行时不交互，使用 `en-US` 兜底。
+
+远端 GitHub Pull Request 正文模板标题、兜底文案和检查项必须使用 `language`；本地 issue 草稿已有内容保持原文。
+
 ## 固定脚本
 
 创建 GitHub PR 时，优先使用本技能目录下的固定脚本，不要临时重写 GitHub API 调用代码：
@@ -39,7 +51,7 @@ v1 仅支持 GitHub Pull Request。GitLab Merge Request 应使用独立技能。
 - 默认 dry-run，只输出将推送的分支和将创建的 PR。
 - `--execute` 时先做执行前确认，再 push 当前分支并创建 GitHub Pull Request。
 - 脚本只允许推送已有提交，不负责 `git add`、`git commit`、自动暂存或自动生成本地提交。
-- PR 标题默认不包含 issue 编号，只描述变更本身；正文使用 `./scripts/templates/pr_body.md.tpl` 渲染，并保留 `Closes #{issue_number}` 以便 GitHub 自动关联并在合并后关闭 issue。
+- PR 标题默认不包含 issue 编号，只描述变更本身；正文使用 `./scripts/templates/pr_body.md.tpl` 按 `language` 渲染，并保留 `Closes #{issue_number}` 以便 GitHub 自动关联并在合并后关闭 issue。
 - 可指定 target branch、source remote、target remote、title、draft 和 assignee。
 - 执行前会检查被 Git 追踪但又命中 `.gitignore` 规则的文件，并要求人类确认是否继续。
 
@@ -68,6 +80,7 @@ GITHUB_TOKEN=... python3 {skill_dir}/scripts/create_github_pr.py --execute
 - `--title "Add export filter"`：显式指定 PR 标题；不建议在标题中包含 issue 编号。
 - `--issue-file team-spec/active/issues/{slug}/123-short-title.md`：显式指定本地 issue 草稿，用其中的 `# 标题` 或 `## Title` 首行生成 PR 标题和标准正文。
 - `--body-file path/to/body.md`：显式指定 PR 正文；如未指定，脚本使用 `./scripts/templates/pr_body.md.tpl` 生成标准正文。
+- `--language zh-CN`：显式覆盖 PR 正文模板语言；不传时读取 `team-spec/config.yml`。
 - `--draft`：创建 Draft PR。
 - `--assignee octocat`：可重复传入多个 assignee login。
 - `--json`：输出机器可读 JSON。

@@ -22,6 +22,18 @@ triggers:
 
 v1 仅支持 GitLab Merge Request。GitHub Pull Request 应使用独立技能。
 
+## 语言约定
+
+统一读取目标项目根目录 `team-spec/config.yml`：
+
+```yaml
+language: zh-CN
+```
+
+语言优先级：用户本轮明确指定或脚本 `--language` > `team-spec/config.yml` > `en-US` 兜底。若配置不存在，技能执行时应先按团队规范询问语言偏好并创建配置；固定脚本独立运行时不交互，使用 `en-US` 兜底。
+
+远端 GitLab Merge Request 正文模板标题、兜底文案和检查项必须使用 `language`；本地 issue 草稿已有内容保持原文。
+
 ## 固定脚本
 
 创建 GitLab MR 时，优先使用本技能目录下的固定脚本，不要临时重写 GitLab API 调用代码：
@@ -40,7 +52,7 @@ v1 仅支持 GitLab Merge Request。GitHub Pull Request 应使用独立技能。
 - `--execute` 时先做执行前确认，再 push 当前分支并创建 GitLab Merge Request。
 - 默认只推送已有提交；如果用户明确要求收尾提交，可通过 `--commit-message` 搭配 `--commit-all`、`--commit-path` 或 `--commit-staged` 在 push 前创建本地提交。
 - 执行收尾提交时，绝对不得对 `team-spec/` 下的文件执行 `git add`；如果发现 `team-spec/` 文件已经在暂存区，必须停止并要求先取消暂存。
-- MR 标题默认不包含 issue IID，只描述变更本身；正文使用 `./scripts/templates/mr_body.md.tpl` 渲染，并保留 `Closes #{issue_iid}` 以便 GitLab 自动关联并在合并后关闭 issue。
+- MR 标题默认不包含 issue IID，只描述变更本身；正文使用 `./scripts/templates/mr_body.md.tpl` 按 `language` 渲染，并保留 `Closes #{issue_iid}` 以便 GitLab 自动关联并在合并后关闭 issue。
 - 可指定 target branch、source remote、target remote、title、draft、label、assignee 和 reviewer。
 - 执行前会检查被 Git 追踪但又命中 `.gitignore` 规则的文件，并要求人类确认是否继续。
 - 正式请求 GitLab API 前会把 method、URL 和 payload 打印到 stderr，便于失败排查；token 不会输出。
@@ -83,6 +95,7 @@ GITLAB_URL=https://gitlab.example.com GITLAB_TOKEN=... python3 {skill_dir}/scrip
 - `--title "Add export filter"`：显式指定 MR 标题；不建议在标题中包含 issue IID。
 - `--issue-file team-spec/active/issues/{slug}/123-short-title.md`：显式指定本地 issue 草稿，用其中的 `# 标题` 或 `## Title` 首行生成 MR 标题。
 - `--body-file path/to/body.md`：显式指定 MR 正文；如未指定，脚本使用 `./scripts/templates/mr_body.md.tpl` 生成标准正文。
+- `--language zh-CN`：显式覆盖 MR 正文模板语言；不传时读取 `team-spec/config.yml`。
 - `--draft`：创建 Draft MR。
 - `--label label-name`：可重复传入多个 label。
 - `--assignee-id 123`、`--reviewer-id 456`：可重复传入多个人员 ID。

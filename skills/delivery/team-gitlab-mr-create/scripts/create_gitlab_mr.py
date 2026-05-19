@@ -55,6 +55,10 @@ def parse_args() -> argparse.Namespace:
         help="Local issue markdown file used to derive a meaningful MR title.",
     )
     parser.add_argument("--body-file", help="Read MR body from file.")
+    parser.add_argument(
+        "--language",
+        help="Output language for rendered MR body. Defaults to team-spec/config.yml language, then en-US.",
+    )
     parser.add_argument("--draft", action="store_true", help="Create a Draft MR.")
     parser.add_argument("--label", action="append", default=[], help="Label to add.")
     parser.add_argument("--assignee-id", action="append", type=int, default=[])
@@ -279,6 +283,23 @@ def branch_summary(branch: str, issue_iid: str) -> str:
     return cleaned[:80] if cleaned else "implementation"
 
 
+def language_from_config(explicit: str | None) -> str:
+    if explicit:
+        return explicit.strip()
+    config = Path("team-spec") / "config.yml"
+    if not config.exists():
+        return "en-US"
+    for line in config.read_text(encoding="utf-8").splitlines():
+        match = re.match(r"^\s*language\s*:\s*['\"]?([^'\"#]+)", line)
+        if match:
+            return match.group(1).strip() or "en-US"
+    return "en-US"
+
+
+def is_chinese_language(language: str) -> bool:
+    return language.lower().startswith("zh")
+
+
 def split_sections(text: str) -> dict[str, str]:
     matches = list(SECTION_RE.finditer(text))
     sections: dict[str, str] = {}
@@ -368,8 +389,17 @@ def build_title(
     return title, title_source
 
 
-def body_section(sections: dict[str, str], title: str, fallback: str) -> str:
-    value = sections.get(title, "").strip()
+def section_value(sections: dict[str, str], *names: str) -> str | None:
+    normalized = {key.lower(): value for key, value in sections.items()}
+    for name in names:
+        value = normalized.get(name.lower())
+        if value:
+            return value
+    return None
+
+
+def body_section(sections: dict[str, str], fallback: str, *titles: str) -> str:
+    value = (section_value(sections, *titles) or "").strip()
     return value if value else fallback
 
 
@@ -379,41 +409,110 @@ def load_issue_sections(issue_file: Path | None) -> dict[str, str]:
     return split_sections(issue_file.read_text(encoding="utf-8"))
 
 
-def render_default_body(issue_iid: str, branch: str, issue_file: Path | None) -> str:
+def mr_body_labels(language: str) -> dict[str, str]:
+    if is_chinese_language(language):
+        return {
+            "summary_heading": "摘要",
+            "changes_heading": "变更",
+            "acceptance_criteria_heading": "验收标准",
+            "verification_heading": "验证",
+            "risks_heading": "风险",
+            "reviewer_notes_heading": "审阅备注",
+            "checklist_heading": "检查清单",
+            "missing_summary": "从分支 `${branch}` 实现 issue #${issue_iid}。",
+            "missing_changes": "- 见本 MR 的提交记录。",
+            "missing_verification": "- [ ] 请在发起审阅前补充验证命令和结果。",
+            "missing_acceptance": "- [ ] 本地 issue 文件未记录验收标准覆盖情况。",
+            "missing_risks": "- 未记录明确的回归风险。",
+            "missing_reviewer_notes": "- 未记录需要审阅者特别关注的事项。",
+            "checklist": "\n".join(
+                [
+                    "- [ ] MR 标题清楚描述变更本身，且不嵌入 issue IID。",
+                    "- [ ] 实现范围与关联 issue 一致。",
+                    "- [ ] 已在上方列出相关测试或检查结果。",
+                ]
+            ),
+        }
+    return {
+        "summary_heading": "Summary",
+        "changes_heading": "Changes",
+        "acceptance_criteria_heading": "Acceptance criteria",
+        "verification_heading": "Verification",
+        "risks_heading": "Risks",
+        "reviewer_notes_heading": "Reviewer notes",
+        "checklist_heading": "Checklist",
+        "missing_summary": "Implements issue #${issue_iid} from branch `${branch}`.",
+        "missing_changes": "- See the commits in this merge request.",
+        "missing_verification": "- [ ] Add the verification commands and results before review.",
+        "missing_acceptance": "- [ ] Acceptance criteria coverage was not found in the local issue file.",
+        "missing_risks": "- No specific regression risks recorded.",
+        "missing_reviewer_notes": "- No reviewer notes recorded.",
+        "checklist": "\n".join(
+            [
+                "- [ ] The MR title clearly describes the change without embedding the issue IID.",
+                "- [ ] The implementation scope matches the linked issue.",
+                "- [ ] Relevant tests or checks are listed above.",
+            ]
+        ),
+    }
+
+
+def render_default_body(
+    issue_iid: str,
+    branch: str,
+    issue_file: Path | None,
+    language: str,
+) -> str:
     sections = load_issue_sections(issue_file)
     template = Template(BODY_TEMPLATE_PATH.read_text(encoding="utf-8"))
+    labels = mr_body_labels(language)
+    fallback_template_values = {"issue_iid": issue_iid, "branch": branch}
     return template.safe_substitute(
+        **labels,
         issue_iid=issue_iid,
         branch=branch,
         summary=body_section(
             sections,
+            Template(labels["missing_summary"]).safe_substitute(fallback_template_values),
             "What to build",
-            f"Implements issue #{issue_iid} from branch `{branch}`.",
+            "建设内容",
+            "实现内容",
+            "需求摘要",
         ),
         changes=body_section(
             sections,
+            labels["missing_changes"],
             "Implementation Notes",
-            "- See the commits in this merge request.",
+            "实现说明",
+            "实现备注",
         ),
         verification=body_section(
             sections,
+            labels["missing_verification"],
             "Commands Run",
-            "- [ ] Add the verification commands and results before review.",
+            "验证命令",
+            "已运行命令",
         ),
         acceptance_coverage=body_section(
             sections,
+            labels["missing_acceptance"],
             "Acceptance Criteria Coverage",
-            "- [ ] Acceptance criteria coverage was not found in the local issue file.",
+            "验收标准覆盖",
+            "验收覆盖",
         ),
         risks=body_section(
             sections,
+            labels["missing_risks"],
             "Regression Risks",
-            "- No specific regression risks recorded.",
+            "回归风险",
+            "风险",
         ),
         reviewer_notes=body_section(
             sections,
+            labels["missing_reviewer_notes"],
             "Findings",
-            "- No reviewer notes recorded.",
+            "发现",
+            "审阅备注",
         ),
     ).strip()
 
@@ -423,11 +522,12 @@ def build_body(
     issue_iid: str,
     branch: str,
     issue_file: Path | None,
+    language: str,
 ) -> str:
     if args.body_file:
         body = open(args.body_file, encoding="utf-8").read().strip()
     else:
-        body = render_default_body(issue_iid, branch, issue_file)
+        body = render_default_body(issue_iid, branch, issue_file, language)
     if f"#{issue_iid}" not in body:
         body = f"Closes #{issue_iid}\n\n" + body
     if not re.search(rf"\b(close[sd]?|fix(e[sd])?|resolve[sd]?)\s+#{re.escape(issue_iid)}\b", body, re.I):
@@ -673,6 +773,7 @@ def push_branch(remote: str, branch: str) -> None:
 
 def build_plan(args: argparse.Namespace) -> dict[str, Any]:
     validate_commit_options(args)
+    args.language = language_from_config(args.language)
     args.gitlab_url = gitlab_url_from_env()
     source_branch = args.source_branch or current_branch()
     issue_iid = infer_issue_iid(source_branch, args.issue_iid)
@@ -687,7 +788,7 @@ def build_plan(args: argparse.Namespace) -> dict[str, Any]:
         issue_title[0] if issue_title else None,
     )
     issue_file = Path(issue_title[1]) if issue_title else None
-    body = build_body(args, issue_iid, source_branch, issue_file)
+    body = build_body(args, issue_iid, source_branch, issue_file, args.language)
     ignored_files = tracked_ignored_files()
     status = worktree_status()
 
@@ -697,6 +798,7 @@ def build_plan(args: argparse.Namespace) -> dict[str, Any]:
     return {
         "mode": "execute" if args.execute else "dry-run",
         "gitlab_url": normalize_gitlab_url(args.gitlab_url),
+        "language": args.language,
         "issue_iid": issue_iid,
         "source_branch": source_branch,
         "target_branch": target_branch,
@@ -802,6 +904,7 @@ def execute(args: argparse.Namespace, plan: dict[str, Any]) -> dict[str, Any]:
 
 def print_text(plan: dict[str, Any]) -> None:
     print(f"Mode: {plan['mode']}")
+    print(f"Language: {plan['language']}")
     print(f"Issue: #{plan['issue_iid']}")
     print(f"Source: {plan['source_project']}:{plan['source_branch']}")
     print(f"Target: {plan['target_project']}:{plan['target_branch']}")
