@@ -52,6 +52,7 @@ language: zh-CN
 - `--execute` 时先做执行前确认，再 push 当前分支并创建 GitHub Pull Request。
 - 脚本只允许推送已有提交，不负责 `git add`、`git commit`、自动暂存或自动生成本地提交。
 - PR 标题默认不包含 issue 编号，只描述变更本身；正文使用 `./scripts/templates/pr_body.md.tpl` 按 `language` 渲染，并保留 `Closes #{issue_number}` 以便 GitHub 自动关联并在合并后关闭 issue。
+- 创建 PR 成功后，如果能定位到本地 issue 草稿，会把该文件回写为 `Status: PR created`，并记录 `PR:` 和 `Pushed Branch:`；该回写只修改本地文件，不会自动 `git add` 或提交 `team-spec/`。
 - 可指定 target branch、source remote、target remote、title、draft 和 assignee。
 - 执行前会检查被 Git 追踪但又命中 `.gitignore` 规则的文件，并要求人类确认是否继续。
 
@@ -121,7 +122,7 @@ GITHUB_TOKEN=... python3 {skill_dir}/scripts/create_github_pr.py --execute
 
 - GitHub Pull Request。
 - 最终回复中的 PR URL、source branch、target branch、关联 issue 编号。
-- 如果项目有本地 issue 草稿，可回写或提示用户记录 PR URL。
+- 如果项目有本地 issue 草稿，创建成功或发现已有打开 PR 后，会回写 PR URL、source branch 和状态。
 
 ## PR 标题与正文规则
 
@@ -150,7 +151,8 @@ GITHUB_TOKEN=... python3 {skill_dir}/scripts/create_github_pr.py --execute
 3. 使用固定脚本执行默认 dry-run，预览 push 和 PR 创建计划。
 4. 如果目标分支是推断出来的，或工作区里存在被追踪但命中 `.gitignore` 的文件，执行前必须向人类确认。
 5. 用户确认后，用固定脚本追加 `--execute` 推送分支并创建 PR。
-6. 输出 PR URL、关联 issue、source/target branch、验证结果和下一步建议。
+6. 如果能定位到本地 issue 草稿，回写 `Status: PR created`、`PR:` 和 `Pushed Branch:`；不得自动暂存或提交 `team-spec/`。
+7. 输出 PR URL、关联 issue、source/target branch、验证结果、已回写的 issue 文件和下一步建议。
 
 ## 安全要求
 
@@ -158,11 +160,13 @@ GITHUB_TOKEN=... python3 {skill_dir}/scripts/create_github_pr.py --execute
 - 不记录、不回显 token。
 - 不把 token 写入仓库文件或 git 配置。
 - 不执行 `git add`、`git commit`、`git stash` 或任何会改变本地提交历史的操作。
+- 创建 PR 后允许回写本地 `team-spec/active/issues/` 下对应 issue 草稿，但不得自动暂存或提交这些回写。
 - 默认 dry-run，不应在用户确认前推送分支或创建 PR。
 
 ## 完成标准
 
 - 当前分支已推送到正确 source remote。
 - GitHub PR 已创建，标题和正文都关联 issue 编号。
+- 如能定位本地 issue 草稿，已回写 `Status: PR created`、`PR:` 和 `Pushed Branch:`。
 - 最终回复包含 PR URL。
 - 若失败，输出失败阶段、错误原因和可重试命令。

@@ -315,6 +315,21 @@ def infer_issue_title(issue_number: str, explicit_file: str | None) -> tuple[str
     return resolved
 
 
+def resolve_issue_file_and_title(
+    issue_number: str,
+    explicit_file: str | None,
+) -> tuple[Path | None, tuple[str, str] | None]:
+    issue_file = infer_issue_file(issue_number, explicit_file)
+    if not issue_file:
+        return None, None
+    issue_title = issue_title_from_file(issue_file)
+    if not issue_title and explicit_file:
+        raise SystemExit(
+            f"Cannot derive title from {issue_file}. Add a '# Title' heading or '## Title' section."
+        )
+    return issue_file, issue_title
+
+
 def normalize_title_text(title: str) -> str:
     return re.sub(r"\s+", " ", title).strip()
 
@@ -620,6 +635,49 @@ def push_branch(remote: str, branch: str) -> None:
     run_git(["push", "-u", remote, f"{branch}:{branch}"])
 
 
+def upsert_issue_tracking_line(lines: list[str], key: str, value: str) -> list[str]:
+    pattern = re.compile(rf"^(\s*(?:-\s*)?{re.escape(key)}\s*:\s*).*$", re.IGNORECASE)
+    replacement = f"{key}: {value}"
+    for index, line in enumerate(lines):
+        match = pattern.match(line)
+        if match:
+            lines[index] = f"{match.group(1)}{value}"
+            return lines
+
+    status_index = next(
+        (
+            index
+            for index, line in enumerate(lines)
+            if re.match(r"^\s*(?:-\s*)?Status\s*:", line, re.IGNORECASE)
+        ),
+        None,
+    )
+    insert_at = status_index + 1 if status_index is not None else len(lines)
+    lines.insert(insert_at, replacement)
+    return lines
+
+
+def write_issue_pr_tracking(
+    issue_file: Path | None,
+    pr_url: str | None,
+    source_branch: str,
+) -> str | None:
+    if not issue_file or not pr_url:
+        return None
+
+    text = issue_file.read_text(encoding="utf-8")
+    ends_with_newline = text.endswith("\n")
+    lines = text.splitlines()
+    lines = upsert_issue_tracking_line(lines, "Status", "PR created")
+    lines = upsert_issue_tracking_line(lines, "Pushed Branch", source_branch)
+    lines = upsert_issue_tracking_line(lines, "PR", pr_url)
+    updated = "\n".join(lines)
+    if ends_with_newline:
+        updated += "\n"
+    issue_file.write_text(updated, encoding="utf-8")
+    return str(issue_file)
+
+
 def build_plan(args: argparse.Namespace) -> dict[str, Any]:
     args.language = language_from_config(args.language)
     source_branch = args.source_branch or current_branch()
@@ -627,14 +685,13 @@ def build_plan(args: argparse.Namespace) -> dict[str, Any]:
     target = infer_target_repo(args, source_branch)
     source = infer_source_repo(args, source_branch, target)
     target_branch = args.target_branch or default_target_branch(target)
-    issue_title = infer_issue_title(issue_number, args.issue_file)
+    issue_file, issue_title = resolve_issue_file_and_title(issue_number, args.issue_file)
     title, title_source = build_title(
         args,
         issue_number,
         source_branch,
         issue_title[0] if issue_title else None,
     )
-    issue_file = Path(issue_title[1]) if issue_title else None
     body = build_body(args, issue_number, source_branch, issue_file, args.language)
     ignored_files = tracked_ignored_files()
 
@@ -654,6 +711,7 @@ def build_plan(args: argparse.Namespace) -> dict[str, Any]:
         "title": title,
         "title_source": title_source,
         "issue_title_source": issue_title[1] if issue_title else None,
+        "issue_file": str(issue_file) if issue_file else None,
         "body": body,
         "target_branch_source": target_branch_source(target, args.target_branch),
         "tracked_ignored_files": ignored_files,
@@ -706,6 +764,11 @@ def execute(args: argparse.Namespace, plan: dict[str, Any]) -> dict[str, Any]:
         plan["status"] = "skipped"
         plan["pr_url"] = existing.get("html_url")
         plan["pr_number"] = existing.get("number")
+        plan["issue_file_updated"] = write_issue_pr_tracking(
+            Path(plan["issue_file"]) if plan.get("issue_file") else None,
+            plan.get("pr_url"),
+            plan["source_branch"],
+        )
         return plan
 
     source = ProjectRef(plan["source_remote"], github_host(args.github_url), plan["source_repo"])
@@ -723,6 +786,11 @@ def execute(args: argparse.Namespace, plan: dict[str, Any]) -> dict[str, Any]:
     plan["status"] = "created"
     plan["pr_url"] = created.get("html_url")
     plan["pr_number"] = created.get("number")
+    plan["issue_file_updated"] = write_issue_pr_tracking(
+        Path(plan["issue_file"]) if plan.get("issue_file") else None,
+        plan.get("pr_url"),
+        plan["source_branch"],
+    )
     return plan
 
 
@@ -743,6 +811,8 @@ def print_text(plan: dict[str, Any]) -> None:
     print(f"Title source: {plan['title_source']}")
     if plan.get("issue_title_source"):
         print(f"Issue title source: {plan['issue_title_source']}")
+    if plan.get("issue_file_updated"):
+        print(f"Issue file updated: {plan['issue_file_updated']}")
     if plan.get("pr_url"):
         print(f"PR: {plan['pr_url']}")
     if plan.get("status"):
