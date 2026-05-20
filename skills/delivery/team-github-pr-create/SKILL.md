@@ -152,7 +152,7 @@ GITHUB_TOKEN=... python3 {skill_dir}/scripts/create_github_pr.py --execute
 4. 如果目标分支是推断出来的，或工作区里存在被追踪但命中 `.gitignore` 的文件，执行前必须向人类确认。
 5. 用户确认后，用固定脚本追加 `--execute` 推送分支并创建 PR。
 6. 如果能定位到本地 issue 草稿，回写 `Status: PR created`、`PR:` 和 `Pushed Branch:`；不得自动暂存或提交 `team-spec/`。
-7. 输出 PR URL、关联 issue、source/target branch、验证结果、已回写的 issue 文件和下一步建议。
+7. 输出 PR URL、关联 issue、source/target branch、验证结果、已回写的 issue 文件和有序号的“下一步可选”列表，方便用户直接回复序号继续推进。
 
 ## 安全要求
 

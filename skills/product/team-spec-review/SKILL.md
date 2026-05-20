@@ -149,16 +149,17 @@ language: zh-CN
 
 - 评审报告路径：`team-spec/active/spec/reviews/{slug}.md`，如果本次已保存。
 - `Status`：`ready`、`needs refinement` 或 `blocked`。
-- 下一步推荐：
-  - 当 `Status: ready` 时，明确推荐使用 `team-spec-to-prd` 固化 PRD。
-  - 当 `Status: needs refinement` 时，明确推荐回到 `team-spec-refine`，并说明需要修订哪些关键内容。
-  - 当 `Status: blocked` 时，明确说明阻塞项和解除阻塞后再使用哪个技能。
+- 下一步可选：必须使用有序号的列表选项输出，方便用户直接回复序号继续推进。
+  - 当 `Status: ready` 时，选项 1 必须是 `team-spec-to-prd`，用于固化 PRD。
+  - 当 `Status: needs refinement` 时，选项 1 必须是 `team-spec-refine`，并说明需要修订哪些关键内容。
+  - 当 `Status: blocked` 时，选项 1 必须是解除阻塞动作；如能判断解除后技能，再作为后续编号选项列出。
 
 推荐结尾：
 
 ```text
 规格评审已完成，Status: ready。
-下一步请使用 team-spec-to-prd，将通过评审的规格固化为 PRD。
+下一步可选：
+1. team-spec-to-prd：将通过评审的规格固化为 PRD。
 ```
 
 ## 处理原则

@@ -176,7 +176,7 @@ GITLAB_URL=https://gitlab.example.com GITLAB_TOKEN=... python3 {skill_dir}/scrip
 7. 如果目标分支是推断出来的，或工作区里存在被追踪但命中 `.gitignore` 的文件，执行前必须向人类确认。
 8. 用户确认后，用固定脚本追加 `--execute`；如提供提交参数，脚本会先创建本地提交，再推送分支并创建 MR。提交后如仅剩 `team-spec/` 下未提交变更，可以继续创建 MR。
 9. 如果能定位到本地 issue 草稿，回写 `Status: MR created`、`MR:` 和 `Pushed Branch:`；不得自动暂存或提交 `team-spec/`。
-10. 输出 MR URL、关联 issue、source/target branch、创建的提交、验证结果、已回写的 issue 文件和下一步建议。
+10. 输出 MR URL、关联 issue、source/target branch、创建的提交、验证结果、已回写的 issue 文件和有序号的“下一步可选”列表，方便用户直接回复序号继续推进。
 
 ## 安全要求
 

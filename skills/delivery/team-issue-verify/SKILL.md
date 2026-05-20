@@ -123,7 +123,11 @@ ready for PR / needs changes / blocked
 
 否则输出 `needs changes` 或 `blocked`，并给出具体补救动作。
 
-当输出 `ready for PR` 时，最终回复必须推荐下一步：
+当输出 `ready for PR` 时，最终回复必须用有序号的列表选项推荐下一步，方便用户直接回复序号继续推进：
 
-- 目标平台是 GitLab 时，使用 `team-gitlab-mr-create` 推送当前 issue 分支并创建关联 issue 的 Merge Request。
-- 目标平台是 GitHub 时，使用 `team-github-pr-create` 推送当前 issue 分支并创建关联 issue 的 Pull Request。
+```md
+## 下一步可选
+
+1. `team-gitlab-mr-create`：目标平台是 GitLab 时，推送当前 issue 分支并创建关联 issue 的 Merge Request。
+2. `team-github-pr-create`：目标平台是 GitHub 时，推送当前 issue 分支并创建关联 issue 的 Pull Request。
+```

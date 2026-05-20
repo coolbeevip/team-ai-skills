@@ -96,7 +96,7 @@ language: zh-CN
 4. 用编号列表向用户确认粒度和依赖。
 5. 根据用户反馈合并、拆分或重排。
 6. 用户确认后，再发布到 issue tracker；如果没有可用 issue tracker，则生成本地 Markdown issue 草稿。
-7. 拆解完成后，必须输出“下一步可选技能”，按用户当前状态推荐后续动作。
+7. 拆解完成后，必须输出有序号的“下一步可选”列表，按用户当前状态推荐后续动作，方便用户直接回复序号继续推进。
 
 确认时每个候选 issue 都要展示：
 
@@ -182,23 +182,18 @@ AFK（可独立执行，无需人工决策） / HITL（需要人工介入）
 - 如果发布到 GitHub Issues，使用团队约定的 triage label；如果没有约定，先询问或生成草稿。
 - 本地草稿默认保存到 `team-spec/active/issues/{slug}/{issue-number}-{short-issue-slug}.md`，目录只在需要时创建。
 
-## 下一步可选技能
+## 下一步可选
 
-每次完成 issue 拆解后，必须在最终回复中列出可选下一步，帮助用户继续推进。不要只说“已完成拆解”。
+每次完成 issue 拆解后，必须在最终回复中列出有序号的可选下一步，帮助用户直接回复序号继续推进。不要只说“已完成拆解”。
 
-根据当前状态推荐：
+根据当前状态推荐，并输出为单层有序列表：
 
-- 如果已生成本地 issue 草稿但尚未发布到远端：
-  - `team-github-issue-publish`：将本地 issue 草稿发布到 GitHub Issues，支持整目录批量发布或指定单个 issue。
-  - `team-gitlab-issue-publish`：将本地 issue 草稿发布到 GitLab Issues，支持整目录批量发布或指定单个 issue。
-- 如果用户不需要远端 issue tracker，或已经有明确的本地 issue：
-  - `team-issue-implement`：选择一个 `AFK` issue 开始实现。
-- 如果 issue 中存在 `HITL`：
-  - 先完成对应人工决策，再继续发布或实现。
-- 如果拆解过程中发现测试命令、项目入口、验证方式或 agent 工作环境不清楚：
-  - `team-harness-refine`：更新项目 harness、验证命令、知识地图和失败反馈记录。
-- 如果拆解过程中发现需要先治理的工程基础问题：
-  - `team-tech-debt-refine`：把该问题细化为技术债规格，再进入技术债评审和拆解。
+- `team-github-issue-publish`：已生成本地 issue 草稿但尚未发布到远端时，发布到 GitHub Issues。
+- `team-gitlab-issue-publish`：已生成本地 issue 草稿但尚未发布到远端时，发布到 GitLab Issues。
+- `team-issue-implement`：用户不需要远端 issue tracker，或已有明确本地 `AFK` issue 时，开始实现。
+- 完成人工决策：issue 中存在 `HITL` 时，先完成对应人工决策，再继续发布或实现。
+- `team-harness-refine`：拆解过程中发现测试命令、项目入口、验证方式或 agent 工作环境不清楚时，先完善 harness。
+- `team-tech-debt-refine`：拆解过程中发现需要先治理的工程基础问题时，先细化为技术债规格。
 
 推荐格式：
 
@@ -219,4 +214,4 @@ AFK（可独立执行，无需人工决策） / HITL（需要人工介入）
 - HITL issue 的人工决策点具体、可执行。
 - AFK issue 不需要额外产品、设计或架构判断即可开始。
 - issue 标题清晰、具体、可一眼理解，且不会在发布阶段依赖兜底修正。
-- 最终回复包含“下一步可选技能”，且推荐与当前输出状态一致。
+- 最终回复包含有序号的“下一步可选”列表，且推荐与当前输出状态一致。

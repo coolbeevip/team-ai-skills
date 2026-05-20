@@ -90,14 +90,15 @@ AFK（可独立执行，无需人工决策） / HITL（需要人工介入）
 - 产出落地到 `team-spec/active/issues/{slug}/` 的可执行 issue 草稿。
 - issue 可被工程或 agent 直接领取，并具备可验证验收标准。
 
-## 下一步可选技能
+## 下一步可选
 
-完成 issue 拆解后，必须在最终回复中列出可选下一步，帮助用户继续推进：
+完成 issue 拆解后，必须在最终回复中列出有序号的可选下一步，帮助用户直接回复序号继续推进：
 
-- 如果已生成本地 issue 草稿但尚未发布到远端：
-  - `team-github-issue-publish`：将本地 issue 草稿发布到 GitHub Issues，支持整目录批量发布或指定单个 issue。
-  - `team-gitlab-issue-publish`：将本地 issue 草稿发布到 GitLab Issues，支持整目录批量发布或指定单个 issue。
-- 如果不需要远端 issue tracker，或已有明确的本地 issue：
-  - `team-issue-implement`：选择一个 `AFK（可独立执行，无需人工决策）` issue 开始实现。
-- 如果 issue 中存在 `HITL（需要人工介入）`：
-  - 先完成对应人工决策，再继续发布或实现。
+```md
+## 下一步可选
+
+1. `team-github-issue-publish`：已生成本地 issue 草稿但尚未发布到远端时，发布到 GitHub Issues。
+2. `team-gitlab-issue-publish`：已生成本地 issue 草稿但尚未发布到远端时，发布到 GitLab Issues。
+3. `team-issue-implement`：不需要远端 issue tracker，或已有明确本地 `AFK` issue 时，开始实现。
+4. 完成人工决策：issue 中存在 `HITL` 时，先完成对应人工决策，再继续发布或实现。
+```

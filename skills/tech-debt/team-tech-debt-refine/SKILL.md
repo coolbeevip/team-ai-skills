@@ -66,4 +66,12 @@ language: zh-CN
 
 - 形成可供评审的 `team-spec/active/spec/refine/{slug}.md`。
 - 明确风险最高的未决问题和下一步评审建议。
-- 推荐下一步：使用 `team-tech-debt-review`。
+- 下一步可选：必须使用有序号的列表选项输出，方便用户直接回复序号继续推进。
+
+推荐格式：
+
+```md
+## 下一步可选
+
+1. `team-tech-debt-review`：评审技术债规格的风险、优先级和可执行性。
+```
