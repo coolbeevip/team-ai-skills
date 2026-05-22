@@ -39,7 +39,7 @@ triggers:
 - 相关技能目录中的 `SKILL.md`。
 - 相关技能明确引用的辅助文件，例如 `CONTEXT-FORMAT.md`、模板或 `scripts/` 下脚本。
 - 根目录 `AGENTS.md`、仓库规范和当前技能目录结构。
-- 可选：`rtk python3 scripts/check_skills.py` 的结构校验结果。
+- 可选：`python3 scripts/check_skills.py` 的结构校验结果。
 
 如果用户没有指定要复盘哪个技能，应先根据反馈内容、触发词和产物路径判断候选技能。无法唯一判断时，只问一个最关键的问题：要复盘哪个技能或哪次失败。
 
@@ -89,7 +89,7 @@ triggers:
 7. 默认输出《技能进化建议报告》，等待用户确认。
 8. 用户明确要求实现后，再修改文件，并保持改动集中在相关技能和必要的维护脚本。
 9. 修改后执行轻量验证：
-   - `rtk python3 scripts/check_skills.py`（如果脚本存在）。
+   - `python3 scripts/check_skills.py`（如果脚本存在）。
    - 修改 Python 脚本时执行语法检查或 `--help`。
    - 对受影响技能跑 2 到 3 个黄金用例的人工触发检查。
 10. 最终回复说明修改了哪些技能、验证结果、剩余风险和建议的下一步。
@@ -171,7 +171,7 @@ triggers:
 - 新增技能必须包含 `## 输入物` 和 `## 输出物`。
 - 技能内引用辅助文件必须使用相对 `SKILL.md` 的路径，例如 `./scripts/example.py`。
 - 修改脚本后至少执行语法检查或 `--help`。
-- 完成后运行 `rtk python3 scripts/check_skills.py`；如果该脚本不存在，按仓库规范手动检查 frontmatter、触发词、输入物、输出物和引用路径。
+- 完成后运行 `python3 scripts/check_skills.py`；如果该脚本不存在，按仓库规范手动检查 frontmatter、触发词、输入物、输出物和引用路径。
 
 ## 黄金用例
 
