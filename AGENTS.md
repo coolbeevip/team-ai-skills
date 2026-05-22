@@ -11,8 +11,8 @@
 - `skills/product/team-spec-archive/`：用于把已完成、废弃或暂停的 active 需求产物归档，避免新需求误改旧规格。
 - `skills/architecture/`：架构与方案设计职责。
 - `skills/architecture/team-spec-to-functional-design/`：用于基于需求规格与代码生成企业级功能设计说明书。
-- `skills/harness/`：Agent harness 职责，包括项目级 agent 工作环境、知识地图、验证命令和失败反馈闭环。
-- `skills/harness/team-harness-refine/`：用于随真实代码和工程演进反复细化 `AGENTS.md` / `CLAUDE.md` 与 `docs/agent-harness/`。
+- `skills/harness/`：Codex harness 职责，包括项目级 Codex 工作环境、知识地图、验证命令和失败反馈闭环。
+- `skills/harness/team-codex-harness/`：用于随真实代码和工程演进维护 `AGENTS.md`、项目任务地图、验证命令和 Codex 失败反馈闭环。
 - `skills/delivery/`：交付执行职责，包括 issue 拆解、发布、实现和验证。
 - `skills/delivery/team-prd-to-issues/`：用于把 PRD 拆解成可独立领取的工程 issue。
 - `skills/delivery/team-github-issue-publish/`：用于把本地 issue 草稿发布到 GitHub Issues，支持整目录批量发布或指定单个 issue。
@@ -73,7 +73,7 @@
 - 产品规格类技能使用 `team-spec-` 前缀，例如 `team-spec-refine`。
 - 交付执行类技能可按输入产物使用 `team-prd-` 或 `team-issue-` 前缀，例如 `team-prd-to-issues`、`team-issue-implement`。
 - 技术债类技能使用 `team-tech-debt-` 前缀，例如 `team-tech-debt-refine`。
-- Harness 类技能使用 `team-harness-` 前缀，例如 `team-harness-refine`。
+- Codex harness 类技能使用 `team-codex-` 前缀，例如 `team-codex-harness`。
 - 必需技能文件命名为 `SKILL.md`。
 - `SKILL.md` 必须包含 YAML frontmatter，并提供 `name`、`description`、`triggers`、`license` 和 `metadata`。
 - `description` 必须同时包含中文和英文描述，便于 AI 在不同语言上下文中识别触发场景。

@@ -1,6 +1,6 @@
 # Skills For Real Teams
 
-团队协作使用的大语言模型技能库，按产品、架构、Agent Harness、交付、技术债和文档职责域组织，覆盖需求到工程交付的协作流程。
+团队协作使用的大语言模型技能库，按产品、架构、Codex Harness、交付、技术债和文档职责域组织，覆盖需求到工程交付的协作流程。
 
 ## 快速开始
 
@@ -12,7 +12,7 @@ npx skills@latest add coolbeevip/team-ai-skills --all
 
 ## 技能职责域
 
-本技能库将团队协作拆成六个职责域：产品定义、架构设计、Agent Harness、交付执行、技术债治理和文档质量。每个职责域都可以独立使用，也可以沿着需求到交付的流程串联起来，帮助团队把想法稳定成可评审、可拆解、可实现、可验证的工作。
+本技能库将团队协作拆成六个职责域：产品定义、架构设计、Codex Harness、交付执行、技术债治理和文档质量。每个职责域都可以独立使用，也可以沿着需求到交付的流程串联起来，帮助团队把想法稳定成可评审、可拆解、可实现、可验证的工作。
 
 ### 产品定义
 
@@ -29,11 +29,11 @@ npx skills@latest add coolbeevip/team-ai-skills --all
 
 - `team-spec-to-functional-design`：基于需求规格、PRD 和源代码生成企业级功能设计说明书，帮助团队形成可评审的实现方案。
 
-### Agent Harness
+### Codex Harness
 
-Agent Harness 域用于让真实项目更适合 AI agent 长期工作，适合团队在接入 agent、开发流程变化、测试命令变化、失败案例沉淀或技术债治理前后反复使用。
+Codex Harness 域用于让真实项目更适合 Codex 长期工作，适合团队在接入 Codex、开发流程变化、测试命令变化、失败案例沉淀或技术债治理前后反复使用。
 
-- `team-harness-refine`：通过真实代码、开发任务和失败反馈持续细化 `AGENTS.md` / `CLAUDE.md`、`docs/agent-harness/`、验证命令、反馈循环和 harness debt。
+- `team-codex-harness`：维护项目级 Codex harness，包括 `AGENTS.md`、项目任务地图、开发与验证命令、失败模式和反馈闭环。
 
 ### 交付执行
 
@@ -78,7 +78,7 @@ flowchart TD
     D -. 可选：功能设计 .-> R[team-spec-to-functional-design]
     F --> N[team-github-issue-publish]
     F --> O[team-gitlab-issue-publish]
-    F -. harness 不清晰时 .-> T[team-harness-refine]
+    F -. Codex harness 不清晰时 .-> T[team-codex-harness]
     N --> G[team-issue-implement]
     O --> G
     G --> I[team-issue-verify]
@@ -100,7 +100,7 @@ flowchart TD
 
 `team-spec-to-functional-design` 基于 PRD 与源代码生成企业级功能设计说明书，供架构师和技术负责人在实现前评审，不影响 PRD 的权威地位。
 
-`team-prd-to-issues` 应以 PRD 为主输入；`CONTEXT.md`、`decisions/` 和 `reviews/` 只能作为背景参考，不能绕过 PRD 直接拆工程任务。拆解过程中如果发现验证命令、项目入口或 agent 工作环境不清晰，可使用 `team-harness-refine` 补全。
+`team-prd-to-issues` 应以 PRD 为主输入；`CONTEXT.md`、`decisions/` 和 `reviews/` 只能作为背景参考，不能绕过 PRD 直接拆工程任务。拆解过程中如果发现验证命令、项目入口或 Codex 工作环境不清晰，可使用 `team-codex-harness` 补全。
 
 `team-github-issue-publish` 用于把 `team-spec/active/issues/{slug}/` 下的本地 issue 草稿发布到 GitHub Issues，并回写发布结果。默认按依赖顺序批量发布，也可通过 `--issue` 指定单个 issue。该技能仅处理 GitHub。
 
