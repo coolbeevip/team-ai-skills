@@ -1,0 +1,180 @@
+#!/usr/bin/env python3
+"""Lightweight structural checks for team skill SKILL.md files."""
+
+from __future__ import annotations
+
+import argparse
+import re
+import sys
+from pathlib import Path
+
+
+ROOT = Path(__file__).resolve().parents[1]
+SKILLS_DIR = ROOT / "skills"
+RE_CJK = re.compile(r"[\u4e00-\u9fff]")
+RE_ALPHA = re.compile(r"[A-Za-z]")
+
+
+def parse_frontmatter(path: Path) -> tuple[dict[str, object], list[str]]:
+    text = path.read_text(encoding="utf-8")
+    errors: list[str] = []
+    if not text.startswith("---\n"):
+        return {}, ["missing YAML frontmatter"]
+
+    end = text.find("\n---\n", 4)
+    if end == -1:
+        return {}, ["unterminated YAML frontmatter"]
+
+    lines = text[4:end].splitlines()
+    data: dict[str, object] = {}
+    section: str | None = None
+    parent: str | None = None
+
+    for raw in lines:
+        if not raw.strip():
+            continue
+
+        if raw.startswith("  - ") and section:
+            value = raw[4:].strip()
+            if section not in data or not isinstance(data[section], list):
+                data[section] = []
+            data[section].append(value)
+            continue
+
+        if raw.startswith("  ") and parent:
+            key, sep, value = raw.strip().partition(":")
+            if sep:
+                parent_data = data.setdefault(parent, {})
+                if isinstance(parent_data, dict):
+                    parent_data[key] = value.strip().strip('"')
+            continue
+
+        key, sep, value = raw.partition(":")
+        if not sep:
+            errors.append(f"cannot parse frontmatter line: {raw}")
+            continue
+
+        key = key.strip()
+        value = value.strip()
+        section = None
+        parent = None
+
+        if value == "":
+            if key == "triggers":
+                data[key] = []
+                section = key
+            else:
+                data[key] = {}
+                parent = key
+        else:
+            data[key] = value.strip('"')
+
+    return data, errors
+
+
+def has_chinese(text: str) -> bool:
+    return bool(RE_CJK.search(text))
+
+
+def has_english(text: str) -> bool:
+    return bool(RE_ALPHA.search(text))
+
+
+def check_skill(path: Path) -> list[str]:
+    errors: list[str] = []
+    data, parse_errors = parse_frontmatter(path)
+    errors.extend(parse_errors)
+
+    skill_dir = path.parent.name
+    name = data.get("name")
+    if name != skill_dir:
+        errors.append(f"name must equal directory name {skill_dir!r}, got {name!r}")
+
+    if not isinstance(name, str) or not name.startswith("team-"):
+        errors.append("name must start with team-")
+
+    description = data.get("description")
+    if not isinstance(description, str) or not description:
+        errors.append("description is required")
+    elif not (has_chinese(description) and has_english(description)):
+        errors.append("description must contain both Chinese and English")
+
+    if data.get("license") != "MIT":
+        errors.append("license must be MIT")
+
+    metadata = data.get("metadata")
+    if not isinstance(metadata, dict):
+        errors.append("metadata is required")
+    else:
+        if metadata.get("author") != "coolbeevip":
+            errors.append("metadata.author must be coolbeevip")
+        if metadata.get("version") != "1.0":
+            errors.append('metadata.version must be "1.0"')
+
+    triggers = data.get("triggers")
+    if not isinstance(triggers, list):
+        errors.append("triggers must be a list")
+    else:
+        zh_count = sum(1 for item in triggers if has_chinese(str(item)))
+        en_count = sum(1 for item in triggers if has_english(str(item)) and not has_chinese(str(item)))
+        if zh_count < 3:
+            errors.append(f"triggers must include at least 3 Chinese phrases, found {zh_count}")
+        if en_count < 3:
+            errors.append(f"triggers must include at least 3 English phrases, found {en_count}")
+
+    text = path.read_text(encoding="utf-8")
+    if "## 输入物" not in text:
+        errors.append("missing ## 输入物 section")
+    if "## 输出物" not in text:
+        errors.append("missing ## 输出物 section")
+
+    return errors
+
+
+def iter_skill_files() -> list[Path]:
+    return sorted(SKILLS_DIR.glob("*/*/SKILL.md"))
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description="Check team skill SKILL.md structure.")
+    parser.add_argument(
+        "paths",
+        nargs="*",
+        type=Path,
+        help="Optional SKILL.md paths or skill directories. Defaults to all skills.",
+    )
+    args = parser.parse_args()
+
+    paths: list[Path] = []
+    if args.paths:
+        for path in args.paths:
+            resolved = path if path.is_absolute() else ROOT / path
+            if resolved.is_dir():
+                resolved = resolved / "SKILL.md"
+            paths.append(resolved)
+    else:
+        paths = iter_skill_files()
+
+    failures = 0
+    for path in paths:
+        if not path.exists():
+            print(f"{path.relative_to(ROOT)}: missing file", file=sys.stderr)
+            failures += 1
+            continue
+        errors = check_skill(path)
+        if errors:
+            failures += 1
+            print(f"{path.relative_to(ROOT)}:", file=sys.stderr)
+            for error in errors:
+                print(f"  - {error}", file=sys.stderr)
+
+    if failures:
+        print(f"FAILED: {failures} skill file(s) have structural issues.", file=sys.stderr)
+        return 1
+
+    print(f"OK: checked {len(paths)} skill file(s).")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

@@ -11,6 +11,7 @@ triggers:
   - 技术债转工程任务
   - break tech debt into issues
   - create issues from tech debt
+  - split technical debt work
 ---
 
 # 技术债转工程 Issues
