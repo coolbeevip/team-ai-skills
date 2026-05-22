@@ -69,3 +69,22 @@ language: zh-CN
 - 生成 `team-spec/active/spec/reviews/{slug}.md`。
 - 明确是否可进入 `team-tech-debt-to-issues`。
 - 如果不可进入，明确 Required Refinement 与 Questions For User。
+
+## 完成输出
+
+每次完成评审后，最终回复必须包含：
+
+- 评审报告路径：`team-spec/active/spec/reviews/{slug}.md`，如果本次已保存。
+- `Status`：`ready`、`needs refinement` 或 `blocked`。
+- 下一步可选：必须使用有序号的列表选项输出，方便用户直接回复序号继续推进。
+  - 当 `Status: ready` 时，选项 1 必须是 `team-tech-debt-to-issues`，用于把通过评审的技术债规格拆解为工程 issue。
+  - 当 `Status: needs refinement` 时，选项 1 必须是 `team-tech-debt-refine`，并说明需要补充或修订哪些关键内容。
+  - 当 `Status: blocked` 时，选项 1 必须是解除阻塞动作；如能判断解除后技能，再作为后续编号选项列出。
+
+推荐结尾：
+
+```text
+技术债评审已完成，Status: ready。
+下一步可选：
+1. team-tech-debt-to-issues：将通过评审的技术债规格拆解为工程 issue。
+```
