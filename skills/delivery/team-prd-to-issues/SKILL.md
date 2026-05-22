@@ -97,6 +97,7 @@ language: zh-CN
 5. 根据用户反馈合并、拆分或重排。
 6. 用户确认后，再发布到 issue tracker；如果没有可用 issue tracker，则生成本地 Markdown issue 草稿。
 7. 拆解完成后，必须输出有序号的“下一步可选”列表，按用户当前状态推荐后续动作，方便用户直接回复序号继续推进。
+8. 输出“下一步可选”前，必须先判断当前项目更可能使用 GitHub 还是 GitLab，避免在信号明确时同时推荐两个发布技能。
 
 确认时每个候选 issue 都要展示：
 
@@ -182,28 +183,40 @@ AFK（可独立执行，无需人工决策） / HITL（需要人工介入）
 - 如果发布到 GitHub Issues，使用团队约定的 triage label；如果没有约定，先询问或生成草稿。
 - 本地草稿默认保存到 `team-spec/active/issues/{slug}/{issue-number}-{short-issue-slug}.md`，目录只在需要时创建。
 
+## Issue Tracker 判断
+
+生成“下一步可选”前，先基于目标项目根目录做轻量判断，给发布技能排序：
+
+1. 优先读取当前 Git remote URL，例如 `origin` 或当前分支 upstream。URL 包含 `github.com`、`github.` 或明确的 GitHub Enterprise 域名时，优先推荐 `team-github-issue-publish`；URL 包含 `gitlab.com`、`gitlab.` 或明确的 GitLab 自托管域名时，优先推荐 `team-gitlab-issue-publish`。
+2. 如果 remote 不存在或无法判断，再检查仓库文件：存在 `.github/` 时优先推荐 `team-github-issue-publish`；存在 `.gitlab-ci.yml` 或 `.gitlab/` 时优先推荐 `team-gitlab-issue-publish`。
+3. 如果 remote 与文件信号一致，只输出对应平台的发布选项，不要同时输出另一个平台的发布选项。
+4. 如果 remote 与文件信号冲突，在“下一步可选”中把置信度最高的发布选项放在第 1 项，并在描述中说明冲突信号；第 2 项才列另一个发布技能作为备选。
+5. 如果完全无法判断平台，可以同时列出 `team-github-issue-publish` 和 `team-gitlab-issue-publish`，但必须说明“未检测到明确平台信号，需要用户选择”。
+6. 如果用户本轮明确指定 GitHub 或 GitLab，用户指定优先于自动探测。
+
 ## 下一步可选
 
 每次完成 issue 拆解后，必须在最终回复中列出有序号的可选下一步，帮助用户直接回复序号继续推进。不要只说“已完成拆解”。
 
 根据当前状态推荐，并输出为单层有序列表：
 
-- `team-github-issue-publish`：已生成本地 issue 草稿但尚未发布到远端时，发布到 GitHub Issues。
-- `team-gitlab-issue-publish`：已生成本地 issue 草稿但尚未发布到远端时，发布到 GitLab Issues。
+- `team-github-issue-publish`：已生成本地 issue 草稿但尚未发布到远端，且 Issue Tracker 判断结果指向 GitHub 时，发布到 GitHub Issues。
+- `team-gitlab-issue-publish`：已生成本地 issue 草稿但尚未发布到远端，且 Issue Tracker 判断结果指向 GitLab 时，发布到 GitLab Issues。
 - `team-issue-implement`：用户不需要远端 issue tracker，或已有明确本地 `AFK` issue 时，开始实现。
 - 完成人工决策：issue 中存在 `HITL` 时，先完成对应人工决策，再继续发布或实现。
 - `team-harness-refine`：拆解过程中发现测试命令、项目入口、验证方式或 agent 工作环境不清楚时，先完善 harness。
 - `team-tech-debt-refine`：拆解过程中发现需要先治理的工程基础问题时，先细化为技术债规格。
+
+不要机械地同时输出 GitHub 和 GitLab 发布选项。只有在平台信号冲突或完全无法判断时，才允许同时出现两个发布技能，并必须说明原因。
 
 推荐格式：
 
 ```md
 ## 下一步可选
 
-1. `team-github-issue-publish`：发布到 GitHub Issues。
-2. `team-gitlab-issue-publish`：发布到 GitLab Issues。
-3. `team-issue-implement`：从第一个可开始的 `AFK` issue 进入实现。
-4. `team-harness-refine`：如果验证命令或 agent 工作环境不清楚，先完善 harness。
+1. `team-github-issue-publish`：检测到 GitHub remote，发布到 GitHub Issues。
+2. `team-issue-implement`：从第一个可开始的 `AFK` issue 进入实现。
+3. `team-harness-refine`：如果验证命令或 agent 工作环境不清楚，先完善 harness。
 ```
 
 ## 质量标准
@@ -215,3 +228,4 @@ AFK（可独立执行，无需人工决策） / HITL（需要人工介入）
 - AFK issue 不需要额外产品、设计或架构判断即可开始。
 - issue 标题清晰、具体、可一眼理解，且不会在发布阶段依赖兜底修正。
 - 最终回复包含有序号的“下一步可选”列表，且推荐与当前输出状态一致。
+- 若已生成本地 issue 草稿，最终回复已基于 Git remote、`.github/`、`.gitlab-ci.yml` 或 `.gitlab/` 判断发布平台；除非信号冲突或无法判断，否则不会同时推荐 GitHub 和 GitLab 发布技能。

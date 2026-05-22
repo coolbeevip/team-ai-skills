@@ -90,6 +90,18 @@ AFK（可独立执行，无需人工决策） / HITL（需要人工介入）
 
 - 产出落地到 `team-spec/active/issues/{slug}/` 的可执行 issue 草稿。
 - issue 可被工程或 agent 直接领取，并具备可验证验收标准。
+- 最终回复的“下一步可选”已基于当前项目的 Git remote、`.github/`、`.gitlab-ci.yml` 或 `.gitlab/` 判断发布平台；除非信号冲突或无法判断，否则不会同时推荐 GitHub 和 GitLab 发布技能。
+
+## Issue Tracker 判断
+
+生成“下一步可选”前，先基于目标项目根目录做轻量判断，给发布技能排序：
+
+1. 优先读取当前 Git remote URL，例如 `origin` 或当前分支 upstream。URL 包含 `github.com`、`github.` 或明确的 GitHub Enterprise 域名时，优先推荐 `team-github-issue-publish`；URL 包含 `gitlab.com`、`gitlab.` 或明确的 GitLab 自托管域名时，优先推荐 `team-gitlab-issue-publish`。
+2. 如果 remote 不存在或无法判断，再检查仓库文件：存在 `.github/` 时优先推荐 `team-github-issue-publish`；存在 `.gitlab-ci.yml` 或 `.gitlab/` 时优先推荐 `team-gitlab-issue-publish`。
+3. 如果用户本轮明确指定 GitHub 或 GitLab，用户指定优先于自动探测。
+4. 如果平台信号明确，只输出对应平台的发布选项，不要同时输出另一个平台的发布选项。
+5. 如果 remote 与文件信号冲突，在“下一步可选”中把置信度最高的发布选项放在第 1 项，并在描述中说明冲突信号；第 2 项才列另一个发布技能作为备选。
+6. 如果完全无法判断平台，可以同时列出 `team-github-issue-publish` 和 `team-gitlab-issue-publish`，但必须说明“未检测到明确平台信号，需要用户选择”。
 
 ## 下一步可选
 
@@ -98,8 +110,7 @@ AFK（可独立执行，无需人工决策） / HITL（需要人工介入）
 ```md
 ## 下一步可选
 
-1. `team-github-issue-publish`：已生成本地 issue 草稿但尚未发布到远端时，发布到 GitHub Issues。
-2. `team-gitlab-issue-publish`：已生成本地 issue 草稿但尚未发布到远端时，发布到 GitLab Issues。
-3. `team-issue-implement`：不需要远端 issue tracker，或已有明确本地 `AFK` issue 时，开始实现。
-4. 完成人工决策：issue 中存在 `HITL` 时，先完成对应人工决策，再继续发布或实现。
+1. `team-github-issue-publish`：检测到 GitHub remote，发布到 GitHub Issues。
+2. `team-issue-implement`：不需要远端 issue tracker，或已有明确本地 `AFK` issue 时，开始实现。
+3. 完成人工决策：issue 中存在 `HITL` 时，先完成对应人工决策，再继续发布或实现。
 ```
