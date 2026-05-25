@@ -157,7 +157,7 @@
   <div class="container">
     <div class="section-kicker">使用场景</div>
     <h2 class="section-title">主线之外的三条支线</h2>
-    <p class="section-desc">不同团队问题进入不同场景：治理技术债、维护 Codex Harness，或者把 PRD 和设计产物转成适合人类评审的材料。</p>
+    <p class="section-desc">不同团队问题进入不同场景：治理技术债、维护 Codex 运行时检索层，或者把 PRD 和设计产物转成适合人类评审的材料。</p>
 
     <div class="scenario-grid">
       <article class="scenario-card debt-card">
@@ -175,14 +175,14 @@
 
       <article class="scenario-card harness-card">
         <div class="scenario-label">场景 2</div>
-        <h3>Codex Harness 维护</h3>
-        <p>当 Codex 经常卡在启动、测试、上下文、验证或失败定位上，维护项目级 harness，并用真实开发任务的反馈持续更新 AGENTS.md 和深层 harness 文档。</p>
+        <h3>Codex 检索层维护</h3>
+        <p>当 Codex 经常卡在入口约束、失败定位、验证策略或任务入口上，维护项目级 harness，让 AGENTS.md 指向可检索的运行时辅助信息。</p>
         <div class="scenario-flow">
           <code>team-codex-harness</code>
           <span>→</span>
-          <code>真实开发任务试跑</code>
+          <code>真实任务反馈</code>
           <span>→</span>
-          <code>harness debt</code>
+          <code>failure memory</code>
         </div>
       </article>
 
@@ -277,7 +277,7 @@
       <div class="index-row">
         <span class="index-domain">Harness</span>
         <code>team-codex-harness</code>
-        <p>维护项目级 Codex harness。</p>
+        <p>维护 Codex 运行时检索层。</p>
       </div>
       <div class="index-row">
         <span class="index-domain">文档</span>

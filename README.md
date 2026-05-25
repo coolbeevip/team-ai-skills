@@ -31,9 +31,9 @@ npx skills@latest add coolbeevip/team-ai-skills --all
 
 ### Codex Harness
 
-Codex Harness 域用于让真实项目更适合 Codex 长期工作，适合团队在接入 Codex、开发流程变化、测试命令变化、失败案例沉淀或技术债治理前后反复使用。
+Codex Harness 域用于维护 Codex 在具体项目中的运行时检索层，适合团队在接入 Codex、验证策略变化、失败案例沉淀或任务入口不清楚时反复使用。
 
-- `team-codex-harness`：维护项目级 Codex harness，包括 `AGENTS.md`、项目任务地图、开发与验证命令、失败模式和反馈闭环。
+- `team-codex-harness`：维护项目级 Codex 检索层，包括入口约束、失败记忆、验证 harness 和任务入口。
 
 ### 交付执行
 
@@ -78,7 +78,7 @@ flowchart TD
     D -. 可选：功能设计 .-> R[team-spec-to-functional-design]
     F --> N[team-github-issue-publish]
     F --> O[team-gitlab-issue-publish]
-    F -. Codex harness 不清晰时 .-> T[team-codex-harness]
+    F -. Codex 检索层不清晰时 .-> T[team-codex-harness]
     N --> G[team-issue-implement]
     O --> G
     G --> I[team-issue-verify]
@@ -100,7 +100,7 @@ flowchart TD
 
 `team-spec-to-functional-design` 基于 PRD 与源代码生成企业级功能设计说明书，供架构师和技术负责人在实现前评审，不影响 PRD 的权威地位。
 
-`team-prd-to-issues` 应以 PRD 为主输入；`CONTEXT.md`、`decisions/` 和 `reviews/` 只能作为背景参考，不能绕过 PRD 直接拆工程任务。拆解过程中如果发现验证命令、项目入口或 Codex 工作环境不清晰，可使用 `team-codex-harness` 补全。
+`team-prd-to-issues` 应以 PRD 为主输入；`CONTEXT.md`、`decisions/` 和 `reviews/` 只能作为背景参考，不能绕过 PRD 直接拆工程任务。拆解过程中如果发现入口约束、验证策略、失败记忆或任务入口不清晰，可使用 `team-codex-harness` 补全。
 
 `team-github-issue-publish` 用于把 `team-spec/active/issues/{slug}/` 下的本地 issue 草稿发布到 GitHub Issues，并回写发布结果。默认按依赖顺序批量发布，也可通过 `--issue` 指定单个 issue。该技能仅处理 GitHub。
 

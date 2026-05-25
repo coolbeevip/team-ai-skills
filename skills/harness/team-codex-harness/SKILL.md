@@ -1,6 +1,6 @@
 ---
 name: team-codex-harness
-description: 维护具体代码项目中的 Codex harness，包括 AGENTS.md 入口、项目任务地图、命令、验证路径和失败模式；不维护团队技能库自身。Maintain a Codex harness inside a concrete code project, including AGENTS.md entry points, project task maps, commands, verification paths, and failure patterns; it does not maintain the team skill library itself.
+description: 维护具体代码项目中的 Codex 运行时检索层，只沉淀入口约束、失败记忆、验证 harness 和任务入口；不维护团队技能库自身。Maintain a runtime retrieval layer for Codex inside a concrete code project, capturing only entry constraints, failure memory, verification harness, and task entry points; it does not maintain the team skill library itself.
 license: MIT
 metadata:
   author: coolbeevip
@@ -8,43 +8,42 @@ metadata:
 triggers:
   - 维护 Codex harness
   - 改进 AGENTS.md
-  - Codex 看不懂项目
   - Codex 不知道怎么验证
-  - 沉淀 Codex 失败经验
-  - Codex 项目接入
+  - 沉淀 Codex 失败记忆
+  - Codex 找不到任务入口
+  - Codex 需要入口约束
   - maintain Codex harness
   - improve AGENTS.md
-  - Codex project onboarding
-  - document Codex workflow
-  - fix Codex project context
-  - update Codex verification
+  - Codex failure memory
+  - Codex verification harness
+  - Codex task entry points
+  - Codex entry constraints
 ---
 
 # Codex Harness 维护
 
-这个技能用于让一个具体代码项目更适合 Codex 接手工作。它维护项目级 Codex harness，把会影响 Codex 理解项目、修改代码、运行命令、完成验证和处理失败的知识，沉淀到 `AGENTS.md` 和项目内的深层 harness 文档中。
+这个技能用于维护具体代码项目里的 Codex 运行时检索层。它不是项目制度文档，也不是架构说明书，而是在 Codex 执行任务时提供少量、稳定、可检索的辅助信息，帮助 Codex 快速查到自己推不出来但会影响正确性的项目事实。
 
-本技能只处理“Codex 在某个代码项目里如何工作”的问题，不处理团队技能库自身如何演进，也不把普通项目文档整理成知识库。它的核心动作是：观察真实项目事实，识别 Codex 工作阻塞点，更新入口、任务地图、命令、验证路径或失败记录，再用真实任务或失败案例反向检查这些材料是否有用。
+Codex harness 应该优先“检索友好”，而不是“阅读友好”。不要写长篇说明，不要追求完整叙事，不要把项目文档重写一遍。每条内容都应回答一个运行时问题：Codex 现在该避开什么、先查什么、跑什么、从哪里开始。
 
 ## 职责边界
 
-本技能负责：
+本技能只维护 4 类高价值信息：
 
-- 建立或维护项目根目录的 `AGENTS.md`，让 Codex 进入项目后知道先读什么、怎么改、怎么验证。
-- 维护项目级 harness 目录，例如 `docs/codex-harness/`、`docs/agent-harness/` 或项目已有等价目录。
-- 梳理 Codex 需要的最小项目任务地图，包括模块边界、关键入口、常见修改路径和禁止误改区域。
-- 固化真实可用的开发、测试、检查、构建和调试命令。
-- 定义不同变更类型的最低验证路径。
-- 记录 Codex 或人工在项目中遇到的可复用失败模式和恢复方式。
+1. 入口约束（Entry Constraints）：Codex 进入项目后必须立即知道、且无法靠浏览代码稳定推断的硬约束。
+2. 失败记忆（Failure Memory）：真实发生过、可复用、会影响后续任务判断的失败模式。
+3. 验证 Harness（Verification Harness）：不同变更类型完成后，如何证明没有破坏项目行为。
+4. 项目任务入口（Task Entry）：常见任务应该从哪些代码、测试、脚本或文档入口开始。
 
 本技能不负责：
 
 - 维护本团队技能库自身；技能定义、触发词、脚本和流程演进应使用 `team-skill-evolve`。
 - 写 PRD、拆 issue、实现 issue、验证 issue 或发布 issue。
 - 生成完整架构设计说明书；需要面向评审的功能设计时应使用架构类技能。
-- 整理通用项目文档、会议纪要、一次性任务日志或人类知识库。
+- 整理普通项目文档、会议纪要、一次性任务日志或人类知识库。
+- 维护完整编码规范、评审制度、团队流程或长期决策记录。
 - 在没有真实代码、命令、任务或失败证据时凭空编写注意事项。
-- 维护 `CLAUDE.md` 作为核心输出；如果项目已经存在 `CLAUDE.md`，只能作为兼容入口链接到同一套 Codex harness。
+- 维护 `CLAUDE.md` 作为核心输出；如果项目已有 `CLAUDE.md`，只能作为兼容入口链接到同一套 Codex harness。
 
 ## 运行时配置
 
@@ -53,15 +52,15 @@ Codex harness 独立于需求、PRD、issue 拆解或技术债流程，不读取
 Harness 目录识别规则：
 
 - 优先从现有 `AGENTS.md` 中识别已链接的 Codex harness 目录。
-- 如果项目没有现成目录，应使用项目内独立目录保存 harness 文档，优先选择 `docs/codex-harness/`。
+- 如果项目没有现成目录，应使用项目内独立目录保存 harness 文件，优先选择 `docs/codex-harness/`。
 - 如果项目已经有 `docs/agent-harness/` 等等价目录，可以继续沿用，不为改名而制造迁移。
 - 目录必须是相对项目根目录的路径，不应是绝对路径，不应位于需求、PRD、issue 或归档工作区下。
 - 如果无法从现有文件唯一判断目录，只问用户一个问题确认 harness 目录，不展开多轮访谈。
 
 执行要求：
 
-- 对话回复与 harness 文档默认沿用项目现有语言；若无法判断，优先使用用户本轮语言。
-- 用户临时切换语言时，本次立即生效；只有用户明确要求持久化语言偏好时，才写入 harness 文档。
+- 对话回复与 harness 文件默认沿用项目现有语言；若无法判断，优先使用用户本轮语言。
+- 用户临时切换语言时，本次立即生效；只有用户明确要求持久化语言偏好时，才写入 harness 文件。
 - 除非用户明确说“只分析、不改文件”，否则本技能默认应该产生或更新目标项目中的持久化 harness 输出物。
 
 ## 输入物
@@ -70,87 +69,155 @@ Harness 目录识别规则：
 - 当前项目的真实代码、目录结构、构建配置、测试配置、脚本、CI 配置和本地开发工具。
 - Codex 最近执行真实任务时遇到的卡点、失败测试、CI 日志、命令错误、人工修复记录或交付事故。
 - 已有 Codex harness 目录，例如 `docs/codex-harness/` 或项目现有等价目录。
-- 可选：来自 `team-prd-to-issues`、`team-issue-implement` 或 `team-issue-verify` 的真实工程任务反馈，但本技能只把其中与 Codex 工作环境相关的部分写入 harness。
+- 可选：来自 `team-prd-to-issues`、`team-issue-implement` 或 `team-issue-verify` 的真实工程任务反馈，但本技能只把其中与 Codex 运行时检索相关的部分写入 harness。
 
-如果用户没有提供明确范围，应先判断本轮属于初始化、修复还是刷新。无法唯一判断时，只问一个最关键的问题。
+如果用户没有提供明确范围，应先判断本轮是在初始化检索层、补失败记忆、补验证策略、补任务入口，还是刷新入口约束。无法唯一判断时，只问一个最关键的问题。
 
 ## 输出物
 
-本技能按本轮证据更新最小必要文件，不要求一次补齐完整文档集合。
+本技能默认只维护 `AGENTS.md` 和 4 个核心检索文件。不要为了完整性新增其他制度性文档。
 
-必须维护：
+- `AGENTS.md`：Codex 的入口路由，只说明本项目必须遵守的最高优先级规则，以及 4 个检索文件在哪里。
+- `{harness_dir}/entry-constraints.md`：入口约束，记录 Codex 自己推不出来的硬约束。
+- `{harness_dir}/failure-memory.md`：失败记忆，记录真实失败模式和恢复方式。
+- `{harness_dir}/verification-harness.md`：验证 harness，记录不同变更类型的最低验证路径。
+- `{harness_dir}/task-entry.md`：任务入口，记录常见任务从哪里开始。
 
-- `AGENTS.md`：Codex 的项目入口，保持短小，指向深层 harness 文档。
-- `{harness_dir}/index.md`：Codex harness 总入口，说明最小阅读路径和每个文件的职责。
+不建议新增：
 
-按需要维护：
-
-- `{harness_dir}/project-map.md`：Codex 做任务需要理解的模块边界、关键入口、常见修改路径和禁止误改区域。
-- `{harness_dir}/commands.md`：常用开发、测试、检查、构建和调试命令。
-- `{harness_dir}/verification.md`：不同变更类型对应的最低验证策略。
-- `{harness_dir}/coding-rules.md`：项目特有编码约束、提交约束和禁止事项。
-- `{harness_dir}/review-rubric.md`：Codex 完成实现后的自查和评审关注点。
-- `{harness_dir}/known-failures.md`：已知失败模式、复现方式、根因、规避方式和修复记录。
-- `{harness_dir}/decisions.md`：只有当 harness 目录、命名、拆分或维护策略存在重要取舍时才创建或更新。
+- `project-map.md`：容易变成架构文档；必要内容应压缩进 `task-entry.md`。
+- `commands.md`：普通命令价值低；只有约束型命令进入 `entry-constraints.md`，验证型命令进入 `verification-harness.md`。
+- `coding-rules.md`：容易变成制度；只有不可推导的硬约束进入 `entry-constraints.md`。
+- `review-rubric.md`：容易空泛；收尾检查应体现在 `verification-harness.md`。
+- `decisions.md`：不是运行时检索核心；除非用户明确要求记录 harness 目录迁移取舍，否则不要创建。
+- `{harness_dir}/index.md`：默认不需要；`AGENTS.md` 直接索引 4 个核心文件。如果项目已有 `index.md`，可以保留为兼容索引，但不要把它变成第五类知识。
 
 落盘规则：
 
-- 初始化 Codex harness：至少创建或更新 `AGENTS.md`、`{harness_dir}/index.md`，并按证据更新 `commands.md` 或 `verification.md`。
-- 修复 Codex 工作阻塞：至少更新导致阻塞的对应文件；如果阻塞来自失败案例，必须更新 `known-failures.md`。
-- 刷新项目变化：项目结构、测试、CI、启动方式或关键脚本变化后，更新 `project-map.md`、`commands.md`、`verification.md` 或入口索引中受影响的部分。
+- 初始化 Codex harness：至少创建或更新 `AGENTS.md`，并创建 4 个核心检索文件中有真实证据支撑的文件；没有证据的文件可以只放标题和“暂无记录”。
+- 更新入口约束：只更新 `entry-constraints.md` 和 `AGENTS.md` 中必要的路由。
+- 更新失败记忆：只更新 `failure-memory.md`；如果失败暴露验证缺口，再同步更新 `verification-harness.md`。
+- 更新验证策略：只更新 `verification-harness.md`。
+- 更新任务入口：只更新 `task-entry.md`。
 - 只分析模式：用户明确要求不改文件时，只输出问题定位、建议改动和建议验证方式。
 
-## 核心动作
+## 四类信息的写法
 
-本技能有 5 个动作：
+### 入口约束
 
-1. 建入口：让 `AGENTS.md` 成为 Codex 的短入口，说明项目目标、先读路径、常用命令索引、验证入口和失败记录位置。
-2. 画地图：把 Codex 容易迷路的模块边界、代码入口、配置入口、测试入口和禁止误改区域整理成任务地图。
-3. 固化命令：把真实可执行的开发、测试、检查、构建和调试命令写清楚，包括运行目录、前置条件、适用场景、来源和最后验证日期。
-4. 定义验证：说明不同变更类型的最低验证路径，减少 Codex 改完代码后不知道如何确认的问题。
-5. 记录失败：把真实失败转化为可复用记录，包括症状、触发条件、根因判断、处理方式和下次优先检查项。
+`entry-constraints.md` 只放 Codex 必须提前知道的硬约束。每条建议使用短块格式：
 
-## 执行模式
+```md
+## {constraint-title}
 
-### 初始化
+- Scope: {适用目录、命令、文件或任务类型}
+- Rule: {必须遵守或禁止事项}
+- Reason: {为什么 Codex 不能靠推断得到}
+- Source: {代码、配置、CI、README、人工确认或失败记录}
+- Last checked: {YYYY-MM-DD 或 待验证}
+```
 
-当项目第一次接入 Codex，或没有清晰 `AGENTS.md` 时执行：
+适合写入：
 
-1. 读取项目结构、README、构建配置、测试配置、脚本和 CI。
-2. 确认或创建 `{harness_dir}`，默认优先 `docs/codex-harness/`。
-3. 创建或更新 `AGENTS.md`，只保留 Codex 必须知道的入口信息。
-4. 创建或更新 `{harness_dir}/index.md`，列出最小阅读路径。
-5. 根据已确认事实创建或更新 `commands.md`、`verification.md` 或 `project-map.md`。
-6. 用一个最小真实任务路径检查 Codex 是否能从入口找到需要的信息。
+- 哪些目录不能动。
+- 哪些生成文件不要手改。
+- 哪些命令必须在哪个目录运行。
+- 哪些测试特别慢，不应默认全量跑。
+- 哪些 CI 有本地不可见的隐藏依赖。
 
-### 修复
+不适合写入：
 
-当 Codex 在真实任务中卡住、跑错命令、误读模块、验证不完整或重复失败时执行：
+- 通用编码风格。
+- 可以从 lint、formatter、类型检查或代码惯例推断出的规则。
+- 没有证据的偏好。
 
-1. 还原失败场景：症状、触发命令、相关路径、期望行为和实际结果。
-2. 判断失败属于入口缺口、任务地图缺口、命令缺口、验证缺口、编码规则缺口、失败记录缺口，还是代码或测试债务。
-3. 只更新造成阻塞的最小 harness 文件。
-4. 如果失败可以复用，写入 `known-failures.md`。
-5. 再用同一失败场景检查更新后的 harness 是否能指导下一次处理。
+### 失败记忆
 
-### 刷新
+`failure-memory.md` 是最高价值文件，只记录真实失败。每条建议使用短块格式：
 
-当项目结构、脚本、测试、CI、启动方式、关键模块或开发流程变化时执行：
+```md
+## {observable-symptom}
 
-1. 对照当前代码、配置、脚本和 CI 找出过期 harness 内容。
-2. 删除、改写或标注过期命令、路径、模块说明和验证策略。
-3. 同步更新 `AGENTS.md`、`index.md` 和被链接的深层文档。
-4. 对关键命令或验证路径做轻量确认；无法确认时标注 `待验证`，不得写成确定事实。
+- Trigger: {触发条件或命令}
+- Symptom: {可观察现象}
+- Root cause: {已确认根因；不确定时写 待确认}
+- Fix or workaround: {正确处理方式}
+- Check first next time: {下次优先检查点}
+- Evidence: {日志、CI、PR、任务、人工修复记录}
+- Last confirmed: {YYYY-MM-DD 或 待验证}
+```
 
-## 最小阅读路径
+失败记忆必须来自真实任务、测试、CI、用户纠正或人工修复记录。不要写“可能会失败”“注意某某”这类泛化提醒。
 
-`{harness_dir}/index.md` 必须按任务类型列出 Codex 的最小阅读路径：
+### 验证 Harness
 
-- 新任务默认必读：`AGENTS.md`，再读 `{harness_dir}/index.md`。
-- 修改代码前：读取 `project-map.md`、`coding-rules.md` 和 `verification.md` 中相关部分。
-- 运行或修复测试前：读取 `commands.md`、`verification.md` 和 `known-failures.md`。
-- 处理失败时：先读 `known-failures.md`，再按失败类型回到 `commands.md`、`verification.md` 或 `project-map.md`。
-- 评审或收尾前：读取 `review-rubric.md` 和本次变更类型对应的验证要求。
+`verification-harness.md` 只回答“改完后如何证明没坏”。每条建议按变更类型组织：
+
+```md
+## {change-type}
+
+- Applies when: {哪些文件、模块、接口或行为变化时适用}
+- Minimum verification: {最低必须执行的命令或人工检查}
+- Stronger verification: {高风险时追加的检查}
+- Known blind spots: {本地验证覆盖不到但 CI 或线上会暴露的问题}
+- Evidence: {测试配置、CI、脚本、历史失败或人工确认}
+- Last checked: {YYYY-MM-DD 或 待验证}
+```
+
+适合写入：
+
+- 改 API 必跑什么。
+- 改 MQTT 必跑什么。
+- 改数据库 migration 必查什么。
+- 改配置、本地过测但 CI 可能失败的场景。
+- 哪些验证很慢，应在什么风险级别才跑。
+
+不要把所有测试命令平铺成命令列表。命令必须绑定到变更类型和证明目标。
+
+### 项目任务入口
+
+`task-entry.md` 只回答“这类任务从哪里开始”。每条建议使用短块格式：
+
+```md
+## {task-type}
+
+- Start here: {首要代码、测试、脚本或文档入口}
+- Then check: {第二层入口，最多 3 项}
+- Avoid: {容易误入或不该先改的地方}
+- Validation link: {对应 verification-harness.md 的章节}
+- Evidence: {代码结构、测试、README、历史任务或人工确认}
+- Last checked: {YYYY-MM-DD 或 待验证}
+```
+
+适合写入：
+
+- 新增 API 从哪里开始。
+- 新增 skill 从哪里开始。
+- 新增 migration 从哪里开始。
+- 修改某类配置、协议、任务队列、前端页面或部署流程从哪里开始。
+
+不要写完整架构地图。任务入口最多给 Codex 第一跳和第二跳。
+
+## 工作流
+
+1. 识别本轮目标：初始化检索层、更新入口约束、记录失败记忆、补验证 harness、补任务入口，或刷新过期内容。
+2. 读取 `AGENTS.md`、已有 harness 文件、相关代码、配置、脚本、测试、CI 和真实任务反馈。
+3. 判断要写入的信息是否属于 4 类之一；不属于则不要写入 harness。
+4. 判断 Codex 是否能靠代码和工具自己推出来；能推出来的普通信息不要写入。
+5. 判断是否有证据；没有证据时只可标注 `待验证`，不得写成确定事实。
+6. 用短块格式更新最小必要文件，避免长篇叙述和重复项目文档。
+7. 更新 `AGENTS.md` 中的路由，确保 Codex 能找到 4 个核心检索文件。
+8. 用一个真实任务或失败案例检查：Codex 是否能通过检索文件更快找到约束、失败、验证或任务入口。
+
+## 检索友好规则
+
+- 每个小节标题必须像查询词，而不是文章标题。
+- 每条记录应短，优先使用固定字段，方便 Codex 扫描和匹配。
+- 同一事实只放在一个文件；其他文件用章节名引用，不重复解释。
+- 不写历史叙事、背景故事、制度解释或长篇原则。
+- 不把所有命令集中成清单；命令必须服务于入口约束或验证策略。
+- 不把所有模块集中成地图；路径必须服务于任务入口。
+- 旧内容过期时直接改写、删除或标注历史状态，不无限追加。
 
 ## 证据规则
 
@@ -161,23 +228,24 @@ Harness 目录识别规则：
 - 弱证据：历史对话、一次性任务记录、人工经验、未复现的失败描述。
 - 未验证内容：无法从强证据或中证据确认的命令、路径、规则或判断，必须标注为 `待验证`。
 
-如果代码、配置、测试、脚本或 CI 与文档冲突，优先相信当前工程事实，并修正 harness。无法判断哪一方正确时，不要合并成模糊规则，应标注为 `待确认`，并说明需要用户或维护者确认的问题。
+如果代码、配置、测试、脚本或 CI 与 harness 冲突，优先相信当前工程事实，并修正 harness。无法判断哪一方正确时，不要合并成模糊规则，应标注为 `待确认`，并说明需要用户或维护者确认的问题。
 
 ## 自检要求
 
 每次修改 Codex harness 后，必须轻量自检：
 
-- `AGENTS.md` 是否仍然短小，并能指向必要深层文档。
-- 新增或改名文件是否已写入 `{harness_dir}/index.md`，并能从入口文件发现。
-- 新增命令是否有来源、适用场景、前置条件和验证状态。
-- 新增验证策略是否对应实际测试命令、构建命令、人工检查入口或 CI 检查。
-- 新增规则是否能追溯到代码、配置、测试、CI、正式文档或明确团队约束。
+- `AGENTS.md` 是否只做入口路由，并能指向 4 个核心检索文件。
+- 新增内容是否属于入口约束、失败记忆、验证 harness 或任务入口之一。
+- 新增内容是否是 Codex 难以自行推断、但会影响正确性的事实。
+- 新增记录是否使用固定字段，适合快速检索。
+- 新增命令是否绑定到约束或验证目标，而不是普通命令清单。
+- 新增路径是否绑定到任务入口，而不是完整架构地图。
 - 是否引入敏感信息、绝对本机路径、个人凭证或一次性任务噪音。
 - 是否需要删除、废弃或标注过期内容，而不是只追加新内容。
 
 ## 与其他技能的关系
 
 - `team-skill-evolve`：维护团队技能库自身。Codex harness 技能定义、触发词、脚本或流程需要修改时，使用它。
-- `team-prd-to-issues`：拆 PRD 时如果发现项目入口、验证命令或 Codex 工作环境不清楚，可以转入本技能补 harness。
-- `team-issue-implement` / `team-issue-verify`：真实实现或验证暴露的命令、验证和失败模式缺口，可以反馈给本技能。
+- `team-prd-to-issues`：拆 PRD 时如果发现入口约束、验证策略或任务入口不清楚，可以转入本技能补 harness。
+- `team-issue-implement` / `team-issue-verify`：真实实现或验证暴露的失败记忆、验证盲区和任务入口缺口，可以反馈给本技能。
 - `team-spec-to-functional-design`：需要面向人类评审的功能设计说明书时使用，不由本技能替代。
