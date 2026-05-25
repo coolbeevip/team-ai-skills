@@ -77,6 +77,8 @@ language: zh-CN
 
 本技能不要直接修改 `team-spec/active/spec/refine/{slug}.md`。如果规格需要修订，输出 `Status: needs refinement`，并在 `Questions For User` 与 `Required Refinement` 中给出明确问题和修改方向，由 `team-spec-refine` 继续与用户确认并更新同一个 refine 文件。
 
+本技能属于规格评审阶段，只允许引导用户修正规格、补充评审证据或进入 PRD 固化。不要在最终回复的“下一步可选”中建议修改代码、要求用户授予这些文件的写入权限。任何代码或业务文档写入，只能在 `team-issue-implement` 阶段由工程 issue 明确驱动。
+
 ## 分析维度
 
 - 需求歧义：术语、目标、范围、验收是否清楚。
@@ -153,6 +155,7 @@ language: zh-CN
   - 当 `Status: ready` 时，选项 1 必须是 `team-spec-to-prd`，用于固化 PRD。
   - 当 `Status: needs refinement` 时，选项 1 必须是 `team-spec-refine`，并说明需要修订哪些关键内容。
   - 当 `Status: blocked` 时，选项 1 必须是解除阻塞动作；如能判断解除后技能，再作为后续编号选项列出。
+  - 不得加入修改代码、更新 API 手册、更新 `handbook/`、更新产品文档、申请业务文件写入授权等实现阶段选项。
 
 推荐结尾：
 
