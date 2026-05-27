@@ -31,14 +31,15 @@ language: zh-CN
 
 执行要求：
 
-- 对话回复与评审文档 `team-spec/active/spec/reviews/{slug}.md` 均使用 `language`。
+- 对话回复与评审文档 `team-spec/active/{slug}/spec/reviews.md` 均使用 `language`。
 - 用户临时切换语言时，本次立即生效，并询问是否回写配置。
 
 ## 输入物
 
 - 当前对话中的技术债结论、证据和约束。
-- `team-spec/active/spec/refine/{slug}.md`，这是主输入。
-- `team-spec/active/spec/CONTEXT.md` 与 `team-spec/active/spec/decisions/`（如存在）。
+- `team-spec/active/{slug}/spec/refine.md`，这是主输入。
+- `team-spec/CONTEXT.md` 与 `team-spec/decisions/`（如存在）。
+- `team-spec/active/{slug}/spec/CONTEXT.md` 与 `team-spec/active/{slug}/spec/decisions/`（如存在）。
 - 相关代码、监控、事故、缺陷、性能或运维材料。
 
 必须先确定本次评审对应的 slug。技术债链路的 slug 必须包含 `debt`，如 `{yyyy-mm-dd}-debt-{short-english-slug}`。无法唯一判断时必须要求用户提供，不得猜测。
@@ -46,7 +47,7 @@ language: zh-CN
 ## 输出物
 
 - 对话中的评审结论：`ready` / `needs refinement` / `blocked`。
-- `team-spec/active/spec/reviews/{slug}.md`：技术债评审报告。
+- `team-spec/active/{slug}/spec/reviews.md`：技术债评审报告。
 - 给下游 `team-tech-debt-to-issues` 的拆解前置结论（阻塞项、依赖、验收风险、HITL 决策点）。
 
 ## 评审维度
@@ -66,7 +67,7 @@ language: zh-CN
 
 ## 完成标准
 
-- 生成 `team-spec/active/spec/reviews/{slug}.md`。
+- 生成 `team-spec/active/{slug}/spec/reviews.md`。
 - 明确是否可进入 `team-tech-debt-to-issues`。
 - 如果不可进入，明确 Required Refinement 与 Questions For User。
 
@@ -74,7 +75,7 @@ language: zh-CN
 
 每次完成评审后，最终回复必须包含：
 
-- 评审报告路径：`team-spec/active/spec/reviews/{slug}.md`，如果本次已保存。
+- 评审报告路径：`team-spec/active/{slug}/spec/reviews.md`，如果本次已保存。
 - `Status`：`ready`、`needs refinement` 或 `blocked`。
 - 下一步可选：必须使用有序号的列表选项输出，方便用户直接回复序号继续推进。
   - 当 `Status: ready` 时，选项 1 必须是 `team-tech-debt-to-issues`，用于把通过评审的技术债规格拆解为工程 issue。

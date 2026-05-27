@@ -1,6 +1,6 @@
 ---
 name: team-github-issue-publish
-description: 将 team-spec/active/issues/{slug}/ 下的本地 issue 草稿发布到 GitHub Issues，默认按依赖顺序处理整个目录，也可指定单个 issue，并回写发布结果，支持 dry-run、幂等检查与部分失败重试。Publish local issue drafts under team-spec/active/issues/{slug}/ to GitHub Issues, either as a full dependency-ordered batch or as a single selected issue, with write-back status, dry-run, idempotency checks, and retry support.
+description: 将 team-spec/active/{slug}/issues/ 下的本地 issue 草稿发布到 GitHub Issues，默认按依赖顺序处理整个目录，也可指定单个 issue，并回写发布结果，支持 dry-run、幂等检查与部分失败重试。Publish local issue drafts under team-spec/active/{slug}/issues/ to GitHub Issues, either as a full dependency-ordered batch or as a single selected issue, with write-back status, dry-run, idempotency checks, and retry support.
 license: MIT
 metadata:
   author: coolbeevip
@@ -48,7 +48,7 @@ language: zh-CN
 
 脚本能力：
 
-- 读取 `team-spec/active/issues/{slug}/` 或显式 `--issues-dir`。
+- 读取 `team-spec/active/{slug}/issues/` 或显式 `--issues-dir`，并兼容旧布局 `team-spec/active/issues/{slug}/`。
 - 默认发布该目录下全部 issue；也可以通过 `--issue` 只发布指定的单个 issue。
 - 按 `Blocked by` 生成依赖顺序。
 - 使用 `./scripts/templates/issue_body.md.tpl` 按 `language` 渲染 GitHub 友好的 issue 正文，固定包含摘要、范围、验收标准、依赖、实现备注和折叠的来源信息；正文只保留对协作有用的摘要字段，不直接发布完整草稿原文。
@@ -106,7 +106,7 @@ GITHUB_TOKEN=... python3 {skill_dir}/scripts/publish_github_issues.py --slug {sl
 
 主输入：
 
-- `team-spec/active/issues/{slug}/` 下的 issue 草稿文件。
+- `team-spec/active/{slug}/issues/` 下的 issue 草稿文件。
 - `--issue` 可选参数：只发布指定的单个 issue 草稿。
 
 必须参数：
@@ -114,7 +114,7 @@ GITHUB_TOKEN=... python3 {skill_dir}/scripts/publish_github_issues.py --slug {sl
 - 平台地址（默认 `https://github.com`；GitHub Enterprise 必须提供自定义地址）。
 - 仓库定位：`owner/repo`；如果用户未显式提供，可按下面“仓库定位规则”从 git remote 推断。
 - 认证 token（必须通过环境变量提供，不写入任何文件）。
-- 目标 slug 或明确的 issue 目录路径（如 `team-spec/active/issues/{slug}/`）。
+- 目标 slug 或明确的 issue 目录路径（如 `team-spec/active/{slug}/issues/`）。
 
 建议参数：
 
@@ -125,7 +125,7 @@ GITHUB_TOKEN=... python3 {skill_dir}/scripts/publish_github_issues.py --slug {sl
 
 前置条件：
 
-- 如团队需要人类对齐，建议先使用 `team-prd-to-alignment` 生成 `team-spec/active/prd/{slug}-alignment.md` 并完成评审讨论。
+- 如团队需要人类对齐，建议先使用 `team-prd-to-alignment` 生成 `team-spec/active/{slug}/prd/alignment.md` 并完成评审讨论。
 - `team-prd-to-issues` 已产出可发布草稿；如果只发单个 issue，则该 issue 草稿已存在。
 - 需要有效 token 且具备 GitHub Issues 写权限（常见为 `repo` 或等效最小权限）。
 
@@ -201,7 +201,7 @@ GitHub Enterprise 场景下，remote host 必须与平台地址一致；如果�
 ## 建议流程
 
 1. 确认 slug、仓库、平台地址、token 来源与权限范围；若仓库来自 git remote，按“仓库定位规则”优先选择上游仓库。
-2. 读取 `team-spec/active/issues/{slug}/` 下所有待发布 issue 草稿。
+2. 读取 `team-spec/active/{slug}/issues/` 下所有待发布 issue 草稿。
 3. 解析 `Blocked by` 关系并生成依赖有向图。
 4. 检查循环依赖；若存在循环依赖，停止并输出冲突清单。
 5. 使用固定脚本生成拓扑顺序发布计划。

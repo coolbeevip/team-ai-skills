@@ -1,6 +1,6 @@
 ---
 name: team-tech-debt-to-issues
-description: 将已细化并通过评审的技术债规格拆解为可独立领取、可验证、按依赖排序的工程 issue，并写入 team-spec/active/issues。Break reviewed technical debt specs into independently grabbable, verifiable engineering issues ordered by dependencies and save under team-spec/active/issues.
+description: 将已细化并通过评审的技术债规格拆解为可独立领取、可验证、按依赖排序的工程 issue，并写入 team-spec/active/{slug}/issues。Break reviewed technical debt specs into independently grabbable, verifiable engineering issues ordered by dependencies and save under team-spec/active/{slug}/issues.
 license: MIT
 metadata:
   author: coolbeevip
@@ -30,23 +30,23 @@ language: zh-CN
 
 执行要求：
 
-- 对话回复与 issue 草稿 `team-spec/active/issues/{slug}/` 下内容均使用 `language`。
+- 对话回复与 issue 草稿 `team-spec/active/{slug}/issues/` 下内容均使用 `language`。
 - 用户临时切换语言时，本次立即生效，并询问是否回写配置。
 
 ## 输入物
 
-- 主输入：`team-spec/active/spec/refine/{slug}.md`。
-- 必要前置：`team-spec/active/spec/reviews/{slug}.md`，且状态应为 `ready`（除非用户明确接受带风险拆解草案）。
-- 参考输入：`team-spec/active/spec/CONTEXT.md`、`team-spec/active/spec/decisions/`、相关代码与运行证据。
+- 主输入：`team-spec/active/{slug}/spec/refine.md`。
+- 必要前置：`team-spec/active/{slug}/spec/reviews.md`，且状态应为 `ready`（除非用户明确接受带风险拆解草案）。
+- 参考输入：`team-spec/CONTEXT.md`、`team-spec/decisions/`、`team-spec/active/{slug}/spec/CONTEXT.md`、`team-spec/active/{slug}/spec/decisions/`、相关代码与运行证据。
 
 必须先确定唯一 slug。技术债链路 slug 必须包含 `debt`，格式建议 `{yyyy-mm-dd}-debt-{short-english-slug}`。无法唯一判断时必须向用户确认，不得猜测。
 
 ## 输出物
 
 - issue 拆解草案（标题、类型、依赖、验收标准、切片理由）。
-- 本地 issue 草稿默认写入 `team-spec/active/issues/{slug}/{issue-number}-{short-issue-slug}.md`。
+- 本地 issue 草稿默认写入 `team-spec/active/{slug}/issues/{issue-number}-{short-issue-slug}.md`。
 
-输出目录统一收敛到 `team-spec/active/issues/{slug}/`。
+输出目录统一收敛到 `team-spec/active/{slug}/issues/`。
 
 ## 拆解原则
 
@@ -62,7 +62,7 @@ language: zh-CN
 ```md
 ## Parent
 
-team-spec/active/spec/refine/{slug}.md
+team-spec/active/{slug}/spec/refine.md
 
 ## What to build
 
@@ -88,7 +88,7 @@ AFK（可独立执行，无需人工决策） / HITL（需要人工介入）
 
 ## 完成标准
 
-- 产出落地到 `team-spec/active/issues/{slug}/` 的可执行 issue 草稿。
+- 产出落地到 `team-spec/active/{slug}/issues/` 的可执行 issue 草稿。
 - issue 可被工程或 agent 直接领取，并具备可验证验收标准。
 - 最终回复的“下一步可选”已基于当前项目的 Git remote、`.github/`、`.gitlab-ci.yml` 或 `.gitlab/` 判断发布平台；除非信号冲突或无法判断，否则不会同时推荐 GitHub 和 GitLab 发布技能。
 

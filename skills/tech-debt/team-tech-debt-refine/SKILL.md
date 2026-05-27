@@ -31,26 +31,29 @@ language: zh-CN
 
 执行要求：
 
-- 对话回复与技术债细化文档 `team-spec/active/spec/refine/{slug}.md` 均使用 `language`。
+- 对话回复与技术债细化文档 `team-spec/active/{slug}/spec/refine.md` 均使用 `language`。
 - 用户临时切换语言时，本次立即生效，并询问是否回写配置。
 
 ## 输入物
 
 - 当前对话中的技术债诉求、背景、约束和目标。
 - 相关代码、日志、告警、事故复盘、性能数据、缺陷记录或运维反馈。
-- 现有 `team-spec/active/spec/CONTEXT.md` 与 `team-spec/active/spec/decisions/`（如存在）。
-- 如果存在 `team-spec/active/spec/reviews/{slug}.md` 且状态为 `needs refinement`，优先读取并围绕问题继续细化。
+- 现有 `team-spec/CONTEXT.md` 与 `team-spec/decisions/`（如存在）。
+- 现有 `team-spec/active/{slug}/spec/CONTEXT.md` 与 `team-spec/active/{slug}/spec/decisions/`（如存在）。
+- 如果存在 `team-spec/active/{slug}/spec/reviews.md` 且状态为 `needs refinement`，优先读取并围绕问题继续细化。
 
 必须先确定唯一 slug。技术债链路的 slug 必须包含 `debt`，格式建议为 `{yyyy-mm-dd}-debt-{short-english-slug}`。如果无法唯一判断 slug，必须向用户确认，不得猜测。
 
-开始新技术债需求前，必须检查 `team-spec/active/` 是否已有其他 slug 的技术债产物（slug 中包含 `debt` 的 refine 或 review 文档）。如果存在，先要求用户确认继续旧技术债，或使用 `team-spec-archive` 归档后再开始新需求，不得默认修改旧规格。
+开始新技术债需求前，必须确定本次要使用的 slug，并检查 `team-spec/active/{slug}/` 是否已存在。`team-spec/active/` 下允许同时存在多个技术债或产品需求 slug，不得因为其他 slug 未归档而要求用户先归档。无法唯一判断目标 slug 时，必须向用户确认。
 
 ## 输出物
 
 - 对话中的澄清结论：问题定义、影响范围、优先级、验收口径、开放问题。
-- `team-spec/active/spec/refine/{slug}.md`：技术债细化主文档。
-- `team-spec/active/spec/CONTEXT.md`：当需要沉淀长期有效的术语或规则时更新。
-- `team-spec/active/spec/decisions/{number}-{slug}.md`：当出现长期有效且高成本回退的决策时创建。
+- `team-spec/active/{slug}/spec/refine.md`：技术债细化主文档。
+- `team-spec/CONTEXT.md`：当需要沉淀跨多个需求长期有效的术语、角色或通用规则时更新。
+- `team-spec/decisions/{number}-{decision-slug}.md`：当出现跨多个需求长期有效且高成本回退的决策时创建。
+- `team-spec/active/{slug}/spec/CONTEXT.md`：当需要沉淀当前技术债局部语境时更新。
+- `team-spec/active/{slug}/spec/decisions/{number}-{decision-slug}.md`：当出现只影响当前技术债的决策时创建。
 
 下游技能读取这些输出物：`team-tech-debt-review` 用于风险评审，`team-tech-debt-to-issues` 用于工程拆解。
 
@@ -64,7 +67,7 @@ language: zh-CN
 
 ## 完成标准
 
-- 形成可供评审的 `team-spec/active/spec/refine/{slug}.md`。
+- 形成可供评审的 `team-spec/active/{slug}/spec/refine.md`。
 - 明确风险最高的未决问题和下一步评审建议。
 - 下一步可选：必须使用有序号的列表选项输出，方便用户直接回复序号继续推进。
 

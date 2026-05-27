@@ -33,7 +33,7 @@ language: zh-CN
 
 执行要求：
 
-- 对话回复与评审文档 `team-spec/active/spec/reviews/{slug}.md` 均使用 `language`。
+- 对话回复与评审文档 `team-spec/active/{slug}/spec/reviews.md` 均使用 `language`。
 - 用户临时切换语言时，本次立即生效，并询问是否回写配置。
 
 ## 触发时机
@@ -52,30 +52,31 @@ language: zh-CN
 - 当前对话中的需求、澄清结论或 PRD。
 - `team-spec/config.yml`（如果存在），用于确定统一语言设置。
 - `team-spec-refine` 的澄清结论。
-- `team-spec/active/spec/refine/{slug}.md`，这是本技能的主输入。
+- `team-spec/active/{slug}/spec/refine.md`，这是本技能的主输入。
 - `team-spec-to-prd` 生成的 PRD，如果已经存在。
-- `team-spec/active/spec/CONTEXT.md`。
-- `team-spec/active/spec/decisions/`。
+- `team-spec/CONTEXT.md` 和 `team-spec/decisions/`。
+- `team-spec/active/{slug}/spec/CONTEXT.md`。
+- `team-spec/active/{slug}/spec/decisions/`。
 - 相关 PRD、任务、设计稿、接口说明、测试计划或上线计划。
 - 当前仓库中能证明现状的代码或文档。
 
 如果输入不足，不要编造风险。先说明缺少什么材料，并只基于已有证据输出可判断的风险。
 
-必须先确定本次评审对应的 `{slug}` 或明确的 `team-spec/active/spec/refine/{slug}.md`。如果无法从用户请求、当前对话或文件路径中唯一判断，应停止并要求用户提供 slug 或 refine 文件路径，不要猜测要评审哪个规格。
+必须先确定本次评审对应的 `{slug}` 或明确的 `team-spec/active/{slug}/spec/refine.md`。如果无法从用户请求、当前对话或文件路径中唯一判断，应停止并要求用户提供 slug 或 refine 文件路径，不要猜测要评审哪个规格。
 
 ## 输出物
 
 - 对话中的规格评审报告：ready 结论、阻塞项、风险清单、需要补充的问题和建议改写。
-- `team-spec/active/spec/reviews/{slug}.md`：与 refinement 使用同一个 slug 的规格评审报告。
+- `team-spec/active/{slug}/spec/reviews.md`：与 refinement 使用同一个 slug 的规格评审报告。
 - 可被 `team-spec-to-prd` 读取的 PRD 前置检查结果。
 - 可被 `team-prd-to-issues` 参考的工程拆解风险提示，例如 blocker、HITL 决策点和验收风险。
 - 若用户同意回写，更新 `team-spec/config.yml` 的语言设置。
 
-如果项目需要沉淀评审报告，默认保存到 `team-spec/active/spec/reviews/{slug}.md`，目录只在需要时创建。
+如果项目需要沉淀评审报告，默认保存到 `team-spec/active/{slug}/spec/reviews.md`，目录只在需要时创建。
 
 本技能可以与 `team-spec-refine` 反复迭代。发现 P0 或关键 P1 时，默认建议回到 `team-spec-refine` 修正规格；只有风险已解决或被明确接受后，才建议进入 `team-spec-to-prd`。
 
-本技能不要直接修改 `team-spec/active/spec/refine/{slug}.md`。如果规格需要修订，输出 `Status: needs refinement`，并在 `Questions For User` 与 `Required Refinement` 中给出明确问题和修改方向，由 `team-spec-refine` 继续与用户确认并更新同一个 refine 文件。
+本技能不要直接修改 `team-spec/active/{slug}/spec/refine.md`。如果规格需要修订，输出 `Status: needs refinement`，并在 `Questions For User` 与 `Required Refinement` 中给出明确问题和修改方向，由 `team-spec-refine` 继续与用户确认并更新同一个 refine 文件。
 
 本技能属于规格评审阶段，只允许引导用户修正规格、补充评审证据或进入 PRD 固化。不要在最终回复的“下一步可选”中建议修改代码、要求用户授予这些文件的写入权限。任何代码或业务文档写入，只能在 `team-issue-implement` 阶段由工程 issue 明确驱动。
 
@@ -139,7 +140,7 @@ language: zh-CN
 
 ### Required Refinement
 
-当 `Status: needs refinement` 时必须填写。说明需要更新 `team-spec/active/spec/refine/{slug}.md` 的哪些章节或规则。
+当 `Status: needs refinement` 时必须填写。说明需要更新 `team-spec/active/{slug}/spec/refine.md` 的哪些章节或规则。
 
 ### 建议改写
 
@@ -149,7 +150,7 @@ language: zh-CN
 
 每次完成评审后，最终回复必须包含：
 
-- 评审报告路径：`team-spec/active/spec/reviews/{slug}.md`，如果本次已保存。
+- 评审报告路径：`team-spec/active/{slug}/spec/reviews.md`，如果本次已保存。
 - `Status`：`ready`、`needs refinement` 或 `blocked`。
 - 下一步可选：必须使用有序号的列表选项输出，方便用户直接回复序号继续推进。
   - 当 `Status: ready` 时，选项 1 必须是 `team-spec-to-prd`，用于固化 PRD。

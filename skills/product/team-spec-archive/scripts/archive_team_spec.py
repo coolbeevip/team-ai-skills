@@ -26,6 +26,10 @@ def active_dir(team_spec_dir: Path) -> Path:
     return team_spec_dir / "active"
 
 
+def active_workspace_dir(team_spec_dir: Path, slug: str) -> Path:
+    return active_dir(team_spec_dir) / slug
+
+
 def archive_dir(team_spec_dir: Path, slug: str) -> Path:
     return team_spec_dir / "archive" / slug
 
@@ -33,6 +37,9 @@ def archive_dir(team_spec_dir: Path, slug: str) -> Path:
 def discover_slugs(team_spec_dir: Path) -> set[str]:
     active = active_dir(team_spec_dir)
     slugs: set[str] = set()
+    if active.exists():
+        slugs.update(path.name for path in active.iterdir() if path.is_dir() and SLUG_RE.match(path.name))
+
     candidates: list[Path] = []
     candidates.extend((active / "spec" / "refine").glob("*.md"))
     candidates.extend((active / "spec" / "reviews").glob("*.md"))
@@ -66,13 +73,17 @@ def resolve_slug(team_spec_dir: Path, slug: str | None) -> str:
 def build_plan(team_spec_dir: Path, slug: str) -> list[MovePlan]:
     active = active_dir(team_spec_dir)
     archive = archive_dir(team_spec_dir, slug)
+    workspace = active_workspace_dir(team_spec_dir, slug)
+    if workspace.exists():
+        return [MovePlan(workspace, archive, "workspace")]
+
     candidates = [
-        MovePlan(active / "spec" / "refine" / f"{slug}.md", archive / "spec" / "refine" / f"{slug}.md", "file"),
-        MovePlan(active / "spec" / "reviews" / f"{slug}.md", archive / "spec" / "reviews" / f"{slug}.md", "file"),
-        MovePlan(active / "prd" / f"{slug}.md", archive / "prd" / f"{slug}.md", "file"),
-        MovePlan(active / "prd" / f"{slug}-alignment.md", archive / "prd" / f"{slug}-alignment.md", "file"),
+        MovePlan(active / "spec" / "refine" / f"{slug}.md", archive / "spec" / "refine.md", "file"),
+        MovePlan(active / "spec" / "reviews" / f"{slug}.md", archive / "spec" / "reviews.md", "file"),
+        MovePlan(active / "prd" / f"{slug}.md", archive / "prd" / "prd.md", "file"),
+        MovePlan(active / "prd" / f"{slug}-alignment.md", archive / "prd" / "alignment.md", "file"),
         MovePlan(active / "issues" / slug, archive / "issues", "directory"),
-        MovePlan(active / "design" / f"{slug}.md", archive / "design" / f"{slug}.md", "file"),
+        MovePlan(active / "design" / f"{slug}.md", archive / "design" / "functional-design.md", "file"),
     ]
     return [item for item in candidates if item.source.exists()]
 
@@ -96,10 +107,15 @@ def render_archive_record(slug: str, reason: str, plan: list[MovePlan]) -> str:
 
 
 def execute_plan(slug: str, reason: str, plan: list[MovePlan], archive: Path) -> Path:
-    archive.mkdir(parents=True, exist_ok=False)
-    for item in plan:
-        item.target.parent.mkdir(parents=True, exist_ok=True)
-        shutil.move(str(item.source), str(item.target))
+    if len(plan) == 1 and plan[0].kind == "workspace":
+        archive.parent.mkdir(parents=True, exist_ok=True)
+        shutil.move(str(plan[0].source), str(plan[0].target))
+    else:
+        archive.mkdir(parents=True, exist_ok=False)
+        for item in plan:
+            item.target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.move(str(item.source), str(item.target))
+
     record_path = archive / "ARCHIVE.md"
     record_path.write_text(render_archive_record(slug, reason, plan), encoding="utf-8")
     return record_path

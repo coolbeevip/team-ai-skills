@@ -1,6 +1,8 @@
 # 产品决策记录格式
 
-产品决策记录存放在 `team-spec/spec/decisions/`，按顺序编号：
+跨多个需求长期有效的产品决策记录存放在 `team-spec/decisions/`，按顺序编号。
+
+只影响单个需求的产品决策记录存放在 `team-spec/active/{slug}/spec/decisions/`，同样按顺序编号。
 
 ```text
 0001-short-slug.md

@@ -37,19 +37,22 @@
 
 `team-spec/` 是技能安装到业务项目后的运行时工作空间，不是本技能库需要提交的业务产物。不要在本仓库沉淀真实需求、PRD、风险报告或工程 issue。
 
-技能运行时，所有产物应统一写入目标项目根目录下的 `team-spec/`。`team-spec/active/` 是当前唯一活跃需求工作区，`team-spec/archive/` 保存已完成、废弃或暂停的历史需求。
+技能运行时，所有产物应统一写入目标项目根目录下的 `team-spec/`。`team-spec/active/` 是所有尚未归档需求的集合，不再表示唯一活跃需求；单个需求工作区必须放在 `team-spec/active/{slug}/`。`team-spec/archive/` 保存已完成、废弃或暂停的历史需求。
 
-- `team-spec/active/spec/`：当前需求的规格阶段产物，包括 `CONTEXT.md`、`decisions/`、`refine/`、`reviews/`。
-- `team-spec/active/prd/`：当前需求的 PRD 固化产物，是需求到工程的正式交接边界。
-- `team-spec/active/issues/`：当前需求 PRD 拆解后的工程 issue 草稿。
-- `team-spec/active/design/`：当前需求的功能设计说明书。
-- `team-spec/archive/{slug}/`：单个历史需求的归档目录，包括 `spec/`、`prd/`、`issues/`、`design/` 和 `ARCHIVE.md`。
+- `team-spec/CONTEXT.md`：跨多个需求复用的全局产品语境，包括规范术语、角色、通用流程和通用业务规则。
+- `team-spec/decisions/`：跨多个需求长期有效的产品决策记录，仅在决策影响后续多个需求且反悔成本较高时创建。
+- `team-spec/active/{slug}/spec/`：单个需求的规格阶段产物，包括 `CONTEXT.md`、`decisions/`、`refine.md`、`reviews.md`。
+- `team-spec/active/{slug}/prd/`：单个需求的 PRD 固化产物，是需求到工程的正式交接边界，包括 `prd.md` 与可选 `alignment.md`。
+- `team-spec/active/{slug}/issues/`：单个需求 PRD 拆解后的工程 issue 草稿。
+- `team-spec/active/{slug}/design/`：单个需求的功能设计说明书，默认文件为 `functional-design.md`。
+- `team-spec/active/{slug}/STATUS.md`：可选状态文件，用于记录 `refining`、`reviewed`、`prd-ready`、`implementing`、`paused`、`blocked` 等状态。
+- `team-spec/archive/{slug}/`：单个历史需求的归档目录，包括 `spec/`、`prd/`、`issues/`、`design/`、`STATUS.md` 和 `ARCHIVE.md`。
 
-每个需求使用唯一 slug 串联全流程，格式为 `{yyyy-mm-dd}-{short-english-slug}`。例如：`team-spec/active/spec/refine/2026-05-10-export-filter.md`、`team-spec/active/spec/reviews/2026-05-10-export-filter.md`、`team-spec/active/prd/2026-05-10-export-filter.md`、`team-spec/active/issues/2026-05-10-export-filter/`。
+每个需求使用唯一 slug 串联全流程，格式为 `{yyyy-mm-dd}-{short-english-slug}`。例如：`team-spec/active/2026-05-10-export-filter/spec/refine.md`、`team-spec/active/2026-05-10-export-filter/spec/reviews.md`、`team-spec/active/2026-05-10-export-filter/prd/prd.md`、`team-spec/active/2026-05-10-export-filter/issues/`。
 
-开始新需求前，`team-spec-refine` 必须检查 `team-spec/active/` 是否已有未归档需求产物。如果 active 中存在其他 slug，应要求用户继续旧需求或先使用 `team-spec-archive` 归档，不得默认修改旧规格。
+开始新需求前，`team-spec-refine` 只需检查目标 slug 是否已存在。若 `team-spec/active/` 下有其他 slug，不得要求用户归档；应允许多个未归档需求并行存在。只有当用户请求无法唯一确定 slug 或目标文件路径时，才要求用户指定 slug、继续某个已有需求或创建新的 slug。
 
-下游技能应默认只读取 `team-spec/active/` 中的上游阶段产物。例如 `team-prd-to-issues` 默认以 `team-spec/active/prd/{slug}.md` 为主输入，评审报告、规格上下文和产品决策只能作为参考输入。`team-spec/archive/` 默认只读；除非用户显式指定归档 slug 或文件路径，否则技能不得扫描或修改 archive 内容。
+下游技能应默认读取全局上下文和同一 slug 的上游阶段产物。例如 `team-prd-to-issues` 默认以 `team-spec/active/{slug}/prd/prd.md` 为主输入，并参考 `team-spec/CONTEXT.md`、`team-spec/decisions/`、`team-spec/active/{slug}/spec/CONTEXT.md`、`team-spec/active/{slug}/spec/decisions/` 和评审报告。`team-spec/archive/` 默认只读；除非用户显式指定归档 slug 或文件路径，否则技能不得扫描或修改 archive 内容。
 
 ## 构建、测试与开发命令
 

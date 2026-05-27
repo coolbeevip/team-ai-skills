@@ -24,16 +24,18 @@ triggers:
 
 主输入：
 
-- 已实现的单个 issue，来自 `team-spec/active/issues/` 或外部 issue tracker。
+- 已实现的单个 issue，来自 `team-spec/active/{slug}/issues/` 或外部 issue tracker。
 - 当前代码变更和测试变更。
 - `team-issue-implement` 的验证结果或实现总结，如果已有。
 
 参考输入：
 
-- `team-spec/active/prd/{slug}.md` 中的关联 PRD。
-- `team-spec/active/spec/CONTEXT.md` 中的规范术语和业务规则。
-- `team-spec/active/spec/decisions/` 中的产品决策。
-- `team-spec/active/spec/reviews/{slug}.md` 中的风险评审。
+- `team-spec/active/{slug}/prd/prd.md` 中的关联 PRD。
+- `team-spec/CONTEXT.md` 中的全局规范术语、角色和通用业务规则。
+- `team-spec/decisions/` 中的跨需求产品决策。
+- `team-spec/active/{slug}/spec/CONTEXT.md` 中的规范术语和业务规则。
+- `team-spec/active/{slug}/spec/decisions/` 中的产品决策。
+- `team-spec/active/{slug}/spec/reviews.md` 中的风险评审。
 - 项目现有测试、CI 配置、发布说明、迁移说明或操作文档。
 
 如果本技能在同一对话中紧接 `team-issue-implement` 执行，上述参考输入已在对话上下文中，无需重新读取文件。只有在独立执行或新对话中才需要从文件加载参考输入。
@@ -48,7 +50,7 @@ triggers:
 - 回归风险和建议补测项。
 - 实际运行的验证命令和结果。
 - 优先回写原 issue 文件中的 `## Acceptance Criteria Coverage`、`## Status`、`## Findings`、`## Notes` 或同类章节。
-- 如果原 issue 文件不可修改，或外部 issue tracker 不支持回写，再写入 `team-spec/active/issues/{slug}/{issue-number}-{short-issue-slug}.verification.md`。
+- 如果原 issue 文件不可修改，或外部 issue tracker 不支持回写，再写入 `team-spec/active/{slug}/issues/{issue-number}-{short-issue-slug}.verification.md`。
 
 ## 验证原则
 

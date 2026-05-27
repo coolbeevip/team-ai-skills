@@ -64,20 +64,30 @@ language: zh-CN
 /
 ├── REQUIREMENTS.md
 ├── team-spec/
+│   ├── CONTEXT.md
+│   ├── decisions/
 │   ├── active/
-│   │   ├── spec/
-│   │   │   ├── CONTEXT.md
-│   │   │   ├── decisions/
-│   │   │   └── refine/
-│   │   ├── prd/
-│   │   └── issues/
+│   │   └── {slug}/
+│   │       ├── spec/
+│   │       │   ├── CONTEXT.md
+│   │       │   ├── decisions/
+│   │       │   ├── refine.md
+│   │       │   └── reviews.md
+│   │       ├── prd/
+│   │       ├── issues/
+│   │       ├── design/
+│   │       └── STATUS.md
 │   └── archive/
 └── docs/
 ```
 
-如果 `team-spec/active/spec/CONTEXT.md` 不存在，等第一个产品术语、角色、流程或业务规则被确认后再创建。不要提前创建空文件。
+如果 `team-spec/CONTEXT.md` 不存在，等第一个跨多个需求复用的产品术语、角色、通用流程或通用业务规则被确认后再创建。不要提前创建空文件。
 
-如果 `team-spec/active/spec/decisions/` 不存在，等第一个长期有效、值得保留的产品决策出现后再创建。
+如果 `team-spec/active/{slug}/spec/CONTEXT.md` 不存在，等第一个只属于当前需求的术语、角色、流程或业务规则被确认后再创建。不要提前创建空文件。
+
+如果 `team-spec/decisions/` 不存在，等第一个跨多个需求长期有效、值得保留的产品决策出现后再创建。
+
+如果 `team-spec/active/{slug}/spec/decisions/` 不存在，等第一个只影响当前需求的产品决策出现后再创建。
 
 需求上下文使用 [CONTEXT-FORMAT.md](./CONTEXT-FORMAT.md)，产品决策记录使用 [DECISION-FORMAT.md](./DECISION-FORMAT.md)。
 
@@ -85,28 +95,31 @@ language: zh-CN
 
 - 当前对话中的初始需求、用户问题、业务背景或功能想法。
 - `team-spec/config.yml`（如果存在），用于确定统一语言设置。
-- 现有 `team-spec/active/spec/CONTEXT.md`，如果项目已有需求上下文。
-- 现有 `team-spec/active/spec/decisions/`，如果项目已有产品决策记录。
+- 现有 `team-spec/CONTEXT.md` 和 `team-spec/decisions/`，如果项目已有跨需求产品语境或产品决策记录。
+- 现有 `team-spec/active/{slug}/spec/CONTEXT.md` 和 `team-spec/active/{slug}/spec/decisions/`，如果该需求已有局部上下文或产品决策记录。
 - 相关 PRD、业务文档、任务、设计稿或代码现状。
-- 如果存在 `team-spec/active/spec/reviews/{slug}.md` 且状态为 `needs refinement`，必须优先读取它，并围绕其中的问题继续追问用户。
+- 如果存在 `team-spec/active/{slug}/spec/reviews.md` 且状态为 `needs refinement`，必须优先读取它，并围绕其中的问题继续追问用户。
 
 ## 输出物
 
 - 对话中的澄清结论：需求摘要、规范术语、范围内/范围外、开放问题和轻量风险扫尾。
-- `team-spec/active/spec/refine/{yyyy-mm-dd}-{english-slug}.md`：单次规格细化的主输出物。
-- `team-spec/active/spec/CONTEXT.md`：当产品术语、角色、流程或业务规则被确认后更新。
-- `team-spec/active/spec/decisions/{number}-{slug}.md`：当出现长期有效的产品决策时创建。
+- `team-spec/CONTEXT.md`：当跨多个需求复用的产品术语、角色、通用流程或通用业务规则被确认后更新。
+- `team-spec/decisions/{number}-{decision-slug}.md`：当出现跨多个需求长期有效且高成本回退的产品决策时创建。
+- `team-spec/active/{slug}/spec/refine.md`：单次规格细化的主输出物。
+- `team-spec/active/{slug}/spec/CONTEXT.md`：当只属于当前需求的术语、角色、流程或业务规则被确认后更新。
+- `team-spec/active/{slug}/spec/decisions/{number}-{decision-slug}.md`：当出现只影响当前需求的产品决策时创建。
+- `team-spec/active/{slug}/STATUS.md`：可选状态文件，用于记录当前需求处于 `refining`、`reviewed`、`prd-ready`、`paused` 或 `blocked` 等状态。
 - `team-spec/config.yml`：首次进入工作空间且缺失配置时创建；用户明确同意时可更新语言设置。
 
 下游技能会读取这些输出物：`team-spec-review` 用于规格评审，`team-spec-to-prd` 用于生成 PRD。
 
 `team-spec-refine` 可以与 `team-spec-review` 反复迭代。如果评审发现 P0 或关键 P1，应回到本技能继续修正术语、范围、业务规则、异常路径或验收口径。
 
-每个需求必须使用唯一 slug 串联全流程。格式为 `{yyyy-mm-dd}-{short-english-slug}`，例如 `2026-05-10-export-filter`。如果同一天同名，追加序号，例如 `2026-05-10-export-filter-2`。`CONTEXT.md` 和 `decisions/` 是长期共享上下文，不替代单次 `refine/{slug}.md`。
+每个需求必须使用唯一 slug 串联全流程。格式为 `{yyyy-mm-dd}-{short-english-slug}`，例如 `2026-05-10-export-filter`。如果同一天同名，追加序号，例如 `2026-05-10-export-filter-2`。全局 `team-spec/CONTEXT.md` 和 `team-spec/decisions/` 只记录跨需求长期复用的信息；`active/{slug}/spec/CONTEXT.md` 和 `active/{slug}/spec/decisions/` 只记录当前需求局部信息，不替代 `spec/refine.md`。
 
-开始新需求前，必须检查 `team-spec/active/` 是否已有其他 slug 的 refine、review、PRD 或 issue 产物。如果存在，先要求用户确认继续旧需求，或使用 `team-spec-archive` 归档后再开始新需求，不得默认修改旧规格。`team-spec/archive/` 默认只读，除非用户显式指定历史 slug 或文件路径。
+开始新需求前，必须确定本次要使用的 slug，并检查 `team-spec/active/{slug}/` 是否已存在。如果不存在，可以创建该工作区；如果已存在，应判断是继续同一需求还是用户想创建新 slug。`team-spec/active/` 下允许同时存在多个 slug，不得因为其他 slug 未归档而要求用户先归档。`team-spec/archive/` 默认只读，除非用户显式指定历史 slug 或文件路径。
 
-修订同一个需求时，不要新建 slug。继续更新 `team-spec/active/spec/refine/{slug}.md`，并在文件中的 `## Change Log` 记录本轮修订原因和日期。
+修订同一个需求时，不要新建 slug。继续更新 `team-spec/active/{slug}/spec/refine.md`，并在文件中的 `## Change Log` 记录本轮修订原因和日期。
 
 ## 细化原则
 
@@ -116,7 +129,7 @@ language: zh-CN
 - 重点追问用户角色、权限、状态变化、异常路径和业务规则。
 - 用具体场景压测边界。主动构造边缘案例，让概念边界暴露出来。
 - 有多个方案时，给出推荐方案，再让用户确认或否定。
-- 维护一套规范术语。术语一旦确认，立即更新 `team-spec/active/spec/CONTEXT.md`，不要攒到最后。
+- 维护两层上下文。跨多个需求复用的术语、角色、通用流程和通用业务规则，立即更新 `team-spec/CONTEXT.md`；只属于当前需求的边界、流程或规则，更新 `team-spec/active/{slug}/spec/CONTEXT.md`。不要攒到最后。
 
 ## 追问顺序
 
@@ -142,6 +155,11 @@ language: zh-CN
 
 不要为显而易见的措辞、临时备注或实现阶段很可能改变的细节创建决策记录。
 
+决策记录位置按影响范围选择：
+
+- 影响后续多个需求、术语体系、通用流程或通用业务规则的决策，写入 `team-spec/decisions/`。
+- 只影响当前需求范围、取舍、验收或发布策略的决策，写入 `team-spec/active/{slug}/spec/decisions/`。
+
 ## 会话输出
 
 每轮回答后，简短说明本轮解决了什么：
@@ -159,7 +177,7 @@ language: zh-CN
 - 范围内和范围外内容。
 - 仍未解决的问题。
 - 轻量风险扫尾：指出是否存在会阻塞 PRD 的明显 P0/P1 缺口。
-- 写入或更新 `team-spec/active/spec/refine/{slug}.md`。
+- 写入或更新 `team-spec/active/{slug}/spec/refine.md`。
 - 在 `## Change Log` 中记录本次澄清或修订。
 - 下一步可选：必须使用有序号的列表选项输出，方便用户直接回复序号继续推进。
 

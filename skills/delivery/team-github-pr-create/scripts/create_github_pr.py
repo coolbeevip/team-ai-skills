@@ -287,10 +287,15 @@ def infer_issue_file(issue_number: str, explicit: str | None) -> Path | None:
             raise SystemExit(f"Issue file is a directory: {path}")
         return path
 
-    issues_root = Path("team-spec/active/issues")
-    if not issues_root.exists():
+    active_root = Path("team-spec/active")
+    legacy_issues_root = active_root / "issues"
+    if not active_root.exists():
         return None
-    candidates = sorted(issues_root.glob(f"*/{issue_number}-*.md"))
+    candidates = []
+    candidates.extend(active_root.glob(f"*/issues/{issue_number}-*.md"))
+    if legacy_issues_root.exists():
+        candidates.extend(legacy_issues_root.glob(f"*/{issue_number}-*.md"))
+    candidates = sorted(set(candidates))
     candidates = [
         path
         for path in candidates

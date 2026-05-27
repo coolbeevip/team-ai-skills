@@ -94,7 +94,7 @@ GITLAB_URL=https://gitlab.example.com GITLAB_TOKEN=... python3 {skill_dir}/scrip
 - `--target-project namespace/project`：显式指定目标项目，优先级高于 remote 推断。
 - `--source-project namespace/project`：显式指定 source project，用于 fork 工作流。
 - `--title "Add export filter"`：显式指定 MR 标题；不建议在标题中包含 issue IID。
-- `--issue-file team-spec/active/issues/{slug}/123-short-title.md`：显式指定本地 issue 草稿，用其中的 `# 标题` 或 `## Title` 首行生成 MR 标题。
+- `--issue-file team-spec/active/{slug}/issues/123-short-title.md`：显式指定本地 issue 草稿，用其中的 `# 标题` 或 `## Title` 首行生成 MR 标题。
 - `--body-file path/to/body.md`：显式指定 MR 正文；如未指定，脚本使用 `./scripts/templates/mr_body.md.tpl` 生成标准正文。
 - `--language zh-CN`：显式覆盖 MR 正文模板语言；不传时读取 `team-spec/config.yml`。
 - `--draft`：创建 Draft MR。
@@ -113,7 +113,7 @@ GITLAB_URL=https://gitlab.example.com GITLAB_TOKEN=... python3 {skill_dir}/scrip
 
 - 当前 git 分支名，通常应包含或等于 issue 编号，例如 `123`、`issue-123`、`123-add-export-filter`。
 - 当前提交历史；默认要求工作区干净。若用户明确要求由本技能完成收尾提交，可以提交非 `team-spec/` 的未提交变更，`team-spec/` 下未提交变更可留在工作区。
-- `team-spec/active/issues/{slug}/{issue-number}-{short-issue-slug}.md`，如果能从分支、用户输入或对话中确定。
+- `team-spec/active/{slug}/issues/{issue-number}-{short-issue-slug}.md`，如果能从分支、用户输入或对话中确定。
 - GitLab issue IID 或 URL，如果用户提供。
 - Git remote 信息，用于推断 source project 和 target project。
 
@@ -149,7 +149,7 @@ GITLAB_URL=https://gitlab.example.com GITLAB_TOKEN=... python3 {skill_dir}/scrip
 
 - 标题默认不包含 issue IID，默认格式为 `{clear change title}`，例如 `Add export filter`。
 - 如果用户显式提供 `--title`，优先使用该标题；脚本不会自动向标题补 issue IID。
-- 如果没有显式标题，优先从 `--issue-file` 指定的本地 issue 草稿读取标题；其次从 `team-spec/active/issues/*/{issue-iid}-*.md` 的唯一匹配文件读取标题。
+- 如果没有显式标题，优先从 `--issue-file` 指定的本地 issue 草稿读取标题；其次从 `team-spec/active/*/issues/{issue-iid}-*.md` 的唯一匹配文件读取标题，并兼容旧布局 `team-spec/active/issues/*/{issue-iid}-*.md`。
 - 本地 issue 草稿标题只允许来自明确的 `# 标题` 或 `## Title` 段首行，不得回退到文件名。
 - 如果找不到本地 issue 标题，才从分支名生成标题；如果分支名去掉 issue 编号后没有语义，例如只剩 `implementation`，必须停止并要求用户提供 `--title` 或 `--issue-file`。
 - 正文必须包含 GitLab closing keyword，例如 `Closes #123`。
@@ -186,7 +186,7 @@ GITLAB_URL=https://gitlab.example.com GITLAB_TOKEN=... python3 {skill_dir}/scrip
 - 默认不执行 `git add`、`git commit`、`git stash` 或任何会改变本地提交历史的操作。
 - 只有当用户明确要求并提供提交信息与提交范围时，才允许执行 `git add` 和 `git commit`；仍不得执行 `git stash`。
 - 任何情况下都不得对 `team-spec/` 下文件执行 `git add`。如果自动提交前发现 `team-spec/` 文件已在暂存区，必须停止，不得提交。
-- 创建 MR 后允许回写本地 `team-spec/active/issues/` 下对应 issue 草稿，但不得自动暂存或提交这些回写。
+- 创建 MR 后允许回写本地 `team-spec/active/{slug}/issues/` 下对应 issue 草稿，但不得自动暂存或提交这些回写。
 - 默认 dry-run，不应在用户确认前推送分支或创建 MR。
 
 ## 完成标准

@@ -36,7 +36,7 @@ language: zh-CN
 
 执行要求：
 
-- 对话回复与对齐材料 `team-spec/active/prd/{slug}-alignment.md` 均使用 `language`。
+- 对话回复与对齐材料 `team-spec/active/{slug}/prd/alignment.md` 均使用 `language`。
 - 用户临时切换语言时，本次立即生效，并询问是否回写配置。
 
 ## 受众优先级
@@ -54,21 +54,23 @@ language: zh-CN
 
 主输入：
 
-- `team-spec/active/prd/{slug}.md`。
+- `team-spec/active/{slug}/prd/prd.md`。
 
 参考输入：
 
-- `team-spec/active/spec/refine/{slug}.md`：规格细化产物，用于理解原始诉求和关键背景。
-- `team-spec/active/spec/reviews/{slug}.md`：规格评审报告，用于提取风险、阻塞项和待决问题。
-- `team-spec/active/spec/CONTEXT.md`：长期共享上下文，用于保持术语一致。
-- `team-spec/active/spec/decisions/`：产品决策记录，用于说明范围裁剪和重要决策。
+- `team-spec/active/{slug}/spec/refine.md`：规格细化产物，用于理解原始诉求和关键背景。
+- `team-spec/active/{slug}/spec/reviews.md`：规格评审报告，用于提取风险、阻塞项和待决问题。
+- `team-spec/CONTEXT.md`：跨需求产品语境，用于保持术语、角色和通用业务规则一致。
+- `team-spec/decisions/`：跨需求产品决策记录，用于说明长期有效的范围裁剪和重要决策。
+- `team-spec/active/{slug}/spec/CONTEXT.md`：当前需求局部上下文。
+- `team-spec/active/{slug}/spec/decisions/`：当前需求局部产品决策记录。
 - 相关设计稿、业务文档、历史 PRD、研发方案或讨论记录。
 
 如果无法唯一确定 `{slug}`，应停止并要求用户提供 PRD 路径或 slug，不得猜测。
 
 ## 输出物
 
-- `team-spec/active/prd/{slug}-alignment.md`：面向人类对齐的演示文稿式评审材料。
+- `team-spec/active/{slug}/prd/alignment.md`：面向人类对齐的演示文稿式评审材料。
 - 对话中的材料摘要：目标、关键范围、待决问题和建议评审关注点。
 
 对齐材料不修改 PRD 内容。PRD 仍是工程拆解的权威输入；对齐材料用于帮助人类快速理解、讨论和确认 PRD。
@@ -237,14 +239,14 @@ language: zh-CN
 
 1. 确定 slug 或 PRD 文件路径。
 2. 读取 PRD，提取目标、范围、非目标、用户场景、验收标准、风险和开放问题。
-3. 读取同 slug 的规格细化、评审报告、上下文和产品决策记录。
+3. 读取全局上下文、全局决策记录，以及同 slug 的规格细化、评审报告、局部上下文和局部产品决策记录。
 4. 对比 PRD 与上游材料，识别裁剪、变化、冲突和仍需人类确认的问题。
 5. 判断需求类型，并选择本次材料应强调的章节。
 6. 提炼 1-3 个关键设计决策；证据不足时列为风险或待决问题。
 7. 按演示文稿式结构生成对齐材料，优先使用短段落、列表和明确标题。
 8. 按 Blocker / Risk / Discussion 分级整理冲突和待决问题。
 9. 按“人类写作风格”复核并改写材料，删除空泛判断、模板句式、聊天痕迹和无证据推断。
-10. 将材料写入 `team-spec/active/prd/{slug}-alignment.md`。
+10. 将材料写入 `team-spec/active/{slug}/prd/alignment.md`。
 11. 输出摘要，并建议用户用该材料组织需求、研发和项目管理对齐讨论。
 
 生成过程中如发现 PRD 存在逻辑矛盾、范围不清、验收标准缺失或无法支撑工程拆解，应在 `## 8. 风险与待决问题` 中明确列出，不要自行补齐。
@@ -258,7 +260,7 @@ language: zh-CN
 
 ## 完成标准
 
-- `team-spec/active/prd/{slug}-alignment.md` 已生成。
+- `team-spec/active/{slug}/prd/alignment.md` 已生成。
 - 材料能让需求、研发和项目管理快速理解背景、范围、非目标、用户路径变化和研发关注点。
 - 已包含 1-3 个关键设计决策；如果无法提炼，已说明缺失证据。
 - 风险与待决问题已按 Blocker / Risk / Discussion 分级列出，并包含影响范围或建议决策人。

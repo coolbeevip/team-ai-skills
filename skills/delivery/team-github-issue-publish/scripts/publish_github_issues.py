@@ -75,7 +75,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--issues-dir", help="Directory containing local issue drafts.")
     parser.add_argument(
         "--slug",
-        help="Slug under team-spec/active/issues/{slug}. Ignored when --issues-dir is set.",
+        help="Slug under team-spec/active/{slug}/issues. Ignored when --issues-dir is set.",
     )
     parser.add_argument(
         "--issue",
@@ -126,7 +126,11 @@ def issue_dir_from_args(args: argparse.Namespace) -> Path:
     if args.issues_dir:
         return Path(args.issues_dir)
     if args.slug:
-        return Path("team-spec") / "active" / "issues" / args.slug
+        new_layout = Path("team-spec") / "active" / args.slug / "issues"
+        legacy_layout = Path("team-spec") / "active" / "issues" / args.slug
+        if new_layout.exists() or not legacy_layout.exists():
+            return new_layout
+        return legacy_layout
     raise SystemExit("Provide --issues-dir or --slug.")
 
 

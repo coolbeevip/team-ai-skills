@@ -79,7 +79,7 @@ GITHUB_TOKEN=... python3 {skill_dir}/scripts/create_github_pr.py --execute
 - `--target-repo owner/repo`：显式指定目标仓库，优先级高于 remote 推断。
 - `--source-repo owner/repo`：显式指定 source repo，用于 fork 工作流。
 - `--title "Add export filter"`：显式指定 PR 标题；不建议在标题中包含 issue 编号。
-- `--issue-file team-spec/active/issues/{slug}/123-short-title.md`：显式指定本地 issue 草稿，用其中的 `# 标题` 或 `## Title` 首行生成 PR 标题和标准正文。
+- `--issue-file team-spec/active/{slug}/issues/123-short-title.md`：显式指定本地 issue 草稿，用其中的 `# 标题` 或 `## Title` 首行生成 PR 标题和标准正文。
 - `--body-file path/to/body.md`：显式指定 PR 正文；如未指定，脚本使用 `./scripts/templates/pr_body.md.tpl` 生成标准正文。
 - `--language zh-CN`：显式覆盖 PR 正文模板语言；不传时读取 `team-spec/config.yml`。
 - `--draft`：创建 Draft PR。
@@ -92,7 +92,7 @@ GITHUB_TOKEN=... python3 {skill_dir}/scripts/create_github_pr.py --execute
 
 - 当前 git 分支名，通常应包含或等于 issue 编号，例如 `123`、`issue-123`、`123-add-export-filter`。
 - 当前提交历史；工作区必须干净，不能包含未提交变更。
-- `team-spec/active/issues/{slug}/{issue-number}-{short-issue-slug}.md`，如果能从分支、用户输入或对话中确定。
+- `team-spec/active/{slug}/issues/{issue-number}-{short-issue-slug}.md`，如果能从分支、用户输入或对话中确定。
 - GitHub issue 编号或 URL，如果用户提供。
 - Git remote 信息，用于推断 source repo 和 target repo。
 
@@ -128,7 +128,7 @@ GITHUB_TOKEN=... python3 {skill_dir}/scripts/create_github_pr.py --execute
 
 - 标题默认不包含 issue 编号，默认格式为 `{clear change title}`，例如 `Add export filter`。
 - 如果用户显式提供 `--title`，优先使用该标题；脚本不会自动向标题补 issue 编号。
-- 如果没有显式标题，优先从 `--issue-file` 指定的本地 issue 草稿读取标题；其次从 `team-spec/active/issues/*/{issue-number}-*.md` 的唯一匹配文件读取标题。
+- 如果没有显式标题，优先从 `--issue-file` 指定的本地 issue 草稿读取标题；其次从 `team-spec/active/*/issues/{issue-number}-*.md` 的唯一匹配文件读取标题，并兼容旧布局 `team-spec/active/issues/*/{issue-number}-*.md`。
 - 本地 issue 草稿标题只允许来自明确的 `# 标题` 或 `## Title` 段首行，不得回退到文件名。
 - 如果找不到本地 issue 标题，才从分支名生成标题；如果分支名去掉 issue 编号后没有语义，例如只剩 `implementation`，必须停止并要求用户提供 `--title` 或 `--issue-file`。
 - 正文必须包含 GitHub closing keyword，例如 `Closes #123`。
@@ -160,7 +160,7 @@ GITHUB_TOKEN=... python3 {skill_dir}/scripts/create_github_pr.py --execute
 - 不记录、不回显 token。
 - 不把 token 写入仓库文件或 git 配置。
 - 不执行 `git add`、`git commit`、`git stash` 或任何会改变本地提交历史的操作。
-- 创建 PR 后允许回写本地 `team-spec/active/issues/` 下对应 issue 草稿，但不得自动暂存或提交这些回写。
+- 创建 PR 后允许回写本地 `team-spec/active/{slug}/issues/` 下对应 issue 草稿，但不得自动暂存或提交这些回写。
 - 默认 dry-run，不应在用户确认前推送分支或创建 PR。
 
 ## 完成标准

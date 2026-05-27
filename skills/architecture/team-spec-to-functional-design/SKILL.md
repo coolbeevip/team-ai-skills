@@ -34,7 +34,7 @@ language: zh-CN
 
 执行要求：
 
-- 对话回复与设计文档 `team-spec/active/design/{slug}.md` 均使用 `language`。
+- 对话回复与设计文档 `team-spec/active/{slug}/design/functional-design.md` 均使用 `language`。
 - 用户临时切换语言时，本次立即生效，并询问是否回写配置。
 
 ## 输入物
@@ -45,14 +45,14 @@ language: zh-CN
 - `team-spec/config.yml`（如果存在），用于确定统一语言设置。
 - 源代码、目录结构、接口定义、数据库定义、配置文件。
 - 现有架构文档、接口文档、设计稿、评审结论、测试用例。
-- 若项目已有 `team-spec` 工作空间，优先读取同一 slug 对应的上游产物。
+- 若项目已有 `team-spec` 工作空间，优先读取全局 `team-spec/CONTEXT.md`、`team-spec/decisions/` 和同一 slug 对应的上游产物。
 - 参考样例 `references/fds_sample.md`：仅用于对齐功能设计说明书的章节结构、写作口径与样式要求，不进入最终文档的参考资料列表。
 
 处理前必须先确定本次输出对应的唯一范围。若需求文档、代码仓库或功能域无法唯一判断，应要求用户提供明确的文件路径、模块范围或 slug，不得猜测。
 
 ## 输出物
 
-- 企业级功能设计说明书，默认保存为 `team-spec/active/design/{slug}.md`。
+- 企业级功能设计说明书，默认保存为 `team-spec/active/{slug}/design/functional-design.md`。
 - 文档必须可直接进入评审，并可直接导出为 Word。
 - 如用户只要求生成正文，不要求落盘，也必须按同样结构输出。
 - 若用户同意回写，更新 `team-spec/config.yml` 的语言设置。
