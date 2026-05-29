@@ -110,7 +110,10 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--label", action="append", default=[], help="Label to add.")
     parser.add_argument("--milestone-id", type=int)
     parser.add_argument("--assignee-id", action="append", type=int, default=[])
-    parser.add_argument("--remote", help="Force a git remote name for project inference.")
+    parser.add_argument(
+        "--remote",
+        help="Force a git remote name for project inference. Defaults to team-spec/config.yml version_control.target_remote when present.",
+    )
     parser.add_argument(
         "--force",
         action="store_true",
@@ -204,6 +207,16 @@ def infer_project(args: argparse.Namespace) -> str:
             raise SystemExit(f"Remote {args.remote} is not a valid GitLab remote.")
         return forced[1]
 
+    configured_remote = version_control_value("target_remote")
+    if configured_remote:
+        configured = as_project(configured_remote)
+        if not configured:
+            raise SystemExit(
+                "team-spec/config.yml version_control.target_remote is not a valid "
+                f"GitLab remote: {configured_remote}"
+            )
+        return configured[1]
+
     upstream = as_project("upstream")
     if upstream:
         return upstream[1]
@@ -294,17 +307,55 @@ def parse_publish_status(sections: dict[str, str]) -> dict[str, str]:
     return values
 
 
+def strip_yaml_scalar(value: str) -> str:
+    value = value.split("#", 1)[0].strip()
+    if (value.startswith('"') and value.endswith('"')) or (
+        value.startswith("'") and value.endswith("'")
+    ):
+        return value[1:-1].strip()
+    return value
+
+
+def team_config_values() -> dict[str, str]:
+    config = Path("team-spec") / "config.yml"
+    if not config.exists():
+        return {}
+    values: dict[str, str] = {}
+    section: str | None = None
+    for line in config.read_text(encoding="utf-8").splitlines():
+        if not line.strip() or line.lstrip().startswith("#"):
+            continue
+        match = re.match(r"^(\s*)([A-Za-z0-9_-]+)\s*:\s*(.*?)\s*$", line)
+        if not match:
+            continue
+        indent = len(match.group(1).replace("\t", "  "))
+        key = match.group(2)
+        value = strip_yaml_scalar(match.group(3))
+        if indent == 0:
+            if value:
+                values[key] = value
+                section = None
+            else:
+                section = key
+            continue
+        if section and value:
+            values[f"{section}.{key}"] = value
+    return values
+
+
+def team_config_value(key: str) -> str | None:
+    value = team_config_values().get(key)
+    return value.strip() if value and value.strip() else None
+
+
 def language_from_config(explicit: str | None) -> str:
     if explicit:
         return explicit.strip()
-    config = Path("team-spec") / "config.yml"
-    if not config.exists():
-        return "en-US"
-    for line in config.read_text(encoding="utf-8").splitlines():
-        match = re.match(r"^\s*language\s*:\s*['\"]?([^'\"#]+)", line)
-        if match:
-            return match.group(1).strip() or "en-US"
-    return "en-US"
+    return team_config_value("language") or "en-US"
+
+
+def version_control_value(key: str) -> str | None:
+    return team_config_value(f"version_control.{key}")
 
 
 def is_chinese_language(language: str) -> bool:

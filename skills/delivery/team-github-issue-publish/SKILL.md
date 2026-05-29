@@ -30,11 +30,19 @@ v1 仅支持 GitHub。不要在同一个技能中混合 GitHub 与 GitLab 发布
 
 ```yaml
 language: zh-CN
+version_control:
+  system: git
+  trunk_branch: main
+  contribution_model: fork-pull
+  source_remote: origin
+  target_remote: upstream
 ```
 
 语言优先级：用户本轮明确指定或脚本 `--language` > `team-spec/config.yml` > `en-US` 兜底。若配置不存在，技能执行时应先按团队规范询问语言偏好并创建配置；固定脚本独立运行时不交互，使用 `en-US` 兜底。
 
 远端 GitHub Issue 正文模板标题、兜底文案和检查项必须使用 `language`；本地草稿已有内容保持原文。
+
+仓库定位优先级：用户显式参数 > `team-spec/config.yml` 的 `version_control` > git 命令推断 > 询问用户。若 `version_control` 缺失，先用 `git remote -v`、`git branch --show-current`、`git config --get branch.{branch}.remote` 和 remote URL 推断；无法唯一判断时再询问用户，并在用户确认后回写 `team-spec/config.yml`。
 
 ## 固定脚本
 
@@ -53,7 +61,7 @@ language: zh-CN
 - 按 `Blocked by` 生成依赖顺序。
 - 使用 `./scripts/templates/issue_body.md.tpl` 按 `language` 渲染 GitHub 友好的 issue 正文，固定包含摘要、范围、验收标准、依赖、实现备注和折叠的来源信息；正文只保留对协作有用的摘要字段，不直接发布完整草稿原文。
 - 发布前会校验 issue 标题是否足够清晰：必须来自明确的 `#` 标题或 `Title` 段，不能回退到文件名；标题过短、过泛或缺少对象时会拒绝发布。
-- 从显式 `--repo` 或 git remote 推断 GitHub 仓库，多个 remote 时优先 `upstream`。
+- 从显式 `--repo`、`team-spec/config.yml` 或 git remote 推断 GitHub 仓库，多个 remote 时按配置优先，其次优先 `upstream`。
 - 默认 dry-run，只输出发布计划。
 - `--execute` 时创建 GitHub Issues，并把发布结果回写到本地 issue 草稿。
 - 使用 `Local-Issue-Key` 做幂等检查，避免重复创建。
@@ -77,7 +85,7 @@ GITHUB_TOKEN=... python3 {skill_dir}/scripts/publish_github_issues.py --slug {sl
 - `--issue 001-add-export-filter.md`：只发布指定的单个 issue，可传入文件名、文件路径或草稿标识。
 - `--github-url https://github.example.com`：GitHub Enterprise。
 - `--repo owner/repo`：显式指定仓库，优先级高于 remote 推断。
-- `--remote upstream`：显式指定用于推断仓库的 remote。
+- `--remote upstream`：显式指定用于推断仓库的 remote；不传时优先参考 `team-spec/config.yml` 的 `version_control.target_remote`。
 - `--label label-name`：可重复传入多个 label。
 - `--milestone 123`：指定 milestone number。
 - `--assignee octocat`：可重复传入多个 assignee login。
@@ -133,12 +141,13 @@ GITHUB_TOKEN=... python3 {skill_dir}/scripts/publish_github_issues.py --slug {sl
 
 ## 仓库定位规则
 
-当用户没有显式提供 GitHub 仓库 `owner/repo` 时，先读取当前仓库的 git remote：
+当用户没有显式提供 GitHub 仓库 `owner/repo` 时，先读取 `team-spec/config.yml` 和当前仓库的 git remote：
 
-1. 如果存在名为 `upstream` 的 GitHub remote，默认使用 `upstream` 对应的上游仓库创建 issue。
-2. 如果不存在 `upstream`，但当前分支配置了唯一的 upstream tracking remote，使用该 tracking remote。
-3. 如果只有一个 GitHub remote，使用这个 remote。
-4. 如果存在多个 GitHub remote 且无法按以上规则唯一判断，停止并要求用户指定仓库，不要默认使用 `origin`。
+1. 如果 `version_control.target_remote` 已配置，默认使用该 remote 对应的上游仓库创建 issue。
+2. 如果 `version_control.contribution_model: fork-pull` 且未配置 `target_remote`，优先使用名为 `upstream` 的 GitHub remote。
+3. 如果不存在明确上游 remote，但当前分支配置了唯一的 upstream tracking remote，使用该 tracking remote。
+4. 如果只有一个 GitHub remote，使用这个 remote。
+5. 如果存在多个 GitHub remote 且无法按以上规则唯一判断，停止并要求用户指定仓库，不要默认使用 `origin`。
 
 从 remote URL 提取仓库时，兼容 HTTPS 与 SSH 格式，例如：
 
@@ -153,6 +162,7 @@ GitHub Enterprise 场景下，remote host 必须与平台地址一致；如果�
 
 - fork-pull 模式：通常会同时存在 `origin` 和 `upstream`，并且 `origin` 指向开发者 fork、`upstream` 指向上游仓库。此时 issue 应默认创建到 `upstream` 对应的上游仓库。
 - 单仓模式：如果只有一个远端或无法判断 fork-pull，则按仓库定位规则继续推断。
+- 如果 `team-spec/config.yml` 已声明 `contribution_model`、`source_remote` 或 `target_remote`，以配置为准；如果配置缺失但 git remote 能唯一推断，应在 dry-run 中说明推断依据，并在用户确认后回写配置。
 
 无论是哪种模式，真正执行 `--execute` 之前，都必须先输出 dry-run 结果，并由人类确认目标仓库、issue 列表和发布计划没有问题。
 

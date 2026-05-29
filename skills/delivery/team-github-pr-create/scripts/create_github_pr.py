@@ -40,7 +40,10 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--execute", action="store_true", help="Push and create PR.")
     parser.add_argument("--issue-number", help="GitHub issue number to link.")
     parser.add_argument("--source-branch", help="Source branch. Defaults to current branch.")
-    parser.add_argument("--target-branch", help="Target branch. Defaults to remote default branch.")
+    parser.add_argument(
+        "--target-branch",
+        help="Target branch. Defaults to team-spec/config.yml version_control.trunk_branch, then remote default branch.",
+    )
     parser.add_argument("--source-remote", help="Remote to push source branch to.")
     parser.add_argument("--target-remote", help="Remote used as target project.")
     parser.add_argument("--source-repo", help="Source repository owner/repo.")
@@ -222,9 +225,11 @@ def default_target_branch(target: ProjectRef) -> str:
     return "main"
 
 
-def target_branch_source(target: ProjectRef, explicit: str | None) -> str:
+def target_branch_source(target: ProjectRef, explicit: str | None, configured: str | None) -> str:
     if explicit:
         return "explicit"
+    if configured:
+        return "team-spec/config.yml version_control.trunk_branch"
     if target.remote:
         ref = run_git(["symbolic-ref", f"refs/remotes/{target.remote}/HEAD"], check=False)
         if ref:
@@ -239,17 +244,75 @@ def branch_summary(branch: str, issue_number: str) -> str:
     return cleaned[:80] if cleaned else "implementation"
 
 
+def strip_yaml_scalar(value: str) -> str:
+    value = value.split("#", 1)[0].strip()
+    if (value.startswith('"') and value.endswith('"')) or (
+        value.startswith("'") and value.endswith("'")
+    ):
+        return value[1:-1].strip()
+    return value
+
+
+def team_config_values() -> dict[str, str]:
+    config = Path("team-spec") / "config.yml"
+    if not config.exists():
+        return {}
+    values: dict[str, str] = {}
+    section: str | None = None
+    for line in config.read_text(encoding="utf-8").splitlines():
+        if not line.strip() or line.lstrip().startswith("#"):
+            continue
+        match = re.match(r"^(\s*)([A-Za-z0-9_-]+)\s*:\s*(.*?)\s*$", line)
+        if not match:
+            continue
+        indent = len(match.group(1).replace("\t", "  "))
+        key = match.group(2)
+        value = strip_yaml_scalar(match.group(3))
+        if indent == 0:
+            if value:
+                values[key] = value
+                section = None
+            else:
+                section = key
+            continue
+        if section and value:
+            values[f"{section}.{key}"] = value
+    return values
+
+
+def team_config_value(key: str) -> str | None:
+    value = team_config_values().get(key)
+    return value.strip() if value and value.strip() else None
+
+
 def language_from_config(explicit: str | None) -> str:
     if explicit:
         return explicit.strip()
-    config = Path("team-spec") / "config.yml"
-    if not config.exists():
-        return "en-US"
-    for line in config.read_text(encoding="utf-8").splitlines():
-        match = re.match(r"^\s*language\s*:\s*['\"]?([^'\"#]+)", line)
-        if match:
-            return match.group(1).strip() or "en-US"
-    return "en-US"
+    return team_config_value("language") or "en-US"
+
+
+def version_control_value(key: str) -> str | None:
+    return team_config_value(f"version_control.{key}")
+
+
+def ensure_supported_version_control() -> None:
+    system = version_control_value("system")
+    if system and system.lower() != "git":
+        raise SystemExit(
+            "team-spec/config.yml version_control.system is "
+            f"{system!r}; create_github_pr.py only supports git."
+        )
+
+
+def apply_version_control_defaults(args: argparse.Namespace) -> None:
+    if not args.target_remote:
+        args.target_remote = version_control_value("target_remote")
+    if not args.source_remote:
+        args.source_remote = version_control_value("source_remote")
+
+
+def configured_trunk_branch() -> str | None:
+    return version_control_value("trunk_branch")
 
 
 def is_chinese_language(language: str) -> bool:
@@ -685,11 +748,14 @@ def write_issue_pr_tracking(
 
 def build_plan(args: argparse.Namespace) -> dict[str, Any]:
     args.language = language_from_config(args.language)
+    ensure_supported_version_control()
+    apply_version_control_defaults(args)
     source_branch = args.source_branch or current_branch()
     issue_number = infer_issue_number(source_branch, args.issue_number)
     target = infer_target_repo(args, source_branch)
     source = infer_source_repo(args, source_branch, target)
-    target_branch = args.target_branch or default_target_branch(target)
+    configured_branch = configured_trunk_branch()
+    target_branch = args.target_branch or configured_branch or default_target_branch(target)
     issue_file, issue_title = resolve_issue_file_and_title(issue_number, args.issue_file)
     title, title_source = build_title(
         args,
@@ -718,14 +784,17 @@ def build_plan(args: argparse.Namespace) -> dict[str, Any]:
         "issue_title_source": issue_title[1] if issue_title else None,
         "issue_file": str(issue_file) if issue_file else None,
         "body": body,
-        "target_branch_source": target_branch_source(target, args.target_branch),
+        "target_branch_source": target_branch_source(target, args.target_branch, configured_branch),
         "tracked_ignored_files": ignored_files,
         "dirty_worktree": dirty_worktree(),
     }
 
 
 def confirm_execution(plan: dict[str, Any]) -> None:
-    needs_confirmation = plan["target_branch_source"] != "explicit"
+    needs_confirmation = plan["target_branch_source"] not in {
+        "explicit",
+        "team-spec/config.yml version_control.trunk_branch",
+    }
     ignored_files = plan.get("tracked_ignored_files") or []
 
     if not needs_confirmation and not ignored_files:

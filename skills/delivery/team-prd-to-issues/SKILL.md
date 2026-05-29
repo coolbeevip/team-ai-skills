@@ -25,6 +25,12 @@ triggers:
 
 ```yaml
 language: zh-CN
+version_control:
+  system: git
+  trunk_branch: main
+  contribution_model: fork-pull
+  source_remote: origin
+  target_remote: upstream
 ```
 
 语言优先级：用户本轮明确指定 > `team-spec/config.yml` > 首次询问并落盘。若配置不存在，不报错，走“询问并创建”流程。
@@ -33,6 +39,7 @@ language: zh-CN
 
 - 对话回复与 issue 草稿文档 `team-spec/active/{slug}/issues/` 下内容均使用 `language`。
 - 用户临时切换语言时，本次立即生效，并询问是否回写配置。
+- 生成“下一步可选”或判断发布平台时，优先参考 `version_control`；缺失时先通过 git 命令推断，无法唯一判断再询问用户，并在用户确认后回写 `team-spec/config.yml`。
 
 ## 输入物
 
@@ -40,7 +47,7 @@ language: zh-CN
 
 主输入必须是 `team-spec-to-prd` 生成的 PRD，默认来自 `team-spec/active/{slug}/prd/prd.md`。没有 PRD 时，不要直接基于澄清记录或风险清单拆工程任务；应先要求执行 `team-spec-to-prd`，除非用户明确要求生成临时工程草案。
 
-- `team-spec/config.yml`（如果存在），用于确定统一语言设置。
+- `team-spec/config.yml`（如果存在），用于确定统一语言设置、版本管理系统、主干分支和贡献方式。
 
 必须先确定要拆解的 PRD，即明确的 `{slug}` 或 `team-spec/active/{slug}/prd/prd.md`。如果无法从用户请求、当前对话或文件路径中唯一判断，应停止并要求用户提供 slug 或 PRD 文件路径，不要猜测要拆哪个 PRD。
 
@@ -64,7 +71,7 @@ language: zh-CN
 - issue 拆解草案：标题、类型、依赖、覆盖的用户故事和切片理由。
 - 正式 issue，如果用户确认并且 issue tracker 可用。
 - 本地 Markdown issue 草稿，如果没有可用 issue tracker，默认保存到 `team-spec/active/{slug}/issues/{issue-number}-{short-issue-slug}.md`。
-- 若用户同意回写，更新 `team-spec/config.yml` 的语言设置。
+- 若用户同意回写，更新 `team-spec/config.yml` 的语言设置或已确认的 `version_control` 配置。
 
 这些输出物通常是工程执行入口。下游 agent 或研发人员应能直接领取 `AFK` issue；`HITL` issue 必须先完成指定人工决策。
 
@@ -207,12 +214,14 @@ AFK（可独立执行，无需人工决策） / HITL（需要人工介入）
 
 生成“下一步可选”前，先基于目标项目根目录做轻量判断，给发布技能排序：
 
-1. 优先读取当前 Git remote URL，例如 `origin` 或当前分支 upstream。URL 包含 `github.com`、`github.` 或明确的 GitHub Enterprise 域名时，优先推荐 `team-github-issue-publish`；URL 包含 `gitlab.com`、`gitlab.` 或明确的 GitLab 自托管域名时，优先推荐 `team-gitlab-issue-publish`。
-2. 如果 remote 不存在或无法判断，再检查仓库文件：存在 `.github/` 时优先推荐 `team-github-issue-publish`；存在 `.gitlab-ci.yml` 或 `.gitlab/` 时优先推荐 `team-gitlab-issue-publish`。
-3. 如果 remote 与文件信号一致，只输出对应平台的发布选项，不要同时输出另一个平台的发布选项。
-4. 如果 remote 与文件信号冲突，在“下一步可选”中把置信度最高的发布选项放在第 1 项，并在描述中说明冲突信号；第 2 项才列另一个发布技能作为备选。
-5. 如果完全无法判断平台，可以同时列出 `team-github-issue-publish` 和 `team-gitlab-issue-publish`，但必须说明“未检测到明确平台信号，需要用户选择”。
-6. 如果用户本轮明确指定 GitHub 或 GitLab，用户指定优先于自动探测。
+1. 用户本轮明确指定 GitHub 或 GitLab 时，用户指定优先于自动探测。
+2. 优先读取 `team-spec/config.yml` 的 `version_control`。若 `target_remote` 存在，优先检查该 remote；若 `contribution_model: fork-pull` 且未配置 `target_remote`，优先检查 `upstream`；否则检查当前分支 tracking remote 或 `origin`。
+3. 通过 git 命令读取 remote URL，例如 `git remote -v`、`git config --get branch.{branch}.remote`。URL 包含 `github.com`、`github.` 或明确的 GitHub Enterprise 域名时，优先推荐 `team-github-issue-publish`；URL 包含 `gitlab.com`、`gitlab.` 或明确的 GitLab 自托管域名时，优先推荐 `team-gitlab-issue-publish`。
+4. 如果 remote 不存在或无法判断，再检查仓库文件：存在 `.github/` 时优先推荐 `team-github-issue-publish`；存在 `.gitlab-ci.yml` 或 `.gitlab/` 时优先推荐 `team-gitlab-issue-publish`。
+5. 如果 remote 与文件信号一致，只输出对应平台的发布选项，不要同时输出另一个平台的发布选项。
+6. 如果 remote 与文件信号冲突，在“下一步可选”中把置信度最高的发布选项放在第 1 项，并在描述中说明冲突信号；第 2 项才列另一个发布技能作为备选。
+7. 如果版本管理配置缺失且 git 命令也无法唯一推断，询问用户缺失的最小信息，例如平台、主干分支或贡献方式；用户确认后再回写 `team-spec/config.yml`。
+8. 如果完全无法判断平台，可以同时列出 `team-github-issue-publish` 和 `team-gitlab-issue-publish`，但必须说明“未检测到明确平台信号，需要用户选择”。
 
 ## 下一步可选
 
@@ -248,4 +257,4 @@ AFK（可独立执行，无需人工决策） / HITL（需要人工介入）
 - AFK issue 不需要额外产品、设计或架构判断即可开始。
 - issue 标题清晰、具体、可一眼理解，且不会在发布阶段依赖兜底修正。
 - 最终回复包含有序号的“下一步可选”列表，且推荐与当前输出状态一致。
-- 若已生成本地 issue 草稿，最终回复已基于 Git remote、`.github/`、`.gitlab-ci.yml` 或 `.gitlab/` 判断发布平台；除非信号冲突或无法判断，否则不会同时推荐 GitHub 和 GitLab 发布技能。
+- 若已生成本地 issue 草稿，最终回复已基于 `team-spec/config.yml`、Git remote、`.github/`、`.gitlab-ci.yml` 或 `.gitlab/` 判断发布平台；除非信号冲突或无法判断，否则不会同时推荐 GitHub 和 GitLab 发布技能。

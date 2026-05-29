@@ -30,6 +30,7 @@ triggers:
 
 参考输入：
 
+- `team-spec/config.yml` 中的语言与 `version_control` 配置，用于判断 ready 后应推荐 GitHub PR 还是 GitLab MR，以及默认主干分支和贡献方式。
 - `team-spec/active/{slug}/prd/prd.md` 中的关联 PRD。
 - `team-spec/CONTEXT.md` 中的全局规范术语、角色和通用业务规则。
 - `team-spec/decisions/` 中的跨需求产品决策。
@@ -127,9 +128,11 @@ ready for PR / needs changes / blocked
 
 当输出 `ready for PR` 时，最终回复必须用有序号的列表选项推荐下一步，方便用户直接回复序号继续推进：
 
+推荐前先读取 `team-spec/config.yml` 的 `version_control`。如果缺失，先用 `git remote -v`、`git branch --show-current`、`git branch -r`、`git symbolic-ref refs/remotes/{remote}/HEAD` 和 `git config --get branch.{branch}.remote` 推断平台、主干分支和贡献方式；无法唯一判断时，询问用户缺失的最小信息，并在用户确认后回写 `team-spec/config.yml`。平台信号明确时，只推荐对应的 PR/MR 创建技能，不要机械地同时列 GitHub 和 GitLab。
+
 ```md
 ## 下一步可选
 
-1. `team-gitlab-mr-create`：目标平台是 GitLab 时，推送当前 issue 分支并创建关联 issue 的 Merge Request。
-2. `team-github-pr-create`：目标平台是 GitHub 时，推送当前 issue 分支并创建关联 issue 的 Pull Request。
+1. `team-gitlab-mr-create`：检测到 GitLab remote，推送当前 issue 分支并创建关联 issue 的 Merge Request。
+2. 完成人工确认：如果主干分支或贡献方式无法唯一推断，先确认后回写 `team-spec/config.yml`。
 ```

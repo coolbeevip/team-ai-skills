@@ -31,15 +31,28 @@ triggers:
 
 如果答案可以从现有项目文档或代码中获得，先查资料，不要把问题抛给用户。
 
-## 运行时语言配置
+## 运行时配置
 
-`team-spec/` 是运行时工作空间。语言配置统一使用目标项目根目录的 `team-spec/config.yml`：
+`team-spec/` 是运行时工作空间。项目级配置统一使用目标项目根目录的 `team-spec/config.yml`：
 
 ```yaml
 language: zh-CN
+version_control:
+  system: git
+  trunk_branch: main
+  contribution_model: fork-pull
+  source_remote: origin
+  target_remote: upstream
 ```
 
 - `language`：统一语言设置（对话回复与 refine/review/prd/issues/design 产物文档）。
+- `version_control.system`：版本管理系统，例如 `git`。
+- `version_control.trunk_branch`：主干分支名，例如 `main`、`master` 或 `develop`。
+- `version_control.contribution_model`：贡献方式，例如 `fork-pull` 或 `direct`。
+- `version_control.source_remote`：贡献分支默认推送的 remote，`fork-pull` 常见为 `origin`。
+- `version_control.target_remote`：PR/MR 或 issue 默认面向的上游 remote，`fork-pull` 常见为 `upstream`。
+
+`version_control` 是可选配置。首次创建 `team-spec/config.yml` 时，若当前任务只涉及产品规格，不要为了补齐版本管理信息打断用户；只写入已确认的 `language`。当后续技能涉及 issue 发布、实现收尾、PR 或 MR 时，再补充版本管理配置。
 
 语言优先级必须固定为：
 
@@ -55,6 +68,8 @@ language: zh-CN
 兼容性兜底：
 
 - 旧项目没有 `team-spec/config.yml` 时，不得报错或中断；走“询问一次并创建配置”的流程。
+- 旧项目没有 `version_control` 时，相关交付技能应先通过 `git remote -v`、`git branch --show-current`、`git branch -r`、`git symbolic-ref refs/remotes/{remote}/HEAD` 和 `git config --get branch.{branch}.remote` 等轻量命令推断。
+- 如果命令推断仍无法唯一确定版本管理系统、主干分支或贡献方式，只问用户缺失的最小问题；得到用户确认后再回写 `team-spec/config.yml`。
 
 ## 需求上下文
 
@@ -109,7 +124,7 @@ language: zh-CN
 - `team-spec/active/{slug}/spec/CONTEXT.md`：当只属于当前需求的术语、角色、流程或业务规则被确认后更新。
 - `team-spec/active/{slug}/spec/decisions/{number}-{decision-slug}.md`：当出现只影响当前需求的产品决策时创建。
 - `team-spec/active/{slug}/STATUS.md`：可选状态文件，用于记录当前需求处于 `refining`、`reviewed`、`prd-ready`、`paused` 或 `blocked` 等状态。
-- `team-spec/config.yml`：首次进入工作空间且缺失配置时创建；用户明确同意时可更新语言设置。
+- `team-spec/config.yml`：首次进入工作空间且缺失配置时创建；用户明确同意时可更新语言设置，相关交付技能在确认后可补充 `version_control` 配置。
 
 下游技能会读取这些输出物：`team-spec-review` 用于规格评审，`team-spec-to-prd` 用于生成 PRD。
 
