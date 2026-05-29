@@ -17,6 +17,7 @@
 - `skills/delivery/team-prd-to-issues/`：用于把 PRD 拆解成可独立领取的工程 issue。
 - `skills/delivery/team-github-issue-publish/`：用于把本地 issue 草稿发布到 GitHub Issues，支持整目录批量发布或指定单个 issue。
 - `skills/delivery/team-gitlab-issue-publish/`：用于把本地 issue 草稿发布到 GitLab Issues，支持整目录批量发布或指定单个 issue。
+- `skills/delivery/team-issue-batch-implement/`：用于按依赖顺序批量编排多个 AFK issue，逐个衔接实现与验证。
 - `skills/delivery/team-issue-implement/`：用于按行为测试和 TDD 循环实现单个 issue。
 - `skills/delivery/team-issue-verify/`：用于验证单个 issue 实现是否满足验收标准和 PRD。
 - `skills/delivery/team-gitlab-mr-create/`：用于推送已完成的 issue 分支并创建关联 issue 的 GitLab Merge Request。

@@ -231,7 +231,8 @@ AFK（可独立执行，无需人工决策） / HITL（需要人工介入）
 
 - `team-github-issue-publish`：已生成本地 issue 草稿但尚未发布到远端，且 Issue Tracker 判断结果指向 GitHub 时，发布到 GitHub Issues。
 - `team-gitlab-issue-publish`：已生成本地 issue 草稿但尚未发布到远端，且 Issue Tracker 判断结果指向 GitLab 时，发布到 GitLab Issues。
-- `team-issue-implement`：用户不需要远端 issue tracker，或已有明确本地 `AFK` issue 时，开始实现。
+- `team-issue-batch-implement`：存在多个可执行 `AFK` issue，且用户希望连续处理时，按依赖顺序批量编排实现与验证。
+- `team-issue-implement`：只需要处理单个明确 `AFK` issue，或批量执行被阻塞时，开始单 issue 实现。
 - 完成人工决策：issue 中存在 `HITL` 时，先完成对应人工决策，再继续发布或实现。
 - `team-codex-harness`：拆解过程中发现入口约束、验证策略、失败记忆或任务入口不清楚时，先完善 Codex harness。
 - `team-tech-debt-refine`：拆解过程中发现需要先治理的工程基础问题时，先细化为技术债规格。
@@ -244,8 +245,9 @@ AFK（可独立执行，无需人工决策） / HITL（需要人工介入）
 ## 下一步可选
 
 1. `team-github-issue-publish`：检测到 GitHub remote，发布到 GitHub Issues。
-2. `team-issue-implement`：从第一个可开始的 `AFK` issue 进入实现。
-3. `team-codex-harness`：如果入口约束、验证策略或任务入口不清楚，先完善 harness。
+2. `team-issue-batch-implement`：存在多个可执行 `AFK` issue 时，按依赖顺序连续实现并逐个验证。
+3. `team-issue-implement`：只处理一个明确的 `AFK` issue。
+4. `team-codex-harness`：如果入口约束、验证策略或任务入口不清楚，先完善 harness。
 ```
 
 ## 质量标准
@@ -257,4 +259,5 @@ AFK（可独立执行，无需人工决策） / HITL（需要人工介入）
 - AFK issue 不需要额外产品、设计或架构判断即可开始。
 - issue 标题清晰、具体、可一眼理解，且不会在发布阶段依赖兜底修正。
 - 最终回复包含有序号的“下一步可选”列表，且推荐与当前输出状态一致。
+- 存在多个可执行 `AFK` issue 时，最终回复优先提示 `team-issue-batch-implement`；只有单个明确 issue 时才优先提示 `team-issue-implement`。
 - 若已生成本地 issue 草稿，最终回复已基于 `team-spec/config.yml`、Git remote、`.github/`、`.gitlab-ci.yml` 或 `.gitlab/` 判断发布平台；除非信号冲突或无法判断，否则不会同时推荐 GitHub 和 GitLab 发布技能。

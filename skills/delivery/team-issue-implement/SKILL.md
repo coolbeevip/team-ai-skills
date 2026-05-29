@@ -20,6 +20,8 @@ triggers:
 
 这个技能用于把 `team-prd-to-issues` 产生的单个 issue 实现为可验证的代码变更。TDD 是默认实现策略，但不是形式主义；目标是通过公共接口验证外部行为，而不是测试实现细节。
 
+如果用户要连续处理多个可执行 `AFK` issue，应使用 `team-issue-batch-implement` 做批量编排。本技能仍只负责一个 issue 的实现与验证衔接。
+
 ## 输入物
 
 主输入必须是一个明确的 issue：
@@ -40,6 +42,8 @@ triggers:
 如果 issue 没有验收标准、依赖未完成、或仍有 HITL 决策点，不要直接实现。先说明阻塞项，并要求回到 `team-prd-to-issues` 或人工决策。
 
 必须先确定要实现的单个 issue，即明确的 `team-spec/active/{slug}/issues/{issue-number}-{short-issue-slug}.md` 或外部 issue 链接/编号。若无法从用户请求、当前分支、当前对话或文件路径中唯一判断，应停止并要求用户提供 issue 路径、issue 编号或链接，不要猜测要实现哪个 issue。
+
+如果用户提供的是 slug、issue 目录或“批量/全部/下一批”这类多个 issue 诉求，不要在本技能里自行循环处理，应转入 `team-issue-batch-implement`。
 
 ## 输出物
 

@@ -79,8 +79,8 @@
           </div>
         </div>
         <div class="terminal-preview">
-          <span>$ team-issue-implement</span>
-          <strong>tests passed · verification ready</strong>
+          <span>$ team-issue-batch-implement</span>
+          <strong>3 AFK issues queued · failure stops safely</strong>
         </div>
       </div>
     </div>
@@ -90,8 +90,8 @@
 <section id="main-path" class="main-path">
   <div class="container">
     <div class="section-kicker">核心路径</div>
-    <h2 class="section-title">产品三件套，接研发三件套</h2>
-    <p class="section-desc">常规需求交付时，先把需求打磨成 PRD，再把 PRD 拆成可领取的工程 issue，最后按单个 issue 实现和验证。</p>
+    <h2 class="section-title">产品三件套，接研发批量编排</h2>
+    <p class="section-desc">常规需求交付时，先把需求打磨成 PRD，再把 PRD 拆成可领取的工程 issue，最后按依赖队列逐个实现和验证。</p>
 
     <div class="flow-lane">
       <div class="flow-group product-flow">
@@ -124,21 +124,26 @@
         </div>
         <div class="flow-step">
           <span class="step-index">05</span>
+          <strong>team-issue-batch-implement</strong>
+          <small>按依赖顺序批量编排 AFK issue</small>
+        </div>
+        <div class="flow-step">
+          <span class="step-index">06</span>
           <strong>team-issue-implement</strong>
           <small>按行为测试和 TDD 实现单个 issue</small>
         </div>
         <div class="flow-step">
-          <span class="step-index">06</span>
+          <span class="step-index">07</span>
           <strong>team-issue-verify</strong>
           <small>独立验证是否满足验收标准</small>
         </div>
         <div class="flow-step">
-          <span class="step-index">07</span>
+          <span class="step-index">08</span>
           <strong>team-gitlab-mr-create</strong>
           <small>推送分支并创建关联 issue 的 MR</small>
         </div>
         <div class="flow-step">
-          <span class="step-index">08</span>
+          <span class="step-index">09</span>
           <strong>team-github-pr-create</strong>
           <small>推送分支并创建关联 issue 的 PR</small>
         </div>
@@ -228,6 +233,11 @@
         <span class="index-domain">研发</span>
         <code>team-prd-to-issues</code>
         <p>将 PRD 拆成可独立领取的工程 issue。</p>
+      </div>
+      <div class="index-row">
+        <span class="index-domain">研发</span>
+        <code>team-issue-batch-implement</code>
+        <p>按依赖队列批量编排多个 AFK issue。</p>
       </div>
       <div class="index-row">
         <span class="index-domain">研发</span>

@@ -120,6 +120,7 @@ AFK（可独立执行，无需人工决策） / HITL（需要人工介入）
 ## 下一步可选
 
 1. `team-github-issue-publish`：检测到 GitHub remote，发布到 GitHub Issues。
-2. `team-issue-implement`：不需要远端 issue tracker，或已有明确本地 `AFK` issue 时，开始实现。
-3. 完成人工决策：issue 中存在 `HITL` 时，先完成对应人工决策，再继续发布或实现。
+2. `team-issue-batch-implement`：存在多个可执行 `AFK` issue 时，按依赖顺序连续实现并逐个验证。
+3. `team-issue-implement`：只处理一个明确的 `AFK` issue。
+4. 完成人工决策：issue 中存在 `HITL` 时，先完成对应人工决策，再继续发布或实现。
 ```

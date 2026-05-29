@@ -42,6 +42,7 @@ Codex Harness 域用于维护 Codex 在具体项目中的运行时检索层，�
 - `team-prd-to-issues`：把 PRD 拆解成可独立领取、可验证、按依赖排序的工程 issue。
 - `team-github-issue-publish`：将本地 issue 草稿发布到 GitHub Issues，支持整目录批量发布或指定单个 issue，并回写远端编号、URL 和发布状态。
 - `team-gitlab-issue-publish`：将本地 issue 草稿发布到 GitLab Issues，支持整目录批量发布或指定单个 issue，并回写远端 IID/ID、URL 和发布状态。
+- `team-issue-batch-implement`：按依赖顺序批量编排多个可执行 `AFK` issue，逐个衔接实现与验证，失败即停并支持恢复续跑。
 - `team-issue-implement`：围绕单个 issue 采用行为测试和 TDD 循环完成代码与测试变更，完成后自动衔接 `team-issue-verify`。
 - `team-issue-verify`：独立检查实现是否满足 issue、PRD 和风险约束，并给出是否可提交 PR 的结论。
 - `team-gitlab-mr-create`：推送已完成的 issue 分支，并创建标题和正文都关联 issue 编号的 GitLab Merge Request。
@@ -79,8 +80,11 @@ flowchart TD
     F --> N[team-github-issue-publish]
     F --> O[team-gitlab-issue-publish]
     F -. Codex 检索层不清晰时 .-> T[team-codex-harness]
-    N --> G[team-issue-implement]
-    O --> G
+    N --> U[team-issue-batch-implement]
+    O --> U
+    U --> G[team-issue-implement]
+    N -. 单个 issue .-> G
+    O -. 单个 issue .-> G
     G --> I[team-issue-verify]
     I -- 验证未通过 --> G
     I -- GitLab --> P[team-gitlab-mr-create]
@@ -160,6 +164,8 @@ team-spec/active/issues/{slug}/
 `team-github-issue-publish` 默认读取 `team-spec/active/issues/{slug}/` 中的本地 issue 草稿，执行依赖排序、试运行预览、幂等检查与批量发布；如果通过 `--issue` 指定单个 issue，则只处理该草稿，并回写远端 issue 编号、URL 和状态。
 
 `team-gitlab-issue-publish` 默认读取 `team-spec/active/issues/{slug}/` 中的本地 issue 草稿，执行依赖排序、试运行预览、幂等检查与批量发布；如果通过 `--issue` 指定单个 issue，则只处理该草稿，并回写远端 issue IID/ID、URL 和状态。
+
+`team-issue-batch-implement` 默认读取同一 slug 下的多个本地 issue 草稿，按 `Blocked by` 生成可执行 `AFK` 队列，逐个衔接 `team-issue-implement` 和 `team-issue-verify`。它只做批量编排，不把多个 issue 合并成一个实现。
 
 `team-issue-implement` 默认以 `team-spec/active/issues/{slug}/` 中的单个 issue 为主输入，通过行为测试和 red-green-refactor 循环完成实现，并在实现结束后自动衔接 `team-issue-verify`。
 

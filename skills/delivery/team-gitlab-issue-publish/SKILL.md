@@ -228,8 +228,9 @@ GITLAB_URL=https://gitlab.example.com GITLAB_TOKEN=... python3 {skill_dir}/scrip
 ## 下一步可选
 
 1. 立即发布：确认 dry-run 计划无误后，用相同参数追加 `--execute` 创建 GitLab Issues。
-2. `team-issue-implement`：发布完成后，选择一个已准备好的 `AFK` issue 开始实现。
-3. 修复失败项：如果有失败或跳过异常，先处理报告中的失败原因后重试发布。
+2. `team-issue-batch-implement`：发布完成且存在多个可执行 `AFK` issue 时，按依赖顺序连续实现并逐个验证。
+3. `team-issue-implement`：只处理一个明确的 `AFK` issue。
+4. 修复失败项：如果有失败或跳过异常，先处理报告中的失败原因后重试发布。
 ```
 
 ## 错误与恢复策略
