@@ -15,13 +15,13 @@
 - `skills/harness/team-codex-harness/`：用于随真实代码和工程演进维护 `AGENTS.md`、入口约束、失败记忆、验证 harness 和任务入口。
 - `skills/delivery/`：交付执行职责，包括 issue 拆解、发布、实现和验证。
 - `skills/delivery/team-prd-to-issues/`：用于把 PRD 拆解成可独立领取的工程 issue。
-- `skills/delivery/team-github-issue-publish/`：用于把本地 issue 草稿发布到 GitHub Issues，支持整目录批量发布或指定单个 issue。
-- `skills/delivery/team-gitlab-issue-publish/`：用于把本地 issue 草稿发布到 GitLab Issues，支持整目录批量发布或指定单个 issue。
+- `skills/delivery/team-issue-publish-github/`：用于把本地 issue 草稿发布到 GitHub Issues，支持整目录批量发布或指定单个 issue。
+- `skills/delivery/team-issue-publish-gitlab/`：用于把本地 issue 草稿发布到 GitLab Issues，支持整目录批量发布或指定单个 issue。
 - `skills/delivery/team-issue-batch-implement/`：用于按依赖顺序批量编排多个 AFK issue，逐个衔接实现与验证。
 - `skills/delivery/team-issue-implement/`：用于按行为测试和 TDD 循环实现单个 issue。
 - `skills/delivery/team-issue-verify/`：用于验证单个 issue 实现是否满足验收标准和 PRD。
-- `skills/delivery/team-gitlab-mr-create/`：用于推送已完成的 issue 分支并创建关联 issue 的 GitLab Merge Request。
-- `skills/delivery/team-github-pr-create/`：用于推送已完成的 issue 分支并创建关联 issue 的 GitHub Pull Request。
+- `skills/delivery/team-issue-create-mr-gitlab/`：用于推送已完成的 issue 分支并创建关联 issue 的 GitLab Merge Request。
+- `skills/delivery/team-issue-create-pr-github/`：用于推送已完成的 issue 分支并创建关联 issue 的 GitHub Pull Request。
 - `skills/tech-debt/`：技术债治理职责，包括技术债细化、评审和工程拆解。
 - `skills/tech-debt/team-tech-debt-refine/`：用于把模糊技术债诉求细化为可评审规格。
 - `skills/tech-debt/team-tech-debt-review/`：用于评审技术债风险、优先级和可执行性。
@@ -93,7 +93,7 @@
 
 当技能需要 `scripts/` 辅助脚本时，遵守以下规则：
 
-- `scripts/` 只能放在具体技能目录内，例如 `skills/delivery/team-github-issue-publish/scripts/`。
+- `scripts/` 只能放在具体技能目录内，例如 `skills/delivery/team-issue-publish-github/scripts/`。
 - 脚本用于沉淀确定性流程，例如远端 API 操作、批量文件处理、格式转换、依赖排序、幂等检查和回写状态。
 - `SKILL.md` 必须说明脚本用途、主要参数、默认 dry-run 行为、正式执行开关和安全要求。
 - `SKILL.md` 内引用脚本时必须使用相对 `SKILL.md` 的路径，例如 `./scripts/publish_gitlab_issues.py`。
@@ -107,7 +107,7 @@
 为了保持技能目录可独立复制，技能运行时不得依赖仓库根目录的公共 Python 模块。跨多个技能复用的稳定辅助代码采用 vendored copy 方式维护：
 
 - 根目录 `scripts/_team_common.py` 是公共辅助代码的唯一源文件。
-- 各技能如需使用公共辅助代码，应在本技能自己的 `scripts/` 目录下放置 `_team_common.py` 副本，例如 `skills/delivery/team-gitlab-mr-create/scripts/_team_common.py`。
+- 各技能如需使用公共辅助代码，应在本技能自己的 `scripts/` 目录下放置 `_team_common.py` 副本，例如 `skills/delivery/team-issue-create-mr-gitlab/scripts/_team_common.py`。
 - 修改公共辅助代码时，只修改根目录 `scripts/_team_common.py`，然后执行 `rtk python3 scripts/check_vendored_common.py`，用根目录源文件覆盖所有不一致的技能目录副本。
 - 提交前执行 `rtk python3 scripts/check_vendored_common.py --check`，确保所有 vendored `_team_common.py` 与根目录源文件一致。
 - 根目录 `scripts/check_vendored_common.py` 只用于仓库维护；技能 `SKILL.md` 中不得把它写成业务项目运行时依赖。

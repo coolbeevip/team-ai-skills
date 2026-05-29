@@ -133,6 +133,6 @@ ready for PR / needs changes / blocked
 ```md
 ## 下一步可选
 
-1. `team-gitlab-mr-create`：检测到 GitLab remote，推送当前 issue 分支并创建关联 issue 的 Merge Request。
+1. `team-issue-create-mr-gitlab`：检测到 GitLab remote，推送当前 issue 分支并创建关联 issue 的 Merge Request。
 2. 完成人工确认：如果主干分支或贡献方式无法唯一推断，先确认后回写 `team-spec/config.yml`。
 ```

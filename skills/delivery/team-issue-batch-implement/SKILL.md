@@ -140,5 +140,5 @@ python3 {skill_dir}/scripts/plan_issue_batch.py --slug {slug} --limit 3 --json
 1. `team-issue-batch-implement`：继续处理下一批可执行 AFK issue。
 2. 完成人工决策：先处理被 HITL 或 blocker 卡住的 issue。
 3. `team-prd-to-issues`：如果发现 issue 过薄或依赖不合理，回到拆解阶段合并或重排。
-4. `team-github-pr-create` / `team-gitlab-mr-create`：当前批次已验证完成后，按项目平台创建 PR/MR。
+4. `team-issue-create-pr-github` / `team-issue-create-mr-gitlab`：当前批次已验证完成后，按项目平台创建 PR/MR。
 ```

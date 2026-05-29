@@ -139,12 +139,12 @@
         </div>
         <div class="flow-step">
           <span class="step-index">08</span>
-          <strong>team-gitlab-mr-create</strong>
+          <strong>team-issue-create-mr-gitlab</strong>
           <small>推送分支并创建关联 issue 的 MR</small>
         </div>
         <div class="flow-step">
           <span class="step-index">09</span>
-          <strong>team-github-pr-create</strong>
+          <strong>team-issue-create-pr-github</strong>
           <small>推送分支并创建关联 issue 的 PR</small>
         </div>
       </div>
@@ -152,8 +152,8 @@
 
     <div class="optional-row">
       <span>需要人类评审 PRD：<code>team-prd-to-alignment</code></span>
-      <span>需要同步到平台：<code>team-github-issue-publish</code> / <code>team-gitlab-issue-publish</code></span>
-      <span>完成后创建合并请求：<code>team-gitlab-mr-create</code> / <code>team-github-pr-create</code></span>
+      <span>需要同步到平台：<code>team-issue-publish-github</code> / <code>team-issue-publish-gitlab</code></span>
+      <span>完成后创建合并请求：<code>team-issue-create-mr-gitlab</code> / <code>team-issue-create-pr-github</code></span>
     </div>
   </div>
 </section>
@@ -251,22 +251,22 @@
       </div>
       <div class="index-row">
         <span class="index-domain">发布</span>
-        <code>team-gitlab-mr-create</code>
+        <code>team-issue-create-mr-gitlab</code>
         <p>推送 issue 分支并创建关联 issue 编号的 GitLab MR。</p>
       </div>
       <div class="index-row">
         <span class="index-domain">发布</span>
-        <code>team-github-pr-create</code>
+        <code>team-issue-create-pr-github</code>
         <p>推送 issue 分支并创建关联 issue 编号的 GitHub PR。</p>
       </div>
       <div class="index-row">
         <span class="index-domain">发布</span>
-        <code>team-github-issue-publish</code>
+        <code>team-issue-publish-github</code>
         <p>发布本地 issue 草稿到 GitHub Issues，可整批或单个。</p>
       </div>
       <div class="index-row">
         <span class="index-domain">发布</span>
-        <code>team-gitlab-issue-publish</code>
+        <code>team-issue-publish-gitlab</code>
         <p>发布本地 issue 草稿到 GitLab Issues，可整批或单个。</p>
       </div>
       <div class="index-row">

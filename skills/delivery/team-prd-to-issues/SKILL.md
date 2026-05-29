@@ -216,12 +216,12 @@ AFK（可独立执行，无需人工决策） / HITL（需要人工介入）
 
 1. 用户本轮明确指定 GitHub 或 GitLab 时，用户指定优先于自动探测。
 2. 优先读取 `team-spec/config.yml` 的 `version_control`。若 `target_remote` 存在，优先检查该 remote；若 `contribution_model: fork-pull` 且未配置 `target_remote`，优先检查 `upstream`；否则检查当前分支 tracking remote 或 `origin`。
-3. 通过 git 命令读取 remote URL，例如 `git remote -v`、`git config --get branch.{branch}.remote`。URL 包含 `github.com`、`github.` 或明确的 GitHub Enterprise 域名时，优先推荐 `team-github-issue-publish`；URL 包含 `gitlab.com`、`gitlab.` 或明确的 GitLab 自托管域名时，优先推荐 `team-gitlab-issue-publish`。
-4. 如果 remote 不存在或无法判断，再检查仓库文件：存在 `.github/` 时优先推荐 `team-github-issue-publish`；存在 `.gitlab-ci.yml` 或 `.gitlab/` 时优先推荐 `team-gitlab-issue-publish`。
+3. 通过 git 命令读取 remote URL，例如 `git remote -v`、`git config --get branch.{branch}.remote`。URL 包含 `github.com`、`github.` 或明确的 GitHub Enterprise 域名时，优先推荐 `team-issue-publish-github`；URL 包含 `gitlab.com`、`gitlab.` 或明确的 GitLab 自托管域名时，优先推荐 `team-issue-publish-gitlab`。
+4. 如果 remote 不存在或无法判断，再检查仓库文件：存在 `.github/` 时优先推荐 `team-issue-publish-github`；存在 `.gitlab-ci.yml` 或 `.gitlab/` 时优先推荐 `team-issue-publish-gitlab`。
 5. 如果 remote 与文件信号一致，只输出对应平台的发布选项，不要同时输出另一个平台的发布选项。
 6. 如果 remote 与文件信号冲突，在“下一步可选”中把置信度最高的发布选项放在第 1 项，并在描述中说明冲突信号；第 2 项才列另一个发布技能作为备选。
 7. 如果版本管理配置缺失且 git 命令也无法唯一推断，询问用户缺失的最小信息，例如平台、主干分支或贡献方式；用户确认后再回写 `team-spec/config.yml`。
-8. 如果完全无法判断平台，可以同时列出 `team-github-issue-publish` 和 `team-gitlab-issue-publish`，但必须说明“未检测到明确平台信号，需要用户选择”。
+8. 如果完全无法判断平台，可以同时列出 `team-issue-publish-github` 和 `team-issue-publish-gitlab`，但必须说明“未检测到明确平台信号，需要用户选择”。
 
 ## 下一步可选
 
@@ -229,8 +229,8 @@ AFK（可独立执行，无需人工决策） / HITL（需要人工介入）
 
 根据当前状态推荐，并输出为单层有序列表：
 
-- `team-github-issue-publish`：已生成本地 issue 草稿但尚未发布到远端，且 Issue Tracker 判断结果指向 GitHub 时，发布到 GitHub Issues。
-- `team-gitlab-issue-publish`：已生成本地 issue 草稿但尚未发布到远端，且 Issue Tracker 判断结果指向 GitLab 时，发布到 GitLab Issues。
+- `team-issue-publish-github`：已生成本地 issue 草稿但尚未发布到远端，且 Issue Tracker 判断结果指向 GitHub 时，发布到 GitHub Issues。
+- `team-issue-publish-gitlab`：已生成本地 issue 草稿但尚未发布到远端，且 Issue Tracker 判断结果指向 GitLab 时，发布到 GitLab Issues。
 - `team-issue-batch-implement`：存在多个可执行 `AFK` issue，且用户希望连续处理时，按依赖顺序批量编排实现与验证。
 - `team-issue-implement`：只需要处理单个明确 `AFK` issue，或批量执行被阻塞时，开始单 issue 实现。
 - 完成人工决策：issue 中存在 `HITL` 时，先完成对应人工决策，再继续发布或实现。
@@ -244,7 +244,7 @@ AFK（可独立执行，无需人工决策） / HITL（需要人工介入）
 ```md
 ## 下一步可选
 
-1. `team-github-issue-publish`：检测到 GitHub remote，发布到 GitHub Issues。
+1. `team-issue-publish-github`：检测到 GitHub remote，发布到 GitHub Issues。
 2. `team-issue-batch-implement`：存在多个可执行 `AFK` issue 时，按依赖顺序连续实现并逐个验证。
 3. `team-issue-implement`：只处理一个明确的 `AFK` issue。
 4. `team-codex-harness`：如果入口约束、验证策略或任务入口不清楚，先完善 harness。

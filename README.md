@@ -40,13 +40,13 @@ Codex Harness 域用于维护 Codex 在具体项目中的运行时检索层，�
 交付执行域用于把 PRD 拆成可领取的 issue，并把实现结果验证到可提交 PR 的状态，适合研发负责人、工程师、测试人员和工程 agent 使用。
 
 - `team-prd-to-issues`：把 PRD 拆解成可独立领取、可验证、按依赖排序的工程 issue。
-- `team-github-issue-publish`：将本地 issue 草稿发布到 GitHub Issues，支持整目录批量发布或指定单个 issue，并回写远端编号、URL 和发布状态。
-- `team-gitlab-issue-publish`：将本地 issue 草稿发布到 GitLab Issues，支持整目录批量发布或指定单个 issue，并回写远端 IID/ID、URL 和发布状态。
+- `team-issue-publish-github`：将本地 issue 草稿发布到 GitHub Issues，支持整目录批量发布或指定单个 issue，并回写远端编号、URL 和发布状态。
+- `team-issue-publish-gitlab`：将本地 issue 草稿发布到 GitLab Issues，支持整目录批量发布或指定单个 issue，并回写远端 IID/ID、URL 和发布状态。
 - `team-issue-batch-implement`：按依赖顺序批量编排多个可执行 `AFK` issue，逐个衔接实现与验证，失败即停并支持恢复续跑。
 - `team-issue-implement`：围绕单个 issue 采用行为测试和 TDD 循环完成代码与测试变更，完成后自动衔接 `team-issue-verify`。
 - `team-issue-verify`：独立检查实现是否满足 issue、PRD 和风险约束，并给出是否可提交 PR 的结论。
-- `team-gitlab-mr-create`：推送已完成的 issue 分支，并创建标题和正文都关联 issue 编号的 GitLab Merge Request。
-- `team-github-pr-create`：推送已完成的 issue 分支，并创建标题和正文都关联 issue 编号的 GitHub Pull Request。
+- `team-issue-create-mr-gitlab`：推送已完成的 issue 分支，并创建标题和正文都关联 issue 编号的 GitLab Merge Request。
+- `team-issue-create-pr-github`：推送已完成的 issue 分支，并创建标题和正文都关联 issue 编号的 GitHub Pull Request。
 
 ### 技术债治理
 
@@ -77,8 +77,8 @@ flowchart TD
     D -. 可选：人类对齐材料 .-> H[team-prd-to-alignment]
     H -. 对齐结论反馈 .-> D
     D -. 可选：功能设计 .-> R[team-spec-to-functional-design]
-    F --> N[team-github-issue-publish]
-    F --> O[team-gitlab-issue-publish]
+    F --> N[team-issue-publish-github]
+    F --> O[team-issue-publish-gitlab]
     F -. Codex 检索层不清晰时 .-> T[team-codex-harness]
     N --> U[team-issue-batch-implement]
     O --> U
@@ -87,8 +87,8 @@ flowchart TD
     O -. 单个 issue .-> G
     G --> I[team-issue-verify]
     I -- 验证未通过 --> G
-    I -- GitLab --> P[team-gitlab-mr-create]
-    I -- GitHub --> Q[team-github-pr-create]
+    I -- GitLab --> P[team-issue-create-mr-gitlab]
+    I -- GitHub --> Q[team-issue-create-pr-github]
     D -. 需求完成或废弃时 .-> S[team-spec-archive]
 
     J[team-tech-debt-refine] --> K[team-tech-debt-review]
@@ -106,9 +106,9 @@ flowchart TD
 
 `team-prd-to-issues` 应以 PRD 为主输入；`CONTEXT.md`、`decisions/` 和 `reviews/` 只能作为背景参考，不能绕过 PRD 直接拆工程任务。拆解过程中如果发现入口约束、验证策略、失败记忆或任务入口不清晰，可使用 `team-codex-harness` 补全。
 
-`team-github-issue-publish` 用于把 `team-spec/active/issues/{slug}/` 下的本地 issue 草稿发布到 GitHub Issues，并回写发布结果。默认按依赖顺序批量发布，也可通过 `--issue` 指定单个 issue。该技能仅处理 GitHub。
+`team-issue-publish-github` 用于把 `team-spec/active/issues/{slug}/` 下的本地 issue 草稿发布到 GitHub Issues，并回写发布结果。默认按依赖顺序批量发布，也可通过 `--issue` 指定单个 issue。该技能仅处理 GitHub。
 
-`team-gitlab-issue-publish` 用于把 `team-spec/active/issues/{slug}/` 下的本地 issue 草稿发布到 GitLab Issues，并回写发布结果。默认按依赖顺序批量发布，也可通过 `--issue` 指定单个 issue。该技能仅处理 GitLab。
+`team-issue-publish-gitlab` 用于把 `team-spec/active/issues/{slug}/` 下的本地 issue 草稿发布到 GitLab Issues，并回写发布结果。默认按依赖顺序批量发布，也可通过 `--issue` 指定单个 issue。该技能仅处理 GitLab。
 
 `team-spec-archive` 用于把 `team-spec/active/` 中已完成、废弃或暂停的需求产物归档到 `team-spec/archive/{slug}/`，清空活跃工作区以避免下一个需求误改旧规格。开始新需求前，若 active 中已有其他 slug，应先归档。
 
@@ -161,9 +161,9 @@ team-spec/active/issues/{slug}/
 
 `team-prd-to-issues` 默认以 `team-spec/active/prd/{slug}.md` 为主输入，并参考规格上下文、产品决策和评审报告，再将工程 issue 草稿写入 `team-spec/active/issues/{slug}/`。
 
-`team-github-issue-publish` 默认读取 `team-spec/active/issues/{slug}/` 中的本地 issue 草稿，执行依赖排序、试运行预览、幂等检查与批量发布；如果通过 `--issue` 指定单个 issue，则只处理该草稿，并回写远端 issue 编号、URL 和状态。
+`team-issue-publish-github` 默认读取 `team-spec/active/issues/{slug}/` 中的本地 issue 草稿，执行依赖排序、试运行预览、幂等检查与批量发布；如果通过 `--issue` 指定单个 issue，则只处理该草稿，并回写远端 issue 编号、URL 和状态。
 
-`team-gitlab-issue-publish` 默认读取 `team-spec/active/issues/{slug}/` 中的本地 issue 草稿，执行依赖排序、试运行预览、幂等检查与批量发布；如果通过 `--issue` 指定单个 issue，则只处理该草稿，并回写远端 issue IID/ID、URL 和状态。
+`team-issue-publish-gitlab` 默认读取 `team-spec/active/issues/{slug}/` 中的本地 issue 草稿，执行依赖排序、试运行预览、幂等检查与批量发布；如果通过 `--issue` 指定单个 issue，则只处理该草稿，并回写远端 issue IID/ID、URL 和状态。
 
 `team-issue-batch-implement` 默认读取同一 slug 下的多个本地 issue 草稿，按 `Blocked by` 生成可执行 `AFK` 队列，逐个衔接 `team-issue-implement` 和 `team-issue-verify`。它只做批量编排，不把多个 issue 合并成一个实现。
 
@@ -171,6 +171,6 @@ team-spec/active/issues/{slug}/
 
 `team-issue-verify` 独立检查实现是否满足 issue、PRD 和风险约束，并输出是否可提交 PR。
 
-`team-gitlab-mr-create` 默认从当前分支推断 issue 编号，推送分支，并创建包含 `Closes #{issue}` 的 GitLab Merge Request。该技能仅处理 GitLab MR；GitHub PR 应使用独立技能。
+`team-issue-create-mr-gitlab` 默认从当前分支推断 issue 编号，推送分支，并创建包含 `Closes #{issue}` 的 GitLab Merge Request。该技能仅处理 GitLab MR；GitHub PR 应使用独立技能。
 
-`team-github-pr-create` 默认从当前分支推断 issue 编号，推送分支，并创建包含 `Closes #{issue}` 的 GitHub Pull Request。该技能仅处理 GitHub PR；GitLab MR 应使用独立技能。
+`team-issue-create-pr-github` 默认从当前分支推断 issue 编号，推送分支，并创建包含 `Closes #{issue}` 的 GitHub Pull Request。该技能仅处理 GitHub PR；GitLab MR 应使用独立技能。
