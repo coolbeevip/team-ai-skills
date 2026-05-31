@@ -58,7 +58,8 @@ version_control:
 - 从显式参数、`team-spec/config.yml` 或 git remote 推断 source repo 与 target repo。
 - 默认 dry-run，只输出将推送的分支和将创建的 PR。
 - `--execute` 时先做执行前确认，再 push 当前分支并创建 GitHub Pull Request。
-- 脚本只允许推送已有提交，不负责 `git add`、`git commit`、自动暂存或自动生成本地提交。
+- 固定脚本只负责推送已有提交和创建 PR，不在脚本内部自动暂存或提交。
+- 如果工作区或暂存区存在未提交变更，技能必须先列出这些变更，并取得用户对提交范围和提交信息的确认；确认后由 agent 在运行固定脚本前执行必要的 `git add` 和 `git commit` 完成收尾提交。
 - PR 标题默认不包含 issue 编号，只描述变更本身；正文使用 `./scripts/templates/pr_body.md.tpl` 按 `language` 渲染，并保留 `Closes #{issue_number}` 以便 GitHub 自动关联并在合并后关闭 issue。
 - 创建 PR 成功后，如果能定位到本地 issue 草稿，会把该文件回写为 `Status: PR created`，并记录 `PR:` 和 `Pushed Branch:`；该回写只修改本地文件，不会自动 `git add` 或提交 `team-spec/`。
 - 可指定 target branch、source remote、target remote、title、draft 和 assignee；未指定 target branch 时优先使用 `version_control.trunk_branch`。
@@ -99,7 +100,7 @@ GITHUB_TOKEN=... python3 {skill_dir}/scripts/create_github_pr.py --execute
 优先读取：
 
 - 当前 git 分支名，通常应包含或等于 issue 编号，例如 `123`、`issue-123`、`123-add-export-filter`。
-- 当前提交历史；工作区必须干净，不能包含未提交变更。
+- 当前提交历史，以及工作区和暂存区状态。默认推送已有提交；如果存在未提交变更，必须先列出变更，取得用户确认后才允许创建收尾提交。
 - `team-spec/active/{slug}/issues/{issue-number}-{short-issue-slug}.md`，如果能从分支、用户输入或对话中确定。
 - GitHub issue 编号或 URL，如果用户提供。
 - `team-spec/config.yml` 的 `version_control` 配置，以及 Git remote 信息，用于推断 source repo、target repo、target branch 和贡献方式。
@@ -157,19 +158,23 @@ GITHUB_TOKEN=... python3 {skill_dir}/scripts/create_github_pr.py --execute
 ## 建议流程
 
 1. 确认当前分支、issue 编号、source remote、target repo、target branch 和贡献方式；优先读取 `team-spec/config.yml`，缺失时先用 git 命令推断。
-2. 检查工作区状态；如果存在未提交变更，停止并要求用户先完成实现验证和人工提交，不得代替用户执行 `git add` 或 `git commit`。
-3. 使用固定脚本执行默认 dry-run，预览 push 和 PR 创建计划。
-4. 如果目标分支、source remote、target remote 或贡献方式不是来自用户显式参数或已确认的 `team-spec/config.yml`，或工作区里存在被追踪但命中 `.gitignore` 的文件，执行前必须向人类确认；确认后可回写 `team-spec/config.yml`。
-5. 用户确认后，用固定脚本追加 `--execute` 推送分支并创建 PR。
-6. 如果能定位到本地 issue 草稿，回写 `Status: PR created`、`PR:` 和 `Pushed Branch:`；不得自动暂存或提交 `team-spec/`。
-7. 输出 PR URL、关联 issue、source/target branch、验证结果、已回写的 issue 文件和有序号的“下一步可选”列表，方便用户直接回复序号继续推进。
+2. 检查工作区和暂存区状态；如果存在未提交变更，列出变更文件、暂存状态和推荐提交范围。
+3. 如果需要创建收尾提交，必须先取得用户对提交范围和提交信息的明确确认；确认后才允许执行 `git add` 和 `git commit`。用户未确认时停止，不得继续 push 或创建 PR。
+4. 提交范围必须排除 `team-spec/`：不得对 `team-spec/` 下文件执行 `git add`；如果 `team-spec/` 文件已经在暂存区，必须停止并要求用户先取消暂存。
+5. 使用固定脚本执行默认 dry-run，预览 push 和 PR 创建计划。
+6. 如果目标分支、source remote、target remote 或贡献方式不是来自用户显式参数或已确认的 `team-spec/config.yml`，或工作区里存在被追踪但命中 `.gitignore` 的文件，执行前必须向人类确认；确认后可回写 `team-spec/config.yml`。
+7. 用户确认后，用固定脚本追加 `--execute` 推送分支并创建 PR。
+8. 如果能定位到本地 issue 草稿，回写 `Status: PR created`、`PR:` 和 `Pushed Branch:`；不得自动暂存或提交 `team-spec/`。
+9. 输出 PR URL、关联 issue、source/target branch、创建的收尾提交、验证结果、已回写的 issue 文件和有序号的“下一步可选”列表，方便用户直接回复序号继续推进。
 
 ## 安全要求
 
 - token 只能从环境变量读取。
 - 不记录、不回显 token。
 - 不把 token 写入仓库文件或 git 配置。
-- 不执行 `git add`、`git commit`、`git stash` 或任何会改变本地提交历史的操作。
+- 默认不执行 `git add`、`git commit`、`git stash` 或任何会改变本地提交历史的操作。
+- 只有在已经列出未提交变更，并且用户明确确认提交范围和提交信息后，才允许执行 `git add` 和 `git commit`；仍不得执行 `git stash`。
+- 任何情况下都不得对 `team-spec/` 下文件执行 `git add`。如果提交前发现 `team-spec/` 文件已在暂存区，必须停止，不得提交。
 - 创建 PR 后允许回写本地 `team-spec/active/{slug}/issues/` 下对应 issue 草稿，但不得自动暂存或提交这些回写。
 - 默认 dry-run，不应在用户确认前推送分支或创建 PR。
 
@@ -178,5 +183,6 @@ GITHUB_TOKEN=... python3 {skill_dir}/scripts/create_github_pr.py --execute
 - 当前分支已推送到正确 source remote。
 - GitHub PR 已创建，标题和正文都关联 issue 编号。
 - 如能定位本地 issue 草稿，已回写 `Status: PR created`、`PR:` 和 `Pushed Branch:`。
+- 如果执行了收尾提交，最终回复包含创建的 commit SHA 和提交范围。
 - 最终回复包含 PR URL。
 - 若失败，输出失败阶段、错误原因和可重试命令。

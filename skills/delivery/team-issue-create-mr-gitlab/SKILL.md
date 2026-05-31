@@ -58,7 +58,7 @@ version_control:
 - 从显式参数、`team-spec/config.yml` 或 git remote 推断 source project 与 target project。
 - 默认 dry-run，只输出将推送的分支和将创建的 MR。
 - `--execute` 时先做执行前确认，再 push 当前分支并创建 GitLab Merge Request。
-- 默认只推送已有提交；如果用户明确要求收尾提交，可通过 `--commit-message` 搭配 `--commit-all`、`--commit-path` 或 `--commit-staged` 在 push 前创建本地提交。
+- 默认只推送已有提交；如果工作区或暂存区存在未提交变更，技能必须先列出这些变更，并取得用户对提交范围和提交信息的确认。确认后可通过 `--commit-message` 搭配 `--commit-all`、`--commit-path` 或 `--commit-staged` 在 push 前创建本地提交。
 - 执行收尾提交时，绝对不得对 `team-spec/` 下的文件执行 `git add`；如果发现 `team-spec/` 文件已经在暂存区，必须停止并要求先取消暂存。
 - MR 标题默认不包含 issue IID，只描述变更本身；正文使用 `./scripts/templates/mr_body.md.tpl` 按 `language` 渲染，并保留 `Closes #{issue_iid}` 以便 GitLab 自动关联并在合并后关闭 issue。
 - 创建 MR 成功后，如果能定位到本地 issue 草稿，会把该文件回写为 `Status: MR created`，并记录 `MR:` 和 `Pushed Branch:`；该回写只修改本地文件，不会自动 `git add` 或提交 `team-spec/`。
@@ -78,7 +78,7 @@ GITLAB_URL=https://gitlab.example.com python3 {skill_dir}/scripts/create_gitlab_
 GITLAB_URL=https://gitlab.example.com GITLAB_TOKEN=... python3 {skill_dir}/scripts/create_gitlab_mr.py --execute
 ```
 
-如果当前工作区存在已验证但尚未提交的变更，并且用户明确要求由本技能完成提交，可在正式执行时指定提交范围。`--commit-all` 只会暂存非 `team-spec/` 文件：
+如果当前工作区或暂存区存在已验证但尚未提交的变更，必须先列出变更文件、暂存状态和推荐提交范围；用户确认提交范围和提交信息后，可在正式执行时指定提交范围。`--commit-all` 只会暂存非 `team-spec/` 文件：
 
 ```sh
 GITLAB_URL=https://gitlab.example.com GITLAB_TOKEN=... python3 {skill_dir}/scripts/create_gitlab_mr.py --execute --commit-message "Resolve #123: add export filter" --commit-all
@@ -120,7 +120,7 @@ GITLAB_URL=https://gitlab.example.com GITLAB_TOKEN=... python3 {skill_dir}/scrip
 优先读取：
 
 - 当前 git 分支名，通常应包含或等于 issue 编号，例如 `123`、`issue-123`、`123-add-export-filter`。
-- 当前提交历史；默认要求工作区干净。若用户明确要求由本技能完成收尾提交，可以提交非 `team-spec/` 的未提交变更，`team-spec/` 下未提交变更可留在工作区。
+- 当前提交历史，以及工作区和暂存区状态。默认推送已有提交；如果存在未提交变更，必须先列出变更，取得用户确认后才允许创建收尾提交。可以提交非 `team-spec/` 的未提交变更，`team-spec/` 下未提交变更可留在工作区。
 - `team-spec/active/{slug}/issues/{issue-number}-{short-issue-slug}.md`，如果能从分支、用户输入或对话中确定。
 - GitLab issue IID 或 URL，如果用户提供。
 - `team-spec/config.yml` 的 `version_control` 配置，以及 Git remote 信息，用于推断 source project、target project、target branch 和贡献方式。
@@ -178,9 +178,9 @@ GITLAB_URL=https://gitlab.example.com GITLAB_TOKEN=... python3 {skill_dir}/scrip
 ## 建议流程
 
 1. 确认当前分支、issue IID、source remote、target project、target branch、贡献方式和 MR 标题来源；优先读取 `team-spec/config.yml`，缺失时先用 git 命令推断。
-2. 检查工作区状态；如果存在未提交变更，先确认这些变更是否已经实现和验证完成。
-3. 如果用户没有明确要求代为提交，停止并要求用户先完成提交或 stash。
-4. 如果用户明确要求代为提交，必须确认提交信息和提交范围：`--commit-all`、`--commit-path` 或 `--commit-staged` 三选一。
+2. 检查工作区和暂存区状态；如果存在未提交变更，列出变更文件、暂存状态和推荐提交范围。
+3. 如果需要创建收尾提交，必须先取得用户对提交范围和提交信息的明确确认；确认后才允许执行 `git add` 和 `git commit`。用户未确认时停止，不得继续 push 或创建 MR。
+4. 提交方式必须明确为 `--commit-all`、`--commit-path` 或 `--commit-staged` 三选一。
 5. 提交范围必须排除 `team-spec/`：不得对 `team-spec/` 下文件执行 `git add`；如果 `team-spec/` 文件已经在暂存区，必须停止并要求用户先取消暂存。
 6. 使用固定脚本执行默认 dry-run，预览 push、MR 创建计划和待提交工作区状态。
 7. 如果目标分支、source remote、target remote 或贡献方式不是来自用户显式参数或已确认的 `team-spec/config.yml`，或工作区里存在被追踪但命中 `.gitignore` 的文件，执行前必须向人类确认；确认后可回写 `team-spec/config.yml`。
@@ -194,7 +194,7 @@ GITLAB_URL=https://gitlab.example.com GITLAB_TOKEN=... python3 {skill_dir}/scrip
 - 不记录、不回显 token。
 - 不把 token 写入仓库文件或 git 配置。
 - 默认不执行 `git add`、`git commit`、`git stash` 或任何会改变本地提交历史的操作。
-- 只有当用户明确要求并提供提交信息与提交范围时，才允许执行 `git add` 和 `git commit`；仍不得执行 `git stash`。
+- 只有在已经列出未提交变更，并且用户明确确认提交范围和提交信息后，才允许执行 `git add` 和 `git commit`；仍不得执行 `git stash`。
 - 任何情况下都不得对 `team-spec/` 下文件执行 `git add`。如果自动提交前发现 `team-spec/` 文件已在暂存区，必须停止，不得提交。
 - 创建 MR 后允许回写本地 `team-spec/active/{slug}/issues/` 下对应 issue 草稿，但不得自动暂存或提交这些回写。
 - 默认 dry-run，不应在用户确认前推送分支或创建 MR。
