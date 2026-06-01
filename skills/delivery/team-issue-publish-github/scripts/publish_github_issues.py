@@ -28,6 +28,13 @@ SECTION_RE = re.compile(r"^##\s+(.+?)\s*$", re.MULTILINE)
 LOCAL_KEY_RE = re.compile(r"^(\d+[-_][A-Za-z0-9][A-Za-z0-9_.-]*\.md)$")
 ISSUE_REF_RE = re.compile(r"#(\d+)")
 LOCAL_REF_RE = re.compile(r"(\d+[-_][A-Za-z0-9][A-Za-z0-9_.-]*\.md)")
+ACCEPTANCE_SCENARIO_RE = re.compile(
+    r"^(?P<prefix>\s*(?:[-*]\s+\[[ xX]\]\s*|[-*]\s*)?)"
+    r"Given\s+(?P<given>.+?)\s*(?:[,，]\s*)?"
+    r"When\s+(?P<when>.+?)\s*(?:[,，]\s*)?"
+    r"Then\s+(?P<then>.+?)\s*[。.]?\s*$",
+    re.IGNORECASE,
+)
 PUBLISH_SECTION = "## Publish Status"
 BODY_TEMPLATE_PATH = Path(__file__).resolve().parent / "templates" / "issue_body.md.tpl"
 GENERIC_TITLE_PREFIXES = {
@@ -390,44 +397,47 @@ def section_text(text: str | None, fallback: str) -> str:
     return fallback
 
 
-def metadata_lines(sections: dict[str, str], language: str) -> str:
-    lines: list[str] = []
-    parent = (section_value(sections, "Parent", "父需求", "来源") or "").strip()
-    issue_type = (section_value(sections, "Type", "类型") or "").strip()
-    parent_label = "父需求" if is_chinese_language(language) else "Parent"
-    type_label = "类型" if is_chinese_language(language) else "Type"
-    if parent:
-        lines.append(f"- {parent_label}: {parent}")
-    if issue_type:
-        lines.append(f"- {type_label}: {issue_type}")
-    fallback = "- 未记录父需求或类型。" if is_chinese_language(language) else "- No explicit parent or type."
-    return "\n".join(lines) if lines else fallback
+def humanize_acceptance_line(line: str, language: str) -> str:
+    match = ACCEPTANCE_SCENARIO_RE.match(line)
+    if not match:
+        return line
+
+    prefix = match.group("prefix") or "- [ ] "
+    if not prefix.strip():
+        prefix = "- [ ] "
+    given = match.group("given").strip().rstrip("。.")
+    action = match.group("when").strip().rstrip("。.")
+    expected = match.group("then").strip().rstrip("。.")
+    if is_chinese_language(language):
+        return f"{prefix}场景：{given}；操作：{action}；预期结果：{expected}。"
+    return f"{prefix}Context: {given}; action: {action}; expected result: {expected}."
+
+
+def acceptance_criteria_text(text: str | None, fallback: str, language: str) -> str:
+    if not text or not text.strip():
+        return fallback
+    return "\n".join(
+        humanize_acceptance_line(line, language)
+        for line in text.strip().splitlines()
+    )
 
 
 def issue_body_labels(language: str) -> dict[str, str]:
     if is_chinese_language(language):
         return {
             "summary_heading": "摘要",
-            "scope_heading": "范围",
-            "acceptance_criteria_heading": "验收标准",
-            "dependencies_heading": "依赖",
+            "acceptance_criteria_heading": "验收清单",
             "implementation_notes_heading": "实现备注",
-            "source_heading": "来源",
             "missing_summary": "本地 issue 草稿未提供摘要。",
             "missing_acceptance": "- [ ] 本地 issue 草稿未提供验收标准。",
-            "missing_dependencies": "- 无依赖，可立即开始",
             "missing_notes": "- 无补充说明。",
         }
     return {
         "summary_heading": "Summary",
-        "scope_heading": "Scope",
-        "acceptance_criteria_heading": "Acceptance criteria",
-        "dependencies_heading": "Dependencies",
+        "acceptance_criteria_heading": "Acceptance checklist",
         "implementation_notes_heading": "Implementation notes",
-        "source_heading": "Source",
         "missing_summary": "No summary was provided in the local issue draft.",
         "missing_acceptance": "- [ ] Acceptance criteria were not provided in the local issue draft.",
-        "missing_dependencies": "- None - can start immediately",
         "missing_notes": "- No additional notes.",
     }
 
@@ -441,14 +451,10 @@ def render_issue_body(key: str, sections: dict[str, str], language: str) -> str:
             section_value(sections, "What to build", "建设内容", "实现内容", "需求摘要"),
             labels["missing_summary"],
         ),
-        scope=metadata_lines(sections, language),
-        acceptance_criteria=section_text(
+        acceptance_criteria=acceptance_criteria_text(
             section_value(sections, "Acceptance criteria", "验收标准"),
             labels["missing_acceptance"],
-        ),
-        dependencies=section_text(
-            section_value(sections, "Blocked by", "依赖", "阻塞项"),
-            labels["missing_dependencies"],
+            language,
         ),
         implementation_notes=section_text(
             section_value(sections, "Notes", "备注", "实现备注"),

@@ -59,7 +59,7 @@ version_control:
 - 读取 `team-spec/active/{slug}/issues/` 或显式 `--issues-dir`，并兼容旧布局 `team-spec/active/issues/{slug}/`。
 - 默认发布该目录下全部 issue；也可以通过 `--issue` 只发布指定的单个 issue。
 - 按 `Blocked by` 生成依赖顺序。
-- 使用 `./scripts/templates/issue_body.md.tpl` 按 `language` 渲染 GitHub 友好的 issue 正文，固定包含摘要、范围、验收标准、依赖、实现备注和折叠的来源信息；正文只保留对协作有用的摘要字段，不直接发布完整草稿原文。
+- 使用 `./scripts/templates/issue_body.md.tpl` 按 `language` 渲染 GitHub 友好的 issue 正文，固定包含摘要、验收清单和实现备注；正文只保留对协作有用的摘要字段，不直接发布完整草稿原文。
 - 发布前会校验 issue 标题是否足够清晰：必须来自明确的 `#` 标题或 `Title` 段，不能回退到文件名；标题过短、过泛或缺少对象时会拒绝发布。
 - 从显式 `--repo`、`team-spec/config.yml` 或 git remote 推断 GitHub 仓库，多个 remote 时按配置优先，其次优先 `upstream`。
 - 默认 dry-run，只输出发布计划。
@@ -104,11 +104,10 @@ GITHUB_TOKEN=... python3 {skill_dir}/scripts/publish_github_issues.py --slug {sl
 
 - 远端 GitHub Issue 正文应面向人类协作阅读，不要把本地草稿 Markdown 原样作为正文。
 - `What to build` 映射为 `Summary` / `摘要`。
-- `Parent` 与 `Type` 映射为 `Scope` / `范围` 列表。
-- `Acceptance criteria` 保留为可勾选清单。
-- `Blocked by` 映射为 `Dependencies` / `依赖`。
+- `Acceptance criteria` 转换为适合人类阅读的可勾选验收清单；本地草稿里的 Given/When/Then 验收场景不得原样发布到远端正文。
 - `Notes` 映射为 `Implementation notes` / `实现备注`。
-- `Local-Issue-Key` 只放在折叠的 `Source` / `来源` 区域，用于幂等检查和问题追踪。
+- `Parent`、`Type` 和 `Blocked by` 不进入远端 issue 正文；`Blocked by` 仅用于发布排序、循环依赖检查和 dry-run 汇总。
+- `Local-Issue-Key` 仅作为隐藏 HTML 注释写入远端正文，用于幂等检查；不得显示 `Source` / `来源` 章节。
 
 ## 输入物
 
@@ -199,7 +198,7 @@ GitHub Enterprise 场景下，remote host 必须与平台地址一致；如果�
 
 若远端已存在匹配项，则标记为 `skipped` 并回写现有 issue URL，不重复创建。
 
-发布时必须把本地唯一键持久化到远端 issue 描述，例如追加标准元数据行：`Local-Issue-Key: {local-seq}-{short-issue-slug}.md`。
+发布时必须把本地唯一键持久化到远端 issue 描述的隐藏 HTML 注释中，例如：`<!-- Local-Issue-Key: {local-seq}-{short-issue-slug}.md -->`。
 
 推荐匹配逻辑：
 
