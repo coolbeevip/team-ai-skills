@@ -1,6 +1,6 @@
 # Skills For Real Teams
 
-团队协作使用的大语言模型技能库，按产品、架构、Codex Harness、交付、技术债和文档职责域组织，覆盖需求到工程交付的协作流程。
+团队协作使用的大语言模型技能库，按产品、Codex Harness、交付、技术债和文档职责域组织，覆盖需求到工程交付的协作流程。
 
 ## 快速开始
 
@@ -12,7 +12,7 @@ npx skills@latest add coolbeevip/team-ai-skills --all
 
 ## 技能职责域
 
-本技能库将团队协作拆成六个职责域：产品定义、架构设计、Codex Harness、交付执行、技术债治理和文档质量。每个职责域都可以独立使用，也可以沿着需求到交付的流程串联起来，帮助团队把想法稳定成可评审、可拆解、可实现、可验证的工作。
+本技能库将团队协作拆成五个职责域：产品定义、Codex Harness、交付执行、技术债治理和文档质量。每个职责域都可以独立使用，也可以沿着需求到交付的流程串联起来，帮助团队把想法稳定成可评审、可拆解、可实现、可验证的工作。
 
 ### 产品定义
 
@@ -22,12 +22,6 @@ npx skills@latest add coolbeevip/team-ai-skills --all
 - `team-spec-review`：从产品、数据、合规、运营、交付和协作角度检查规格风险，并给出是否已准备好进入下一阶段的结论。
 - `team-spec-to-prd`：将已经细化并通过评审的规格固化为结构化 PRD，作为需求进入交付阶段的正式输入。
 - `team-spec-archive`：把已完成、废弃或暂停的 active 需求产物归档，避免新需求误改旧规格。
-
-### 架构设计
-
-架构设计域用于把已确认的需求与当前代码、接口、数据和系统约束对齐，适合架构师、技术负责人或文档工程师在方案评审前使用。
-
-- `team-spec-to-functional-design`：基于需求规格、PRD 和源代码生成企业级功能设计说明书，帮助团队形成可评审的实现方案。
 
 ### Codex Harness
 
@@ -76,7 +70,6 @@ flowchart TD
     D --> F[team-prd-to-issues]
     D -. 可选：人类对齐材料 .-> H[team-prd-to-alignment]
     H -. 对齐结论反馈 .-> D
-    D -. 可选：功能设计 .-> R[team-spec-to-functional-design]
     F --> N[team-issue-publish-github]
     F --> O[team-issue-publish-gitlab]
     F -. Codex 检索层不清晰时 .-> T[team-codex-harness]
@@ -101,8 +94,6 @@ flowchart TD
 `team-spec-refine` 和 `team-spec-review` 可以反复迭代。只有当 P0 和关键 P1 风险被解决或明确接受后，才进入 `team-spec-to-prd` 固化 PRD。
 
 `team-spec/active/prd/` 中的 PRD 是需求到工程的正式交接边界。`team-prd-to-alignment` 可将 AI 结构化 PRD 转换为适合需求、研发和项目管理讨论的人类对齐材料；`team-prd-to-issues` 仍应以 PRD 为主输入。
-
-`team-spec-to-functional-design` 基于 PRD 与源代码生成企业级功能设计说明书，供架构师和技术负责人在实现前评审，不影响 PRD 的权威地位。
 
 `team-prd-to-issues` 应以 PRD 为主输入；`CONTEXT.md`、`decisions/` 和 `reviews/` 只能作为背景参考，不能绕过 PRD 直接拆工程任务。拆解过程中如果发现入口约束、验证策略、失败记忆或任务入口不清晰，可使用 `team-codex-harness` 补全。
 

@@ -248,4 +248,3 @@ Harness 目录识别规则：
 - `team-skill-evolve`：维护团队技能库自身。Codex harness 技能定义、触发词、脚本或流程需要修改时，使用它。
 - `team-prd-to-issues`：拆 PRD 时如果发现入口约束、验证策略或任务入口不清楚，可以转入本技能补 harness。
 - `team-issue-implement` / `team-issue-verify`：真实实现或验证暴露的失败记忆、验证盲区和任务入口缺口，可以反馈给本技能。
-- `team-spec-to-functional-design`：需要面向人类评审的功能设计说明书时使用，不由本技能替代。
