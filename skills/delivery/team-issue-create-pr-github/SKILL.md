@@ -1,6 +1,6 @@
 ---
 name: team-issue-create-pr-github
-description: 将已完成的单个 issue 分支推送到 GitHub，并创建标题和正文都关联 issue 编号的 Pull Request。Create a GitHub Pull Request for a completed issue branch, pushing the branch and linking the issue number in both title and body.
+description: 将已完成的单个 issue 分支推送到 GitHub，并创建正文关联 issue、标题符合组件标签规范的 Pull Request。Create a GitHub Pull Request for a completed issue branch, pushing the branch with an issue-linked body and a component-tagged title.
 license: MIT
 metadata:
   author: coolbeevip
@@ -18,7 +18,7 @@ triggers:
 
 # 创建 GitHub Pull Request
 
-这个技能用于在 `team-issue-implement` 和 `team-issue-verify` 后，把已经提交好的当前 issue 分支推送到 GitHub，并创建关联 issue 的 Pull Request。它关注“少出错、可预览、可追踪”，避免手动复制 issue 编号、标题和正文时遗漏关联。
+这个技能用于在 `team-issue-implement` 和 `team-issue-verify` 后，把已经提交好的当前 issue 分支推送到 GitHub，并创建关联 issue 的 Pull Request。它关注“少出错、可预览、可追踪”，避免手动复制 issue 编号、标题规范和正文模板时遗漏关联。
 
 v1 仅支持 GitHub Pull Request。GitLab Merge Request 应使用独立技能。
 
@@ -60,7 +60,7 @@ version_control:
 - `--execute` 时先做执行前确认，再 push 当前分支并创建 GitHub Pull Request。
 - 固定脚本只负责推送已有提交和创建 PR，不在脚本内部自动暂存或提交。
 - 如果工作区或暂存区存在未提交变更，技能必须先列出这些变更，并取得用户对提交范围和提交信息的确认；确认后由 agent 在运行固定脚本前执行必要的 `git add` 和 `git commit` 完成收尾提交。
-- PR 标题默认不包含 issue 编号，只描述变更本身；正文使用 `./scripts/templates/pr_body.md.tpl` 按 `language` 渲染，并保留 `Closes #{issue_number}` 以便 GitHub 自动关联并在合并后关闭 issue。
+- PR 标题推荐使用组件标签和祈使语气，例如 `[BugFix] Fix export filter`；正文使用 `./scripts/templates/pr_body.md.tpl` 按 `language` 渲染，并保留 `Fixes #{issue_number}` 以便 GitHub 自动关联并在合并后关闭 issue。
 - 创建 PR 成功后，如果能定位到本地 issue 草稿，会把该文件回写为 `Status: PR created`，并记录 `PR:` 和 `Pushed Branch:`；该回写只修改本地文件，不会自动 `git add` 或提交 `team-spec/`。
 - 可指定 target branch、source remote、target remote、title、draft 和 assignee；未指定 target branch 时优先使用 `version_control.trunk_branch`。
 - 执行前会检查被 Git 追踪但又命中 `.gitignore` 规则的文件，并要求人类确认是否继续。
@@ -87,7 +87,7 @@ GITHUB_TOKEN=... python3 {skill_dir}/scripts/create_github_pr.py --execute
 - `--target-remote upstream`：指定 PR 目标项目 remote。
 - `--target-repo owner/repo`：显式指定目标仓库，优先级高于 remote 推断。
 - `--source-repo owner/repo`：显式指定 source repo，用于 fork 工作流。
-- `--title "Add export filter"`：显式指定 PR 标题；不建议在标题中包含 issue 编号。
+- `--title "[Component] Add export filter"`：显式指定 PR 标题；推荐把组件标签放在最前面并用方括号，不建议在标题中包含 issue 编号。
 - `--issue-file team-spec/active/{slug}/issues/123-short-title.md`：显式指定本地 issue 草稿，用其中的 `# 标题` 或 `## Title` 首行生成 PR 标题和标准正文。
 - `--body-file path/to/body.md`：显式指定 PR 正文；如未指定，脚本使用 `./scripts/templates/pr_body.md.tpl` 生成标准正文。
 - `--language zh-CN`：显式覆盖 PR 正文模板语言；不传时读取 `team-spec/config.yml`。
@@ -137,21 +137,25 @@ GITHUB_TOKEN=... python3 {skill_dir}/scripts/create_github_pr.py --execute
 
 ## PR 标题与正文规则
 
-- 标题默认不包含 issue 编号，默认格式为 `{clear change title}`，例如 `Add export filter`。
-- 如果用户显式提供 `--title`，优先使用该标题；脚本不会自动向标题补 issue 编号。
+- 标题推荐格式为 `[Component] Add clear change title`，例如 `[BugFix] Fix export filter`、`[CI] Add release check`、`[microTVM][CI] Fix board test workflow`。
+- 组件标签必须放在标题最前面并使用方括号；多个标签使用多个方括号，例如 `[microTVM][CI]`。
+- 标题正文使用祈使语气，例如 `Add ...`、`Fix ...`、`Update ...`，不要写 `Added ...`、`Fixed ...`、`Updated ...`。
+- 首字母、专有名词和缩写大小写必须正确，例如 `API`、`CI`、`microTVM`。
+- 标题末尾不要加句号；脚本会自动移除显式标题、issue 标题或分支标题末尾的 `.` / `。`。
+- 如果用户显式提供 `--title`，优先使用该标题；脚本不会自动向标题补 issue 编号，也不会猜测组件标签。
 - 如果没有显式标题，优先从 `--issue-file` 指定的本地 issue 草稿读取标题；其次从 `team-spec/active/*/issues/{issue-number}-*.md` 的唯一匹配文件读取标题，并兼容旧布局 `team-spec/active/issues/*/{issue-number}-*.md`。
 - 本地 issue 草稿标题只允许来自明确的 `# 标题` 或 `## Title` 段首行，不得回退到文件名。
 - 如果找不到本地 issue 标题，才从分支名生成标题；如果分支名去掉 issue 编号后没有语义，例如只剩 `implementation`，必须停止并要求用户提供 `--title` 或 `--issue-file`。
-- 正文必须包含 GitHub closing keyword，例如 `Closes #123`。
+- 如果标题缺少组件标签，或以 `Added`、`Fixed`、`Updated` 等过去式动词开头，脚本会在 dry-run 预览中输出 `Title style notes`，提示用户用 `--title` 覆盖。
+- 正文必须包含 GitHub closing keyword，例如 `Fixes #123`。
 - 默认正文必须使用 `./scripts/templates/pr_body.md.tpl`，并包含：
-  - `Summary`：从 issue 的 `What to build` 映射；缺失时用分支和 issue 生成兜底摘要。
-  - `Changes`：优先来自 issue 的 `Implementation Notes`。
-  - `Acceptance criteria`：优先来自 `team-issue-verify` 回写的 `Acceptance Criteria Coverage`。
-  - `Verification`：优先来自 `Commands Run`。
-  - `Risks`：优先来自 `Regression Risks`。
+  - `What is the purpose of the change?`：简要说明为什么需要这个 PR；优先从 issue 的 `What to build` 映射，缺失时用分支和 issue 生成兜底摘要，并包含 `Fixes #{issue_number}`。
+  - `Brief change log`：优先来自 issue 的 `Implementation Notes`。
+  - `How was this tested?`：优先来自 `Commands Run`，也兼容 `Acceptance Criteria Coverage`。
+  - `Documentation`：文档更新检查项。
+  - `Compatibility / impact`：优先来自 `Compatibility / impact`、`Impact` 或 `Regression Risks`。
   - `Reviewer notes`：优先来自 `Findings`。
-  - `Checklist`：提交前人工检查清单。
-- 如果用户传入 `--body-file`，也必须保留 issue closing keyword；脚本会在缺失时自动补 `Closes #{issue_number}`。
+- 如果用户传入 `--body-file`，也必须保留 issue closing keyword；脚本会在缺失时自动补 `Fixes #{issue_number}`。
 
 不要创建没有 issue 关联正文的 PR，除非用户明确要求。不要创建空泛标题的 PR，例如 `implementation` 或 `Resolve #123: implementation`。
 
@@ -181,7 +185,7 @@ GITHUB_TOKEN=... python3 {skill_dir}/scripts/create_github_pr.py --execute
 ## 完成标准
 
 - 当前分支已推送到正确 source remote。
-- GitHub PR 已创建，标题和正文都关联 issue 编号。
+- GitHub PR 已创建，正文关联 issue 编号，标题符合组件标签和祈使语气规范或已在预览中提示需要调整。
 - 如能定位本地 issue 草稿，已回写 `Status: PR created`、`PR:` 和 `Pushed Branch:`。
 - 如果执行了收尾提交，最终回复包含创建的 commit SHA 和提交范围。
 - 最终回复包含 PR URL。

@@ -1,29 +1,25 @@
-Closes #${issue_number}
+## What is the purpose of the change?
 
-## ${summary_heading}
+${purpose}
 
-${summary}
+Fixes #${issue_number}
 
-## ${changes_heading}
+## Brief change log
 
-${changes}
+${change_log}
 
-## ${acceptance_criteria_heading}
+## How was this tested?
 
-${acceptance_coverage}
+${testing}
 
-## ${verification_heading}
+## Documentation
 
-${verification}
+${documentation}
 
-## ${risks_heading}
+## Compatibility / impact
 
-${risks}
+${compatibility}
 
-## ${reviewer_notes_heading}
+## Reviewer notes
 
 ${reviewer_notes}
-
-## ${checklist_heading}
-
-${checklist}

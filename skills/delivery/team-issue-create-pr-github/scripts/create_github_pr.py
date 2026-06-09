@@ -22,6 +22,10 @@ from typing import Any
 ISSUE_RE = re.compile(r"(?:^|[-_/])#?(\d+)(?:[-_/]|$)")
 SECTION_RE = re.compile(r"^##\s+(.+?)\s*$", re.MULTILINE)
 BODY_TEMPLATE_PATH = Path(__file__).resolve().parent / "templates" / "pr_body.md.tpl"
+TITLE_TAG_RE = re.compile(r"^(?:\[[^\]\n]+\])+\s+\S")
+PAST_TENSE_TITLE_RE = re.compile(
+    r"^(?:\[[^\]\n]+\]\s*)*(Added|Changed|Created|Fixed|Implemented|Removed|Updated)\b"
+)
 
 
 @dataclass
@@ -399,7 +403,19 @@ def resolve_issue_file_and_title(
 
 
 def normalize_title_text(title: str) -> str:
-    return re.sub(r"\s+", " ", title).strip()
+    normalized = re.sub(r"\s+", " ", title).strip()
+    return re.sub(r"[.。]+\s*$", "", normalized)
+
+
+def title_style_notes(title: str) -> list[str]:
+    notes: list[str] = []
+    if not TITLE_TAG_RE.match(title):
+        notes.append(
+            "Recommended title starts with one or more component tags, e.g. [BugFix] Fix export filter."
+        )
+    if PAST_TENSE_TITLE_RE.match(title):
+        notes.append("Recommended title uses imperative mood, e.g. Fix ..., not Fixed ...")
+    return notes
 
 
 def build_title(
@@ -423,8 +439,6 @@ def build_title(
             )
         title = summary
         title_source = "branch"
-    if args.draft and not title.lower().startswith(("draft:", "wip:")):
-        title = "Draft: " + title
     return title, title_source
 
 
@@ -451,46 +465,30 @@ def load_issue_sections(issue_file: Path | None) -> dict[str, str]:
 def pr_body_labels(language: str) -> dict[str, str]:
     if is_chinese_language(language):
         return {
-            "summary_heading": "摘要",
-            "changes_heading": "变更",
-            "acceptance_criteria_heading": "验收标准",
-            "verification_heading": "验证",
-            "risks_heading": "风险",
-            "reviewer_notes_heading": "审阅备注",
-            "checklist_heading": "检查清单",
-            "missing_summary": "从分支 `${branch}` 实现 issue #${issue_number}。",
-            "missing_changes": "- 见本 PR 的提交记录。",
-            "missing_verification": "- [ ] 请在发起审阅前补充验证命令和结果。",
-            "missing_acceptance": "- [ ] 本地 issue 文件未记录验收标准覆盖情况。",
-            "missing_risks": "- 未记录明确的回归风险。",
-            "missing_reviewer_notes": "- 未记录需要审阅者特别关注的事项。",
-            "checklist": "\n".join(
+            "missing_purpose": "从分支 `${branch}` 实现 issue #${issue_number}。",
+            "missing_change_log": "- 见本 PR 的提交记录。",
+            "missing_testing": "- [ ] 请在发起审阅前补充验证命令、测试结果和 CI 覆盖情况。",
+            "missing_compatibility": "- 未记录 public API、配置项、数据格式、依赖、兼容性、性能、部署、运维或安全影响。",
+            "missing_reviewer_notes": "- 未记录需要 reviewer 特别关注的事项。",
+            "documentation_checklist": "\n".join(
                 [
-                    "- [ ] PR 标题清楚描述变更本身，且不嵌入 issue 编号。",
-                    "- [ ] 实现范围与关联 issue 一致。",
-                    "- [ ] 已在上方列出相关测试或检查结果。",
+                    "- [ ] 不需要文档更新",
+                    "- [ ] 已更新文档 / JavaDocs / API docs / release notes",
+                    "- [ ] 后续 PR 更新文档，并说明原因",
                 ]
             ),
         }
     return {
-        "summary_heading": "Summary",
-        "changes_heading": "Changes",
-        "acceptance_criteria_heading": "Acceptance criteria",
-        "verification_heading": "Verification",
-        "risks_heading": "Risks",
-        "reviewer_notes_heading": "Reviewer notes",
-        "checklist_heading": "Checklist",
-        "missing_summary": "Implements issue #${issue_number} from branch `${branch}`.",
-        "missing_changes": "- See the commits in this pull request.",
-        "missing_verification": "- [ ] Add the verification commands and results before review.",
-        "missing_acceptance": "- [ ] Acceptance criteria coverage was not found in the local issue file.",
-        "missing_risks": "- No specific regression risks recorded.",
+        "missing_purpose": "Implements issue #${issue_number} from branch `${branch}`.",
+        "missing_change_log": "- See the commits in this pull request.",
+        "missing_testing": "- [ ] Add verification commands, test results, and CI coverage before review.",
+        "missing_compatibility": "- No public API, configuration, data format, dependency, compatibility, performance, deployment, operations, or security impact recorded.",
         "missing_reviewer_notes": "- No reviewer notes recorded.",
-        "checklist": "\n".join(
+        "documentation_checklist": "\n".join(
             [
-                "- [ ] The PR title clearly describes the change without embedding the issue number.",
-                "- [ ] The implementation scope matches the linked issue.",
-                "- [ ] Relevant tests or checks are listed above.",
+                "- [ ] No documentation update needed",
+                "- [ ] Updated docs / JavaDocs / API docs / release notes",
+                "- [ ] Documentation will be updated in a follow-up PR, with rationale",
             ]
         ),
     }
@@ -510,39 +508,41 @@ def render_default_body(
         **labels,
         issue_number=issue_number,
         branch=branch,
-        summary=body_section(
+        purpose=body_section(
             sections,
-            Template(labels["missing_summary"]).safe_substitute(fallback_template_values),
+            Template(labels["missing_purpose"]).safe_substitute(fallback_template_values),
             "What to build",
             "建设内容",
             "实现内容",
             "需求摘要",
         ),
-        changes=body_section(
+        change_log=body_section(
             sections,
-            labels["missing_changes"],
+            labels["missing_change_log"],
             "Implementation Notes",
             "实现说明",
             "实现备注",
         ),
-        verification=body_section(
+        testing=body_section(
             sections,
-            labels["missing_verification"],
+            labels["missing_testing"],
             "Commands Run",
             "验证命令",
             "已运行命令",
-        ),
-        acceptance_coverage=body_section(
-            sections,
-            labels["missing_acceptance"],
             "Acceptance Criteria Coverage",
             "验收标准覆盖",
             "验收覆盖",
         ),
-        risks=body_section(
+        documentation=labels["documentation_checklist"],
+        compatibility=body_section(
             sections,
-            labels["missing_risks"],
+            labels["missing_compatibility"],
+            "Compatibility / impact",
+            "Compatibility",
+            "Impact",
             "Regression Risks",
+            "兼容性影响",
+            "影响",
             "回归风险",
             "风险",
         ),
@@ -569,9 +569,9 @@ def build_body(
     else:
         body = render_default_body(issue_number, branch, issue_file, language)
     if f"#{issue_number}" not in body:
-        body = f"Closes #{issue_number}\n\n" + body
+        body = f"Fixes #{issue_number}\n\n" + body
     if not re.search(rf"\b(close[sd]?|fix(e[sd])?|resolve[sd]?)\s+#{re.escape(issue_number)}\b", body, re.I):
-        body = f"Closes #{issue_number}\n\n" + body
+        body = f"Fixes #{issue_number}\n\n" + body
     return body
 
 
@@ -781,6 +781,7 @@ def build_plan(args: argparse.Namespace) -> dict[str, Any]:
         "target_repo": target.path,
         "title": title,
         "title_source": title_source,
+        "title_style_notes": title_style_notes(title),
         "issue_title_source": issue_title[1] if issue_title else None,
         "issue_file": str(issue_file) if issue_file else None,
         "body": body,
@@ -883,6 +884,10 @@ def print_text(plan: dict[str, Any]) -> None:
             print(f"- {path}")
     print(f"Title: {plan['title']}")
     print(f"Title source: {plan['title_source']}")
+    if plan.get("title_style_notes"):
+        print("Title style notes:")
+        for note in plan["title_style_notes"]:
+            print(f"- {note}")
     if plan.get("issue_title_source"):
         print(f"Issue title source: {plan['issue_title_source']}")
     if plan.get("issue_file_updated"):
