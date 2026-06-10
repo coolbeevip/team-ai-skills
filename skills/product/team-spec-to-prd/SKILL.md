@@ -27,6 +27,10 @@ triggers:
 
 ```yaml
 language: zh-CN
+access_policy:
+  mode: default-readonly
+  directory_file: team-spec/access_policy/default.md
+  user_file_template: team-spec/access_policy/{user_name}.md
 ```
 
 语言优先级：用户本轮明确指定 > `team-spec/config.yml` > 首次询问并落盘。若配置不存在，不报错，走“询问并创建”流程。
@@ -35,6 +39,7 @@ language: zh-CN
 
 - 对话回复与 PRD 文档 `team-spec/active/{slug}/prd/prd.md` 均使用 `language`。
 - 用户临时切换语言时，本次立即生效，并询问是否回写配置。
+- 在读取需求上下文、规格、评审或代码前，先读取 `team-spec/config.yml`；如果存在 `access_policy`，先确认当前协作者的读写边界，再决定是否允许进入写入流程。
 
 ## 输入物
 

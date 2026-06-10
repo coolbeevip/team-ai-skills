@@ -34,6 +34,10 @@ version_control:
   contribution_model: fork-pull
   source_remote: origin
   target_remote: upstream
+access_policy:
+  mode: default-readonly
+  directory_file: team-spec/access_policy/default.md
+  user_file_template: team-spec/access_policy/{user_name}.md
 ```
 
 语言优先级：用户本轮明确指定或脚本 `--language` > `team-spec/config.yml` > `en-US` 兜底。若配置不存在，技能执行时应先按团队规范询问语言偏好并创建配置；固定脚本独立运行时不交互，使用 `en-US` 兜底。
@@ -41,6 +45,7 @@ version_control:
 远端 GitLab Merge Request 正文模板标题、兜底文案和检查项必须使用 `language`；本地 issue 草稿已有内容保持原文。
 
 版本管理优先级：用户显式参数 > `team-spec/config.yml` 的 `version_control` > git 命令推断 > 询问用户。若缺少 `version_control`，先用 `git remote -v`、`git branch --show-current`、`git branch -r`、`git symbolic-ref refs/remotes/{remote}/HEAD` 和 `git config --get branch.{branch}.remote` 推断 source remote、target remote、主干分支和贡献方式；无法唯一判断时再询问用户，并在用户确认后回写 `team-spec/config.yml`。
+- 在读取 issue 草稿、分支状态或目标项目内容前，先读取 `team-spec/config.yml`；如果存在 `access_policy`，先应用目录访问边界，再进入任何推送或写入流程。
 
 ## 固定脚本
 

@@ -31,6 +31,10 @@ version_control:
   contribution_model: fork-pull
   source_remote: origin
   target_remote: upstream
+access_policy:
+  mode: default-readonly
+  directory_file: team-spec/access_policy/default.md
+  user_file_template: team-spec/access_policy/{user_name}.md
 ```
 
 语言优先级：用户本轮明确指定 > `team-spec/config.yml` > 首次询问并落盘。若配置不存在，不报错，走“询问并创建”流程。
@@ -40,6 +44,7 @@ version_control:
 - 对话回复与 issue 草稿文档 `team-spec/active/{slug}/issues/` 下内容均使用 `language`。
 - 用户临时切换语言时，本次立即生效，并询问是否回写配置。
 - 生成“下一步可选”或判断发布平台时，优先参考 `version_control`；缺失时先通过 git 命令推断，无法唯一判断再询问用户，并在用户确认后回写 `team-spec/config.yml`。
+- 在读取 PRD、规格、代码或写入 issue 草稿前，先读取 `team-spec/config.yml`；如果存在 `access_policy`，先应用目录访问边界，再进入拆解和写入流程。
 
 ## 输入物
 

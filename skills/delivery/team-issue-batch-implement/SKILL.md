@@ -22,6 +22,28 @@ triggers:
 
 核心原则：批量选择，单个执行，逐个验证，失败即停，可恢复继续。
 
+## 运行时配置
+
+在读取 issue 目录、PRD、评审或代码前，先读取目标项目根目录的 `team-spec/config.yml`。如果存在 `access_policy`，必须先应用目录访问边界，再进入任何批量执行或写入流程。
+
+```yaml
+language: zh-CN
+version_control:
+  system: git
+  trunk_branch: main
+  contribution_model: fork-pull
+  source_remote: origin
+  target_remote: upstream
+access_policy:
+  mode: default-readonly
+  directory_file: team-spec/access_policy/default.md
+  user_file_template: team-spec/access_policy/{user_name}.md
+```
+
+- `language`：批量计划、对话回复和输出汇总的统一语言。
+- `version_control`：仅在需要衔接发布技能或判断主干分支时使用。
+- `access_policy`：目录访问策略索引。缺失时默认只读；如果本次任务必须写入目标项目而配置又缺失，先询问是否创建最小配置。
+
 ## 输入物
 
 主输入必须能唯一定位一组 issue：

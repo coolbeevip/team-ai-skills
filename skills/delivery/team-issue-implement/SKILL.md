@@ -22,6 +22,28 @@ triggers:
 
 如果用户要连续处理多个可执行 `AFK` issue，应使用 `team-issue-batch-implement` 做批量编排。本技能仍只负责一个 issue 的实现与验证衔接。
 
+## 运行时配置
+
+在读取 issue、PRD、代码或测试前，先读取目标项目根目录的 `team-spec/config.yml`。如果存在 `access_policy`，必须先应用目录访问边界，再进入任何写入流程。
+
+```yaml
+language: zh-CN
+version_control:
+  system: git
+  trunk_branch: main
+  contribution_model: fork-pull
+  source_remote: origin
+  target_remote: upstream
+access_policy:
+  mode: default-readonly
+  directory_file: team-spec/access_policy/default.md
+  user_file_template: team-spec/access_policy/{user_name}.md
+```
+
+- `language`：issue 回复、实现说明和回写笔记的统一语言。
+- `version_control`：仅在需要衔接 PR/MR 或发布时使用。
+- `access_policy`：目录访问策略索引。缺失时默认只读；如果本次任务必须写入目标项目而配置又缺失，先询问是否创建最小配置。
+
 ## 输入物
 
 主输入必须是一个明确的 issue：

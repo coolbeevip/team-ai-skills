@@ -53,6 +53,10 @@ version_control:
   contribution_model: fork-pull
   source_remote: origin
   target_remote: upstream
+access_policy:
+  mode: default-readonly
+  directory_file: team-spec/access_policy/default.md
+  user_file_template: team-spec/access_policy/{user_name}.md
 ```
 
 - `language`：统一语言设置（对话回复与 refine/review/prd/issues/design 产物文档）。
@@ -61,8 +65,10 @@ version_control:
 - `version_control.contribution_model`：贡献方式，例如 `fork-pull` 或 `direct`。
 - `version_control.source_remote`：贡献分支默认推送的 remote，`fork-pull` 常见为 `origin`。
 - `version_control.target_remote`：PR/MR 或 issue 默认面向的上游 remote，`fork-pull` 常见为 `upstream`。
+- `access_policy`：目录访问策略索引。`mode`、`directory_file` 和 `user_file_template` 只负责定位权限正文，不在这里写长篇规则。
 
 `version_control` 是可选配置。首次创建 `team-spec/config.yml` 时，若当前任务只涉及产品规格，不要为了补齐版本管理信息打断用户；只写入已确认的 `language`。当后续技能涉及 issue 发布、实现收尾、PR 或 MR 时，再补充版本管理配置。
+如果本轮任务涉及访问边界、写入目标项目文件或需要稳定复用的运行时偏好，`access_policy` 应与 `language` 一起作为最小配置的一部分；配置缺失时，先询问是否创建最小配置，再继续写入。
 
 语言优先级必须固定为：
 
@@ -135,6 +141,7 @@ version_control:
 - `team-spec/active/{slug}/spec/decisions/{number}-{decision-slug}.md`：当出现只影响当前需求的产品决策时创建。
 - `team-spec/active/{slug}/STATUS.md`：可选状态文件，用于记录当前需求处于 `refining`、`reviewed`、`prd-ready`、`paused` 或 `blocked` 等状态。
 - `team-spec/config.yml`：首次进入工作空间且缺失配置时创建；用户明确同意时可更新语言设置，相关交付技能在确认后可补充 `version_control` 配置。
+- 在读取或写入 `team-spec/active/{slug}/` 之前，先读取 `team-spec/config.yml`；如果存在 `access_policy`，再据此判断当前协作者对目录的读取和写入边界。
 
 本技能不得输出代码补丁、测试修改、配置修改、依赖变更、迁移文件或构建脚本变更。发现代码现状与需求目标不一致时，只能记录为当前行为、差异、风险、开放问题或后续实现建议。
 

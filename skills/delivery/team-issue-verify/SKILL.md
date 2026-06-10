@@ -20,6 +20,24 @@ triggers:
 
 这个技能用于确认 `team-issue-implement` 的结果是否真的满足 issue 和 PRD，而不是只确认“代码写完了”。它应尽量独立于实现过程进行判断，优先检查外部行为、验收标准和回归风险。
 
+## 运行时配置
+
+在读取 issue、实现结果、PRD 或测试前，先读取目标项目根目录的 `team-spec/config.yml`。如果存在 `access_policy`，先应用目录访问边界，再决定能否继续读取或回写项目文件。
+
+```yaml
+language: zh-CN
+version_control:
+  system: git
+  trunk_branch: main
+  contribution_model: fork-pull
+  source_remote: origin
+  target_remote: upstream
+access_policy:
+  mode: default-readonly
+  directory_file: team-spec/access_policy/default.md
+  user_file_template: team-spec/access_policy/{user_name}.md
+```
+
 ## 输入物
 
 主输入：
