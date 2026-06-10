@@ -46,6 +46,7 @@ Codex Harness 域用于维护 Codex 在具体项目中的运行时检索层，�
 
 技术债治理域用于把“代码需要重构”“系统不稳定”“维护成本太高”这类模糊诉求变成有证据、有优先级、有验收标准的工程工作，适合技术负责人、平台团队和稳定性负责人使用。
 
+- `team-tech-debt-analyze`：对项目或模块进行只读技术债分析，输出有源码证据、影响评估和治理优先级的债务候选清单。
 - `team-tech-debt-refine`：将技术债诉求细化为包含证据、影响范围、风险等级和验收口径的技术债规格。
 - `team-tech-debt-review`：评审技术债规格的风险、优先级、阻塞项和可执行性，判断是否可以进入工程拆解。
 - `team-tech-debt-to-issues`：把已评审的技术债规格拆解为可独立领取、可验证、按依赖排序的工程 issue。
@@ -84,6 +85,7 @@ flowchart TD
     I -- GitHub --> Q[team-issue-create-pr-github]
     D -. 需求完成或废弃时 .-> S[team-spec-archive]
 
+    R[team-tech-debt-analyze] --> J[team-tech-debt-refine]
     J[team-tech-debt-refine] --> K[team-tech-debt-review]
     K --> L{存在阻塞风险?}
     L -- 是 --> J
@@ -103,7 +105,7 @@ flowchart TD
 
 `team-spec-archive` 用于把 `team-spec/active/` 中已完成、废弃或暂停的需求产物归档到 `team-spec/archive/{slug}/`，清空活跃工作区以避免下一个需求误改旧规格。开始新需求前，若 active 中已有其他 slug，应先归档。
 
-技术债链路使用 `team-tech-debt-refine -> team-tech-debt-review -> team-tech-debt-to-issues`，并统一收敛到 `team-spec/active/issues/{slug}/`。技术债链路的 slug 必须包含 `debt`，建议格式 `{yyyy-mm-dd}-debt-{short-english-slug}`，以便后续复用工程实现与验证流程。
+技术债链路使用 `team-tech-debt-analyze -> team-tech-debt-refine -> team-tech-debt-review -> team-tech-debt-to-issues`。其中分析阶段输出债务候选清单，细化阶段选择单个候选项形成可评审规格。技术债链路的 slug 必须包含 `debt`，建议格式 `{yyyy-mm-dd}-debt-{short-english-slug}`，以便后续复用工程实现与验证流程。
 
 每个 `SKILL.md` 都声明了 `输入物` 和 `输出物`，用于说明它会读取哪些上游产物，以及会为哪些下游技能提供材料。
 

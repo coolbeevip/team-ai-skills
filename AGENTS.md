@@ -21,7 +21,8 @@
 - `skills/delivery/team-issue-verify/`：用于验证单个 issue 实现是否满足验收标准和 PRD。
 - `skills/delivery/team-issue-create-mr-gitlab/`：用于推送已完成的 issue 分支并创建关联 issue 的 GitLab Merge Request。
 - `skills/delivery/team-issue-create-pr-github/`：用于推送已完成的 issue 分支并创建关联 issue 的 GitHub Pull Request。
-- `skills/tech-debt/`：技术债治理职责，包括技术债细化、评审和工程拆解。
+- `skills/tech-debt/`：技术债治理职责，包括技术债分析、细化、评审和工程拆解。
+- `skills/tech-debt/team-tech-debt-analyze/`：用于对项目或模块进行只读技术债分析，输出证据化债务候选清单。
 - `skills/tech-debt/team-tech-debt-refine/`：用于把模糊技术债诉求细化为可评审规格。
 - `skills/tech-debt/team-tech-debt-review/`：用于评审技术债风险、优先级和可执行性。
 - `skills/tech-debt/team-tech-debt-to-issues/`：用于把已评审技术债拆解为工程 issue。
