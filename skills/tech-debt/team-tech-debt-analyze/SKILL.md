@@ -38,7 +38,7 @@ access_policy:
 
 执行要求：
 
-- 对话回复与技术债分析报告 `team-spec/active/{slug}/tech-debt/analysis.md` 均使用 `language`。
+- 对话回复与批次级技术债分析报告 `team-spec/active/{analysis_slug}/tech-debt/analysis.md` 均使用 `language`。
 - 用户临时切换语言时，本次立即生效，并询问是否回写配置。
 - 在读取代码、测试、配置、日志、运行文档或写入分析报告前，先读取 `team-spec/config.yml`；如果存在 `access_policy`，先确认当前协作者对相关目录的读写边界。
 
@@ -49,15 +49,29 @@ access_policy:
 - `team-spec/CONTEXT.md` 与 `team-spec/decisions/`（如存在）。
 - 现有 `team-spec/active/{slug}/spec/`、`prd/`、`issues/` 或 `design/`（仅当用户指定同一 slug 或与分析范围直接相关时读取）。
 
-必须先确定唯一 slug。技术债分析 slug 必须包含 `debt`，格式建议为 `{yyyy-mm-dd}-debt-{short-english-slug}`。如果用户没有提供 slug，可以根据本轮分析范围生成一个建议 slug；若目标项目中同名 slug 已存在，必须确认是继续已有分析还是创建新 slug。
+必须先确定唯一分析批次 slug。技术债分析批次 slug 必须包含 `debt`，格式建议为 `{yyyy-mm-dd}-debt-{scope-slug}`，例如 `2026-06-10-debt-code-health`。如果用户没有提供 slug，可以根据本轮分析范围生成一个建议 slug；若目标项目中同名 slug 已存在，必须确认是继续已有分析还是创建新 slug。
+
+分析批次 slug 只承载本次盘点报告。报告中每个 `Debt Candidate` 必须给出独立的 `Suggested Slug`，用于后续 `team-tech-debt-refine` 创建单个候选债务的闭环工作区，例如 `2026-06-10-debt-test-coverage`。除非用户明确说“就在当前分析 slug 继续细化”，否则不要把多个候选债务都写入分析批次 slug 的 `spec/refine.md`。
 
 ## 输出物
 
 - 对话中的技术债摘要：高优先级债务、关键证据、建议下一步。
-- `team-spec/active/{slug}/tech-debt/analysis.md`：技术债分析报告。
-- 可选更新 `team-spec/active/{slug}/STATUS.md`：仅记录 `analyzed`、`needs-refinement` 或 `blocked` 等状态，不记录业务细节。
+- `team-spec/active/{analysis_slug}/tech-debt/analysis.md`：批次级技术债分析报告。
+- 可选更新 `team-spec/active/{analysis_slug}/STATUS.md`：仅记录 `analyzed`、`needs-refinement` 或 `blocked` 等状态，不记录业务细节。
 
-下游技能读取这些输出物：`team-tech-debt-refine` 用于把单个候选债务细化为可评审规格，`team-tech-debt-review` 用于评审已细化债务，`team-tech-debt-to-issues` 用于工程拆解。
+下游技能读取这些输出物：`team-tech-debt-refine` 默认使用候选项的 `Suggested Slug` 创建独立工作区，并在 `spec/refine.md` 中反向引用来源分析；`team-tech-debt-review` 用于评审已细化债务，`team-tech-debt-to-issues` 用于工程拆解。
+
+推荐链路：
+
+```text
+批次级分析：
+team-spec/active/{analysis_slug}/tech-debt/analysis.md
+
+单个候选债务闭环：
+team-spec/active/{candidate_slug}/spec/refine.md
+team-spec/active/{candidate_slug}/spec/reviews.md
+team-spec/active/{candidate_slug}/issues/
+```
 
 ## 分析范围
 
@@ -123,6 +137,8 @@ access_policy:
 
 - Priority: P0 / P1 / P2 / P3
 - Confidence: High / Medium / Low
+- Suggested Slug: {yyyy-mm-dd}-debt-{candidate-slug}
+- Source Analysis: team-spec/active/{analysis_slug}/tech-debt/analysis.md#td-1-{候选债务标题}
 - Impact: {维护性/稳定性/性能/测试/交付影响}
 - Evidence:
   - `{path}`：{具体事实}
@@ -151,7 +167,7 @@ access_policy:
 ## 执行原则
 
 - 只读分析，不修改业务代码、测试、配置、构建脚本、依赖锁文件或迁移文件。
-- 可以写入 `team-spec/active/{slug}/tech-debt/analysis.md`，但不得把真实业务产物写入本技能库。
+- 可以写入 `team-spec/active/{analysis_slug}/tech-debt/analysis.md`，但不得把真实业务产物写入本技能库。
 - 优先使用 `rg`、`find`、语言自带测试清单和项目已有文档进行证据收集。
 - 发现无法读取的目录、权限边界或敏感区域时，记录为范围限制，不绕过访问策略。
 - 结论必须和证据一一对应；低置信度判断必须标为 `Confidence: Low`，并列出需要补证的方向。
@@ -159,15 +175,15 @@ access_policy:
 
 ## 完成标准
 
-- 生成 `team-spec/active/{slug}/tech-debt/analysis.md`。
-- 每个债务候选都有证据、影响、优先级、置信度和建议下一步。
+- 生成 `team-spec/active/{analysis_slug}/tech-debt/analysis.md`。
+- 每个债务候选都有证据、影响、优先级、置信度、`Suggested Slug` 和建议下一步。
 - 最终回复必须说明分析报告路径、最高优先级候选项和下一步可选。
 
 ## 完成输出
 
 最终回复必须包含：
 
-- 分析报告路径：`team-spec/active/{slug}/tech-debt/analysis.md`，如果本次已保存。
+- 分析报告路径：`team-spec/active/{analysis_slug}/tech-debt/analysis.md`，如果本次已保存。
 - Top Candidates：最多列 3 个最高优先级候选项。
 - 下一步可选：必须使用有序号的列表选项输出，方便用户直接回复序号继续推进。
 
@@ -176,6 +192,6 @@ access_policy:
 ```text
 技术债分析已完成，Status: analyzed。
 下一步可选：
-1. team-tech-debt-refine：选择 TD-1 继续细化为可评审技术债规格。
+1. team-tech-debt-refine：选择 TD-1，使用其 Suggested Slug 创建独立技术债规格。
 2. team-tech-debt-analyze：继续扫描 Follow-up Scan Areas 中尚未覆盖的模块。
 ```

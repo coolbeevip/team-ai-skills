@@ -105,7 +105,7 @@ flowchart TD
 
 `team-spec-archive` 用于把 `team-spec/active/` 中已完成、废弃或暂停的需求产物归档到 `team-spec/archive/{slug}/`，清空活跃工作区以避免下一个需求误改旧规格。开始新需求前，若 active 中已有其他 slug，应先归档。
 
-技术债链路使用 `team-tech-debt-analyze -> team-tech-debt-refine -> team-tech-debt-review -> team-tech-debt-to-issues`。其中分析阶段输出债务候选清单，细化阶段选择单个候选项形成可评审规格。技术债链路的 slug 必须包含 `debt`，建议格式 `{yyyy-mm-dd}-debt-{short-english-slug}`，以便后续复用工程实现与验证流程。
+技术债链路使用 `team-tech-debt-analyze -> team-tech-debt-refine -> team-tech-debt-review -> team-tech-debt-to-issues`。其中 `team-tech-debt-analyze` 使用批次级分析 slug 输出债务候选清单，每个候选项必须给出独立的 `Suggested Slug`；细化阶段默认使用候选项 slug 创建单个技术债闭环。技术债 slug 必须包含 `debt`，建议格式 `{yyyy-mm-dd}-debt-{short-english-slug}`，以便后续复用工程实现与验证流程。
 
 每个 `SKILL.md` 都声明了 `输入物` 和 `输出物`，用于说明它会读取哪些上游产物，以及会为哪些下游技能提供材料。
 
