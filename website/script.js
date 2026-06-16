@@ -36,46 +36,6 @@ function throttle(func, limit) {
 }
 
 // ============================================
-// 主题切换
-// ============================================
-
-class ThemeManager {
-  constructor() {
-    this.themeToggle = document.getElementById('themeToggle');
-    this.themeIcon = this.themeToggle?.querySelector('.theme-icon');
-    this.currentTheme = localStorage.getItem('theme') || 'light';
-
-    this.init();
-  }
-
-  init() {
-    // 应用保存的主题
-    this.applyTheme(this.currentTheme);
-
-    // 绑定切换事件
-    if (this.themeToggle) {
-      this.themeToggle.addEventListener('click', () => this.toggle());
-    }
-  }
-
-  applyTheme(theme) {
-    document.documentElement.setAttribute('data-theme', theme);
-    this.currentTheme = theme;
-    localStorage.setItem('theme', theme);
-
-    // 更新图标
-    if (this.themeIcon) {
-      this.themeIcon.textContent = theme === 'dark' ? '☀️' : '🌙';
-    }
-  }
-
-  toggle() {
-    const newTheme = this.currentTheme === 'light' ? 'dark' : 'light';
-    this.applyTheme(newTheme);
-  }
-}
-
-// ============================================
 // 搜索功能
 // ============================================
 
@@ -545,7 +505,6 @@ function resetFilters() {
 
 document.addEventListener('DOMContentLoaded', () => {
   // 初始化各个管理器
-  new ThemeManager();
   new SearchManager();
   new FilterManager();
   new ViewManager();
@@ -564,5 +523,5 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  console.log('🚀 Skills For Real Teams - 初始化完成');
+  console.log('Skills For Real Teams - initialized');
 });

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-CN" data-theme="light">
+<html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -48,23 +48,19 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
 </head>
 <body>
-  <!-- 导航栏 -->
   <nav class="navbar" aria-label="主导航">
     <div class="nav-container">
       <a class="nav-brand" href="#">
-        <span class="brand-icon">⚡</span>
+        <span class="brand-mark">SRT</span>
         <span class="brand-text">Skills For Real Teams</span>
       </a>
       <div class="nav-links">
-        <a href="#features" class="nav-link">特性</a>
+        <a href="#features" class="nav-link">产品秩序</a>
         <a href="#skills" class="nav-link">技能</a>
         <a href="#workflow" class="nav-link">工作流</a>
         <a href="#quickstart" class="nav-link">快速开始</a>
       </div>
       <div class="nav-actions">
-        <button class="theme-toggle" id="themeToggle" aria-label="切换主题">
-          <span class="theme-icon">🌙</span>
-        </button>
         <a href="https://github.com/coolbeevip/team-ai-skills" class="nav-github" target="_blank" rel="noopener">
           <span>GitHub</span>
         </a>
@@ -72,110 +68,122 @@
     </div>
   </nav>
 
-  <!-- Hero 区域 -->
   <header class="hero">
-    <div class="hero-background">
-      <div class="hero-gradient"></div>
-      <div class="hero-grid"></div>
-    </div>
     <div class="hero-content">
-      <div class="hero-badge">
-        <span class="badge-dot"></span>
-        <span>22 个技能 · 5 个类别 · 1 个共享工作区</span>
-      </div>
-      <h1 class="hero-title">
-        <span class="title-line">让工作</span>
-        <span class="title-line highlight">清晰可见</span>
-      </h1>
-      <p class="hero-description">
-        把团队里的模糊需求、技术判断和工程动作，收束成可以评审、拆解、实现和验证的路径。
-      </p>
-      <div class="hero-install">
-        <div class="install-box">
+      <div class="hero-copy">
+        <div class="hero-kicker">
+          <span>AI Skill Library</span>
+          <span>MIT License</span>
+          <span>22 Skills</span>
+        </div>
+        <h1 class="hero-title">把抽象技能，组织成团队可执行的工程工作流。</h1>
+        <p class="hero-description">
+          Skills For Real Teams 不是提示词合集。它把需求、PRD、Issue、验收标准和实现反馈沉淀成可审查、可追踪、可复用的文件化协作路径。
+        </p>
+        <div class="hero-actions" aria-label="主要操作">
+          <a href="#quickstart" class="primary-action">开始安装</a>
+          <a href="#workflow" class="secondary-action">查看工作流</a>
+        </div>
+        <div class="hero-install">
+          <span class="terminal-prompt">$</span>
           <code class="install-command">npx skills@latest add coolbeevip/team-ai-skills --all</code>
           <button class="install-copy" onclick="copyCommand(this)" aria-label="复制安装命令">
-            <span class="copy-icon">📋</span>
             <span class="copy-text">复制</span>
           </button>
         </div>
-        <p class="install-hint">一键安装所有技能到你的项目</p>
-      </div>
-      <div class="hero-stats">
-        <div class="stat">
-          <span class="stat-number">22</span>
-          <span class="stat-label">个技能</span>
-        </div>
-        <div class="stat">
-          <span class="stat-number">5</span>
-          <span class="stat-label">个类别</span>
-        </div>
-        <div class="stat">
-          <span class="stat-number">100%</span>
-          <span class="stat-label">开源</span>
+        <div class="hero-meta" aria-label="产品范围">
+          <span>产品定义</span>
+          <span>架构理解</span>
+          <span>交付执行</span>
+          <span>技术债治理</span>
+          <span>Codex Harness</span>
         </div>
       </div>
-    </div>
-    <div class="hero-visual">
-      <div class="visual-card">
-        <div class="card-header">
-          <div class="card-dots">
-            <span></span>
-            <span></span>
-            <span></span>
+
+      <div class="hero-visual" aria-label="技能工作流示意图">
+        <div class="system-window">
+          <div class="window-top">
+            <span class="window-title">team-spec/active/2026-05-10-export-filter</span>
+            <span class="window-state">ready for implementation</span>
           </div>
-          <span class="card-title">工作流示例</span>
-        </div>
-        <div class="card-content">
-          <div class="workflow-step">
-            <span class="step-icon">📝</span>
-            <span class="step-text">需求细化</span>
-            <span class="step-arrow">→</span>
+          <div class="workflow-console">
+            <div class="console-row is-active">
+              <span class="row-index">01</span>
+              <div>
+                <strong>Refine spec</strong>
+                <code>spec/refine.md</code>
+              </div>
+              <span class="row-status">done</span>
+            </div>
+            <div class="console-row">
+              <span class="row-index">02</span>
+              <div>
+                <strong>Review risk</strong>
+                <code>spec/reviews.md</code>
+              </div>
+              <span class="row-status">done</span>
+            </div>
+            <div class="console-row">
+              <span class="row-index">03</span>
+              <div>
+                <strong>Freeze PRD</strong>
+                <code>prd/prd.md</code>
+              </div>
+              <span class="row-status">ready</span>
+            </div>
+            <div class="console-row">
+              <span class="row-index">04</span>
+              <div>
+                <strong>Split issues</strong>
+                <code>issues/001-export-filter.md</code>
+              </div>
+              <span class="row-status">queued</span>
+            </div>
+            <div class="console-row">
+              <span class="row-index">05</span>
+              <div>
+                <strong>Verify acceptance</strong>
+                <code>team-issue-verify</code>
+              </div>
+              <span class="row-status">gated</span>
+            </div>
           </div>
-          <div class="workflow-step">
-            <span class="step-icon">📋</span>
-            <span class="step-text">PRD 生成</span>
-            <span class="step-arrow">→</span>
-          </div>
-          <div class="workflow-step">
-            <span class="step-icon">🎯</span>
-            <span class="step-text">Issue 拆解</span>
-            <span class="step-arrow">→</span>
-          </div>
-          <div class="workflow-step">
-            <span class="step-icon">✅</span>
-            <span class="step-text">验证完成</span>
+          <div class="artifact-strip">
+            <span>PRD</span>
+            <span>Issue</span>
+            <span>Acceptance Criteria</span>
+            <span>GitHub PR</span>
           </div>
         </div>
       </div>
     </div>
   </header>
 
-  <!-- 核心特性区域 -->
   <section id="features" class="section features-section">
     <div class="container">
       <div class="section-header">
-        <span class="section-badge">核心特性</span>
-        <h2 class="section-title">为什么选择 Skills For Real Teams?</h2>
-        <p class="section-subtitle">不是提示词合集，而是一种团队协作的文件语言</p>
+        <span class="section-badge">Product Order</span>
+        <h2 class="section-title">让技能体系看起来像一个真实可运行的团队产品。</h2>
+        <p class="section-subtitle">页面的重点不是展示“有很多技能”，而是展示这些技能如何共同形成可信的交付秩序。</p>
       </div>
       <div class="features-grid">
         <article class="feature-card">
-          <div class="feature-icon">🔗</div>
+          <div class="feature-index">01</div>
           <h3 class="feature-title">链式协作</h3>
           <p class="feature-description">每个技能都读取上游证据，写出下游可以继续使用的产物，形成完整的协作链路。</p>
         </article>
         <article class="feature-card">
-          <div class="feature-icon">🎯</div>
+          <div class="feature-index">02</div>
           <h3 class="feature-title">垂直切片</h3>
           <p class="feature-description">按端到端的垂直切片拆解任务，而不是按层拆分，减少跨任务的隐藏耦合。</p>
         </article>
         <article class="feature-card">
-          <div class="feature-icon">📁</div>
+          <div class="feature-index">03</div>
           <h3 class="feature-title">文件即状态</h3>
           <p class="feature-description">所有中间产物都是文件，可以版本控制、审查、回溯，状态完全透明。</p>
         </article>
         <article class="feature-card">
-          <div class="feature-icon">🔄</div>
+          <div class="feature-index">04</div>
           <h3 class="feature-title">可验证流程</h3>
           <p class="feature-description">每个步骤都有明确的输入输出和验证标准，确保质量可追溯。</p>
         </article>
@@ -195,7 +203,7 @@
       <!-- 搜索和筛选 -->
       <div class="skills-controls">
         <div class="search-box">
-          <span class="search-icon">🔍</span>
+          <span class="search-icon">/</span>
           <input type="text" id="skillSearch" placeholder="搜索技能名称或描述..." class="search-input" />
           <button class="search-clear" id="searchClear" aria-label="清除搜索">×</button>
         </div>
@@ -601,7 +609,6 @@
 
       <!-- 空状态 -->
       <div class="skills-empty" id="skillsEmpty" style="display: none;">
-        <span class="empty-icon">🔍</span>
         <p class="empty-text">没有找到匹配的技能</p>
         <button class="empty-reset" onclick="resetFilters()">重置筛选</button>
       </div>
@@ -727,7 +734,7 @@
     <div class="container">
       <div class="footer-content">
         <div class="footer-brand">
-          <span class="brand-icon">⚡</span>
+          <span class="brand-mark">SRT</span>
           <span class="brand-text">Skills For Real Teams</span>
         </div>
         <div class="footer-links">
