@@ -74,21 +74,25 @@
         <div class="hero-kicker">
           <span>AI Skill Library</span>
           <span>MIT License</span>
-          <span>22 Skills</span>
+          <span>File-based Workflow</span>
         </div>
-        <h1 class="hero-title">把抽象技能，组织成团队可执行的工程工作流。</h1>
+        <h1 class="hero-title">
+          <span class="title-line">给真实软件团队，</span>
+          <span class="title-line">一支会交付的</span>
+          <span class="title-line">AI 技能团队。</span>
+        </h1>
         <p class="hero-description">
-          Skills For Real Teams 不是提示词合集。它把需求、PRD、Issue、验收标准和实现反馈沉淀成可审查、可追踪、可复用的文件化协作路径。
+          Skills For Real Teams 不是提示词合集。它让不同 skills 接力完成需求澄清、PRD 固化、Issue 拆解、实现验证和 PR 交付。
         </p>
         <div class="hero-actions" aria-label="主要操作">
-          <a href="#quickstart" class="primary-action">开始安装</a>
-          <a href="#workflow" class="secondary-action">查看工作流</a>
+          <a href="#example" class="primary-action">查看真实样例</a>
+          <a href="#workflow" class="secondary-action">查看三条主线</a>
         </div>
         <div class="hero-install">
           <span class="terminal-prompt">$</span>
           <code class="install-command">npx skills@latest add coolbeevip/team-ai-skills --all</code>
           <button class="install-copy" onclick="copyCommand(this)" aria-label="复制安装命令">
-            <span class="copy-text">复制</span>
+            <span class="copy-text">复制安装命令</span>
           </button>
         </div>
         <div class="hero-meta" aria-label="产品范围">
@@ -155,7 +159,12 @@
     <div class="container">
       <div class="section-header">
         <span class="section-badge">Product Order</span>
-        <h2 class="section-title">让技能体系看起来像一个真实可运行的团队产品。</h2>
+        <h2 class="section-title">
+          <span class="title-line">让技能体系</span>
+          <span class="title-line">看起来像</span>
+          <span class="title-line">真实可运行的</span>
+          <span class="title-line">团队产品</span>
+        </h2>
         <p class="section-subtitle">页面的重点不是展示“有很多技能”，而是展示这些技能如何共同形成可信的交付秩序。</p>
       </div>
       <div class="features-grid">
@@ -183,13 +192,110 @@
     </div>
   </section>
 
+  <section id="workflow" class="section workflow-section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-badge">Workflow Lines</span>
+        <h2 class="section-title">
+          <span class="title-line">先看三条主线</span>
+          <span class="title-line">再看具体技能</span>
+        </h2>
+        <p class="section-subtitle">技能不是平铺的目录，而是围绕团队常见工作组织出来的流水线。</p>
+      </div>
+      <div class="workflow-routes">
+        <article class="route-card route-card-primary">
+          <div class="route-header">
+            <span class="route-label">Main line</span>
+            <h3 class="route-title">需求交付链路</h3>
+          </div>
+          <p class="route-description">把一句需求推进成可评审 PRD、可领取 issue 和可验证实现。</p>
+          <div class="route-flow" aria-label="需求交付链路">
+            <span>spec</span>
+            <span>review</span>
+            <span>prd</span>
+            <span>issues</span>
+            <span>implement</span>
+            <span>verify</span>
+            <span>PR</span>
+          </div>
+        </article>
+        <article class="route-card">
+          <div class="route-header">
+            <span class="route-label">Debt line</span>
+            <h3 class="route-title">技术债治理链路</h3>
+          </div>
+          <p class="route-description">把“系统不稳、维护成本高”转成有证据、有优先级、有验收口径的工程工作。</p>
+          <div class="route-flow" aria-label="技术债治理链路">
+            <span>analyze</span>
+            <span>refine</span>
+            <span>review</span>
+            <span>issues</span>
+            <span>verify</span>
+          </div>
+        </article>
+        <article class="route-card">
+          <div class="route-header">
+            <span class="route-label">Code line</span>
+            <h3 class="route-title">代码库理解链路</h3>
+          </div>
+          <p class="route-description">从源码中提取可追溯的系统知识，再转化为开发者和业务都能理解的说明。</p>
+          <div class="route-flow" aria-label="代码库理解链路">
+            <span>onboarding</span>
+            <span>walk</span>
+            <span>brief</span>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="example" class="section example-section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-badge">Example</span>
+        <h2 class="section-title">
+          <span class="title-line">一个真实需求</span>
+          <span class="title-line">会被加工成什么</span>
+        </h2>
+        <p class="section-subtitle">可信感来自可检查的中间产物，而不是承诺“AI 会自动完成”。</p>
+      </div>
+      <div class="example-panel">
+        <div class="example-input">
+          <span class="example-label">Input</span>
+          <p>“导出列表需要支持按状态筛选。”</p>
+        </div>
+        <div class="example-output">
+          <div class="example-row">
+            <span>spec/refine.md</span>
+            <p>澄清筛选字段、默认值、权限边界和空状态。</p>
+          </div>
+          <div class="example-row">
+            <span>spec/reviews.md</span>
+            <p>识别分页、缓存、权限和导出一致性风险。</p>
+          </div>
+          <div class="example-row">
+            <span>prd/prd.md</span>
+            <p>固化产品规则、验收标准和非目标范围。</p>
+          </div>
+          <div class="example-row">
+            <span>issues/001-export-filter.md</span>
+            <p>拆成可实现、可测试、可验证的工程任务。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- 技能展示区域 -->
   <section id="skills" class="section skills-section">
     <div class="container">
       <div class="section-header">
-        <span class="section-badge">技能库</span>
-        <h2 class="section-title">探索所有技能</h2>
-        <p class="section-subtitle">按类别浏览或搜索你需要的技能</p>
+        <span class="section-badge">Skill Index</span>
+        <h2 class="section-title">
+          <span class="title-line">需要具体动作时</span>
+          <span class="title-line">再进入全部技能</span>
+        </h2>
+        <p class="section-subtitle">完整技能列表保留搜索、筛选和复制能力，但它是工作流之后的索引，不是首页的主角。</p>
       </div>
 
       <!-- 搜索和筛选 -->
@@ -607,86 +713,14 @@
     </div>
   </section>
 
-  <!-- 工作流展示区域 -->
-  <section id="workflow" class="section workflow-section">
-    <div class="container">
-      <div class="section-header">
-        <span class="section-badge">工作流</span>
-        <h2 class="section-title">端到端的交付路径</h2>
-        <p class="section-subtitle">从需求到验证的完整链路</p>
-      </div>
-      <div class="workflow-timeline">
-        <div class="timeline-item">
-          <div class="timeline-marker">
-            <span class="marker-number">01</span>
-          </div>
-          <div class="timeline-content">
-            <h3 class="timeline-title">需求细化</h3>
-            <p class="timeline-description">使用 <code>team-spec-refine</code> 澄清术语、边界、业务规则和验收口径。</p>
-            <div class="timeline-skills">
-              <span class="timeline-skill">team-spec-refine</span>
-            </div>
-          </div>
-        </div>
-        <div class="timeline-item">
-          <div class="timeline-marker">
-            <span class="marker-number">02</span>
-          </div>
-          <div class="timeline-content">
-            <h3 class="timeline-title">风险评审</h3>
-            <p class="timeline-description">使用 <code>team-spec-review</code> 识别产品、交付、数据、合规和协作风险。</p>
-            <div class="timeline-skills">
-              <span class="timeline-skill">team-spec-review</span>
-            </div>
-          </div>
-        </div>
-        <div class="timeline-item">
-          <div class="timeline-marker">
-            <span class="marker-number">03</span>
-          </div>
-          <div class="timeline-content">
-            <h3 class="timeline-title">PRD 固化</h3>
-            <p class="timeline-description">使用 <code>team-spec-to-prd</code> 将确认后的规格固化为结构化 PRD。</p>
-            <div class="timeline-skills">
-              <span class="timeline-skill">team-spec-to-prd</span>
-            </div>
-          </div>
-        </div>
-        <div class="timeline-item">
-          <div class="timeline-marker">
-            <span class="marker-number">04</span>
-          </div>
-          <div class="timeline-content">
-            <h3 class="timeline-title">Issue 拆解</h3>
-            <p class="timeline-description">使用 <code>team-prd-to-issues</code> 将 PRD 拆解为可独立领取的工程 issue。</p>
-            <div class="timeline-skills">
-              <span class="timeline-skill">team-prd-to-issues</span>
-            </div>
-          </div>
-        </div>
-        <div class="timeline-item">
-          <div class="timeline-marker">
-            <span class="marker-number">05</span>
-          </div>
-          <div class="timeline-content">
-            <h3 class="timeline-title">实现与验证</h3>
-            <p class="timeline-description">使用 <code>team-issue-implement</code> 和 <code>team-issue-verify</code> 完成代码实现和验证。</p>
-            <div class="timeline-skills">
-              <span class="timeline-skill">team-issue-implement</span>
-              <span class="timeline-skill">team-issue-verify</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
   <!-- 快速开始区域 -->
   <section id="quickstart" class="section quickstart-section">
     <div class="container">
       <div class="section-header">
         <span class="section-badge">快速开始</span>
-        <h2 class="section-title">三步开始使用</h2>
+        <h2 class="section-title">
+          <span class="title-line">三步开始使用</span>
+        </h2>
         <p class="section-subtitle">快速集成技能到你的工作流</p>
       </div>
       <div class="quickstart-steps">

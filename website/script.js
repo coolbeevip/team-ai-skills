@@ -249,7 +249,7 @@ class AnimationManager {
 
   observeElements() {
     const elements = document.querySelectorAll(
-      '.feature-card, .skill-card, .timeline-item, .step-card'
+      '.feature-card, .route-card, .example-panel, .example-row, .skill-card, .step-card'
     );
 
     elements.forEach(el => {

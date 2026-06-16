@@ -154,6 +154,13 @@ mark {
   text-wrap: pretty;
 }
 
+.title-line {
+  display: block;
+  max-width: 100%;
+  text-wrap: balance;
+  white-space: nowrap;
+}
+
 /* Navigation */
 
 .navbar {
@@ -299,7 +306,6 @@ mark {
 .hero-kicker,
 .hero-meta,
 .artifact-strip,
-.timeline-skills,
 .skill-tags {
   display: flex;
   flex-wrap: wrap;
@@ -314,7 +320,6 @@ mark {
 .hero-meta span,
 .artifact-strip span,
 .tag,
-.timeline-skill,
 .skill-difficulty,
 .skill-category,
 .skill-version {
@@ -849,67 +854,180 @@ mark {
 
 .workflow-section {
   border-top: 1px solid var(--color-border);
-  border-bottom: 1px solid var(--color-border);
   background: var(--color-surface);
 }
 
-.workflow-timeline {
+.workflow-routes {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: 1.35fr 1fr 1fr;
+  gap: var(--space-4);
+}
+
+.route-card {
+  min-width: 0;
+  min-height: 320px;
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-5);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-ground);
+}
+
+.route-card-primary {
+  background: var(--color-inverse);
+  color: #f7f8f8;
+}
+
+.route-header {
+  display: grid;
+  gap: var(--space-3);
+  margin-bottom: var(--space-5);
+}
+
+.route-label {
+  width: fit-content;
+  min-height: 26px;
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 9px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  color: var(--color-text-secondary);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 560;
+}
+
+.route-card-primary .route-label {
+  border-color: var(--color-inverse-border);
+  background: rgba(255, 255, 255, 0.04);
+  color: #aeb5ff;
+}
+
+.route-title {
+  color: var(--color-ink);
+  font-size: 1.34rem;
+  font-weight: 680;
+  line-height: 1.2;
+}
+
+.route-card-primary .route-title {
+  color: #f7f8f8;
+}
+
+.route-description {
+  max-width: 520px;
+  margin-bottom: var(--space-6);
+  color: var(--color-text-secondary);
+  font-size: 0.95rem;
+  line-height: 1.75;
+  text-wrap: pretty;
+}
+
+.route-card-primary .route-description {
+  color: #b9bec8;
+}
+
+.route-flow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: auto;
+}
+
+.route-flow span {
+  min-height: 30px;
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  font-weight: 560;
+}
+
+.route-card-primary .route-flow span {
+  border-color: var(--color-inverse-border);
+  background: rgba(255, 255, 255, 0.05);
+  color: #f7f8f8;
+}
+
+/* Example */
+
+.example-section {
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-section-tint);
+}
+
+.example-panel {
+  display: grid;
+  grid-template-columns: minmax(280px, 0.58fr) minmax(0, 1fr);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
   overflow: hidden;
+  background: var(--color-surface);
 }
 
-.timeline-item {
-  min-width: 0;
-  display: grid;
-  grid-template-rows: auto 1fr;
+.example-input {
+  padding: var(--space-6);
   border-right: 1px solid var(--color-border);
   background: var(--color-ground);
 }
 
-.timeline-item:last-child {
-  border-right: 0;
-}
-
-.timeline-marker {
-  padding: var(--space-4) var(--space-4) 0;
-}
-
-.marker-number {
+.example-label {
+  display: inline-flex;
+  margin-bottom: var(--space-5);
   color: var(--color-accent-ink);
   font-family: var(--font-mono);
-  font-size: 0.78rem;
+  font-size: 0.74rem;
   font-weight: 700;
+  text-transform: uppercase;
 }
 
-.timeline-content {
-  padding: var(--space-4);
-}
-
-.timeline-title {
-  margin-bottom: var(--space-3);
+.example-input p {
   color: var(--color-ink);
-  font-size: 1.04rem;
+  font-size: 1.55rem;
   font-weight: 650;
-}
-
-.timeline-description {
-  margin-bottom: var(--space-4);
-  color: var(--color-text-secondary);
-  font-size: 0.88rem;
-  line-height: 1.72;
+  line-height: 1.25;
   text-wrap: pretty;
 }
 
-.timeline-description code {
+.example-output {
+  display: grid;
+}
+
+.example-row {
+  display: grid;
+  grid-template-columns: minmax(180px, 0.42fr) minmax(0, 1fr);
+  gap: var(--space-5);
+  align-items: baseline;
+  padding: var(--space-5) var(--space-6);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.example-row:last-child {
+  border-bottom: 0;
+}
+
+.example-row span {
+  color: var(--color-accent-ink);
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  font-weight: 650;
   overflow-wrap: anywhere;
 }
 
-.timeline-skill {
-  color: var(--color-accent-ink);
-  background: var(--color-accent-soft);
+.example-row p {
+  color: var(--color-text-secondary);
+  font-size: 0.95rem;
+  line-height: 1.68;
+  text-wrap: pretty;
 }
 
 /* Quickstart */
@@ -1106,9 +1224,25 @@ mark {
   }
 
   .features-grid,
-  .workflow-timeline,
   .quickstart-steps {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .workflow-routes {
+    grid-template-columns: 1fr;
+  }
+
+  .route-card {
+    min-height: 260px;
+  }
+
+  .example-panel {
+    grid-template-columns: 1fr;
+  }
+
+  .example-input {
+    border-right: 0;
+    border-bottom: 1px solid var(--color-border);
   }
 
   .feature-card:nth-child(2) {
@@ -1131,17 +1265,6 @@ mark {
     justify-self: start;
   }
 
-  .timeline-item:nth-child(2n) {
-    border-right: 0;
-  }
-
-  .timeline-item {
-    border-bottom: 1px solid var(--color-border);
-  }
-
-  .timeline-item:last-child {
-    border-bottom: 0;
-  }
 }
 
 @media (max-width: 760px) {
@@ -1228,7 +1351,7 @@ mark {
   }
 
   .features-grid,
-  .workflow-timeline,
+  .workflow-routes,
   .quickstart-steps,
   .skills-grid {
     grid-template-columns: 1fr;
@@ -1245,9 +1368,9 @@ mark {
     border-bottom: 0;
   }
 
-  .timeline-item,
-  .timeline-item:nth-child(2n) {
-    border-right: 0;
+  .example-row {
+    grid-template-columns: 1fr;
+    gap: var(--space-2);
   }
 
   .skills-grid.list-view .skill-card {
