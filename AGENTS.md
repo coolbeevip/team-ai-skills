@@ -10,9 +10,8 @@
 - `skills/product/team-spec-to-prd/`：用于把 ready 的规格固化成 PRD。
 - `skills/product/team-spec-archive/`：用于把已完成、废弃或暂停的 active 需求产物归档，避免新需求误改旧规格。
 - `skills/architecture/`：架构与方案设计职责。
-- `skills/harness/`：Codex harness 职责，包括项目级 Codex 运行时检索层、入口约束、失败记忆、验证策略和任务入口。
-- `skills/harness/team-codex-harness/`：用于随真实代码和工程演进维护 `AGENTS.md`、入口约束、失败记忆、验证 harness 和任务入口。
-- `skills/delivery/`：交付执行职责，包括 issue 拆解、发布、实现和验证。
+- `skills/delivery/`：交付执行职责，包括 PRD 对齐材料、issue 拆解、发布、实现和验证。
+- `skills/delivery/team-prd-to-alignment/`：用于把 AI 结构化 PRD 转换为需求、研发和项目管理可评审的演示文稿式对齐材料。
 - `skills/delivery/team-prd-to-issues/`：用于把 PRD 拆解成可独立领取的工程 issue。
 - `skills/delivery/team-issue-publish-github/`：用于把本地 issue 草稿发布到 GitHub Issues，支持整目录批量发布或指定单个 issue。
 - `skills/delivery/team-issue-publish-gitlab/`：用于把本地 issue 草稿发布到 GitLab Issues，支持整目录批量发布或指定单个 issue。
@@ -26,9 +25,8 @@
 - `skills/tech-debt/team-tech-debt-refine/`：用于把模糊技术债诉求细化为可评审规格。
 - `skills/tech-debt/team-tech-debt-review/`：用于评审技术债风险、优先级和可执行性。
 - `skills/tech-debt/team-tech-debt-to-issues/`：用于把已评审技术债拆解为工程 issue。
-- `skills/documentation/`：文档质量与格式规范职责。
-- `skills/documentation/team-prd-to-alignment/`：用于把 AI 结构化 PRD 转换为需求、研发和项目管理可评审的演示文稿式对齐材料。
-- `skills/documentation/team-md-style-check/`：用于检查 Markdown 是否符合飞书文档导入后的样式映射规则。
+- `skills/harness/`：实验性 Codex harness 职责，包括项目级 Codex 运行时检索层、入口约束、失败记忆、验证策略和任务入口；不作为稳定主线流程前置条件。
+- `skills/harness/team-codex-harness/`：用于随真实代码和工程演进维护 `AGENTS.md`、入口约束、失败记忆、验证 harness 和任务入口。
 
 每个技能目录必须包含 `SKILL.md`。只有当辅助文件被 `SKILL.md` 明确引用时才添加，例如 `CONTEXT-FORMAT.md`、`DECISION-FORMAT.md`。
 

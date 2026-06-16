@@ -1,6 +1,8 @@
 # Skills For Real Teams
 
-团队协作使用的大语言模型技能库，按产品、Codex Harness、交付、技术债和文档职责域组织，覆盖需求到工程交付的协作流程。
+团队大语言模型技能库，面向真实软件团队的产品定义、架构理解、交付执行和技术债治理工作，并保留少量实验性 Codex Harness 能力。
+
+它的核心目标是把模糊输入沉淀为可评审、可拆解、可实现、可验证的协作产物，而不是只提供一次性的提示词。
 
 ## 快速开始
 
@@ -10,160 +12,126 @@
 npx skills@latest add coolbeevip/team-ai-skills --all
 ```
 
-## 技能职责域
+安装后，技能会在目标项目中读写运行时工作空间 `team-spec/`。本仓库只维护技能本身，不提交真实业务需求、PRD、风险报告或工程 issue。
 
-本技能库将团队协作拆成五个职责域：产品定义、Codex Harness、交付执行、技术债治理和文档质量。每个职责域都可以独立使用，也可以沿着需求到交付的流程串联起来，帮助团队把想法稳定成可评审、可拆解、可实现、可验证的工作。
+## 技能地图
 
 ### 产品定义
 
-产品定义域用于把模糊需求变成团队可以共同理解和评审的产品规格，适合产品经理、业务负责人和需求分析人员在 PRD 形成前使用。
+把模糊需求整理成可评审、可交付的产品规格。
 
-- `team-spec-refine`：通过连续澄清术语、边界、业务规则和验收口径，把初始想法整理成可评审的需求规格。
-- `team-spec-review`：从产品、数据、合规、运营、交付和协作角度检查规格风险，并给出是否已准备好进入下一阶段的结论。
-- `team-spec-to-prd`：将已经细化并通过评审的规格固化为结构化 PRD，作为需求进入交付阶段的正式输入。
-- `team-spec-archive`：把已完成、废弃或暂停的 active 需求产物归档，避免新需求误改旧规格。
+- `team-spec-refine`：细化需求，澄清术语、边界、业务规则和验收口径。
+- `team-spec-review`：评审需求规格中的产品、交付、数据、合规、运营和协作风险。
+- `team-spec-to-prd`：把 ready 的规格固化成结构化 PRD。
+- `team-spec-archive`：归档已完成、废弃或暂停的需求工作区。
 
-### Codex Harness
+### 架构理解
 
-Codex Harness 域用于维护 Codex 在具体项目中的运行时检索层，适合团队在接入 Codex、验证策略变化、失败案例沉淀或任务入口不清楚时反复使用。
+从已有代码库中提取可追溯的系统知识，并转化为开发者或业务可读的说明。
 
-- `team-codex-harness`：维护项目级 Codex 检索层，包括入口约束、失败记忆、验证 harness 和任务入口。
+- `team-codebase-onboarding`：生成代码库功能清单、架构说明、模块地图、API/数据/配置文档和 AI 接手上下文。
+- `team-codebase-walk`：基于 onboarding 产物和源码做功能走读、问答、证据追踪和学习路径沉淀。
+- `team-codebase-brief`：把代码事实转化为面向业务、产品和管理者的系统能力说明。
 
 ### 交付执行
 
-交付执行域用于把 PRD 拆成可领取的 issue，并把实现结果验证到可提交 PR 的状态，适合研发负责人、工程师、测试人员和工程 agent 使用。
+把 PRD 拆成可领取 issue，并推动实现、验证、发布到代码协作平台。
 
-- `team-prd-to-issues`：把 PRD 拆解成可独立领取、可验证、按依赖排序的工程 issue。
-- `team-issue-publish-github`：将本地 issue 草稿发布到 GitHub Issues，支持整目录批量发布或指定单个 issue，并回写远端编号、URL 和发布状态。
-- `team-issue-publish-gitlab`：将本地 issue 草稿发布到 GitLab Issues，支持整目录批量发布或指定单个 issue，并回写远端 IID/ID、URL 和发布状态。
-- `team-issue-batch-implement`：按依赖顺序批量编排多个可执行 `AFK` issue，逐个衔接实现与验证，失败即停并支持恢复续跑。
-- `team-issue-implement`：围绕单个 issue 采用行为测试和 TDD 循环完成代码与测试变更，完成后自动衔接 `team-issue-verify`。
-- `team-issue-verify`：独立检查实现是否满足 issue、PRD 和风险约束，并给出是否可提交 PR 的结论。
-- `team-issue-create-mr-gitlab`：推送已完成的 issue 分支，并创建标题和正文都关联 issue 编号的 GitLab Merge Request。
-- `team-issue-create-pr-github`：推送已完成的 issue 分支，并创建标题和正文都关联 issue 编号的 GitHub Pull Request。
+- `team-prd-to-alignment`：把 AI 结构化 PRD 转换为适合人类评审的对齐材料。
+- `team-prd-to-issues`：把 PRD 拆解为可独立领取、可验证、按依赖排序的工程 issue。
+- `team-issue-publish-github`：将本地 issue 草稿发布到 GitHub Issues，并回写发布结果。
+- `team-issue-publish-gitlab`：将本地 issue 草稿发布到 GitLab Issues，并回写发布结果。
+- `team-issue-batch-implement`：按依赖顺序批量编排多个 AFK issue 的实现与验证。
+- `team-issue-implement`：围绕单个 issue 用行为测试和 TDD 循环完成代码与测试变更。
+- `team-issue-verify`：独立验证实现是否满足 issue、PRD 和风险约束。
+- `team-issue-create-pr-github`：推送已完成分支并创建关联 issue 的 GitHub Pull Request。
+- `team-issue-create-mr-gitlab`：推送已完成分支并创建关联 issue 的 GitLab Merge Request。
 
 ### 技术债治理
 
-技术债治理域用于把“代码需要重构”“系统不稳定”“维护成本太高”这类模糊诉求变成有证据、有优先级、有验收标准的工程工作，适合技术负责人、平台团队和稳定性负责人使用。
+把“需要重构”“系统不稳定”“维护成本高”等诉求转成有证据、有优先级、有验收口径的工程工作。
 
-- `team-tech-debt-analyze`：对项目或模块进行只读技术债分析，输出有源码证据、影响评估和治理优先级的债务候选清单。
-- `team-tech-debt-refine`：将技术债诉求细化为包含证据、影响范围、风险等级和验收口径的技术债规格。
-- `team-tech-debt-review`：评审技术债规格的风险、优先级、阻塞项和可执行性，判断是否可以进入工程拆解。
-- `team-tech-debt-to-issues`：把已评审的技术债规格拆解为可独立领取、可验证、按依赖排序的工程 issue。
+- `team-tech-debt-analyze`：只读分析项目或模块，输出证据化技术债候选清单。
+- `team-tech-debt-refine`：细化技术债需求，明确证据、影响范围、风险等级和验收标准。
+- `team-tech-debt-review`：评审技术债规格的风险、优先级、阻塞项和可执行性。
+- `team-tech-debt-to-issues`：把已评审技术债拆解为可独立领取的工程 issue。
 
-### 文档质量
+### 实验能力：Codex Harness
 
-文档质量域用于保证团队产物在云文档、评审材料和导出场景中保持结构清晰、样式稳定，适合文档维护者、项目管理人员和需要发布正式材料的团队使用。
+Codex Harness 仍处于实验阶段，用于探索 Codex 在具体项目中的运行时检索层和工程执行入口。默认不作为主线流程前置条件；只有当团队已经遇到入口约束、验证方式或失败记忆不清晰的问题时，再按需使用。
 
-- `team-prd-to-alignment`：将 AI 结构化 PRD 转换为适合需求、研发和项目管理进行人类评审与共识对齐的演示文稿式材料。
-- `team-md-style-check`：检查 Markdown 文档是否符合飞书文档导入后的样式映射规则，并给出可直接修改的格式建议。
+- `team-codex-harness`：沉淀项目入口约束、失败记忆、验证 harness、任务入口和最小运行时配置。
+- `team-skill-evolve`：根据真实反馈复盘团队技能问题，并在授权后更新技能说明、脚本或触发条件。
 
-## 工作流
+## 推荐流程
 
-这些技能可以串联使用。下游技能会读取上游技能的输出物：
+产品需求链路：
 
-```mermaid
-flowchart TD
-    A[team-spec-refine] --> B[team-spec-review]
-    B --> C{存在 P0 或关键 P1 风险?}
-    C -- 是 --> A
-    C -- 否 --> D[team-spec-to-prd]
-    D --> F[team-prd-to-issues]
-    D -. 可选：人类对齐材料 .-> H[team-prd-to-alignment]
-    H -. 对齐结论反馈 .-> D
-    F --> N[team-issue-publish-github]
-    F --> O[team-issue-publish-gitlab]
-    F -. Codex 检索层不清晰时 .-> T[team-codex-harness]
-    N --> U[team-issue-batch-implement]
-    O --> U
-    U --> G[team-issue-implement]
-    N -. 单个 issue .-> G
-    O -. 单个 issue .-> G
-    G --> I[team-issue-verify]
-    I -- 验证未通过 --> G
-    I -- GitLab --> P[team-issue-create-mr-gitlab]
-    I -- GitHub --> Q[team-issue-create-pr-github]
-    D -. 需求完成或废弃时 .-> S[team-spec-archive]
-
-    R[team-tech-debt-analyze] --> J[team-tech-debt-refine]
-    J[team-tech-debt-refine] --> K[team-tech-debt-review]
-    K --> L{存在阻塞风险?}
-    L -- 是 --> J
-    L -- 否 --> M[team-tech-debt-to-issues]
-    M --> G
+```text
+team-spec-refine
+  -> team-spec-review
+  -> team-spec-to-prd
+  -> team-prd-to-alignment
+  -> team-prd-to-issues
+  -> team-issue-publish-github / team-issue-publish-gitlab
+  -> team-issue-implement
+  -> team-issue-verify
+  -> team-issue-create-pr-github / team-issue-create-mr-gitlab
 ```
 
-`team-spec-refine` 和 `team-spec-review` 可以反复迭代。只有当 P0 和关键 P1 风险被解决或明确接受后，才进入 `team-spec-to-prd` 固化 PRD。
+技术债链路：
 
-`team-spec/active/prd/` 中的 PRD 是需求到工程的正式交接边界。`team-prd-to-alignment` 可将 AI 结构化 PRD 转换为适合需求、研发和项目管理讨论的人类对齐材料；`team-prd-to-issues` 仍应以 PRD 为主输入。
+```text
+team-tech-debt-analyze
+  -> team-tech-debt-refine
+  -> team-tech-debt-review
+  -> team-tech-debt-to-issues
+  -> team-issue-implement
+  -> team-issue-verify
+```
 
-`team-prd-to-issues` 应以 PRD 为主输入；`CONTEXT.md`、`decisions/` 和 `reviews/` 只能作为背景参考，不能绕过 PRD 直接拆工程任务。拆解过程中如果发现入口约束、验证策略、失败记忆或任务入口不清晰，可使用 `team-codex-harness` 补全。
+代码库理解链路：
 
-`team-issue-publish-github` 用于把 `team-spec/active/issues/{slug}/` 下的本地 issue 草稿发布到 GitHub Issues，并回写发布结果。默认按依赖顺序批量发布，也可通过 `--issue` 指定单个 issue。该技能仅处理 GitHub。
+```text
+team-codebase-onboarding
+  -> team-codebase-walk
+  -> team-codebase-brief
+```
 
-`team-issue-publish-gitlab` 用于把 `team-spec/active/issues/{slug}/` 下的本地 issue 草稿发布到 GitLab Issues，并回写发布结果。默认按依赖顺序批量发布，也可通过 `--issue` 指定单个 issue。该技能仅处理 GitLab。
+需求完成、暂停或废弃后，使用 `team-spec-archive` 归档对应 slug。Codex Harness 不在稳定主线内；当工程入口、验证方式、失败记忆或 Codex 运行约束不清晰时，可实验性使用 `team-codex-harness` 补齐项目级运行时上下文。
 
-`team-spec-archive` 用于把 `team-spec/active/` 中已完成、废弃或暂停的需求产物归档到 `team-spec/archive/{slug}/`，清空活跃工作区以避免下一个需求误改旧规格。开始新需求前，若 active 中已有其他 slug，应先归档。
+## 运行时工作空间
 
-技术债链路使用 `team-tech-debt-analyze -> team-tech-debt-refine -> team-tech-debt-review -> team-tech-debt-to-issues`。其中 `team-tech-debt-analyze` 使用批次级分析 slug 输出债务候选清单，每个候选项必须给出独立的 `Suggested Slug`；细化阶段默认使用候选项 slug 创建单个技术债闭环。技术债 slug 必须包含 `debt`，建议格式 `{yyyy-mm-dd}-debt-{short-english-slug}`，以便后续复用工程实现与验证流程。
-
-每个 `SKILL.md` 都声明了 `输入物` 和 `输出物`，用于说明它会读取哪些上游产物，以及会为哪些下游技能提供材料。
-
-每个 `SKILL.md` 还包含 `triggers` 字段，列出用户触发该技能时常用的自然语言短语（中英双语）。AI 可通过匹配用户输入与 `triggers` 自动推荐合适的技能，无需用户预先知道技能名称。
-
-每个需求使用一个唯一 slug 串联全流程，格式为 `{yyyy-mm-dd}-{short-english-slug}`，例如 `2026-05-10-export-filter`。
-技术债需求也使用唯一 slug，但必须包含 `debt`，例如 `2026-05-12-debt-cache-cleanup`。
-
-## 工作空间
-
-技能默认在目标项目根目录的 `team-spec/` 下协作。`team-spec/` 是运行时工作空间，不属于本技能库的固定内容；它会在安装技能后的业务项目中按需创建。
+技能默认在目标项目根目录创建或维护 `team-spec/`：
 
 ```text
 team-spec/
+├── CONTEXT.md
+├── decisions/
 ├── active/
-│   ├── spec/
-│   │   ├── CONTEXT.md
-│   │   ├── decisions/
-│   │   ├── refine/
-│   │   └── reviews/
-│   ├── prd/
-│   ├── issues/
-│   └── design/
+│   └── {yyyy-mm-dd-short-slug}/
+│       ├── spec/
+│       │   ├── CONTEXT.md
+│       │   ├── decisions/
+│       │   ├── refine.md
+│       │   └── reviews.md
+│       ├── prd/
+│       │   ├── prd.md
+│       │   └── alignment.md
+│       ├── issues/
+│       ├── design/
+│       │   └── functional-design.md
+│       └── STATUS.md
 └── archive/
     └── {slug}/
         ├── spec/
         ├── prd/
         ├── issues/
         ├── design/
+        ├── STATUS.md
         └── ARCHIVE.md
 ```
 
-单个需求的产物链路：
+每个需求使用唯一 slug 串联全流程，格式为 `{yyyy-mm-dd}-{short-english-slug}`，例如 `2026-05-10-export-filter`。`team-spec/active/` 可以同时存在多个未归档 slug；只有无法唯一确定目标 slug 或文件路径时，技能才应要求用户确认。
 
-```text
-team-spec/active/spec/refine/{slug}.md
-team-spec/active/spec/reviews/{slug}.md
-team-spec/active/prd/{slug}.md
-team-spec/active/prd/{slug}-alignment.md
-team-spec/active/issues/{slug}/
-```
-
-`CONTEXT.md` 和 `decisions/` 是长期共享上下文，不替代单次需求的 `refine/{slug}.md`。
-
-`team-spec/active/` 只应保留当前活跃需求。开始新需求前，如果 active 中已有其他 slug，应先使用 `team-spec-archive` 归档到 `team-spec/archive/{slug}/`，或明确继续旧需求。`team-spec/archive/` 默认只读，除非用户显式指定历史 slug 或文件路径。
-
-`team-prd-to-issues` 默认以 `team-spec/active/prd/{slug}.md` 为主输入，并参考规格上下文、产品决策和评审报告，再将工程 issue 草稿写入 `team-spec/active/issues/{slug}/`。
-
-`team-issue-publish-github` 默认读取 `team-spec/active/issues/{slug}/` 中的本地 issue 草稿，执行依赖排序、试运行预览、幂等检查与批量发布；如果通过 `--issue` 指定单个 issue，则只处理该草稿，并回写远端 issue 编号、URL 和状态。
-
-`team-issue-publish-gitlab` 默认读取 `team-spec/active/issues/{slug}/` 中的本地 issue 草稿，执行依赖排序、试运行预览、幂等检查与批量发布；如果通过 `--issue` 指定单个 issue，则只处理该草稿，并回写远端 issue IID/ID、URL 和状态。
-
-`team-issue-batch-implement` 默认读取同一 slug 下的多个本地 issue 草稿，按 `Blocked by` 生成可执行 `AFK` 队列，逐个衔接 `team-issue-implement` 和 `team-issue-verify`。它只做批量编排，不把多个 issue 合并成一个实现。
-
-`team-issue-implement` 默认以 `team-spec/active/issues/{slug}/` 中的单个 issue 为主输入，通过行为测试和 red-green-refactor 循环完成实现，并在实现结束后自动衔接 `team-issue-verify`。
-
-`team-issue-verify` 独立检查实现是否满足 issue、PRD 和风险约束，并输出是否可提交 PR。
-
-`team-issue-create-mr-gitlab` 默认从当前分支推断 issue 编号，推送分支，并创建包含 `Closes #{issue}` 的 GitLab Merge Request。该技能仅处理 GitLab MR；GitHub PR 应使用独立技能。
-
-`team-issue-create-pr-github` 默认从当前分支推断 issue 编号，推送分支，并创建包含 `Closes #{issue}` 的 GitHub Pull Request。该技能仅处理 GitHub PR；GitLab MR 应使用独立技能。
+下游技能默认读取同一 slug 的上游产物。例如 `team-prd-to-issues` 以 `team-spec/active/{slug}/prd/prd.md` 为主输入，并参考全局上下文、产品决策、规格上下文和评审报告。

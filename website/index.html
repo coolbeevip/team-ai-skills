@@ -1,334 +1,754 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-theme="light">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Skills For Real Teams — 从模糊需求到可验证代码的团队 AI 工作流，覆盖产品规格、工程交付、技术债治理、Codex Harness 和文档化场景。" />
-  <title>Skills For Real Teams</title>
+  <meta name="description" content="Skills For Real Teams 是面向真实软件团队的 AI 技能库，覆盖产品定义、架构理解、交付执行、技术债治理，并保留实验性 Codex Harness。" />
+  <meta name="keywords" content="AI skills, team collaboration, product definition, architecture, delivery, tech debt" />
+  <meta property="og:title" content="Skills For Real Teams" />
+  <meta property="og:description" content="面向真实软件团队的 AI 技能库" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://coolbeevip.github.io/team-ai-skills/" />
+  <meta property="og:image" content="https://coolbeevip.github.io/team-ai-skills/website/assets/og-image.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Skills For Real Teams" />
+  <meta name="twitter:description" content="面向真实软件团队的 AI 技能库" />
+  <meta name="twitter:image" content="https://coolbeevip.github.io/team-ai-skills/website/assets/og-image.png" />
+  <link rel="canonical" href="https://coolbeevip.github.io/team-ai-skills/" />
+  <title>Skills For Real Teams - 面向真实软件团队的 AI 技能库</title>
+  <link rel="stylesheet" href="styles.css" />
+
+  <!-- 结构化数据 -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Skills For Real Teams",
+    "description": "面向真实软件团队的 AI 技能库，覆盖产品定义、架构理解、交付执行、技术债治理",
+    "url": "https://coolbeevip.github.io/team-ai-skills/",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "Cross-platform",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "author": {
+      "@type": "Person",
+      "name": "coolbeevip"
+    },
+    "softwareHelp": {
+      "@type": "CreativeWork",
+      "url": "https://github.com/coolbeevip/team-ai-skills"
+    }
+  }
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
 </head>
 <body>
-
-<header class="hero">
-  <div class="hero-grid-bg"></div>
-  <div class="hero-inner">
-    <div class="hero-content">
-      <div class="hero-badge">MIT Licensed · 17 Skills · Product-to-code workflow</div>
-      <h1>AI Skills for Real Product Teams</h1>
-      <p class="hero-sub">Turn unclear specs into aligned execution workflows.</p>
-      <p class="hero-sub-en">一套面向真实团队的 AI 技能库，把产品规格、PRD、工程 issue、实现验证和团队文档连接成可执行系统。</p>
-
-      <div class="hero-actions">
-        <a class="btn btn-primary" href="#main-path">查看主线</a>
-        <a class="btn btn-secondary" href="https://github.com/coolbeevip/team-ai-skills" target="_blank" rel="noopener">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.387.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 21.795 24 17.295 24 12c0-6.63-5.37-12-12-12"/></svg>
-          GitHub
+  <!-- 导航栏 -->
+  <nav class="navbar" aria-label="主导航">
+    <div class="nav-container">
+      <a class="nav-brand" href="#">
+        <span class="brand-icon">⚡</span>
+        <span class="brand-text">Skills For Real Teams</span>
+      </a>
+      <div class="nav-links">
+        <a href="#features" class="nav-link">特性</a>
+        <a href="#skills" class="nav-link">技能</a>
+        <a href="#workflow" class="nav-link">工作流</a>
+        <a href="#quickstart" class="nav-link">快速开始</a>
+      </div>
+      <div class="nav-actions">
+        <button class="theme-toggle" id="themeToggle" aria-label="切换主题">
+          <span class="theme-icon">🌙</span>
+        </button>
+        <a href="https://github.com/coolbeevip/team-ai-skills" class="nav-github" target="_blank" rel="noopener">
+          <span>GitHub</span>
         </a>
       </div>
+    </div>
+  </nav>
 
-      <div class="install-box" id="hero-install">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
-        <span>npx skills@latest add coolbeevip/team-ai-skills --all</span>
-        <button class="copy-btn" aria-label="Copy install command" onclick="copyCmd(this, 'npx skills@latest add coolbeevip/team-ai-skills --all')">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
-        </button>
-        <span class="copy-toast">已复制！</span>
+  <!-- Hero 区域 -->
+  <header class="hero">
+    <div class="hero-background">
+      <div class="hero-gradient"></div>
+      <div class="hero-grid"></div>
+    </div>
+    <div class="hero-content">
+      <div class="hero-badge">
+        <span class="badge-dot"></span>
+        <span>22 个技能 · 5 个类别 · 1 个共享工作区</span>
+      </div>
+      <h1 class="hero-title">
+        <span class="title-line">让工作</span>
+        <span class="title-line highlight">清晰可见</span>
+      </h1>
+      <p class="hero-description">
+        把团队里的模糊需求、技术判断和工程动作，收束成可以评审、拆解、实现和验证的路径。
+      </p>
+      <div class="hero-install">
+        <div class="install-box">
+          <code class="install-command">npx skills@latest add coolbeevip/team-ai-skills --all</code>
+          <button class="install-copy" onclick="copyCommand(this)" aria-label="复制安装命令">
+            <span class="copy-icon">📋</span>
+            <span class="copy-text">复制</span>
+          </button>
+        </div>
+        <p class="install-hint">一键安装所有技能到你的项目</p>
+      </div>
+      <div class="hero-stats">
+        <div class="stat">
+          <span class="stat-number">22</span>
+          <span class="stat-label">个技能</span>
+        </div>
+        <div class="stat">
+          <span class="stat-number">5</span>
+          <span class="stat-label">个类别</span>
+        </div>
+        <div class="stat">
+          <span class="stat-number">100%</span>
+          <span class="stat-label">开源</span>
+        </div>
       </div>
     </div>
-
-    <div class="hero-visual" aria-label="AI workflow product preview">
-      <div class="visual-toolbar">
-        <span></span><span></span><span></span>
-        <strong>team-spec/workflow</strong>
-      </div>
-      <div class="visual-body">
-        <div class="pipeline-map">
-          <div class="pipeline-node active">
-            <span>01</span>
-            <strong>Refine</strong>
-            <small>Spec clarity</small>
+    <div class="hero-visual">
+      <div class="visual-card">
+        <div class="card-header">
+          <div class="card-dots">
+            <span></span>
+            <span></span>
+            <span></span>
           </div>
-          <div class="pipeline-line"></div>
-          <div class="pipeline-node">
-            <span>02</span>
-            <strong>PRD</strong>
-            <small>Decision record</small>
-          </div>
-          <div class="pipeline-line"></div>
-          <div class="pipeline-node">
-            <span>03</span>
-            <strong>Issues</strong>
-            <small>Ready to build</small>
-          </div>
+          <span class="card-title">工作流示例</span>
         </div>
-        <div class="artifact-preview">
-          <div class="artifact-head">
-            <span>Generated PRD</span>
-            <em>ready</em>
+        <div class="card-content">
+          <div class="workflow-step">
+            <span class="step-icon">📝</span>
+            <span class="step-text">需求细化</span>
+            <span class="step-arrow">→</span>
           </div>
-          <div class="artifact-line long"></div>
-          <div class="artifact-line"></div>
-          <div class="artifact-line medium"></div>
-          <div class="artifact-checks">
-            <span>Scope locked</span>
-            <span>Risks reviewed</span>
-            <span>Acceptance mapped</span>
+          <div class="workflow-step">
+            <span class="step-icon">📋</span>
+            <span class="step-text">PRD 生成</span>
+            <span class="step-arrow">→</span>
+          </div>
+          <div class="workflow-step">
+            <span class="step-icon">🎯</span>
+            <span class="step-text">Issue 拆解</span>
+            <span class="step-arrow">→</span>
+          </div>
+          <div class="workflow-step">
+            <span class="step-icon">✅</span>
+            <span class="step-text">验证完成</span>
           </div>
         </div>
-        <div class="terminal-preview">
-          <span>$ team-issue-batch-implement</span>
-          <strong>3 AFK issues queued · failure stops safely</strong>
+      </div>
+    </div>
+  </header>
+
+  <!-- 核心特性区域 -->
+  <section id="features" class="section features-section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-badge">核心特性</span>
+        <h2 class="section-title">为什么选择 Skills For Real Teams?</h2>
+        <p class="section-subtitle">不是提示词合集，而是一种团队协作的文件语言</p>
+      </div>
+      <div class="features-grid">
+        <article class="feature-card">
+          <div class="feature-icon">🔗</div>
+          <h3 class="feature-title">链式协作</h3>
+          <p class="feature-description">每个技能都读取上游证据，写出下游可以继续使用的产物，形成完整的协作链路。</p>
+        </article>
+        <article class="feature-card">
+          <div class="feature-icon">🎯</div>
+          <h3 class="feature-title">垂直切片</h3>
+          <p class="feature-description">按端到端的垂直切片拆解任务，而不是按层拆分，减少跨任务的隐藏耦合。</p>
+        </article>
+        <article class="feature-card">
+          <div class="feature-icon">📁</div>
+          <h3 class="feature-title">文件即状态</h3>
+          <p class="feature-description">所有中间产物都是文件，可以版本控制、审查、回溯，状态完全透明。</p>
+        </article>
+        <article class="feature-card">
+          <div class="feature-icon">🔄</div>
+          <h3 class="feature-title">可验证流程</h3>
+          <p class="feature-description">每个步骤都有明确的输入输出和验证标准，确保质量可追溯。</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- 技能展示区域 -->
+  <section id="skills" class="section skills-section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-badge">技能库</span>
+        <h2 class="section-title">探索所有技能</h2>
+        <p class="section-subtitle">按类别浏览或搜索你需要的技能</p>
+      </div>
+
+      <!-- 搜索和筛选 -->
+      <div class="skills-controls">
+        <div class="search-box">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="skillSearch" placeholder="搜索技能名称或描述..." class="search-input" />
+          <button class="search-clear" id="searchClear" aria-label="清除搜索">×</button>
+        </div>
+        <div class="filter-group">
+          <button class="filter-btn active" data-filter="all">全部</button>
+          <button class="filter-btn" data-filter="product">产品定义</button>
+          <button class="filter-btn" data-filter="architecture">架构理解</button>
+          <button class="filter-btn" data-filter="delivery">交付执行</button>
+          <button class="filter-btn" data-filter="tech-debt">技术债</button>
+          <button class="filter-btn" data-filter="harness">实验性</button>
+        </div>
+        <div class="view-toggle">
+          <button class="view-btn active" data-view="grid" aria-label="网格视图">
+            <span>⊞</span>
+          </button>
+          <button class="view-btn" data-view="list" aria-label="列表视图">
+            <span>☰</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 技能列表 -->
+      <div class="skills-grid" id="skillsGrid">
+        <!-- 产品定义 -->
+        <article class="skill-card" data-category="product" data-name="team-spec-refine" data-description="通过与用户反复确认来细化需求规格，澄清术语、边界、业务规则和验收口径">
+          <div class="skill-header">
+            <span class="skill-category">产品定义</span>
+            <span class="skill-difficulty">基础</span>
+          </div>
+          <h3 class="skill-name">team-spec-refine</h3>
+          <p class="skill-description">通过与用户反复确认来细化需求规格，澄清术语、边界、业务规则和验收口径。</p>
+          <div class="skill-tags">
+            <span class="tag">需求细化</span>
+            <span class="tag">规格澄清</span>
+          </div>
+          <div class="skill-footer">
+            <span class="skill-version">v1.0</span>
+            <button class="skill-copy" onclick="copySkillName(this, 'team-spec-refine')" aria-label="复制技能名称">复制</button>
+          </div>
+        </article>
+
+        <article class="skill-card" data-category="product" data-name="team-spec-review" data-description="识别产品、交付、数据、合规和协作风险，评估规格的 ready 状态">
+          <div class="skill-header">
+            <span class="skill-category">产品定义</span>
+            <span class="skill-difficulty">基础</span>
+          </div>
+          <h3 class="skill-name">team-spec-review</h3>
+          <p class="skill-description">识别产品、交付、数据、合规和协作风险，评估规格的 ready 状态。</p>
+          <div class="skill-tags">
+            <span class="tag">风险识别</span>
+            <span class="tag">规格评审</span>
+          </div>
+          <div class="skill-footer">
+            <span class="skill-version">v1.0</span>
+            <button class="skill-copy" onclick="copySkillName(this, 'team-spec-review')" aria-label="复制技能名称">复制</button>
+          </div>
+        </article>
+
+        <article class="skill-card" data-category="product" data-name="team-spec-to-prd" data-description="将确认后的规格固化为结构化 PRD，并可生成面向会议的对齐材料">
+          <div class="skill-header">
+            <span class="skill-category">产品定义</span>
+            <span class="skill-difficulty">基础</span>
+          </div>
+          <h3 class="skill-name">team-spec-to-prd</h3>
+          <p class="skill-description">将确认后的规格固化为结构化 PRD，并可生成面向会议的对齐材料。</p>
+          <div class="skill-tags">
+            <span class="tag">PRD 生成</span>
+            <span class="tag">对齐材料</span>
+          </div>
+          <div class="skill-footer">
+            <span class="skill-version">v1.0</span>
+            <button class="skill-copy" onclick="copySkillName(this, 'team-spec-to-prd')" aria-label="复制技能名称">复制</button>
+          </div>
+        </article>
+
+        <article class="skill-card" data-category="product" data-name="team-spec-archive" data-description="归档已完成、废弃或暂停的需求工作区">
+          <div class="skill-header">
+            <span class="skill-category">产品定义</span>
+            <span class="skill-difficulty">基础</span>
+          </div>
+          <h3 class="skill-name">team-spec-archive</h3>
+          <p class="skill-description">归档已完成、废弃或暂停的需求工作区。</p>
+          <div class="skill-tags">
+            <span class="tag">归档管理</span>
+            <span class="tag">工作区清理</span>
+          </div>
+          <div class="skill-footer">
+            <span class="skill-version">v1.0</span>
+            <button class="skill-copy" onclick="copySkillName(this, 'team-spec-archive')" aria-label="复制技能名称">复制</button>
+          </div>
+        </article>
+
+        <!-- 架构理解 -->
+        <article class="skill-card" data-category="architecture" data-name="team-codebase-onboarding" data-description="提取代码库知识系统，帮助新成员快速理解项目架构">
+          <div class="skill-header">
+            <span class="skill-category">架构理解</span>
+            <span class="skill-difficulty">中级</span>
+          </div>
+          <h3 class="skill-name">team-codebase-onboarding</h3>
+          <p class="skill-description">提取代码库知识系统，帮助新成员快速理解项目架构。</p>
+          <div class="skill-tags">
+            <span class="tag">新人入职</span>
+            <span class="tag">架构理解</span>
+          </div>
+          <div class="skill-footer">
+            <span class="skill-version">v1.0</span>
+            <button class="skill-copy" onclick="copySkillName(this, 'team-codebase-onboarding')" aria-label="复制技能名称">复制</button>
+          </div>
+        </article>
+
+        <article class="skill-card" data-category="architecture" data-name="team-codebase-walk" data-description="引导式源码走读，深入理解代码实现细节">
+          <div class="skill-header">
+            <span class="skill-category">架构理解</span>
+            <span class="skill-difficulty">中级</span>
+          </div>
+          <h3 class="skill-name">team-codebase-walk</h3>
+          <p class="skill-description">引导式源码走读，深入理解代码实现细节。</p>
+          <div class="skill-tags">
+            <span class="tag">源码走读</span>
+            <span class="tag">代码理解</span>
+          </div>
+          <div class="skill-footer">
+            <span class="skill-version">v1.0</span>
+            <button class="skill-copy" onclick="copySkillName(this, 'team-codebase-walk')" aria-label="复制技能名称">复制</button>
+          </div>
+        </article>
+
+        <article class="skill-card" data-category="architecture" data-name="team-codebase-brief" data-description="将代码库转换为业务能力说明文档">
+          <div class="skill-header">
+            <span class="skill-category">架构理解</span>
+            <span class="skill-difficulty">中级</span>
+          </div>
+          <h3 class="skill-name">team-codebase-brief</h3>
+          <p class="skill-description">将代码库转换为业务能力说明文档。</p>
+          <div class="skill-tags">
+            <span class="tag">文档生成</span>
+            <span class="tag">业务能力</span>
+          </div>
+          <div class="skill-footer">
+            <span class="skill-version">v1.0</span>
+            <button class="skill-copy" onclick="copySkillName(this, 'team-codebase-brief')" aria-label="复制技能名称">复制</button>
+          </div>
+        </article>
+
+        <!-- 交付执行 -->
+        <article class="skill-card" data-category="delivery" data-name="team-prd-to-alignment" data-description="生成 PRD 对齐材料，确保团队对需求理解一致">
+          <div class="skill-header">
+            <span class="skill-category">交付执行</span>
+            <span class="skill-difficulty">中级</span>
+          </div>
+          <h3 class="skill-name">team-prd-to-alignment</h3>
+          <p class="skill-description">生成 PRD 对齐材料，确保团队对需求理解一致。</p>
+          <div class="skill-tags">
+            <span class="tag">对齐材料</span>
+            <span class="tag">团队协作</span>
+          </div>
+          <div class="skill-footer">
+            <span class="skill-version">v1.0</span>
+            <button class="skill-copy" onclick="copySkillName(this, 'team-prd-to-alignment')" aria-label="复制技能名称">复制</button>
+          </div>
+        </article>
+
+        <article class="skill-card" data-category="delivery" data-name="team-prd-to-issues" data-description="将 PRD 拆解为可独立领取、可验证的工程 issue">
+          <div class="skill-header">
+            <span class="skill-category">交付执行</span>
+            <span class="skill-difficulty">中级</span>
+          </div>
+          <h3 class="skill-name">team-prd-to-issues</h3>
+          <p class="skill-description">将 PRD 拆解为可独立领取、可验证的工程 issue。</p>
+          <div class="skill-tags">
+            <span class="tag">Issue 拆解</span>
+            <span class="tag">任务分配</span>
+          </div>
+          <div class="skill-footer">
+            <span class="skill-version">v1.0</span>
+            <button class="skill-copy" onclick="copySkillName(this, 'team-prd-to-issues')" aria-label="复制技能名称">复制</button>
+          </div>
+        </article>
+
+        <article class="skill-card" data-category="delivery" data-name="team-issue-publish-github" data-description="将 issue 草稿发布到 GitHub Issues">
+          <div class="skill-header">
+            <span class="skill-category">交付执行</span>
+            <span class="skill-difficulty">基础</span>
+          </div>
+          <h3 class="skill-name">team-issue-publish-github</h3>
+          <p class="skill-description">将 issue 草稿发布到 GitHub Issues。</p>
+          <div class="skill-tags">
+            <span class="tag">GitHub</span>
+            <span class="tag">Issue 发布</span>
+          </div>
+          <div class="skill-footer">
+            <span class="skill-version">v1.0</span>
+            <button class="skill-copy" onclick="copySkillName(this, 'team-issue-publish-github')" aria-label="复制技能名称">复制</button>
+          </div>
+        </article>
+
+        <article class="skill-card" data-category="delivery" data-name="team-issue-publish-gitlab" data-description="将 issue 草稿发布到 GitLab Issues">
+          <div class="skill-header">
+            <span class="skill-category">交付执行</span>
+            <span class="skill-difficulty">基础</span>
+          </div>
+          <h3 class="skill-name">team-issue-publish-gitlab</h3>
+          <p class="skill-description">将 issue 草稿发布到 GitLab Issues。</p>
+          <div class="skill-tags">
+            <span class="tag">GitLab</span>
+            <span class="tag">Issue 发布</span>
+          </div>
+          <div class="skill-footer">
+            <span class="skill-version">v1.0</span>
+            <button class="skill-copy" onclick="copySkillName(this, 'team-issue-publish-gitlab')" aria-label="复制技能名称">复制</button>
+          </div>
+        </article>
+
+        <article class="skill-card" data-category="delivery" data-name="team-issue-batch-implement" data-description="批量编排多个 issue 的实现，支持并行和依赖管理">
+          <div class="skill-header">
+            <span class="skill-category">交付执行</span>
+            <span class="skill-difficulty">高级</span>
+          </div>
+          <h3 class="skill-name">team-issue-batch-implement</h3>
+          <p class="skill-description">批量编排多个 issue 的实现，支持并行和依赖管理。</p>
+          <div class="skill-tags">
+            <span class="tag">批量实现</span>
+            <span class="tag">并行编排</span>
+          </div>
+          <div class="skill-footer">
+            <span class="skill-version">v1.0</span>
+            <button class="skill-copy" onclick="copySkillName(this, 'team-issue-batch-implement')" aria-label="复制技能名称">复制</button>
+          </div>
+        </article>
+
+        <article class="skill-card" data-category="delivery" data-name="team-issue-implement" data-description="实现单个 issue，生成可验证的代码变更">
+          <div class="skill-header">
+            <span class="skill-category">交付执行</span>
+            <span class="skill-difficulty">中级</span>
+          </div>
+          <h3 class="skill-name">team-issue-implement</h3>
+          <p class="skill-description">实现单个 issue，生成可验证的代码变更。</p>
+          <div class="skill-tags">
+            <span class="tag">代码实现</span>
+            <span class="tag">Issue 完成</span>
+          </div>
+          <div class="skill-footer">
+            <span class="skill-version">v1.0</span>
+            <button class="skill-copy" onclick="copySkillName(this, 'team-issue-implement')" aria-label="复制技能名称">复制</button>
+          </div>
+        </article>
+
+        <article class="skill-card" data-category="delivery" data-name="team-issue-verify" data-description="独立验证实现是否符合 issue 要求">
+          <div class="skill-header">
+            <span class="skill-category">交付执行</span>
+            <span class="skill-difficulty">中级</span>
+          </div>
+          <h3 class="skill-name">team-issue-verify</h3>
+          <p class="skill-description">独立验证实现是否符合 issue 要求。</p>
+          <div class="skill-tags">
+            <span class="tag">验证测试</span>
+            <span class="tag">质量保证</span>
+          </div>
+          <div class="skill-footer">
+            <span class="skill-version">v1.0</span>
+            <button class="skill-copy" onclick="copySkillName(this, 'team-issue-verify')" aria-label="复制技能名称">复制</button>
+          </div>
+        </article>
+
+        <article class="skill-card" data-category="delivery" data-name="team-issue-create-pr-github" data-description="为已完成的 issue 创建 GitHub Pull Request">
+          <div class="skill-header">
+            <span class="skill-category">交付执行</span>
+            <span class="skill-difficulty">基础</span>
+          </div>
+          <h3 class="skill-name">team-issue-create-pr-github</h3>
+          <p class="skill-description">为已完成的 issue 创建 GitHub Pull Request。</p>
+          <div class="skill-tags">
+            <span class="tag">GitHub PR</span>
+            <span class="tag">代码审查</span>
+          </div>
+          <div class="skill-footer">
+            <span class="skill-version">v1.0</span>
+            <button class="skill-copy" onclick="copySkillName(this, 'team-issue-create-pr-github')" aria-label="复制技能名称">复制</button>
+          </div>
+        </article>
+
+        <article class="skill-card" data-category="delivery" data-name="team-issue-create-mr-gitlab" data-description="为已完成的 issue 创建 GitLab Merge Request">
+          <div class="skill-header">
+            <span class="skill-category">交付执行</span>
+            <span class="skill-difficulty">基础</span>
+          </div>
+          <h3 class="skill-name">team-issue-create-mr-gitlab</h3>
+          <p class="skill-description">为已完成的 issue 创建 GitLab Merge Request。</p>
+          <div class="skill-tags">
+            <span class="tag">GitLab MR</span>
+            <span class="tag">代码审查</span>
+          </div>
+          <div class="skill-footer">
+            <span class="skill-version">v1.0</span>
+            <button class="skill-copy" onclick="copySkillName(this, 'team-issue-create-mr-gitlab')" aria-label="复制技能名称">复制</button>
+          </div>
+        </article>
+
+        <!-- 技术债治理 -->
+        <article class="skill-card" data-category="tech-debt" data-name="team-tech-debt-analyze" data-description="只读分析代码库中的技术债务，生成债务报告">
+          <div class="skill-header">
+            <span class="skill-category">技术债治理</span>
+            <span class="skill-difficulty">中级</span>
+          </div>
+          <h3 class="skill-name">team-tech-debt-analyze</h3>
+          <p class="skill-description">只读分析代码库中的技术债务，生成债务报告。</p>
+          <div class="skill-tags">
+            <span class="tag">债务分析</span>
+            <span class="tag">代码质量</span>
+          </div>
+          <div class="skill-footer">
+            <span class="skill-version">v1.0</span>
+            <button class="skill-copy" onclick="copySkillName(this, 'team-tech-debt-analyze')" aria-label="复制技能名称">复制</button>
+          </div>
+        </article>
+
+        <article class="skill-card" data-category="tech-debt" data-name="team-tech-debt-refine" data-description="细化技术债需求，明确修复范围和优先级">
+          <div class="skill-header">
+            <span class="skill-category">技术债治理</span>
+            <span class="skill-difficulty">中级</span>
+          </div>
+          <h3 class="skill-name">team-tech-debt-refine</h3>
+          <p class="skill-description">细化技术债需求，明确修复范围和优先级。</p>
+          <div class="skill-tags">
+            <span class="tag">需求细化</span>
+            <span class="tag">优先级排序</span>
+          </div>
+          <div class="skill-footer">
+            <span class="skill-version">v1.0</span>
+            <button class="skill-copy" onclick="copySkillName(this, 'team-tech-debt-refine')" aria-label="复制技能名称">复制</button>
+          </div>
+        </article>
+
+        <article class="skill-card" data-category="tech-debt" data-name="team-tech-debt-review" data-description="评审技术债修复方案的风险和优先级">
+          <div class="skill-header">
+            <span class="skill-category">技术债治理</span>
+            <span class="skill-difficulty">中级</span>
+          </div>
+          <h3 class="skill-name">team-tech-debt-review</h3>
+          <p class="skill-description">评审技术债修复方案的风险和优先级。</p>
+          <div class="skill-tags">
+            <span class="tag">风险评审</span>
+            <span class="tag">方案评估</span>
+          </div>
+          <div class="skill-footer">
+            <span class="skill-version">v1.0</span>
+            <button class="skill-copy" onclick="copySkillName(this, 'team-tech-debt-review')" aria-label="复制技能名称">复制</button>
+          </div>
+        </article>
+
+        <article class="skill-card" data-category="tech-debt" data-name="team-tech-debt-to-issues" data-description="将技术债拆解为可执行的工程 issue">
+          <div class="skill-header">
+            <span class="skill-category">技术债治理</span>
+            <span class="skill-difficulty">中级</span>
+          </div>
+          <h3 class="skill-name">team-tech-debt-to-issues</h3>
+          <p class="skill-description">将技术债拆解为可执行的工程 issue。</p>
+          <div class="skill-tags">
+            <span class="tag">Issue 拆解</span>
+            <span class="tag">债务治理</span>
+          </div>
+          <div class="skill-footer">
+            <span class="skill-version">v1.0</span>
+            <button class="skill-copy" onclick="copySkillName(this, 'team-tech-debt-to-issues')" aria-label="复制技能名称">复制</button>
+          </div>
+        </article>
+
+        <!-- 实验性 -->
+        <article class="skill-card experimental" data-category="harness" data-name="team-codex-harness" data-description="维护 Codex 运行时检索层，支持技能动态加载">
+          <div class="skill-header">
+            <span class="skill-category">实验性</span>
+            <span class="skill-difficulty">高级</span>
+          </div>
+          <h3 class="skill-name">team-codex-harness</h3>
+          <p class="skill-description">维护 Codex 运行时检索层，支持技能动态加载。</p>
+          <div class="skill-tags">
+            <span class="tag">实验性</span>
+            <span class="tag">运行时</span>
+          </div>
+          <div class="skill-footer">
+            <span class="skill-version">v1.0</span>
+            <button class="skill-copy" onclick="copySkillName(this, 'team-codex-harness')" aria-label="复制技能名称">复制</button>
+          </div>
+        </article>
+
+        <article class="skill-card experimental" data-category="harness" data-name="team-skill-evolve" data-description="根据反馈进化技能，支持技能自我优化">
+          <div class="skill-header">
+            <span class="skill-category">实验性</span>
+            <span class="skill-difficulty">高级</span>
+          </div>
+          <h3 class="skill-name">team-skill-evolve</h3>
+          <p class="skill-description">根据反馈进化技能，支持技能自我优化。</p>
+          <div class="skill-tags">
+            <span class="tag">实验性</span>
+            <span class="tag">技能进化</span>
+          </div>
+          <div class="skill-footer">
+            <span class="skill-version">v1.0</span>
+            <button class="skill-copy" onclick="copySkillName(this, 'team-skill-evolve')" aria-label="复制技能名称">复制</button>
+          </div>
+        </article>
+      </div>
+
+      <!-- 空状态 -->
+      <div class="skills-empty" id="skillsEmpty" style="display: none;">
+        <span class="empty-icon">🔍</span>
+        <p class="empty-text">没有找到匹配的技能</p>
+        <button class="empty-reset" onclick="resetFilters()">重置筛选</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 工作流展示区域 -->
+  <section id="workflow" class="section workflow-section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-badge">工作流</span>
+        <h2 class="section-title">端到端的交付路径</h2>
+        <p class="section-subtitle">从需求到验证的完整链路</p>
+      </div>
+      <div class="workflow-timeline">
+        <div class="timeline-item">
+          <div class="timeline-marker">
+            <span class="marker-number">01</span>
+          </div>
+          <div class="timeline-content">
+            <h3 class="timeline-title">需求细化</h3>
+            <p class="timeline-description">使用 <code>team-spec-refine</code> 澄清术语、边界、业务规则和验收口径。</p>
+            <div class="timeline-skills">
+              <span class="timeline-skill">team-spec-refine</span>
+            </div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-marker">
+            <span class="marker-number">02</span>
+          </div>
+          <div class="timeline-content">
+            <h3 class="timeline-title">风险评审</h3>
+            <p class="timeline-description">使用 <code>team-spec-review</code> 识别产品、交付、数据、合规和协作风险。</p>
+            <div class="timeline-skills">
+              <span class="timeline-skill">team-spec-review</span>
+            </div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-marker">
+            <span class="marker-number">03</span>
+          </div>
+          <div class="timeline-content">
+            <h3 class="timeline-title">PRD 固化</h3>
+            <p class="timeline-description">使用 <code>team-spec-to-prd</code> 将确认后的规格固化为结构化 PRD。</p>
+            <div class="timeline-skills">
+              <span class="timeline-skill">team-spec-to-prd</span>
+            </div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-marker">
+            <span class="marker-number">04</span>
+          </div>
+          <div class="timeline-content">
+            <h3 class="timeline-title">Issue 拆解</h3>
+            <p class="timeline-description">使用 <code>team-prd-to-issues</code> 将 PRD 拆解为可独立领取的工程 issue。</p>
+            <div class="timeline-skills">
+              <span class="timeline-skill">team-prd-to-issues</span>
+            </div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-marker">
+            <span class="marker-number">05</span>
+          </div>
+          <div class="timeline-content">
+            <h3 class="timeline-title">实现与验证</h3>
+            <p class="timeline-description">使用 <code>team-issue-implement</code> 和 <code>team-issue-verify</code> 完成代码实现和验证。</p>
+            <div class="timeline-skills">
+              <span class="timeline-skill">team-issue-implement</span>
+              <span class="timeline-skill">team-issue-verify</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-</header>
+  </section>
 
-<section id="main-path" class="main-path">
-  <div class="container">
-    <div class="section-kicker">核心路径</div>
-    <h2 class="section-title">产品三件套，接研发批量编排</h2>
-    <p class="section-desc">常规需求交付时，先把需求打磨成 PRD，再把 PRD 拆成可领取的工程 issue，最后按依赖队列逐个实现和验证。</p>
-
-    <div class="flow-lane">
-      <div class="flow-group product-flow">
-        <div class="group-label">产品侧</div>
-        <div class="flow-step">
-          <span class="step-index">01</span>
-          <strong>team-spec-refine</strong>
-          <small>澄清需求、术语、边界和验收口径</small>
-        </div>
-        <div class="flow-step">
-          <span class="step-index">02</span>
-          <strong>team-spec-review</strong>
-          <small>评审风险，确认是否 ready</small>
-        </div>
-        <div class="flow-step">
-          <span class="step-index">03</span>
-          <strong>team-spec-to-prd</strong>
-          <small>固化成结构化 PRD</small>
-        </div>
+  <!-- 快速开始区域 -->
+  <section id="quickstart" class="section quickstart-section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-badge">快速开始</span>
+        <h2 class="section-title">三步开始使用</h2>
+        <p class="section-subtitle">快速集成技能到你的工作流</p>
       </div>
-
-      <div class="flow-bridge">PRD</div>
-
-      <div class="flow-group delivery-flow">
-        <div class="group-label">研发侧</div>
-        <div class="flow-step">
-          <span class="step-index">04</span>
-          <strong>team-prd-to-issues</strong>
-          <small>拆成可独立领取的工程 issue</small>
+      <div class="quickstart-steps">
+        <div class="step-card">
+          <div class="step-number">1</div>
+          <h3 class="step-title">安装技能</h3>
+          <p class="step-description">使用 npm 安装所有技能到你的项目</p>
+          <div class="step-code">
+            <code>npx skills@latest add coolbeevip/team-ai-skills --all</code>
+            <button class="step-copy" onclick="copyCommand(this)" aria-label="复制命令">复制</button>
+          </div>
         </div>
-        <div class="flow-step">
-          <span class="step-index">05</span>
-          <strong>team-issue-batch-implement</strong>
-          <small>按依赖顺序批量编排 AFK issue</small>
+        <div class="step-card">
+          <div class="step-number">2</div>
+          <h3 class="step-title">配置工作区</h3>
+          <p class="step-description">创建 team-spec 目录结构</p>
+          <div class="step-code">
+            <code>mkdir -p team-spec/active team-spec/archive</code>
+            <button class="step-copy" onclick="copyCommand(this)" aria-label="复制命令">复制</button>
+          </div>
         </div>
-        <div class="flow-step">
-          <span class="step-index">06</span>
-          <strong>team-issue-implement</strong>
-          <small>按行为测试和 TDD 实现单个 issue</small>
-        </div>
-        <div class="flow-step">
-          <span class="step-index">07</span>
-          <strong>team-issue-verify</strong>
-          <small>独立验证是否满足验收标准</small>
-        </div>
-        <div class="flow-step">
-          <span class="step-index">08</span>
-          <strong>team-issue-create-mr-gitlab</strong>
-          <small>推送分支并创建关联 issue 的 MR</small>
-        </div>
-        <div class="flow-step">
-          <span class="step-index">09</span>
-          <strong>team-issue-create-pr-github</strong>
-          <small>推送分支并创建关联 issue 的 PR</small>
+        <div class="step-card">
+          <div class="step-number">3</div>
+          <h3 class="step-title">开始使用</h3>
+          <p class="step-description">在 Claude Code 中调用技能</p>
+          <div class="step-code">
+            <code>/team-spec-refine</code>
+            <button class="step-copy" onclick="copyCommand(this)" aria-label="复制命令">复制</button>
+          </div>
         </div>
       </div>
     </div>
+  </section>
 
-    <div class="optional-row">
-      <span>需要人类评审 PRD：<code>team-prd-to-alignment</code></span>
-      <span>需要同步到平台：<code>team-issue-publish-github</code> / <code>team-issue-publish-gitlab</code></span>
-      <span>完成后创建合并请求：<code>team-issue-create-mr-gitlab</code> / <code>team-issue-create-pr-github</code></span>
-    </div>
-  </div>
-</section>
-
-<section id="scenarios" class="scenarios">
-  <div class="container">
-    <div class="section-kicker">使用场景</div>
-    <h2 class="section-title">主线之外的三条支线</h2>
-    <p class="section-desc">不同团队问题进入不同场景：治理技术债、维护 Codex 运行时检索层，或者把 PRD 等 AI 产物转成适合人类评审的材料。</p>
-
-    <div class="scenario-grid">
-      <article class="scenario-card debt-card">
-        <div class="scenario-label">场景 1</div>
-        <h3>技术债治理</h3>
-        <p>当问题不是新功能，而是系统不稳定、测试不可依赖、维护成本太高时，把技术债变成可评审、可排期、可验收的工程工作。</p>
-        <div class="scenario-flow">
-          <code>team-tech-debt-refine</code>
-          <span>→</span>
-          <code>team-tech-debt-review</code>
-          <span>→</span>
-          <code>team-tech-debt-to-issues</code>
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-brand">
+          <span class="brand-icon">⚡</span>
+          <span class="brand-text">Skills For Real Teams</span>
         </div>
-      </article>
-
-      <article class="scenario-card harness-card">
-        <div class="scenario-label">场景 2</div>
-        <h3>Codex 检索层维护</h3>
-        <p>当 Codex 经常卡在入口约束、失败定位、验证策略或任务入口上，维护项目级 harness，让 AGENTS.md 指向可检索的运行时辅助信息。</p>
-        <div class="scenario-flow">
-          <code>team-codex-harness</code>
-          <span>→</span>
-          <code>真实任务反馈</code>
-          <span>→</span>
-          <code>failure memory</code>
+        <div class="footer-links">
+          <a href="https://github.com/coolbeevip/team-ai-skills" target="_blank" rel="noopener">GitHub</a>
+          <a href="#features">特性</a>
+          <a href="#skills">技能</a>
+          <a href="#workflow">工作流</a>
+          <a href="#quickstart">快速开始</a>
         </div>
-      </article>
-
-      <article class="scenario-card doc-card">
-        <div class="scenario-label">场景 3</div>
-        <h3>人类对齐与文档化</h3>
-        <p>当 AI 产物需要给人评审、给会议讨论、进入正式文档体系时，把机器友好的结构转成更适合人类理解的材料。</p>
-        <div class="scenario-flow">
-          <code>team-prd-to-alignment</code>
-          <span>+</span>
-          <code>team-md-style-check</code>
+        <div class="footer-copyright">
+          <p>MIT License · © 2026 Skills For Real Teams</p>
         </div>
-      </article>
-    </div>
-  </div>
-</section>
-
-<section id="skills" class="skill-index-section">
-  <div class="container">
-    <div class="section-kicker">完整索引</div>
-    <h2 class="section-title">17 个技能，一张表查完</h2>
-    <p class="section-desc">主线优先使用前 6 个技能；其他技能按治理、Harness、文档化和发布场景接入。</p>
-
-    <div class="skill-index">
-      <div class="index-row">
-        <span class="index-domain">产品</span>
-        <code>team-spec-refine</code>
-        <p>把模糊需求细化成可评审规格。</p>
-      </div>
-      <div class="index-row">
-        <span class="index-domain">产品</span>
-        <code>team-spec-review</code>
-        <p>评审规格风险和 ready 状态。</p>
-      </div>
-      <div class="index-row">
-        <span class="index-domain">产品</span>
-        <code>team-spec-to-prd</code>
-        <p>将 ready 规格固化为结构化 PRD。</p>
-      </div>
-      <div class="index-row">
-        <span class="index-domain">研发</span>
-        <code>team-prd-to-issues</code>
-        <p>将 PRD 拆成可独立领取的工程 issue。</p>
-      </div>
-      <div class="index-row">
-        <span class="index-domain">研发</span>
-        <code>team-issue-batch-implement</code>
-        <p>按依赖队列批量编排多个 AFK issue。</p>
-      </div>
-      <div class="index-row">
-        <span class="index-domain">研发</span>
-        <code>team-issue-implement</code>
-        <p>按单个 issue 完成代码和测试变更。</p>
-      </div>
-      <div class="index-row">
-        <span class="index-domain">研发</span>
-        <code>team-issue-verify</code>
-        <p>独立验证实现是否满足验收标准。</p>
-      </div>
-      <div class="index-row">
-        <span class="index-domain">发布</span>
-        <code>team-issue-create-mr-gitlab</code>
-        <p>推送 issue 分支并创建关联 issue 编号的 GitLab MR。</p>
-      </div>
-      <div class="index-row">
-        <span class="index-domain">发布</span>
-        <code>team-issue-create-pr-github</code>
-        <p>推送 issue 分支并创建关联 issue 编号的 GitHub PR。</p>
-      </div>
-      <div class="index-row">
-        <span class="index-domain">发布</span>
-        <code>team-issue-publish-github</code>
-        <p>发布本地 issue 草稿到 GitHub Issues，可整批或单个。</p>
-      </div>
-      <div class="index-row">
-        <span class="index-domain">发布</span>
-        <code>team-issue-publish-gitlab</code>
-        <p>发布本地 issue 草稿到 GitLab Issues，可整批或单个。</p>
-      </div>
-      <div class="index-row">
-        <span class="index-domain">治理</span>
-        <code>team-tech-debt-refine</code>
-        <p>把技术债诉求细化成可评审规格。</p>
-      </div>
-      <div class="index-row">
-        <span class="index-domain">治理</span>
-        <code>team-tech-debt-review</code>
-        <p>评审技术债风险、优先级和可执行性。</p>
-      </div>
-      <div class="index-row">
-        <span class="index-domain">治理</span>
-        <code>team-tech-debt-to-issues</code>
-        <p>将技术债规格拆成工程 issue。</p>
-      </div>
-      <div class="index-row">
-        <span class="index-domain">Harness</span>
-        <code>team-codex-harness</code>
-        <p>维护 Codex 运行时检索层。</p>
-      </div>
-      <div class="index-row">
-        <span class="index-domain">文档</span>
-        <code>team-prd-to-alignment</code>
-        <p>将 PRD 转成人类评审对齐材料。</p>
-      </div>
-      <div class="index-row">
-        <span class="index-domain">文档</span>
-        <code>team-md-style-check</code>
-        <p>检查 Markdown 到飞书文档的样式映射。</p>
       </div>
     </div>
-  </div>
-</section>
+  </footer>
 
-<footer>
-  <div class="footer-line"></div>
-  <p class="footer-tagline">Powered by AI · Built for real teams</p>
-  <p>
-    Built with ❤️ by
-    <a href="https://github.com/coolbeevip" target="_blank" rel="noopener">coolbeevip</a>
-    ·
-    <a href="https://github.com/coolbeevip/team-ai-skills" target="_blank" rel="noopener">GitHub</a>
-    ·
-    MIT License
-  </p>
-</footer>
+  <!-- 返回顶部按钮 -->
+  <button class="back-to-top" id="backToTop" aria-label="返回顶部">
+    <span>↑</span>
+  </button>
 
-<script>
-  function copyCmd(btn, text) {
-    navigator.clipboard.writeText(text).then(() => {
-      const box = btn.closest('.install-box');
-      const toast = box && box.querySelector('.copy-toast');
-      if (toast) {
-        toast.classList.add('show');
-        setTimeout(() => toast.classList.remove('show'), 2000);
-      } else {
-        const orig = btn.innerHTML;
-        btn.innerHTML = '✓';
-        setTimeout(() => { btn.innerHTML = orig; }, 1500);
-      }
-    });
-  }
-</script>
+  <script src="script.js"></script>
 </body>
 </html>
