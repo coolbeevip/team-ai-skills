@@ -1,6 +1,6 @@
 ---
 name: team-skill-evolve
-description: 根据真实使用反馈、失败案例、用户纠正和技能执行日志，复盘团队技能库的问题，提出可审核的技能进化建议，并在用户明确授权后更新对应 SKILL.md、脚本或触发条件。Review real usage feedback, failures, user corrections, and skill execution logs to propose auditable skill evolution changes, then update SKILL.md files, scripts, or triggers only after explicit user approval.
+description: 根据真实使用反馈、失败案例、用户纠正和技能执行日志，复盘团队技能库的问题，包括技能导致过度设计、写太多代码或未复用现有实现的情况，提出可审核的技能进化建议。Review real usage feedback, failures, user corrections, and skill execution logs, including over-engineering and missed reuse, to propose auditable skill evolution changes.
 license: MIT
 metadata:
   author: coolbeevip
@@ -12,17 +12,25 @@ triggers:
   - 根据反馈优化 skill
   - 复盘 agent 失败
   - 优化触发词
+  - 技能过度设计
+  - 技能写太多代码
+  - 没有复用现有代码
   - skill evolution
   - improve this skill
   - review skill feedback
   - refine agent workflow
   - analyze agent failure
   - update skill triggers
+  - skill over-engineered
+  - agent wrote too much code
+  - missed existing reuse
 ---
 
 # 技能自进化
 
 这个技能用于维护团队技能库自身。它把真实使用中的失败、反复纠正、误触发、输出不稳定和脚本缺口，转化为可审核、可验证、可回滚的技能改进建议。默认只做复盘和建议；只有用户明确要求“实现”“修改”“合入”“更新文件”时，才修改技能文件或辅助脚本。
+
+当用户反馈“技能过度设计”“写太多代码”“没有复用现有代码”“agent wrote too much code”“missed existing reuse”等问题时，本技能应把它归入最小实现模式的技能反馈：检查相关技能是否缺少触发词、复用优先规则、平台能力优先规则、安全边界或验证清单。
 
 自进化不是让 agent 自己随意改写技能，而是建立受控闭环：
 
@@ -72,6 +80,7 @@ triggers:
 - 用户说“不是这个意思”“刚才触发错了”“这个 skill 没做好”。
 - 同一个技能被用户连续纠正，或输出被要求大改。
 - Agent 找不到唯一 slug、误读 archive、写错产物路径或混淆上下游边界。
+- 用户指出技能结果过度设计、写太多代码、引入不必要依赖、没有复用现有代码或忽略平台原生能力。
 - 技能流程依赖临时生成复杂代码，且该逻辑可能重复使用。
 - 脚本执行失败后暴露出缺少参数、dry-run、安全边界或错误提示。
 - 同类失败在不同任务中重复出现。
@@ -113,6 +122,7 @@ triggers:
 - 脚本问题：重复出现临时代码、API 调用易错、批量处理需要幂等或 dry-run。
 - 校验问题：修改后没有结构校验、脚本检查、黄金用例或人工核对路径。
 - 边界问题：读取了不该读的 archive、误改上游产物、把建议当成已确认事实。
+- 最小实现问题：缺少复用优先、平台能力优先、少依赖、少抽象或过度设计检查，或错误地把必要安全边界当成可裁剪范围。
 - 文案问题：说明过长、抽象、不可执行，或用户可见语言不符合项目约定。
 
 ## 建议报告格式

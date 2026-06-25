@@ -1,6 +1,6 @@
 ---
 name: team-issue-batch-implement
-description: 批量编排多个 AFK 工程 issue 的实现，按依赖顺序逐个调用单 issue 实现与验证流程，保留失败即停和可恢复续跑边界。Batch orchestrate multiple AFK engineering issues in dependency order while delegating each slice to single-issue implementation and verification workflows.
+description: 批量编排多个 AFK 工程 issue 的实现，按依赖顺序逐个调用单 issue 实现、最小实现模式与验证流程，保留失败即停、单 issue 边界和可恢复续跑边界。Batch orchestrate multiple AFK engineering issues in dependency order while preserving lean implementation mode, single-issue boundaries, and verification workflows.
 license: MIT
 metadata:
   author: coolbeevip
@@ -10,10 +10,16 @@ triggers:
   - 连续处理多个 issue
   - 批量跑工程任务
   - 一次实现多个 AFK issue
+  - 批量最小改动实现
+  - 批量不要过度设计
+  - 不要扩大 issue 范围
   - batch implement issues
   - implement multiple issues
   - run issue queue
   - process AFK issues in bulk
+  - lean batch implementation
+  - avoid batch over-engineering
+  - keep issue scope minimal
 ---
 
 # Issue 批量实现编排
@@ -21,6 +27,8 @@ triggers:
 这个技能用于在 `team-prd-to-issues` 或 `team-tech-debt-to-issues` 产出多个工程 issue 后，恢复批量处理能力。它只做队列编排、依赖排序、停机条件和进度汇总；单个 issue 的实现仍必须交给 `team-issue-implement`，验证仍必须交给 `team-issue-verify`。
 
 核心原则：批量选择，单个执行，逐个验证，失败即停，可恢复继续。
+
+当用户说“批量最小改动实现”“批量不要过度设计”“不要扩大 issue 范围”“lean batch implementation”等表达时，批量编排仍只负责排队和停机条件；每个 issue 必须按 `team-issue-implement` 的最小实现模式独立执行，不得因为批量处理而合并 scope、引入无关重构或提前实现后续 issue。
 
 ## 运行时配置
 
@@ -107,6 +115,14 @@ python3 {skill_dir}/scripts/plan_issue_batch.py --slug {slug} --limit 3 --json
 
 默认批量上限为 3 个 issue。用户明确要求“全部可执行 issue”时可以处理更多，但仍必须逐个验证，且任何失败都立即停止。
 
+## 最小实现模式
+
+- 批量编排不得改变单个 issue 的验收边界。
+- 每个 issue 执行前都要确认最小实现路径、可复用代码和被拒绝的复杂方案。
+- 不要把多个小 issue 合并成一次跨模块重构。
+- 不要为后续 issue 提前新增抽象、配置层、通用框架或依赖。
+- 如果某个 issue 的最小正确实现需要扩大范围，应停止批量执行并说明证据。
+
 ## 工作流
 
 1. 确定 slug、issue 目录或用户指定的 issue 文件列表。
@@ -115,7 +131,7 @@ python3 {skill_dir}/scripts/plan_issue_batch.py --slug {slug} --limit 3 --json
 4. 运行 `./scripts/plan_issue_batch.py` 生成执行队列。
 5. 向用户展示批量计划：本轮将处理哪些 issue、跳过哪些 issue、为什么跳过、批量上限是多少。
 6. 如果用户已明确要求批量执行且队列规模不超过默认上限，可以继续；否则先等待用户确认。
-7. 按队列顺序对每个 issue 执行 `team-issue-implement` 的完整工作流。
+7. 按队列顺序对每个 issue 执行 `team-issue-implement` 的完整工作流，并保留最小实现模式的复用、跳过复杂方案和验证记录。
 8. 每个 issue 实现结束后，立即执行 `team-issue-verify`。
 9. 只有当前 issue 达到 `ready for PR` 或用户明确接受的完成状态，才继续下一个 issue。
 10. 记录本轮完成项、验证命令、停止原因、未处理队列和需要人工介入的事项。

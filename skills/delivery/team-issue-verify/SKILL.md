@@ -1,6 +1,6 @@
 ---
 name: team-issue-verify
-description: 独立验证单个 issue 的实现是否满足验收标准、关联 PRD 和风险约束，输出验证报告、遗漏项、回归风险和是否 ready for PR 的结论。Verify whether a single issue implementation satisfies acceptance criteria, the linked PRD, and risk constraints, producing a verification report, gaps, regression risks, and readiness status.
+description: 独立验证单个 issue 的实现是否满足验收标准、关联 PRD、风险约束和最小实现模式，输出验证报告、遗漏项、回归风险、过度设计检查和是否 ready for PR 的结论。Verify whether a single issue implementation satisfies acceptance criteria, the linked PRD, risk constraints, and lean implementation expectations including over-engineering checks.
 license: MIT
 metadata:
   author: coolbeevip
@@ -10,15 +10,23 @@ triggers:
   - 检查 issue 是否完成
   - 能提 PR 了吗
   - 实现完了帮我验一下
+  - 检查是否过度设计
+  - 看看有没有写复杂
+  - 最小实现验收
   - verify issue
   - check implementation
   - ready for PR
   - is this implementation complete
+  - over-engineering review
+  - check lean implementation
+  - review unnecessary complexity
 ---
 
 # Issue 验证
 
 这个技能用于确认 `team-issue-implement` 的结果是否真的满足 issue 和 PRD，而不是只确认“代码写完了”。它应尽量独立于实现过程进行判断，优先检查外部行为、验收标准和回归风险。
+
+当用户说“检查是否过度设计”“看看有没有写复杂”“最小实现验收”“over-engineering review”等表达时，除验收标准外，还要检查实现是否存在无请求抽象、无用依赖、重复封装、可复用现有代码却没有复用、或本可使用标准库/平台能力却新增实现的问题。
 
 ## 运行时配置
 
@@ -76,8 +84,20 @@ access_policy:
 - 验证外部行为，不验证实现偏好。
 - 先对照 issue 验收标准，再对照 PRD 目标和非目标。
 - 不因为测试通过就自动判定 ready；还要检查验收标准是否覆盖完整。
+- 检查是否符合最小实现模式：复用优先、平台能力优先、已安装依赖优先，避免过度设计。
 - 不因为代码风格偏好阻塞，除非影响可维护性、正确性或团队约定。
+- 不把必要的输入校验、权限、安全、数据一致性、错误处理、可访问性或用户明确要求判为过度设计。
 - 发现需求不一致时，标记为上游问题，不在验证阶段隐式改需求。
+
+## 最小实现检查
+
+验证时增加以下检查：
+
+- 是否有新增依赖、抽象层、配置层、通用框架或跨模块重构；如果有，是否由验收标准或代码证据证明必要。
+- 是否忽略了项目已有 helper、组件、服务、脚本、测试模式或调用流。
+- 是否本可用标准库、语言内建、数据库、浏览器、操作系统或框架原生能力解决。
+- 是否为了追求小 diff 删除或弱化了安全、权限、数据一致性、错误处理、可访问性或必要验证。
+- 如果实现刻意保持简单，是否说明了未来升级条件和残余风险。
 
 ## 工作流
 
@@ -87,8 +107,9 @@ access_policy:
 4. 运行相关自动化测试；如果测试命令未知，先查项目文档或 package 配置。
 5. 做验收标准逐项映射：每项对应哪个测试、代码路径或手工验证。
 6. 检查边界情况、权限、数据状态、错误路径和回归风险。
-7. 优先更新原 issue 文件，把通过的验收项勾选，未通过的验收项保留未勾选并写明原因。
-8. 输出 ready 判断和需要补充的具体行动。
+7. 检查最小实现模式：是否存在过度设计、无用依赖、无请求抽象或可删除复杂度。
+8. 优先更新原 issue 文件，把通过的验收项勾选，未通过的验收项保留未勾选并写明原因。
+9. 输出 ready 判断和需要补充的具体行动。
 
 ## 输出格式
 

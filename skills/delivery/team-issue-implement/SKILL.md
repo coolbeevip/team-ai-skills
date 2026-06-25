@@ -1,6 +1,6 @@
 ---
 name: team-issue-implement
-description: 根据 team-spec/active/{slug}/issues/ 中的单个工程 issue 进行实现，优先采用行为测试和 TDD 的 red-green-refactor 循环，最终输出代码变更、测试变更和验证结果。Implement a single engineering issue from team-spec/active/{slug}/issues/ using behavior-focused tests and a red-green-refactor loop, producing code changes, tests, and verification results.
+description: 根据 team-spec/active/{slug}/issues/ 中的单个工程 issue 进行实现，优先采用行为测试、TDD 和最小实现模式，复用现有代码并避免过度设计，最终输出代码变更、测试变更和验证结果。Implement a single engineering issue from team-spec/active/{slug}/issues/ using behavior-focused tests, TDD, and lean implementation mode that reuses existing code and avoids over-engineering.
 license: MIT
 metadata:
   author: coolbeevip
@@ -10,10 +10,16 @@ triggers:
   - 开始写代码
   - 按 issue 编码
   - 实现这个功能
+  - 最小改动实现
+  - 不要过度设计
+  - 优先复用现有代码
   - implement issue
   - start coding
   - implement this feature
   - code this issue
+  - minimal implementation
+  - avoid over-engineering
+  - reuse existing code first
 ---
 
 # Issue 实现
@@ -21,6 +27,8 @@ triggers:
 这个技能用于把 `team-prd-to-issues` 产生的单个 issue 实现为可验证的代码变更。TDD 是默认实现策略，但不是形式主义；目标是通过公共接口验证外部行为，而不是测试实现细节。
 
 如果用户要连续处理多个可执行 `AFK` issue，应使用 `team-issue-batch-implement` 做批量编排。本技能仍只负责一个 issue 的实现与验证衔接。
+
+当用户说“最小改动实现”“不要过度设计”“优先复用现有代码”“minimal implementation”“avoid over-engineering”等表达时，启用最小实现模式：先判断是否需要新增实现，再查已有 helper、组件、服务、脚本和测试模式，再优先使用标准库、平台能力和已安装依赖，最后才写局部、直接、可验证的新代码。
 
 ## 运行时配置
 
@@ -83,17 +91,32 @@ access_policy:
 - 测行为，不测实现细节。
 - 通过公共接口验证，不直接测试私有方法或内部数据结构。
 - 一次只实现一个 vertical slice。
+- 默认使用最小实现模式：先复用、先平台、先已有依赖，避免无请求抽象、框架、配置层或通用层。
 - 不要一次性写完所有测试再实现。
 - 不要在 RED 状态重构。
 - 不要提前实现 speculative feature。
+- 不为了少写代码牺牲输入校验、权限、安全、数据一致性、错误处理、可访问性或用户明确要求。
 - 保持测试名称和领域术语一致，优先使用 `team-spec/CONTEXT.md` 与 `team-spec/active/{slug}/spec/CONTEXT.md` 中的规范语言。
+
+## 最小实现模式
+
+执行 issue 时按以下顺序判断：
+
+1. 这个需求是否已经被现有流程、配置或代码覆盖；如果已覆盖，说明证据并停止新增代码。
+2. 当前项目是否已有 helper、组件、服务、脚本、测试模式或调用流可复用。
+3. 标准库、语言内建、数据库、浏览器、操作系统或框架原生能力是否足够。
+4. 已安装依赖是否足够；不得为了小功能新增依赖，除非验收标准或代码证据证明必要。
+5. 是否能用一个局部小改动完成；不得新增无请求抽象、框架、配置层或通用层。
+6. 非平凡逻辑必须留下最小行为验证。
+
+最终实现说明应包含：复用了什么、拒绝了什么复杂方案、什么时候才需要升级为更复杂方案。
 
 ## 工作流
 
 1. 读取单个 issue，确认 `What to build`、`Type`、`Acceptance criteria` 和 `Blocked by`。
 2. 读取关联 PRD 和参考材料，只加载完成当前 issue 所需内容。
 3. 探索代码库，找到公共接口、现有测试模式和模块边界。
-4. 制定简短实现计划，列出要验证的行为。
+4. 制定简短实现计划，列出最小实现路径、可复用的现有代码、被拒绝的复杂方案和要验证的行为。
 5. 写一个失败的行为测试。
 6. 写最小实现让该测试通过。
 7. 运行相关测试。
@@ -142,6 +165,7 @@ REFACTOR: 所有相关测试通过后，再整理结构
 - 实现了哪个 issue。
 - 修改了哪些主要文件。
 - 覆盖了哪些验收标准。
+- 复用了什么现有代码、平台能力或已安装依赖，以及跳过了什么复杂方案。
 - 运行了哪些测试和命令。
 - 是否还有未解决风险、跳过测试或需要人工确认的事项。
 - 明确说明没有执行任何 `git commit` / `git push`，并保留了哪些待验证的本地变更。

@@ -1,6 +1,6 @@
 ---
 name: team-tech-debt-analyze
-description: 对项目或指定模块进行只读技术债分析，识别维护性、稳定性、测试、架构和交付风险，输出证据化技术债分析报告。Analyze technical debt in a project or module through read-only codebase inspection, identifying maintainability, reliability, testing, architecture, and delivery risks with evidence.
+description: 对项目或指定模块进行只读技术债分析，识别维护性、稳定性、测试、架构、交付风险以及过度设计、无用依赖和可复用平台能力，输出证据化技术债分析报告。Analyze technical debt in a project or module through read-only codebase inspection, identifying maintainability, reliability, architecture, delivery risks, over-engineering, unnecessary dependencies, and platform-native simplification opportunities.
 license: MIT
 metadata:
   author: coolbeevip
@@ -10,10 +10,16 @@ triggers:
   - 代码健康检查
   - 找维护风险
   - 看看项目有哪些技术债
+  - 分析过度设计
+  - 查无用抽象
+  - 找不必要依赖
   - technical debt analysis
   - code health review
   - maintainability audit
   - find technical debt
+  - find over-engineering
+  - unnecessary abstraction audit
+  - dependency simplification review
 ---
 
 # 技术债分析
@@ -21,6 +27,8 @@ triggers:
 这个技能用于对项目、模块或服务进行只读技术债分析，找出有源码证据支撑的技术债候选项，并按影响、风险和治理优先级形成分析报告。
 
 本技能是技术债治理链路的前置入口。它不直接要求用户先提出明确技术债，而是从代码、测试、配置、构建、运行文档和变更历史中发现值得治理的问题。后续可把某个候选项交给 `team-tech-debt-refine` 继续细化。
+
+当用户说“分析过度设计”“查无用抽象”“找不必要依赖”“find over-engineering”等表达时，本技能进入最小实现视角：只读识别可删除复杂度、重复封装、无用依赖、可被标准库/平台能力替代的自定义实现，以及与当前业务规模不匹配的过度工程。
 
 ## 运行时语言配置
 
@@ -90,11 +98,13 @@ team-spec/active/{candidate_slug}/issues/
 
 - 可维护性：重复逻辑、超大文件、超长函数、隐式约定、命名混乱、过深分支、过强耦合。
 - 架构边界：模块职责混杂、跨层调用、循环依赖、领域模型泄漏、入口分散、扩展点不清晰。
+- 过度设计：无请求抽象、重复封装、过早通用化、无用配置层、过重框架、可由标准库或平台能力替代的自定义实现。
 - 测试与验证：关键路径缺测试、测试只覆盖实现细节、缺少回归用例、缺少集成或端到端验证。
 - 稳定性与可观测性：错误处理薄弱、重试/超时缺失、日志不可定位、告警缺口、状态恢复不清晰。
 - 性能与资源：重复查询、阻塞 IO、无界缓存、批处理退化、内存或连接生命周期不清楚。
 - 数据与迁移：schema 演进风险、兼容性不明、迁移不可回滚、数据修复缺审计。
 - 依赖与构建：过期高风险依赖、生成物混乱、构建入口不稳定、环境假设隐含。
+- 简化机会：小功能引入大依赖、已有 helper 未复用、同类逻辑重复存在、可用数据库/浏览器/操作系统/框架原生能力替代。
 - 交付风险：发布步骤手工化、回滚路径缺失、配置散落、部署环境差异大。
 
 ## 债务判定标准
@@ -111,6 +121,8 @@ team-spec/active/{candidate_slug}/issues/
 - 没有影响路径的“看起来不优雅”。
 - 与当前业务规模不匹配的过度工程建议。
 - 需要产品或架构决策但证据不足的问题；这类应标为开放问题。
+
+不要把必要的安全校验、权限控制、数据一致性、错误处理、可访问性、硬件校准或验收标准明确要求的完整方案当成过度设计。
 
 ## 报告结构
 
