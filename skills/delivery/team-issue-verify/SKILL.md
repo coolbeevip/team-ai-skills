@@ -72,6 +72,7 @@ access_policy:
 - `team-spec/active/{slug}/spec/decisions/` 中的产品决策。
 - `team-spec/active/{slug}/spec/reviews.md` 中的风险评审。
 - 项目现有测试、CI 配置、发布说明、迁移说明或操作文档。
+- `../team-issue-implement/references/PLATFORM-STDLIB.md` 中的平台、标准库、数据库、Shell/OS 和项目内已有能力替代清单。
 
 如果本技能在同一对话中紧接 `team-issue-implement` 执行，上述参考输入已在对话上下文中，无需重新读取文件。只有在独立执行或新对话中才需要从文件加载参考输入。
 
@@ -104,6 +105,7 @@ access_policy:
 - 是否有新增依赖、抽象层、配置层、通用框架或跨模块重构；如果有，是否由验收标准或代码证据证明必要。
 - 是否忽略了项目已有 helper、组件、服务、脚本、测试模式或调用流。
 - 是否本可用标准库、语言内建、数据库、浏览器、操作系统或框架原生能力解决。
+- 对 URL query、日期、CSV、分组、深拷贝、格式化、分页、唯一性等常见场景，是否已对照 `../team-issue-implement/references/PLATFORM-STDLIB.md` 检查替代方案。
 - 是否为了追求小 diff 删除或弱化了安全、权限、数据一致性、错误处理、可访问性或必要验证。
 - 如果实现刻意保持简单，是否说明了未来升级条件和残余风险。
 

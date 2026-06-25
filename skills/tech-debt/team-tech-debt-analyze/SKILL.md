@@ -66,6 +66,7 @@ access_policy:
 - 目标项目中的源码、测试、配置、构建脚本、部署脚本、运行文档、架构说明、错误日志或监控材料。
 - `team-spec/CONTEXT.md` 与 `team-spec/decisions/`（如存在）。
 - 现有 `team-spec/active/{slug}/spec/`、`prd/`、`issues/` 或 `design/`（仅当用户指定同一 slug 或与分析范围直接相关时读取）。
+- `../../delivery/team-issue-implement/references/PLATFORM-STDLIB.md` 中的平台、标准库、数据库、Shell/OS 和项目内已有能力替代清单；技能安装后应按当前技能目录关系解析到 sibling delivery skill。
 
 必须先确定唯一分析批次 slug。技术债分析批次 slug 必须包含 `debt`，格式建议为 `{yyyy-mm-dd}-debt-{scope-slug}`，例如 `2026-06-10-debt-code-health`。如果用户没有提供 slug，可以根据本轮分析范围生成一个建议 slug；若目标项目中同名 slug 已存在，必须确认是继续已有分析还是创建新 slug。
 
@@ -110,6 +111,8 @@ team-spec/active/{candidate_slug}/issues/
 - 项目已有 helper、组件、服务、脚本或测试模式，但新代码重复实现了一套相似逻辑。
 - 为单一当前需求新增无请求抽象、配置层、通用框架、插件机制或未来扩展点。
 - 复杂度来自真实安全、权限、数据一致性、错误处理、可访问性、硬件校准或验收标准要求时，不把它判为可删除债务。
+
+分析 URL query、日期、CSV、分组、深拷贝、格式化、分页、唯一性、数据库约束、Shell/OS 或项目内 helper 相关复杂度时，先读取 `../../delivery/team-issue-implement/references/PLATFORM-STDLIB.md`，用其中替代清单判断是否存在平台能力或标准库替代。
 
 ## 复杂度审计
 
