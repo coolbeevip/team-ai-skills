@@ -1,6 +1,6 @@
 ---
 name: team-tech-debt-analyze
-description: 对项目或指定模块进行只读技术债分析，识别维护性、稳定性、测试、架构、交付风险以及过度设计、无用依赖和可复用平台能力，输出证据化技术债分析报告。Analyze technical debt in a project or module through read-only codebase inspection, identifying maintainability, reliability, architecture, delivery risks, over-engineering, unnecessary dependencies, and platform-native simplification opportunities.
+description: 对项目或指定模块进行只读技术债分析，支持复杂度审计和延迟债务收集，识别维护性、稳定性、测试、架构、交付风险以及过度设计、无用依赖和可复用平台能力，输出证据化技术债分析报告。Analyze technical debt in a project or module through read-only codebase inspection, supporting complexity audits and deferred debt collection while identifying over-engineering, unnecessary dependencies, and platform-native simplification opportunities.
 license: MIT
 metadata:
   author: coolbeevip
@@ -13,6 +13,9 @@ triggers:
   - 分析过度设计
   - 查无用抽象
   - 找不必要依赖
+  - 复杂度审计
+  - 收集延迟债务
+  - 收集 team-minimal 注释
   - technical debt analysis
   - code health review
   - maintainability audit
@@ -20,6 +23,9 @@ triggers:
   - find over-engineering
   - unnecessary abstraction audit
   - dependency simplification review
+  - complexity audit
+  - collect deferred debt
+  - collect team-minimal comments
 ---
 
 # 技术债分析
@@ -29,6 +35,10 @@ triggers:
 本技能是技术债治理链路的前置入口。它不直接要求用户先提出明确技术债，而是从代码、测试、配置、构建、运行文档和变更历史中发现值得治理的问题。后续可把某个候选项交给 `team-tech-debt-refine` 继续细化。
 
 当用户说“分析过度设计”“查无用抽象”“找不必要依赖”“find over-engineering”等表达时，本技能进入最小实现视角：只读识别可删除复杂度、重复封装、无用依赖、可被标准库/平台能力替代的自定义实现，以及与当前业务规模不匹配的过度工程。
+
+当用户说“复杂度审计”“complexity audit”时，本技能按仓库级复杂度审计执行，只排名输出最值得删除或简化的模块、依赖和抽象层，不直接修改代码。
+
+当用户说“收集延迟债务”“收集 team-minimal 注释”“collect deferred debt”等表达时，本技能只收集刻意简化留下的 ceiling、升级触发条件和风险，不把它们直接当作必须立即重构的缺陷。
 
 ## 运行时语言配置
 
@@ -101,6 +111,37 @@ team-spec/active/{candidate_slug}/issues/
 - 为单一当前需求新增无请求抽象、配置层、通用框架、插件机制或未来扩展点。
 - 复杂度来自真实安全、权限、数据一致性、错误处理、可访问性、硬件校准或验收标准要求时，不把它判为可删除债务。
 
+## 复杂度审计
+
+复杂度审计是只读仓库级扫描，scope 只包含可删除或可简化的复杂度，不替代安全、正确性、性能或稳定性审计。
+
+优先排名输出：
+
+- 最值得删除的单实现接口、单调用抽象、无请求配置层、未来扩展点或过早通用框架。
+- 最值得合并的重复 helper、重复组件、重复脚本、重复错误响应或重复参数解析。
+- 最值得替换的手写标准库/平台能力、自定义数据转换、自定义 CSV/URL/date/group-by 等局部工具。
+- 最值得审查的依赖：只服务小功能、已有平台替代、引入构建或运行复杂度的依赖。
+
+每个复杂度审计候选必须说明：位置、为什么可简化、建议删除或替代什么、风险和建议验证。不要直接修改代码。
+
+## 延迟债务收集
+
+刻意简化可以留下短注释，但必须带 ceiling 和升级触发条件，避免“以后再说”永久化。
+
+推荐注释格式：
+
+```text
+team-minimal: {当前简化做法}; ceiling={不能超过的规模/条件}; upgrade_when={触发升级的明确条件}; owner={可选负责人或团队}; date={YYYY-MM-DD}
+```
+
+收集规则：
+
+- 使用 `rg "team-minimal:|minimal-ceiling:|upgrade_when="` 查找代码、测试、配置和文档中的刻意简化注释。
+- 记录位置、当前简化做法、ceiling、升级触发条件、是否已有 owner/date、关联 issue 或 PRD。
+- 缺少 ceiling 或 `upgrade_when` 的注释应列为 `needs-refinement`，建议补齐上下文，而不是直接要求重构。
+- 已经超过 ceiling 或满足 `upgrade_when` 的条目应进入 `Debt Candidates`，并给出独立 `Suggested Slug`。
+- 没有超过 ceiling 的条目进入 `Deferred Minimal Debt` 清单，作为后续追踪，不占用高优先级候选名额。
+
 ## 分析维度
 
 按证据选择相关维度，不需要机械覆盖所有维度：
@@ -166,6 +207,18 @@ team-spec/active/{candidate_slug}/issues/
 - Recommended Direction: {治理方向，不写具体补丁}
 - Suggested Next Skill: `team-tech-debt-refine`
 - Open Questions: {如无则写 None}
+
+## Complexity Audit
+
+| Rank | Area | Delete / Replace | Evidence | Verification |
+| --- | --- | --- | --- | --- |
+| 1 | `{path}` / `{symbol}` | {要删除或替代什么} | {为什么可简化} | {建议验证方式} |
+
+## Deferred Minimal Debt
+
+| Location | Current Shortcut | Ceiling | Upgrade When | Status |
+| --- | --- | --- | --- | --- |
+| `{path}:{line}` | {team-minimal 内容} | {ceiling} | {upgrade_when} | tracking / needs-refinement / candidate |
 
 ## Non-Debt Findings
 

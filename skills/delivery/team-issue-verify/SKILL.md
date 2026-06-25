@@ -1,6 +1,6 @@
 ---
 name: team-issue-verify
-description: 独立验证单个 issue 的实现是否满足验收标准、关联 PRD、风险约束和最小实现模式，输出验证报告、遗漏项、回归风险、过度设计检查和是否 ready for PR 的结论。Verify whether a single issue implementation satisfies acceptance criteria, the linked PRD, risk constraints, and lean implementation expectations including over-engineering checks.
+description: 独立验证单个 issue 的实现是否满足验收标准、关联 PRD、风险约束和最小实现模式，支持 diff 级简化审查，输出验证报告、遗漏项、回归风险、过度设计检查和是否 ready for PR 的结论。Verify whether a single issue implementation satisfies acceptance criteria, the linked PRD, risk constraints, and lean implementation expectations, including diff-level simplification review and over-engineering checks.
 license: MIT
 metadata:
   author: coolbeevip
@@ -13,6 +13,9 @@ triggers:
   - 检查是否过度设计
   - 看看有没有写复杂
   - 最小实现验收
+  - 简化审查
+  - 审查 diff 有没有过度设计
+  - 看看能删掉什么
   - verify issue
   - check implementation
   - ready for PR
@@ -20,6 +23,9 @@ triggers:
   - over-engineering review
   - check lean implementation
   - review unnecessary complexity
+  - simplify review
+  - review diff complexity
+  - what can be deleted
 ---
 
 # Issue 验证
@@ -27,6 +33,8 @@ triggers:
 这个技能用于确认 `team-issue-implement` 的结果是否真的满足 issue 和 PRD，而不是只确认“代码写完了”。它应尽量独立于实现过程进行判断，优先检查外部行为、验收标准和回归风险。
 
 当用户说“检查是否过度设计”“看看有没有写复杂”“最小实现验收”“over-engineering review”等表达时，除验收标准外，还要检查实现是否存在无请求抽象、无用依赖、重复封装、可复用现有代码却没有复用、或本可使用标准库/平台能力却新增实现的问题。
+
+当用户说“简化审查”“审查 diff 有没有过度设计”“看看能删掉什么”“simplify review”等表达时，进入简化审查模式：只审当前 diff 的复杂度，不替代安全、正确性、验收标准或回归风险验证。
 
 ## 运行时配置
 
@@ -104,6 +112,25 @@ access_policy:
 - 小功能避免新增依赖：检查实现是否为了 URL、日期、CSV、列表分组、参数解析等局部需求新增依赖；若标准库、平台能力或已有依赖足够，应标记为 `needs changes`。
 - 已有 helper 场景优先复用：检查权限、金额、分页、错误响应、表单校验等逻辑是否复用了项目既有 helper；重复造一套相似封装应标记为过度设计风险。
 - 安全边界不可裁剪：检查实现是否为了少代码删除输入校验、权限、数据一致性、错误处理、可访问性、硬件校准或用户明确要求；这类问题优先按正确性或安全风险处理，而不是风格建议。
+
+## 简化审查模式
+
+简化审查只关注当前 diff 中可删除或可替换的复杂度：
+
+- 单实现接口、单调用抽象、无请求配置层、未来扩展点或通用框架。
+- 重复 helper、重复组件、重复错误响应、重复格式化或重复参数解析。
+- 手写标准库、语言内建、数据库、浏览器、操作系统或框架原生能力已经覆盖的逻辑。
+- 新增依赖、生成脚本或构建配置是否只服务于一个小功能。
+
+不要在简化审查里替代安全 review、正确性 review、测试覆盖 review 或产品验收；如果发现安全或正确性问题，应转入常规验证 findings。
+
+简化审查输出要求一行一个发现：
+
+```md
+- `{path}:{line}`：删除 {可删除内容}；改用 {已有 helper / 标准库 / 平台能力 / 直接局部实现}。
+```
+
+如果没有发现可删复杂度，输出：`未发现可安全删除的过度设计；保留当前实现的理由是 {证据}`。
 
 ## 工作流
 
