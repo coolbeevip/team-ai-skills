@@ -46,6 +46,7 @@ triggers:
 - 用户提供的 issue、PR 评论、运行日志、人工修正记录或技能执行产物。
 - 相关技能目录中的 `SKILL.md`。
 - 相关技能明确引用的辅助文件，例如 `CONTEXT-FORMAT.md`、模板或 `scripts/` 下脚本。
+- 最小实现相关改动应读取 `./references/GOLDEN-SCENARIOS.md` 和 `./references/BENCHMARK-TEMPLATE.md`，用于人工回归和 benchmark 记录。
 - 根目录 `AGENTS.md`、仓库规范和当前技能目录结构。
 - 可选：`python3 scripts/check_skills.py` 的结构校验结果。
 
@@ -113,6 +114,7 @@ triggers:
    - `python3 scripts/check_skills.py`（如果脚本存在）。
    - 修改 Python 脚本时执行语法检查或 `--help`。
    - 对受影响技能跑 2 到 3 个黄金用例的人工触发检查。
+   - 如果改动影响最小实现模式，至少从 `./references/GOLDEN-SCENARIOS.md` 选 3 个场景，并用 `./references/BENCHMARK-TEMPLATE.md` 的口径记录 LOC、新增文件、新增依赖、验收和安全边界。
 10. 最终回复说明修改了哪些技能、验证结果、剩余风险和建议的下一步。
 
 ## 改动边界
