@@ -122,6 +122,8 @@ python3 {skill_dir}/scripts/plan_issue_batch.py --slug {slug} --limit 3 --json
 - 不要把多个小 issue 合并成一次跨模块重构。
 - 不要为后续 issue 提前新增抽象、配置层、通用框架或依赖。
 - 如果某个 issue 的最小正确实现需要扩大范围，应停止批量执行并说明证据。
+- 批量实现不能把“相邻 issue 可能也会用到”作为提前抽象的理由；只有当前 issue 的验收标准需要时才允许扩展。
+- 每个 issue 的最终记录必须独立说明复用了什么、跳过了什么复杂方案、何时才需要升级为更复杂方案。
 
 ## 工作流
 
@@ -147,6 +149,7 @@ python3 {skill_dir}/scripts/plan_issue_batch.py --slug {slug} --limit 3 --json
 - 当前实现需要修改 PRD、规格评审或产品决策。
 - 代码变更范围明显超出当前 issue 或混入无关重构。
 - 工作区出现无法归因到本轮 issue 的新变更。
+- 当前 issue 的实现开始依赖后续 issue 的假设、提前抽象或跨 issue 合并改动。
 
 停止不是失败。停止后输出已完成进度、停止原因和下一步可选动作，确保用户可以修正后继续批量执行。
 
@@ -166,6 +169,7 @@ python3 {skill_dir}/scripts/plan_issue_batch.py --slug {slug} --limit 3 --json
 - 本轮批量范围和实际处理数量。
 - 已完成 issue 列表及各自验证状态。
 - 跳过或阻塞的 issue 及原因。
+- 每个已完成 issue 是否保持单独最小路径，是否复用现有实现并拒绝无关复杂方案。
 - 运行过的关键验证命令和结果。
 - 是否保留未提交本地变更，以及没有执行 `git commit` / `git push`。
 - 有序号的“下一步可选”，例如继续下一批、处理 HITL、回到拆解合并过薄 issue、进入 PR/MR 创建。
