@@ -1,6 +1,6 @@
 ---
 name: team-issue-create-pr-github
-description: 将已完成的单个 issue 分支推送到 GitHub，并创建正文关联 issue、标题符合组件标签规范的 Pull Request。Create a GitHub Pull Request for a completed issue branch, pushing the branch with an issue-linked body and a component-tagged title.
+description: 为已完成的单个 issue 分支推送代码并创建关联 issue 的 GitHub Pull Request。Push a completed issue branch and create an issue-linked GitHub Pull Request.
 license: MIT
 metadata:
   author: coolbeevip
@@ -10,10 +10,12 @@ triggers:
   - 创建 Pull Request
   - 给这个 issue 建 PR
   - 推送分支并创建 PR
+  - 准备提 PR
   - create GitHub PR
   - open pull request
   - create pull request for issue
   - push branch and open PR
+  - open PR for this issue
 ---
 
 # 创建 GitHub Pull Request
@@ -22,7 +24,12 @@ triggers:
 
 v1 仅支持 GitHub Pull Request。GitLab Merge Request 应使用独立技能。
 
-## 语言约定
+## 触发边界
+
+- 适合触发：单个 issue 分支已经提交并验证通过，需要推送并创建 GitHub Pull Request。
+- 不适合触发：目标平台是 GitLab 时，转交 `team-issue-create-mr-gitlab`；实现尚未验证时，先转交 `team-issue-verify`。
+
+## 运行时配置
 
 统一读取目标项目根目录 `team-spec/config.yml`：
 

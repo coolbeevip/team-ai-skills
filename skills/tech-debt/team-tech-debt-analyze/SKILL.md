@@ -1,6 +1,6 @@
 ---
 name: team-tech-debt-analyze
-description: 对项目或指定模块进行只读技术债分析，支持复杂度审计和延迟债务收集，识别维护性、稳定性、测试、架构、交付风险以及过度设计、无用依赖和可复用平台能力，输出证据化技术债分析报告。Analyze technical debt in a project or module through read-only codebase inspection, supporting complexity audits and deferred debt collection while identifying over-engineering, unnecessary dependencies, and platform-native simplification opportunities.
+description: 对项目或模块进行只读技术债分析，输出有证据的维护性、稳定性、测试、架构和交付风险报告。Analyze technical debt through read-only inspection and produce evidence-backed maintainability, stability, testing, architecture, and delivery risk findings.
 license: MIT
 metadata:
   author: coolbeevip
@@ -40,7 +40,12 @@ triggers:
 
 当用户说“收集延迟债务”“收集 team-minimal 注释”“collect deferred debt”等表达时，本技能只收集刻意简化留下的 ceiling、升级触发条件和风险，不把它们直接当作必须立即重构的缺陷。
 
-## 运行时语言配置
+## 触发边界
+
+- 适合触发：用户还没有明确技术债规格，需要只读扫描项目、模块或 diff，识别有证据的债务候选项。
+- 不适合触发：用户已有明确债务诉求并要细化验收时，转交 `team-tech-debt-refine`；已有评审通过的债务规格要拆工程任务时，转交 `team-tech-debt-to-issues`。
+
+## 运行时配置
 
 统一读取目标项目根目录 `team-spec/config.yml`：
 
@@ -256,7 +261,7 @@ team-minimal: {当前简化做法}; ceiling={不能超过的规模/条件}; upgr
 - 每个债务候选都有证据、影响、优先级、置信度、`Suggested Slug` 和建议下一步。
 - 最终回复必须说明分析报告路径、最高优先级候选项和下一步可选。
 
-## 完成输出
+## 最终回复
 
 最终回复必须包含：
 

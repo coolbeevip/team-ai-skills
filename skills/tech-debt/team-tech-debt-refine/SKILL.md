@@ -1,6 +1,6 @@
 ---
 name: team-tech-debt-refine
-description: 通过与用户反复确认来细化技术债需求，明确问题证据、影响范围、风险等级和验收口径，再进入评审。Refine technical debt requests through iterative confirmation, clarifying evidence, scope, risk, and acceptance criteria before review.
+description: 通过用户确认细化技术债需求，明确证据、影响范围、风险等级和验收口径。Refine technical debt requests through user confirmation of evidence, scope, risk, and acceptance criteria.
 license: MIT
 metadata:
   author: coolbeevip
@@ -10,16 +10,23 @@ triggers:
   - 梳理技术债
   - 技术债需求说不清楚
   - 帮我想清楚这个技术债
+  - 技术债验收怎么定
   - refine tech debt
   - clarify tech debt
   - tech debt is unclear
+  - define tech debt acceptance
 ---
 
 # 技术债细化
 
 这个技能用于把模糊的技术债诉求打磨成可评审、可拆解、可验收的技术债规格。
 
-## 运行时语言配置
+## 触发边界
+
+- 适合触发：用户已经指出技术债方向，但证据、影响范围、风险等级或验收口径还不清楚。
+- 不适合触发：用户只是想先发现项目债务时，转交 `team-tech-debt-analyze`；技术债规格已清楚并要判断 ready 时，转交 `team-tech-debt-review`。
+
+## 运行时配置
 
 统一读取目标项目根目录 `team-spec/config.yml`：
 

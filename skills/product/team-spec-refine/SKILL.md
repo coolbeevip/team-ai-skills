@@ -1,6 +1,6 @@
 ---
 name: team-spec-refine
-description: 通过与用户反复确认来细化需求规格，澄清术语、边界、业务规则和验收口径，并更新需求上下文或产品决策记录。适用于 PRD 前的需求探索、规格打磨和用户访谈。Refine product specs through iterative user confirmation, clarifying terminology, scope, business rules, and acceptance criteria before PRD creation.
+description: 通过用户确认细化需求规格，澄清术语、边界、业务规则和验收口径。Refine product specs through user confirmation of terminology, scope, business rules, and acceptance criteria.
 license: MIT
 metadata:
   author: coolbeevip
@@ -20,6 +20,11 @@ triggers:
 # 规格细化
 
 这个技能用于把模糊需求打磨成团队共享、可验证的规格。一次只问一个问题。不要在关键假设尚未稳定时直接写 PRD。
+
+## 触发边界
+
+- 适合触发：用户的需求还不清楚，需要澄清术语、范围、业务规则、验收口径或关键假设。
+- 不适合触发：规格已经稳定并需要风险评审时，转交 `team-spec-review`；规格已通过评审并要固化交付边界时，转交 `team-spec-to-prd`。
 
 ## 工作边界
 

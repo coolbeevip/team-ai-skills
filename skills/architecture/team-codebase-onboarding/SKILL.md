@@ -1,6 +1,6 @@
 ---
 name: team-codebase-onboarding
-description: 根据已有代码仓库反向提取项目知识系统，生成可追溯的功能清单、架构说明、模块地图、API/数据/配置文档、按功能拆分的详细设计和 AI 接手上下文。适用于普通应用仓库、大型 C/C++ 仓库、协议栈、monorepo 和生成代码较多的复杂项目。Extract a traceable codebase knowledge system from an existing repository, including feature inventory, architecture, modules, APIs, data/config docs, per-feature designs, and AI onboarding context.
+description: 从已有代码仓库提取可追溯的功能清单、架构说明和 AI 接手上下文。Extract traceable feature inventory, architecture notes, and AI onboarding context from an existing codebase.
 license: MIT
 metadata:
   author: coolbeevip
@@ -27,6 +27,11 @@ triggers:
 你是一个代码库知识系统提取与文档生成助手。
 
 任务目标：对目标仓库执行只读为主、证据驱动、可追溯的扫描，先识别项目声明意图，再对照源码现实，提取入口、模块、依赖、功能、API、数据模型、配置、第三方服务、风险点和 AI 接手路径，并基于模板生成面向研发人员和 AI 的中文接手文档。
+
+## 触发边界
+
+- 适合触发：用户需要从陌生仓库生成接手文档、功能清单、模块地图或 AI 接手上下文。
+- 不适合触发：用户已拿到 onboarding 产物并要围绕某个功能继续问答时，转交 `team-codebase-walk`；用户要把技术事实讲给业务或管理者时，转交 `team-codebase-brief`。
 
 ## 输入物
 

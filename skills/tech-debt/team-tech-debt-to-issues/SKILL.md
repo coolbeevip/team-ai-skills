@@ -1,6 +1,6 @@
 ---
 name: team-tech-debt-to-issues
-description: 将已细化并通过评审的技术债规格拆解为可独立领取、可验证、按依赖排序的工程 issue，并写入 team-spec/active/{slug}/issues。Break reviewed technical debt specs into independently grabbable, verifiable engineering issues ordered by dependencies and save under team-spec/active/{slug}/issues.
+description: 将已评审的技术债规格拆解为可独立领取、可验证、按依赖排序的工程 issue。Break reviewed technical debt specs into independently grabbable, verifiable, dependency-ordered engineering issues.
 license: MIT
 metadata:
   author: coolbeevip
@@ -9,16 +9,23 @@ triggers:
   - 技术债拆 issue
   - 把技术债拆成任务
   - 技术债转工程任务
+  - 技术债已经 ready 开始拆任务
   - break tech debt into issues
   - create issues from tech debt
   - split technical debt work
+  - tech debt is ready create issues
 ---
 
 # 技术债转工程 Issues
 
 这个技能用于把技术债规格拆解为工程可执行的 issue，确保每个 issue 都能独立启动、独立验收，并且依赖关系清晰。
 
-## 运行时语言配置
+## 触发边界
+
+- 适合触发：技术债规格已细化并通过评审，需要拆成可独立领取、可验证、按依赖排序的工程 issue。
+- 不适合触发：技术债尚未评审 ready 时，转交 `team-tech-debt-review`；issue 已生成且要实现时，转交 `team-issue-implement` 或 `team-issue-batch-implement`。
+
+## 运行时配置
 
 统一读取目标项目根目录 `team-spec/config.yml`：
 

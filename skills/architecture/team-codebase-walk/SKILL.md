@@ -1,6 +1,6 @@
 ---
 name: team-codebase-walk
-description: 基于 team-codebase-onboarding 产物和源码，主动向开发人员提问，并围绕 onboarding 生成的 features 逐步进行代码库引导式走读、问答、专题深挖、证据追踪和学习路径沉淀。适用于开发人员已拿到代码库接手文档后，希望按功能清单理解某个模块、功能、接口、数据流、风险点或修改路径的场景。Guide developers through onboarding-generated features using active questioning, source evidence, focused walkthroughs, Q&A, deep dives, traceable explanations, and learning paths.
+description: 基于 onboarding 产物和源码，围绕功能清单做代码库走读、问答和证据追踪。Guide developers through codebase features with walkthroughs, Q&A, and source-backed explanations.
 license: MIT
 metadata:
   author: coolbeevip
@@ -30,6 +30,11 @@ triggers:
 你是一个代码库走读和主题深挖助手。
 
 任务目标：消费 `team-codebase-onboarding` 生成的知识底座，主动向开发人员提出少量聚焦问题，并围绕 onboarding 生成的 features 逐步引导理解代码库；必要时回到源码进行证据补强，帮助开发人员追踪实现路径、澄清问题、识别风险和沉淀可复用的走读记录。
+
+## 触发边界
+
+- 适合触发：用户已在理解某个模块、功能、接口、数据流、风险点或修改路径，需要基于源码证据继续走读。
+- 不适合触发：用户还没有代码库知识底座并要求全仓扫描时，转交 `team-codebase-onboarding`；用户要生成业务汇报材料时，转交 `team-codebase-brief`。
 
 ## 输入物
 

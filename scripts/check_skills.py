@@ -13,6 +13,11 @@ ROOT = Path(__file__).resolve().parents[1]
 SKILLS_DIR = ROOT / "skills"
 RE_CJK = re.compile(r"[\u4e00-\u9fff]")
 RE_ALPHA = re.compile(r"[A-Za-z]")
+RE_H2 = re.compile(r"^##\s+(.+?)\s*$")
+MAX_DESCRIPTION_CHARS = 220
+CANONICAL_RUNTIME_HEADING = "运行时配置"
+DEPRECATED_RUNTIME_HEADINGS = {"运行时语言配置", "语言约定"}
+DEPRECATED_FINAL_REPLY_HEADING = "完成输出"
 
 
 def parse_frontmatter(path: Path) -> tuple[dict[str, object], list[str]]:
@@ -80,6 +85,25 @@ def has_english(text: str) -> bool:
     return bool(RE_ALPHA.search(text))
 
 
+def iter_markdown_headings(text: str) -> list[tuple[int, str]]:
+    headings: list[tuple[int, str]] = []
+    in_fence = False
+
+    for line_number, line in enumerate(text.splitlines(), start=1):
+        stripped = line.strip()
+        if stripped.startswith("```"):
+            in_fence = not in_fence
+            continue
+        if in_fence:
+            continue
+
+        match = RE_H2.match(line)
+        if match:
+            headings.append((line_number, match.group(1)))
+
+    return headings
+
+
 def check_skill(path: Path) -> list[str]:
     errors: list[str] = []
     data, parse_errors = parse_frontmatter(path)
@@ -98,6 +122,11 @@ def check_skill(path: Path) -> list[str]:
         errors.append("description is required")
     elif not (has_chinese(description) and has_english(description)):
         errors.append("description must contain both Chinese and English")
+    elif len(description) > MAX_DESCRIPTION_CHARS:
+        errors.append(
+            f"description should stay concise, found {len(description)} characters "
+            f"(max {MAX_DESCRIPTION_CHARS})"
+        )
 
     if data.get("license") != "MIT":
         errors.append("license must be MIT")
@@ -127,6 +156,25 @@ def check_skill(path: Path) -> list[str]:
         errors.append("missing ## 输入物 section")
     if "## 输出物" not in text:
         errors.append("missing ## 输出物 section")
+    if "## 触发边界" not in text:
+        errors.append("missing ## 触发边界 section")
+
+    heading_lines: dict[str, list[int]] = {}
+    for line_number, heading in iter_markdown_headings(text):
+        heading_lines.setdefault(heading, []).append(line_number)
+
+    for heading, lines in heading_lines.items():
+        if len(lines) > 1:
+            errors.append(f"duplicate ## {heading} section at lines {lines}")
+
+    for deprecated_heading in DEPRECATED_RUNTIME_HEADINGS:
+        if deprecated_heading in heading_lines:
+            errors.append(
+                f"use ## {CANONICAL_RUNTIME_HEADING} instead of ## {deprecated_heading}"
+            )
+
+    if DEPRECATED_FINAL_REPLY_HEADING in heading_lines:
+        errors.append("use ## 最终回复 instead of ## 完成输出")
 
     return errors
 

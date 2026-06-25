@@ -1,6 +1,6 @@
 ---
 name: team-issue-batch-implement
-description: 批量编排多个 AFK 工程 issue 的实现，按依赖顺序逐个调用单 issue 实现、最小实现模式与验证流程，保留失败即停、单 issue 边界和可恢复续跑边界。Batch orchestrate multiple AFK engineering issues in dependency order while preserving lean implementation mode, single-issue boundaries, and verification workflows.
+description: 按依赖顺序批量编排多个工程 issue 的实现与验证，并保留失败即停和可恢复续跑边界。Batch orchestrate multiple engineering issues in dependency order with verification, fail-fast behavior, and resumable boundaries.
 license: MIT
 metadata:
   author: coolbeevip
@@ -29,6 +29,11 @@ triggers:
 核心原则：批量选择，单个执行，逐个验证，失败即停，可恢复继续。
 
 当用户说“批量最小改动实现”“批量不要过度设计”“不要扩大 issue 范围”“lean batch implementation”等表达时，批量编排仍只负责排队和停机条件；每个 issue 必须按 `team-issue-implement` 的最小实现模式独立执行，不得因为批量处理而合并 scope、引入无关重构或提前实现后续 issue。
+
+## 触发边界
+
+- 适合触发：用户要按依赖顺序连续处理多个可执行 issue，并需要失败即停、逐个验证和可恢复进度。
+- 不适合触发：用户只指定一个 issue 时，转交 `team-issue-implement`；用户只是要验证已完成实现时，转交 `team-issue-verify`。
 
 ## 运行时配置
 

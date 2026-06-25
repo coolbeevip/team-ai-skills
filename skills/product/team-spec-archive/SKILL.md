@@ -1,6 +1,6 @@
 ---
 name: team-spec-archive
-description: 将 team-spec/active/{slug}/ 中已完成、废弃或暂停的单个需求工作区归档到 team-spec/archive/{slug}/，保留其他 active 需求并避免误改旧规格。Archive a completed, abandoned, or paused requirement workspace from team-spec/active/{slug}/ into team-spec/archive/{slug}/ while preserving other active work.
+description: 将已完成、废弃或暂停的单个需求工作区从 active 归档到 archive。Archive one completed, abandoned, or paused requirement workspace from active to archive.
 license: MIT
 metadata:
   author: coolbeevip
@@ -10,10 +10,12 @@ triggers:
   - 归档 active 需求
   - 结束这个需求
   - 暂停这个需求
+  - 归档这个 slug
   - archive spec
   - archive requirement
   - archive active spec
   - close this requirement
+  - archive this slug
 ---
 
 # 需求归档
@@ -21,6 +23,11 @@ triggers:
 这个技能用于把 `team-spec/active/{slug}/` 中某个需求 slug 的过程产物移动到 `team-spec/archive/{slug}/`。归档是需求生命周期动作，不负责继续细化、评审、生成 PRD、拆 issue 或实现代码。`team-spec/active/` 允许存在多个未归档需求；归档一个 slug 不应影响其他 slug。
 
 归档只处理指定 slug 的工作区，不移动跨需求共享上下文 `team-spec/CONTEXT.md` 和 `team-spec/decisions/`。
+
+## 触发边界
+
+- 适合触发：用户明确要归档某个已完成、废弃或暂停的 `team-spec/active/{slug}/` 工作区。
+- 不适合触发：用户只是开始新需求或存在多个 active slug 时，不要求归档；应让对应产品或交付技能继续处理目标 slug。
 
 ## 输入物
 

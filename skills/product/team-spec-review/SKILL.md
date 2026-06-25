@@ -1,6 +1,6 @@
 ---
 name: team-spec-review
-description: 评审已细化的需求规格，检查产品、交付、数据、合规、运营和协作风险，并输出分级风险、阻塞项、补救动作和是否 ready 的结论。Review refined specs for product, delivery, data, compliance, operational, and collaboration risks, then produce readiness findings, blockers, mitigations, owners, and deadlines.
+description: 评审已细化的需求规格，输出风险、阻塞项、补救动作和 ready 结论。Review refined product specs and produce risks, blockers, mitigations, and readiness findings.
 license: MIT
 metadata:
   author: coolbeevip
@@ -21,7 +21,12 @@ triggers:
 
 这个技能用于找出会导致需求方向错误、返工、延期、线上事故、合规问题或协作失效的风险。不要只输出泛泛的风险列表；每个重要风险都必须落到处理动作、负责人和截止点。
 
-## 运行时语言配置
+## 触发边界
+
+- 适合触发：已有细化规格、澄清结论或 PRD 草稿，需要判断风险、阻塞项和 ready 状态。
+- 不适合触发：需求仍然模糊且需要继续访谈时，转交 `team-spec-refine`；规格已 ready 且用户要生成正式 PRD 时，转交 `team-spec-to-prd`。
+
+## 运行时配置
 
 统一读取目标项目根目录 `team-spec/config.yml`：
 
@@ -151,7 +156,7 @@ access_policy:
 
 如果发现 PRD 或需求表述不清，直接给出更清晰的改写版本。改写应尽量可验证、可分工、可验收。
 
-## 完成输出
+## 最终回复
 
 每次完成评审后，最终回复必须包含：
 

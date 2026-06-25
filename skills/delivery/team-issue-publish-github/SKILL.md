@@ -1,6 +1,6 @@
 ---
 name: team-issue-publish-github
-description: 将 team-spec/active/{slug}/issues/ 下的本地 issue 草稿发布到 GitHub Issues，默认按依赖顺序处理整个目录，也可指定单个 issue，并回写发布结果，支持 dry-run、幂等检查与部分失败重试。Publish local issue drafts under team-spec/active/{slug}/issues/ to GitHub Issues, either as a full dependency-ordered batch or as a single selected issue, with write-back status, dry-run, idempotency checks, and retry support.
+description: 将本地工程 issue 草稿发布到 GitHub Issues，并回写发布结果。Publish local engineering issue drafts to GitHub Issues and write back publication status.
 license: MIT
 metadata:
   author: coolbeevip
@@ -11,11 +11,13 @@ triggers:
   - 批量创建 GitHub Issues
   - 把 issue 草稿发布到 GitHub
   - 发布单个 issue 到 GitHub
+  - 帮我发 GitHub issue
   - publish to GitHub
   - publish issue to GitHub
   - create GitHub issues from drafts
   - create GitHub issue from draft
   - batch publish issues to GitHub
+  - publish issue drafts to GitHub
 ---
 
 # 发布 GitHub Issue
@@ -24,7 +26,12 @@ triggers:
 
 v1 仅支持 GitHub。不要在同一个技能中混合 GitHub 与 GitLab 发布逻辑；GitLab 请使用独立技能。
 
-## 语言约定
+## 触发边界
+
+- 适合触发：本地 issue 草稿已生成，目标远端是 GitHub Issues，需要发布并回写状态。
+- 不适合触发：目标远端是 GitLab 时，转交 `team-issue-publish-gitlab`；用户要实现 issue 时，转交 `team-issue-implement` 或 `team-issue-batch-implement`。
+
+## 运行时配置
 
 统一读取目标项目根目录 `team-spec/config.yml`：
 

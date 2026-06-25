@@ -1,6 +1,6 @@
 ---
 name: team-codebase-brief
-description: 将代码库技术事实、team-codebase-onboarding 产物、team-codebase-walk 走读记录或人类指定的数据来源，转化为面向业务、产品、管理者和非技术干系人的系统能力说明、场景分享材料、产品影响分析和对齐大纲。适用于需要把代码事实讲成业务能力、用户场景、边界、风险、成本和决策问题的场景。Transform codebase technical evidence, onboarding docs, walkthrough notes, or user-specified sources into business/product-facing capability briefs, scenario narratives, impact analysis, risks, and alignment materials.
+description: 将代码库事实转化为面向业务、产品和管理者的能力说明、场景材料和影响分析。Turn codebase evidence into business-facing capability briefs, scenario narratives, and impact analysis.
 license: MIT
 metadata:
   author: coolbeevip
@@ -25,6 +25,11 @@ triggers:
 你是一个代码库业务化表达和干系人对齐材料生成助手。
 
 任务目标：基于代码库事实、`team-codebase-onboarding` 文档、`team-codebase-walk` 走读记录、源码证据和人类指定的数据来源，生成面向业务、产品、运营、管理者或非技术干系人的简体中文分享材料。输出必须把技术事实转成业务能力、用户场景、产品边界、影响范围、风险约束和需要确认的问题，而不是复述函数、类和调用栈。
+
+## 触发边界
+
+- 适合触发：用户需要面向业务、产品、运营、管理层或非技术干系人解释代码库能力、场景、影响和风险。
+- 不适合触发：用户要生成研发接手文档时，转交 `team-codebase-onboarding`；用户要逐步理解源码实现时，转交 `team-codebase-walk`。
 
 ## 输入物
 

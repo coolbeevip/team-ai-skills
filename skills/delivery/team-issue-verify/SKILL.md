@@ -1,6 +1,6 @@
 ---
 name: team-issue-verify
-description: 独立验证单个 issue 的实现是否满足验收标准、关联 PRD、风险约束和最小实现模式，支持 diff 级简化审查，输出验证报告、遗漏项、回归风险、过度设计检查和是否 ready for PR 的结论。Verify whether a single issue implementation satisfies acceptance criteria, the linked PRD, risk constraints, and lean implementation expectations, including diff-level simplification review and over-engineering checks.
+description: 独立验证单个 issue 实现是否满足验收、PRD、风险和最小实现要求。Verify a single issue implementation against acceptance criteria, PRD, risks, and lean implementation expectations.
 license: MIT
 metadata:
   author: coolbeevip
@@ -35,6 +35,11 @@ triggers:
 当用户说“检查是否过度设计”“看看有没有写复杂”“最小实现验收”“over-engineering review”等表达时，除验收标准外，还要检查实现是否存在无请求抽象、无用依赖、重复封装、可复用现有代码却没有复用、或本可使用标准库/平台能力却新增实现的问题。
 
 当用户说“简化审查”“审查 diff 有没有过度设计”“看看能删掉什么”“simplify review”等表达时，进入简化审查模式：只审当前 diff 的复杂度，不替代安全、正确性、验收标准或回归风险验证。
+
+## 触发边界
+
+- 适合触发：单个 issue 已有实现结果，需要独立判断验收、风险、回归、过度设计和 ready for PR/MR。
+- 不适合触发：用户还没有实现并要求写代码时，转交 `team-issue-implement`；验证已通过且要创建远端合并请求时，转交 `team-issue-create-pr-github` 或 `team-issue-create-mr-gitlab`。
 
 ## 运行时配置
 

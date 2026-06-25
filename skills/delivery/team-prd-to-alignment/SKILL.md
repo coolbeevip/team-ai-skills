@@ -1,6 +1,6 @@
 ---
 name: team-prd-to-alignment
-description: 将 AI 结构化 PRD 转换为适合需求、研发和项目管理进行人类评审与共识对齐的演示文稿式材料。Turn AI-structured PRDs into slide-style alignment materials for product, engineering, and project management review.
+description: 将结构化 PRD 转换为适合需求、研发和项目管理评审的对齐材料。Turn structured PRDs into alignment materials for product, engineering, and project management review.
 license: MIT
 metadata:
   author: coolbeevip
@@ -11,11 +11,13 @@ triggers:
   - 生成需求研发对齐文档
   - PRD 给人看
   - 需求研发对齐
+  - 生成评审会材料
   - PRD alignment material
   - turn PRD into review material
   - create PRD alignment deck
   - make PRD human readable
   - product engineering alignment
+  - create review meeting material
 ---
 
 # PRD 转对齐材料
@@ -24,7 +26,12 @@ triggers:
 
 默认输出是 Markdown，但内容组织应接近演示文稿或评审会材料：结论先行、信息分层、每一节都能支撑一次讨论。它不是 PRD 的替代品，也不是工程拆解技能。
 
-## 运行时语言配置
+## 触发边界
+
+- 适合触发：PRD 已存在，但需要转换为人类评审、会议对齐或需求研发沟通材料。
+- 不适合触发：用户要固化 PRD 时，转交 `team-spec-to-prd`；用户要拆工程 issue 时，转交 `team-prd-to-issues`。
+
+## 运行时配置
 
 统一读取目标项目根目录 `team-spec/config.yml`：
 

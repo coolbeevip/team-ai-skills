@@ -1,6 +1,6 @@
 ---
 name: team-skill-evolve
-description: 根据真实使用反馈、失败案例、用户纠正和技能执行日志，复盘团队技能库的问题，包括技能导致过度设计、写太多代码或未复用现有实现的情况，提出可审核的技能进化建议。Review real usage feedback, failures, user corrections, and skill execution logs, including over-engineering and missed reuse, to propose auditable skill evolution changes.
+description: 根据真实反馈、失败案例和执行日志复盘团队技能库，并提出可审核的技能进化建议。Review real feedback, failures, and execution logs to propose auditable improvements to the team skill library.
 license: MIT
 metadata:
   author: coolbeevip
@@ -39,6 +39,11 @@ triggers:
 3. 提出最小改动建议和验证方式。
 4. 经用户确认后再修改。
 5. 修改后执行结构校验和必要的轻量验证。
+
+## 触发边界
+
+- 适合触发：用户反馈技能误触发、输出不稳定、过度设计、没有复用现有实现、脚本缺口或要求根据使用反馈更新技能。
+- 不适合触发：用户要维护某个业务项目中的 Codex 运行时检索层时，转交 `team-codex-harness`；用户只是执行普通产品、交付或技术债流程时，使用对应业务技能。
 
 ## 输入物
 
@@ -207,7 +212,7 @@ triggers:
 - 输出路径：产物是否写到规范路径，是否避免修改 archive 或旧需求。
 - 下游衔接：输出是否能被下游技能读取，不制造新的隐含假设。
 
-## 完成输出
+## 最终回复
 
 如果本轮只做复盘，最终回复应包含：
 

@@ -1,6 +1,6 @@
 ---
 name: team-prd-to-issues
-description: 将 PRD 拆解为可独立领取、可验证、按依赖排序的工程 issue，强调端到端 vertical slice，而不是按层拆任务。Break PRDs into independently grabbable engineering issues using end-to-end vertical slices instead of horizontal layer-based tasks.
+description: 将 PRD 拆解为可独立领取、可验证、按依赖排序的端到端工程 issue。Break PRDs into independently grabbable, verifiable, dependency-ordered engineering issues.
 license: MIT
 metadata:
   author: coolbeevip
@@ -10,16 +10,23 @@ triggers:
   - 把 PRD 拆成任务
   - 工程 issue 拆解
   - PRD 已经确认了开始拆工程任务
+  - 生成工程任务
   - break PRD into issues
   - create issues from PRD
   - PRD is approved start issue breakdown
+  - write engineering issues
 ---
 
 # PRD 转工程 Issues
 
 这个技能用于把 PRD 拆成工程团队可以直接领取的 issue。拆解目标是让每个 issue 都能独立实现、独立验证，并尽量减少跨 issue 的隐藏耦合。
 
-## 运行时语言配置
+## 触发边界
+
+- 适合触发：结构化 PRD 已确认，需要拆成可独立领取、可验证、按依赖排序的工程 issue 草稿。
+- 不适合触发：PRD 还未固化时，转交 `team-spec-to-prd`；issue 已生成且要发布远端时，转交 `team-issue-publish-github` 或 `team-issue-publish-gitlab`；要直接实现时，转交 `team-issue-implement` 或 `team-issue-batch-implement`。
+
+## 运行时配置
 
 统一读取目标项目根目录 `team-spec/config.yml`：
 

@@ -1,6 +1,6 @@
 ---
 name: team-spec-to-prd
-description: 将已细化且通过评审的规格整理成结构化 PRD，作为需求到工程的正式交接边界。适用于规格 ready 后的 PRD 固化，而不是重新做需求访谈。Turn refined and reviewed specs into a structured PRD as the formal boundary from product requirements to engineering.
+description: 将已细化并通过评审的规格固化为结构化 PRD，形成需求到工程的交接边界。Turn refined and reviewed specs into a structured PRD as the product-to-engineering handoff boundary.
 license: MIT
 metadata:
   author: coolbeevip
@@ -11,17 +11,24 @@ triggers:
   - 规格转 PRD
   - 固化 PRD
   - 规格已经 ready 了
+  - 需求 ready 写 PRD
   - write PRD
   - generate PRD
   - turn spec into PRD
   - spec is ready produce PRD
+  - produce PRD from reviewed spec
 ---
 
 # 规格转 PRD
 
 这个技能用于把当前对话、需求上下文和项目现状综合成 PRD。不要进行大范围访谈。只有当缺失信息会导致 PRD 误导研发或无法落地时，才向用户追问。
 
-## 运行时语言配置
+## 触发边界
+
+- 适合触发：需求规格已经细化并通过必要评审，需要固化为结构化 PRD 作为工程交接边界。
+- 不适合触发：需求还需要继续问答时，转交 `team-spec-refine`；PRD 已完成且要拆工程任务时，转交 `team-prd-to-issues`。
+
+## 运行时配置
 
 统一读取目标项目根目录 `team-spec/config.yml`：
 
@@ -208,7 +215,7 @@ team-spec/active/{slug}/prd/prd.md
 
 目录只在需要时创建。
 
-## 完成输出
+## 最终回复
 
 完成时必须输出：
 

@@ -1,6 +1,6 @@
 ---
 name: team-issue-implement
-description: 根据 team-spec/active/{slug}/issues/ 中的单个工程 issue 进行实现，优先采用行为测试、TDD 和最小实现模式，复用现有代码并避免过度设计，最终输出代码变更、测试变更和验证结果。Implement a single engineering issue from team-spec/active/{slug}/issues/ using behavior-focused tests, TDD, and lean implementation mode that reuses existing code and avoids over-engineering.
+description: 实现单个工程 issue，优先使用行为测试、TDD、现有代码复用和最小实现模式。Implement one engineering issue with behavior-focused tests, TDD, existing-code reuse, and lean implementation.
 license: MIT
 metadata:
   author: coolbeevip
@@ -32,6 +32,11 @@ triggers:
 如果用户要连续处理多个可执行 `AFK` issue，应使用 `team-issue-batch-implement` 做批量编排。本技能仍只负责一个 issue 的实现与验证衔接。
 
 当用户说“最小改动实现”“不要过度设计”“优先复用现有代码”“minimal implementation”“avoid over-engineering”等表达时，启用最小实现模式：先判断是否需要新增实现，再查已有 helper、组件、服务、脚本和测试模式，再优先使用标准库、平台能力和已安装依赖，最后才写局部、直接、可验证的新代码。
+
+## 触发边界
+
+- 适合触发：用户给出单个明确 issue，要求实现代码变更、测试变更和验证结果。
+- 不适合触发：用户要连续处理多个 issue 时，转交 `team-issue-batch-implement`；用户只要求验收或审查现有实现时，转交 `team-issue-verify`。
 
 ## 运行时配置
 

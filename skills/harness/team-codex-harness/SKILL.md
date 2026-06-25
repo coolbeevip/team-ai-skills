@@ -1,6 +1,6 @@
 ---
 name: team-codex-harness
-description: 维护具体代码项目中的 Codex 运行时检索层，只沉淀入口约束、失败记忆、验证 harness、任务入口和最小运行时配置引导；不维护团队技能库自身。Maintain a runtime retrieval layer for Codex inside a concrete code project, capturing only entry constraints, failure memory, verification harness, task entry points, and minimal runtime configuration guidance; it does not maintain the team skill library itself.
+description: 为具体代码项目维护 Codex 运行时检索层、入口约束、失败记忆和验证 harness。Maintain a Codex runtime retrieval layer, entry constraints, failure memory, and verification harness for a concrete code project.
 license: MIT
 metadata:
   author: coolbeevip
@@ -27,6 +27,11 @@ triggers:
 这个技能用于维护具体代码项目里的 Codex 运行时检索层。它不是项目制度文档，也不是架构说明书，而是在 Codex 执行任务时提供少量、稳定、可检索的辅助信息，帮助 Codex 快速查到自己推不出来但会影响正确性的项目事实。
 
 Codex harness 应该优先“检索友好”，而不是“阅读友好”。不要写长篇说明，不要追求完整叙事，不要把项目文档重写一遍。每条内容都应回答一个运行时问题：Codex 现在该避开什么、先查什么、跑什么、从哪里开始。
+
+## 触发边界
+
+- 适合触发：用户要为某个业务代码项目维护 Codex 入口约束、失败记忆、验证 harness、任务入口或最小运行时配置。
+- 不适合触发：用户要改进本团队技能库本身时，转交 `team-skill-evolve`；用户要生成完整架构或业务说明时，转交对应架构技能。
 
 ## 职责边界
 

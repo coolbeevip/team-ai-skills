@@ -1,6 +1,6 @@
 ---
 name: team-tech-debt-review
-description: 评审技术债规格的风险与可执行性，确认优先级、阻塞项、处理动作和是否可进入工程拆解。Review technical debt specs for risk and execution readiness, then output blockers, mitigations, and readiness for issue breakdown.
+description: 评审技术债规格的风险、优先级、阻塞项和工程拆解 ready 状态。Review technical debt specs for risk, priority, blockers, and readiness for issue breakdown.
 license: MIT
 metadata:
   author: coolbeevip
@@ -10,16 +10,23 @@ triggers:
   - 技术债有没有风险
   - 技术债准备好了吗
   - 技术债 ready 了吗
+  - 技术债能拆了吗
   - review tech debt
   - tech debt risk review
   - is tech debt ready for breakdown
+  - ready to create tech debt issues
 ---
 
 # 技术债评审
 
 这个技能用于评审技术债规格是否足够清晰、可执行、可验收，并判断是否可以进入工程 issue 拆解。
 
-## 运行时语言配置
+## 触发边界
+
+- 适合触发：已有技术债规格或 refine 产物，需要评审风险、优先级、阻塞项和拆解 ready 状态。
+- 不适合触发：债务诉求仍然模糊时，转交 `team-tech-debt-refine`；评审已 ready 且要拆 issue 时，转交 `team-tech-debt-to-issues`。
+
+## 运行时配置
 
 统一读取目标项目根目录 `team-spec/config.yml`：
 
@@ -76,7 +83,7 @@ access_policy:
 - 明确是否可进入 `team-tech-debt-to-issues`。
 - 如果不可进入，明确 Required Refinement 与 Questions For User。
 
-## 完成输出
+## 最终回复
 
 每次完成评审后，最终回复必须包含：
 
