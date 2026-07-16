@@ -136,6 +136,7 @@ access_policy:
 ## 输入物
 
 - 当前对话中的初始需求、用户问题、业务背景或功能想法。
+- 同一 slug 下由 `team-concept-whitepaper` 生成的 `team-spec/active/{slug}/concept/whitepaper.md`（如果存在），用于继承产品定位、价值、能力边界和已标注假设。
 - `team-spec/config.yml`（如果存在），用于确定统一语言设置。
 - 现有 `team-spec/CONTEXT.md` 和 `team-spec/decisions/`，如果项目已有跨需求产品语境或产品决策记录。
 - 现有 `team-spec/active/{slug}/spec/CONTEXT.md` 和 `team-spec/active/{slug}/spec/decisions/`，如果该需求已有局部上下文或产品决策记录。

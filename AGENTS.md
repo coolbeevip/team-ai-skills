@@ -4,7 +4,8 @@
 
 本仓库是团队大语言模型技能库。技能统一放在标准目录 `skills/` 下，`skills/` 的一级子目录代表团队职责域。
 
-- `skills/product/`：产品定义职责，包括需求细化、规格评审和 PRD 固化。
+- `skills/product/`：产品定义职责，包括产品概念白皮书、需求细化、规格评审和 PRD 固化。
+- `skills/product/team-concept-whitepaper/`：用于在产品规划阶段定义产品机会、定位、价值、能力边界和演进方向，并编写产品概念白皮书。
 - `skills/product/team-spec-refine/`：用于与用户反复确认并打磨规格。
 - `skills/product/team-spec-review/`：用于评审规格风险和 ready 状态。
 - `skills/product/team-spec-to-prd/`：用于把 ready 的规格固化成 PRD。
@@ -41,13 +42,14 @@
 - `team-spec/CONTEXT.md`：跨多个需求复用的全局产品语境，包括规范术语、角色、通用流程和通用业务规则。
 - `team-spec/decisions/`：跨多个需求长期有效的产品决策记录，仅在决策影响后续多个需求且反悔成本较高时创建。
 - `team-spec/active/{slug}/spec/`：单个需求的规格阶段产物，包括 `CONTEXT.md`、`decisions/`、`refine.md`、`reviews.md`。
+- `team-spec/active/{slug}/concept/`：单个产品或产品体系的概念阶段产物，默认白皮书为 `whitepaper.md`，作为规格细化和后续 PRD 的上游输入。
 - `team-spec/active/{slug}/prd/`：单个需求的 PRD 固化产物，是需求到工程的正式交接边界，包括 `prd.md` 与可选 `alignment.md`。
 - `team-spec/active/{slug}/issues/`：单个需求 PRD 拆解后的工程 issue 草稿。
 - `team-spec/active/{slug}/design/`：单个需求的功能设计说明书，默认文件为 `functional-design.md`。
 - `team-spec/active/{slug}/STATUS.md`：可选状态文件，用于记录 `refining`、`reviewed`、`prd-ready`、`implementing`、`paused`、`blocked` 等状态。
 - `team-spec/archive/{slug}/`：单个历史需求的归档目录，包括 `spec/`、`prd/`、`issues/`、`design/`、`STATUS.md` 和 `ARCHIVE.md`。
 
-每个需求使用唯一 slug 串联全流程，格式为 `{yyyy-mm-dd}-{short-english-slug}`。例如：`team-spec/active/2026-05-10-export-filter/spec/refine.md`、`team-spec/active/2026-05-10-export-filter/spec/reviews.md`、`team-spec/active/2026-05-10-export-filter/prd/prd.md`、`team-spec/active/2026-05-10-export-filter/issues/`。
+每个需求使用唯一 slug 串联全流程，格式为 `{yyyy-mm-dd}-{short-english-slug}`。例如：`team-spec/active/2026-05-10-export-filter/concept/whitepaper.md`、`team-spec/active/2026-05-10-export-filter/spec/refine.md`、`team-spec/active/2026-05-10-export-filter/spec/reviews.md`、`team-spec/active/2026-05-10-export-filter/prd/prd.md`、`team-spec/active/2026-05-10-export-filter/issues/`。
 
 开始新需求前，`team-spec-refine` 只需检查目标 slug 是否已存在。若 `team-spec/active/` 下有其他 slug，不得要求用户归档；应允许多个未归档需求并行存在。只有当用户请求无法唯一确定 slug 或目标文件路径时，才要求用户指定 slug、继续某个已有需求或创建新的 slug。
 

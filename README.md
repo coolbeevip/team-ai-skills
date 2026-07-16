@@ -18,8 +18,9 @@ npx skills@latest add coolbeevip/team-ai-skills --all
 
 ### 产品定义
 
-把模糊需求整理成可评审、可交付的产品规格。
+从产品概念规划开始，把模糊想法逐步整理成可评审、可交付的产品规格。
 
+- `team-concept-whitepaper`：在产品规划阶段定义产品机会、定位、价值、能力边界和演进方向，形成产品概念白皮书。
 - `team-spec-refine`：细化需求，澄清术语、边界、业务规则和验收口径。
 - `team-spec-review`：评审需求规格中的产品、交付、数据、合规、运营和协作风险。
 - `team-spec-to-prd`：把 ready 的规格固化成结构化 PRD。
@@ -68,7 +69,8 @@ Codex Harness 仍处于实验阶段，用于探索 Codex 在具体项目中的�
 产品需求链路：
 
 ```text
-team-spec-refine
+team-concept-whitepaper（产品规划阶段按需使用）
+  -> team-spec-refine
   -> team-spec-review
   -> team-spec-to-prd
   -> team-prd-to-alignment
@@ -110,6 +112,8 @@ team-spec/
 ├── decisions/
 ├── active/
 │   └── {yyyy-mm-dd-short-slug}/
+│       ├── concept/
+│       │   └── whitepaper.md
 │       ├── spec/
 │       │   ├── CONTEXT.md
 │       │   ├── decisions/
@@ -124,6 +128,7 @@ team-spec/
 │       └── STATUS.md
 └── archive/
     └── {slug}/
+        ├── concept/
         ├── spec/
         ├── prd/
         ├── issues/
@@ -134,4 +139,4 @@ team-spec/
 
 每个需求使用唯一 slug 串联全流程，格式为 `{yyyy-mm-dd}-{short-english-slug}`，例如 `2026-05-10-export-filter`。`team-spec/active/` 可以同时存在多个未归档 slug；只有无法唯一确定目标 slug 或文件路径时，技能才应要求用户确认。
 
-下游技能默认读取同一 slug 的上游产物。例如 `team-prd-to-issues` 以 `team-spec/active/{slug}/prd/prd.md` 为主输入，并参考全局上下文、产品决策、规格上下文和评审报告。
+下游技能默认读取同一 slug 的上游产物。产品规划阶段可以先通过 `team-concept-whitepaper` 生成 `team-spec/active/{slug}/concept/whitepaper.md`，再由 `team-spec-refine` 把概念基线细化为需求规格。`team-prd-to-issues` 以 `team-spec/active/{slug}/prd/prd.md` 为主输入，并参考全局上下文、产品决策、规格上下文和评审报告。

@@ -39,6 +39,7 @@ triggers:
 
 可归档的 active 产物：
 
+- `team-spec/active/{slug}/concept/whitepaper.md`
 - `team-spec/active/{slug}/spec/refine.md`
 - `team-spec/active/{slug}/spec/reviews.md`
 - `team-spec/active/{slug}/spec/CONTEXT.md`
@@ -60,6 +61,7 @@ triggers:
 
 ## 输出物
 
+- `team-spec/archive/{slug}/concept/whitepaper.md`
 - `team-spec/archive/{slug}/spec/refine.md`
 - `team-spec/archive/{slug}/spec/reviews.md`
 - `team-spec/archive/{slug}/prd/prd.md`
