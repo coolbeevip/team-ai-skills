@@ -46,8 +46,18 @@
 - `team-spec/active/{slug}/prd/`：单个需求的 PRD 固化产物，是需求到工程的正式交接边界，包括 `prd.md` 与可选 `alignment.md`。
 - `team-spec/active/{slug}/issues/`：单个需求 PRD 拆解后的工程 issue 草稿。
 - `team-spec/active/{slug}/design/`：单个需求的功能设计说明书，默认文件为 `functional-design.md`。
-- `team-spec/active/{slug}/STATUS.md`：可选状态文件，用于记录 `refining`、`reviewed`、`prd-ready`、`implementing`、`paused`、`blocked` 等状态。
+- `team-spec/active/{slug}/STATUS.md`：可选状态文件，只记录整个工作区的生命周期状态，不记录阶段评审结果或单个 issue 的交付状态。
 - `team-spec/archive/{slug}/`：单个历史需求的归档目录，包括 `spec/`、`prd/`、`issues/`、`design/`、`STATUS.md` 和 `ARCHIVE.md`。
+
+### 状态合同
+
+所有机器可读状态使用小写 kebab-case。状态按写入对象分为三类，不得混用：
+
+1. 工作区生命周期状态：写入 `team-spec/active/{slug}/STATUS.md`。产品需求链路使用 `concept-drafting`、`concept-review`、`concept-ready`、`refining`、`spec-ready`、`prd-ready`、`implementing`、`paused`、`blocked`；技术债等其他链路可以增加本职责域状态，但必须保持 kebab-case，并在对应技能中定义。
+2. 阶段评审结果：写入 `team-spec/active/{slug}/spec/reviews.md` 或其他阶段报告，不写入工作区 `STATUS.md`。统一使用 `ready`、`needs-refinement`、`blocked`。
+3. Issue 与交付状态：写入对应 issue 草稿，不写入工作区 `STATUS.md`。统一使用 kebab-case，例如 `draft`、`published`、`implementing`、`needs-changes`、`verified`、`pr-created`、`mr-created`。
+
+同一个 `blocked` 可以出现在不同对象中，但只表示该对象被阻塞；读取方必须结合文件位置判断是工作区、阶段评审还是 issue 被阻塞。用户可见回复可以使用自然语言，写入文件的状态值必须使用上述机器值。
 
 每个需求使用唯一 slug 串联全流程，格式为 `{yyyy-mm-dd}-{short-english-slug}`。例如：`team-spec/active/2026-05-10-export-filter/concept/whitepaper.md`、`team-spec/active/2026-05-10-export-filter/spec/refine.md`、`team-spec/active/2026-05-10-export-filter/spec/reviews.md`、`team-spec/active/2026-05-10-export-filter/prd/prd.md`、`team-spec/active/2026-05-10-export-filter/issues/`。
 

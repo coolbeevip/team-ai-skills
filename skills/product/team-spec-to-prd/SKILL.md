@@ -66,7 +66,7 @@ access_policy:
 
 本技能是阶段性固化步骤，不是需求探索步骤。进入本技能前，`team-spec-refine` 与 `team-spec-review` 应已完成必要迭代，P0 和关键 P1 风险应已解决或被明确接受。
 
-只允许基于 `Status: ready` 的 `team-spec/active/{slug}/spec/reviews.md` 生成 PRD。如果 review 状态为 `needs refinement` 或 `blocked`，不要生成 PRD；应要求回到 `team-spec-refine` 或处理阻塞项，除非用户明确要求带风险草稿。
+只允许基于 `Status: ready` 的 `team-spec/active/{slug}/spec/reviews.md` 生成 PRD。如果 review 状态为 `needs-refinement` 或 `blocked`，不要生成 PRD；应要求回到 `team-spec-refine` 或处理阻塞项，除非用户明确要求带风险草稿。
 
 必须先确定本次 PRD 对应的 `{slug}`，以及明确的 `team-spec/active/{slug}/spec/refine.md` 和 `team-spec/active/{slug}/spec/reviews.md`。如果无法从用户请求、当前对话或文件路径中唯一判断，应停止并要求用户提供 slug、refine 文件路径或 review 文件路径，不要猜测要固化哪个规格。
 

@@ -141,7 +141,7 @@ access_policy:
 - 现有 `team-spec/CONTEXT.md` 和 `team-spec/decisions/`，如果项目已有跨需求产品语境或产品决策记录。
 - 现有 `team-spec/active/{slug}/spec/CONTEXT.md` 和 `team-spec/active/{slug}/spec/decisions/`，如果该需求已有局部上下文或产品决策记录。
 - 相关 PRD、业务文档、任务、设计稿或代码现状；代码和测试只能作为只读输入物，不得作为本技能输出目标。
-- 如果存在 `team-spec/active/{slug}/spec/reviews.md` 且状态为 `needs refinement`，必须优先读取它，并围绕其中的问题继续追问用户。
+- 如果存在 `team-spec/active/{slug}/spec/reviews.md` 且状态为 `needs-refinement`，必须优先读取它，并围绕其中的问题继续追问用户。
 
 ## 输出物
 
@@ -151,7 +151,7 @@ access_policy:
 - `team-spec/active/{slug}/spec/refine.md`：单次规格细化的主输出物。
 - `team-spec/active/{slug}/spec/CONTEXT.md`：条件输出。仅当用户确认某个术语、角色、流程或业务规则只属于当前需求，但会被 PRD、任务拆解、功能设计或后续研发讨论反复复用后，才创建或更新。
 - `team-spec/active/{slug}/spec/decisions/{number}-{decision-slug}.md`：当出现只影响当前需求的产品决策时创建。
-- `team-spec/active/{slug}/STATUS.md`：可选状态文件，用于记录当前需求处于 `refining`、`reviewed`、`prd-ready`、`paused` 或 `blocked` 等状态。
+- `team-spec/active/{slug}/STATUS.md`：可选状态文件，只记录工作区生命周期状态。当前技能使用 `refining`；规格通过评审后由评审流程更新为 `spec-ready`。跨阶段还可使用 `paused` 或 `blocked`。
 - `team-spec/config.yml`：首次进入工作空间且缺失配置时创建；用户明确同意时可更新语言设置，相关交付技能在确认后可补充 `version_control` 配置。
 - 在读取或写入 `team-spec/active/{slug}/` 之前，先读取 `team-spec/config.yml`；如果存在 `access_policy`，再据此判断当前协作者对目录的读取和写入边界。
 

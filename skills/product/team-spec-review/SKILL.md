@@ -86,7 +86,7 @@ access_policy:
 
 本技能可以与 `team-spec-refine` 反复迭代。发现 P0 或关键 P1 时，默认建议回到 `team-spec-refine` 修正规格；只有风险已解决或被明确接受后，才建议进入 `team-spec-to-prd`。
 
-本技能不要直接修改 `team-spec/active/{slug}/spec/refine.md`。如果规格需要修订，输出 `Status: needs refinement`，并在 `Questions For User` 与 `Required Refinement` 中给出明确问题和修改方向，由 `team-spec-refine` 继续与用户确认并更新同一个 refine 文件。
+本技能不要直接修改 `team-spec/active/{slug}/spec/refine.md`。如果规格需要修订，输出 `Status: needs-refinement`，并在 `Questions For User` 与 `Required Refinement` 中给出明确问题和修改方向，由 `team-spec-refine` 继续与用户确认并更新同一个 refine 文件。
 
 本技能属于规格评审阶段，只允许引导用户修正规格、补充评审证据或进入 PRD 固化。不要在最终回复的“下一步可选”中建议修改代码、要求用户授予这些文件的写入权限。任何代码或业务文档写入，只能在 `team-issue-implement` 阶段由工程 issue 明确驱动。
 
@@ -125,7 +125,7 @@ access_policy:
 `Status` 只能使用：
 
 - `ready`
-- `needs refinement`
+- `needs-refinement`
 - `blocked`
 
 ### 阻塞项
@@ -146,11 +146,11 @@ access_policy:
 
 ### Questions For User
 
-当 `Status: needs refinement` 时必须填写。只列需要回到 `team-spec-refine` 继续确认的问题。
+当 `Status: needs-refinement` 时必须填写。只列需要回到 `team-spec-refine` 继续确认的问题。
 
 ### Required Refinement
 
-当 `Status: needs refinement` 时必须填写。说明需要更新 `team-spec/active/{slug}/spec/refine.md` 的哪些章节或规则。
+当 `Status: needs-refinement` 时必须填写。说明需要更新 `team-spec/active/{slug}/spec/refine.md` 的哪些章节或规则。
 
 ### 建议改写
 
@@ -161,10 +161,11 @@ access_policy:
 每次完成评审后，最终回复必须包含：
 
 - 评审报告路径：`team-spec/active/{slug}/spec/reviews.md`，如果本次已保存。
-- `Status`：`ready`、`needs refinement` 或 `blocked`。
+- `Status`：`ready`、`needs-refinement` 或 `blocked`。这是阶段评审结果，写入 `spec/reviews.md`，不得写入工作区 `STATUS.md`。
+- 工作区生命周期：评审结果为 `ready` 时，可将 `team-spec/active/{slug}/STATUS.md` 更新为 `spec-ready`；其他评审结果不应把阶段状态直接复制到工作区状态。
 - 下一步可选：必须使用有序号的列表选项输出，方便用户直接回复序号继续推进。
   - 当 `Status: ready` 时，选项 1 必须是 `team-spec-to-prd`，用于固化 PRD。
-  - 当 `Status: needs refinement` 时，选项 1 必须是 `team-spec-refine`，并说明需要修订哪些关键内容。
+  - 当 `Status: needs-refinement` 时，选项 1 必须是 `team-spec-refine`，并说明需要修订哪些关键内容。
   - 当 `Status: blocked` 时，选项 1 必须是解除阻塞动作；如能判断解除后技能，再作为后续编号选项列出。
   - 不得加入修改代码、更新 API 手册、更新 `handbook/`、更新产品文档、申请业务文件写入授权等实现阶段选项。
 
