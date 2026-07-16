@@ -14,6 +14,8 @@ npx skills@latest add coolbeevip/team-ai-skills --all
 
 安装后，技能会在目标项目中读写运行时工作空间 `team-spec/`。本仓库只维护技能本身，不提交真实业务需求、PRD、风险报告或工程 issue。
 
+参与技能开发、运行本地检查或提交变更时，请阅读 [贡献者指南](CONTRIBUTING.md)。
+
 ## 技能地图
 
 ### 产品定义

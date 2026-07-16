@@ -158,6 +158,10 @@ def check_skill(path: Path) -> list[str]:
         errors.append("missing ## 输出物 section")
     if "## 触发边界" not in text:
         errors.append("missing ## 触发边界 section")
+    if "## 完成标准" not in text:
+        errors.append("missing ## 完成标准 section")
+    if "## 最终回复" not in text:
+        errors.append("missing ## 最终回复 section")
 
     heading_lines: dict[str, list[int]] = {}
     for line_number, heading in iter_markdown_headings(text):
