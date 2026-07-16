@@ -52,7 +52,7 @@ access_policy:
 - 相关代码、日志、告警、事故复盘、性能数据、缺陷记录或运维反馈。
 - 现有 `team-spec/CONTEXT.md` 与 `team-spec/decisions/`（如存在）。
 - 现有 `team-spec/active/{slug}/spec/CONTEXT.md` 与 `team-spec/active/{slug}/spec/decisions/`（如存在）。
-- 如果存在 `team-spec/active/{slug}/spec/reviews.md` 且状态为 `needs refinement`，优先读取并围绕问题继续细化。
+- 如果存在 `team-spec/active/{slug}/spec/reviews.md` 且状态为 `needs-refinement`，优先读取并围绕问题继续细化。
 
 必须先确定唯一 slug。技术债链路的 slug 必须包含 `debt`，格式建议为 `{yyyy-mm-dd}-debt-{short-english-slug}`。如果无法唯一判断 slug，必须向用户确认，不得猜测。
 
@@ -66,6 +66,7 @@ access_policy:
 - `team-spec/decisions/{number}-{decision-slug}.md`：当出现跨多个需求长期有效且高成本回退的决策时创建。
 - `team-spec/active/{slug}/spec/CONTEXT.md`：当需要沉淀当前技术债局部语境时更新。
 - `team-spec/active/{slug}/spec/decisions/{number}-{decision-slug}.md`：当出现只影响当前技术债的决策时创建。
+- `team-spec/active/{slug}/STATUS.md`：可选，记录工作区生命周期状态 `debt-refining`；不得写入阶段评审结果。
 
 下游技能读取这些输出物：`team-tech-debt-review` 用于风险评审，`team-tech-debt-to-issues` 用于工程拆解。
 

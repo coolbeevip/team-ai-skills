@@ -67,6 +67,8 @@ access_policy:
 
 输出目录统一收敛到 `team-spec/active/{slug}/issues/`。
 
+`ready` 是 `spec/reviews.md` 中的阶段评审结果。进入 issue 拆解时，工作区 `STATUS.md` 应保持 `debt-ready`，直到实现流程将其更新为 `implementing`；本技能不得把评审结果写入工作区状态。
+
 ## 拆解原则
 
 - 优先 vertical slice，避免“只改数据库/只改接口/只改 UI”这类横切任务。

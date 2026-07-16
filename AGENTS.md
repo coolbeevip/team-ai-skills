@@ -53,7 +53,7 @@
 
 所有机器可读状态使用小写 kebab-case。状态按写入对象分为三类，不得混用：
 
-1. 工作区生命周期状态：写入 `team-spec/active/{slug}/STATUS.md`。产品需求链路使用 `concept-drafting`、`concept-review`、`concept-ready`、`refining`、`spec-ready`、`prd-ready`、`implementing`、`paused`、`blocked`；技术债等其他链路可以增加本职责域状态，但必须保持 kebab-case，并在对应技能中定义。
+1. 工作区生命周期状态：写入 `team-spec/active/{slug}/STATUS.md`。产品需求链路使用 `concept-drafting`、`concept-review`、`concept-ready`、`refining`、`spec-ready`、`prd-ready`、`implementing`、`paused`、`blocked`；技术债链路使用 `debt-analyzed`、`debt-refining`、`debt-ready`、`implementing`、`paused`、`blocked`。
 2. 阶段评审结果：写入 `team-spec/active/{slug}/spec/reviews.md` 或其他阶段报告，不写入工作区 `STATUS.md`。统一使用 `ready`、`needs-refinement`、`blocked`。
 3. Issue 与交付状态：写入对应 issue 草稿，不写入工作区 `STATUS.md`。统一使用 kebab-case，例如 `draft`、`published`、`implementing`、`needs-changes`、`verified`、`pr-created`、`mr-created`。
 

@@ -58,9 +58,10 @@ access_policy:
 
 ## 输出物
 
-- 对话中的评审结论：`ready` / `needs refinement` / `blocked`。
+- 对话中的评审结论：`ready` / `needs-refinement` / `blocked`。
 - `team-spec/active/{slug}/spec/reviews.md`：技术债评审报告。
 - 给下游 `team-tech-debt-to-issues` 的拆解前置结论（阻塞项、依赖、验收风险、HITL 决策点）。
+- `team-spec/active/{slug}/STATUS.md`：评审结果为 `ready` 时可更新为工作区生命周期状态 `debt-ready`；不得把阶段评审结果直接写入工作区状态。
 
 ## 评审维度
 
@@ -73,7 +74,7 @@ access_policy:
 
 ## 处理原则
 
-- 发现 P0 或关键 P1 时，输出 `needs refinement` 或 `blocked`，并明确回到 `team-tech-debt-refine` 要补充的内容。
+- 发现 P0 或关键 P1 时，输出 `needs-refinement` 或 `blocked`，并明确回到 `team-tech-debt-refine` 要补充的内容。
 - 不编造风险；证据不足时明确指出缺口。
 - 每个重要风险都要落到建议动作、owner 和截止点。
 
@@ -88,10 +89,10 @@ access_policy:
 每次完成评审后，最终回复必须包含：
 
 - 评审报告路径：`team-spec/active/{slug}/spec/reviews.md`，如果本次已保存。
-- `Status`：`ready`、`needs refinement` 或 `blocked`。
+- `Status`：`ready`、`needs-refinement` 或 `blocked`。这是阶段评审结果，写入 `spec/reviews.md`，不得写入工作区 `STATUS.md`。
 - 下一步可选：必须使用有序号的列表选项输出，方便用户直接回复序号继续推进。
   - 当 `Status: ready` 时，选项 1 必须是 `team-tech-debt-to-issues`，用于把通过评审的技术债规格拆解为工程 issue。
-  - 当 `Status: needs refinement` 时，选项 1 必须是 `team-tech-debt-refine`，并说明需要补充或修订哪些关键内容。
+  - 当 `Status: needs-refinement` 时，选项 1 必须是 `team-tech-debt-refine`，并说明需要补充或修订哪些关键内容。
   - 当 `Status: blocked` 时，选项 1 必须是解除阻塞动作；如能判断解除后技能，再作为后续编号选项列出。
 
 推荐结尾：

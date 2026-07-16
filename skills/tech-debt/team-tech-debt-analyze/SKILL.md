@@ -81,7 +81,7 @@ access_policy:
 
 - 对话中的技术债摘要：高优先级债务、关键证据、建议下一步。
 - `team-spec/active/{analysis_slug}/tech-debt/analysis.md`：批次级技术债分析报告。
-- 可选更新 `team-spec/active/{analysis_slug}/STATUS.md`：仅记录 `analyzed`、`needs-refinement` 或 `blocked` 等状态，不记录业务细节。
+- 可选更新 `team-spec/active/{analysis_slug}/STATUS.md`：分析报告结果为 `ready` 时记录工作区生命周期状态 `debt-analyzed`；分析无法继续时可记录 `blocked`。阶段报告结果不得直接写入工作区状态。
 
 下游技能读取这些输出物：`team-tech-debt-refine` 默认使用候选项的 `Suggested Slug` 创建独立工作区，并在 `spec/refine.md` 中反向引用来源分析；`team-tech-debt-review` 用于评审已细化债务，`team-tech-debt-to-issues` 用于工程拆解。
 
@@ -192,7 +192,7 @@ team-minimal: {当前简化做法}; ceiling={不能超过的规模/条件}; upgr
 ## Summary
 
 - Scope: {本次分析范围}
-- Status: analyzed / needs-refinement / blocked
+- Status: ready / needs-refinement / blocked
 - Top Risks: {最高风险摘要}
 
 ## Evidence Map
@@ -272,7 +272,7 @@ team-minimal: {当前简化做法}; ceiling={不能超过的规模/条件}; upgr
 推荐结尾：
 
 ```text
-技术债分析已完成，Status: analyzed。
+技术债分析已完成，Status: ready。
 下一步可选：
 1. team-tech-debt-refine：选择 TD-1，使用其 Suggested Slug 创建独立技术债规格。
 2. team-tech-debt-analyze：继续扫描 Follow-up Scan Areas 中尚未覆盖的模块。
