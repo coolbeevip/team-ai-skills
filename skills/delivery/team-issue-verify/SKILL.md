@@ -215,3 +215,13 @@ verified / needs-changes / blocked
 1. `team-issue-create-mr-gitlab`：检测到 GitLab remote，推送当前 issue 分支并创建关联 issue 的 Merge Request。
 2. 完成人工确认：如果主干分支或贡献方式无法唯一推断，先确认后回写 `team-spec/config.yml`。
 ```
+
+## 最终回复
+
+必须包含：
+
+- 被验证的 issue 和生命周期状态：`verified`、`needs-changes` 或 `blocked`。
+- 验收标准覆盖、实际运行命令和结果。
+- Findings、回归风险、Required Changes 和跳过的验证。
+- 原 issue 的回写路径或独立 verification 报告路径。
+- `verified` 时基于项目平台给出 PR 或 MR 创建的有序号下一步；其他状态给出具体补救动作。

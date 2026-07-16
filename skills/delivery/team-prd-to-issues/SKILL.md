@@ -277,3 +277,20 @@ AFK（可独立执行，无需人工决策） / HITL（需要人工介入）
 - 最终回复包含有序号的“下一步可选”列表，且推荐与当前输出状态一致。
 - 存在多个可执行 `AFK` issue 时，最终回复优先提示 `team-issue-batch-implement`；只有单个明确 issue 时才优先提示 `team-issue-implement`。
 - 若已生成本地 issue 草稿，最终回复已基于 `team-spec/config.yml`、Git remote、`.github/`、`.gitlab-ci.yml` 或 `.gitlab/` 判断发布平台；除非信号冲突或无法判断，否则不会同时推荐 GitHub 和 GitLab 发布技能。
+
+## 完成标准
+
+- `team-spec/active/{slug}/issues/` 已生成可独立领取、可验证且按依赖排序的 issue 草稿。
+- 每个 issue 包含 `draft` 生命周期状态、清晰标题、AFK/HITL 类型、验收标准和 blocker。
+- 不存在循环依赖，且关键人工决策没有被伪装成 AFK。
+- issue 集合覆盖 PRD 目标和必要风险，没有把 PRD 范围外事项混入交付。
+
+## 最终回复
+
+必须包含：
+
+- issue 草稿目录和 slug。
+- issue 数量、依赖顺序以及 AFK/HITL 分布。
+- 阻塞项、人工决策点和未覆盖风险。
+- 检测到的 GitHub/GitLab 平台信号及置信度。
+- 与当前状态匹配的有序号“下一步可选”列表。

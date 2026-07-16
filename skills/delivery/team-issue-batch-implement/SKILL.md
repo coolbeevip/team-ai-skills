@@ -189,3 +189,13 @@ python3 {skill_dir}/scripts/plan_issue_batch.py --slug {slug} --limit 3 --json
 3. `team-prd-to-issues`：如果发现 issue 过薄或依赖不合理，回到拆解阶段合并或重排。
 4. `team-issue-create-pr-github` / `team-issue-create-mr-gitlab`：当前批次已验证完成后，按项目平台创建 PR/MR。
 ```
+
+## 最终回复
+
+必须包含：
+
+- 本批次计划处理、已完成、失败和被阻塞的 issue。
+- 每个已处理 issue 的最终生命周期状态和验证结论。
+- 执行停止原因；正常完成时说明是否仍有可执行 issue。
+- 未解决的 HITL、外部 blocker 和恢复入口。
+- 有序号的“下一步可选”列表。

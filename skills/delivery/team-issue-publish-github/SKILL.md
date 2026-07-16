@@ -264,3 +264,13 @@ GitHub Enterprise 场景下，remote host 必须与平台地址一致；如果�
 - 每个本地 issue 草稿都有可追踪的回写状态。
 - 输出了可执行的失败重试清单。
 - 结果可重复执行，且不会产生重复 issue。
+
+## 最终回复
+
+必须包含：
+
+- dry-run 或 execute 状态、目标 GitHub 仓库和处理范围。
+- 创建、幂等跳过和失败的 issue 数量及对应 URL。
+- 本地 issue 的 `published` 生命周期状态和 `Publish Status` 操作结果。
+- 失败清单、失败原因和可重试入口。
+- 有序号的下一步选项，通常为批量实现或单 issue 实现。

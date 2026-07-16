@@ -224,3 +224,13 @@ GITLAB_URL=https://gitlab.example.com GITLAB_TOKEN=... python3 {skill_dir}/scrip
 - 如果执行了收尾提交，最终回复包含创建的 commit SHA 和提交范围。
 - 最终回复包含 MR URL。
 - 若失败，输出失败阶段、错误原因和可重试命令。
+
+## 最终回复
+
+必须包含：
+
+- dry-run 或 execute 状态，以及 source/target project、分支和目标分支。
+- 创建的 commit SHA 与提交范围（如果执行了收尾提交）。
+- MR URL、关联 issue 和本地 issue 的 `mr-created` 回写结果。
+- 未提交的 `team-spec/` 回写或其他剩余工作区变更。
+- 失败时的失败阶段、错误原因和安全的重试入口。
