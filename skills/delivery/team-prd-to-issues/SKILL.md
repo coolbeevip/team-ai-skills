@@ -182,6 +182,10 @@ access_policy:
 ## Issue 模板
 
 ```md
+## Status
+
+draft
+
 ## Parent
 
 {父 PRD 或需求来源；如果没有则省略}

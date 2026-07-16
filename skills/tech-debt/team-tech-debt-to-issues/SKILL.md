@@ -81,6 +81,10 @@ access_policy:
 ## 最小 issue 模板
 
 ```md
+## Status
+
+draft
+
 ## Parent
 
 team-spec/active/{slug}/spec/refine.md

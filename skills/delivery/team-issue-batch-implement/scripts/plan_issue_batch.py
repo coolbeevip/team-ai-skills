@@ -14,13 +14,15 @@ from typing import Any
 
 SECTION_RE = re.compile(r"^##\s+(.+?)\s*$", re.MULTILINE)
 COMPLETED_MARKERS = {
+    "verified",
+    "pr-created",
+    "mr-created",
     "ready for pr",
     "pr created",
     "mr created",
     "done",
     "completed",
     "closed",
-    "verified",
 }
 IGNORED_SUFFIXES = (
     ".implementation.md",

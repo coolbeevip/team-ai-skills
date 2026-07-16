@@ -73,7 +73,7 @@ access_policy:
 - 默认只推送已有提交；如果工作区或暂存区存在未提交变更，技能必须先列出这些变更，并取得用户对提交范围和提交信息的确认。确认后可通过 `--commit-message` 搭配 `--commit-all`、`--commit-path` 或 `--commit-staged` 在 push 前创建本地提交。
 - 执行收尾提交时，绝对不得对 `team-spec/` 下的文件执行 `git add`；如果发现 `team-spec/` 文件已经在暂存区，必须停止并要求先取消暂存。
 - MR 标题推荐使用组件标签和祈使语气，例如 `[BugFix] Fix export filter`；正文使用 `./scripts/templates/mr_body.md.tpl` 按 `language` 渲染，并保留 `Fixes #{issue_iid}` 以便 GitLab 自动关联并在合并后关闭 issue。
-- 创建 MR 成功后，如果能定位到本地 issue 草稿，会把该文件回写为 `Status: MR created`，并记录 `MR:` 和 `Pushed Branch:`；该回写只修改本地文件，不会自动 `git add` 或提交 `team-spec/`。
+- 创建 MR 成功后，如果能定位到本地 issue 草稿，会把该文件回写为 `Status: mr-created`，并记录 `MR:` 和 `Pushed Branch:`；该回写只修改本地文件，不会自动 `git add` 或提交 `team-spec/`。
 - 可指定 target branch、source remote、target remote、title、draft、label、assignee 和 reviewer；未指定 target branch 时优先使用 `version_control.trunk_branch`。
 - 执行前会检查被 Git 追踪但又命中 `.gitignore` 规则的文件，并要求人类确认是否继续。
 - 正式请求 GitLab API 前会把 method、URL 和 payload 打印到 stderr，便于失败排查；token 不会输出。
@@ -201,7 +201,7 @@ GITLAB_URL=https://gitlab.example.com GITLAB_TOKEN=... python3 {skill_dir}/scrip
 6. 使用固定脚本执行默认 dry-run，预览 push、MR 创建计划和待提交工作区状态。
 7. 如果目标分支、source remote、target remote 或贡献方式不是来自用户显式参数或已确认的 `team-spec/config.yml`，或工作区里存在被追踪但命中 `.gitignore` 的文件，执行前必须向人类确认；确认后可回写 `team-spec/config.yml`。
 8. 用户确认后，用固定脚本追加 `--execute`；如提供提交参数，脚本会先创建本地提交，再推送分支并创建 MR。提交后如仅剩 `team-spec/` 下未提交变更，可以继续创建 MR。
-9. 如果能定位到本地 issue 草稿，回写 `Status: MR created`、`MR:` 和 `Pushed Branch:`；不得自动暂存或提交 `team-spec/`。
+9. 如果能定位到本地 issue 草稿，回写 `Status: mr-created`、`MR:` 和 `Pushed Branch:`；不得自动暂存或提交 `team-spec/`。
 10. 输出 MR URL、关联 issue、source/target branch、创建的提交、验证结果、已回写的 issue 文件和有序号的“下一步可选”列表，方便用户直接回复序号继续推进。
 
 ## 安全要求
@@ -220,7 +220,7 @@ GITLAB_URL=https://gitlab.example.com GITLAB_TOKEN=... python3 {skill_dir}/scrip
 - 当前分支已推送到正确 source remote。
 - GitLab MR 已创建，正文关联 issue 编号，标题符合组件标签和祈使语气规范或已在预览中提示需要调整。
 - MR 标题来自显式标题、本地 issue 草稿标题或有语义的分支名，不是 `implementation` 这类兜底词。
-- 如能定位本地 issue 草稿，已回写 `Status: MR created`、`MR:` 和 `Pushed Branch:`。
+- 如能定位本地 issue 草稿，已回写 `Status: mr-created`、`MR:` 和 `Pushed Branch:`。
 - 如果执行了收尾提交，最终回复包含创建的 commit SHA 和提交范围。
 - 最终回复包含 MR URL。
 - 若失败，输出失败阶段、错误原因和可重试命令。

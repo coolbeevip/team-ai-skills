@@ -115,7 +115,7 @@ python3 {skill_dir}/scripts/plan_issue_batch.py --slug {slug} --limit 3 --json
 - `HITL（需要人工介入）` issue。
 - 缺少验收标准的 issue。
 - `Blocked by` 指向未完成、缺失、循环或 HITL issue 的任务。
-- 已经处于 `ready for PR`、`PR created`、`MR created`、`done`、`completed` 或等价完成状态的 issue。
+- 已经处于 `verified`、`pr-created`、`mr-created` 或等价完成状态的 issue。兼容读取旧值 `ready for PR`、`PR created`、`MR created`、`done`、`completed`。
 - 实现范围明显跨出父 PRD 或当前 slug 的 issue。
 
 默认批量上限为 3 个 issue。用户明确要求“全部可执行 issue”时可以处理更多，但仍必须逐个验证，且任何失败都立即停止。
@@ -140,14 +140,14 @@ python3 {skill_dir}/scripts/plan_issue_batch.py --slug {slug} --limit 3 --json
 6. 如果用户已明确要求批量执行且队列规模不超过默认上限，可以继续；否则先等待用户确认。
 7. 按队列顺序对每个 issue 执行 `team-issue-implement` 的完整工作流，并保留最小实现模式的复用、跳过复杂方案和验证记录。
 8. 每个 issue 实现结束后，立即执行 `team-issue-verify`。
-9. 只有当前 issue 达到 `ready for PR` 或用户明确接受的完成状态，才继续下一个 issue。
+9. 只有当前 issue 达到 `verified` 或用户明确接受的完成状态，才继续下一个 issue。
 10. 记录本轮完成项、验证命令、停止原因、未处理队列和需要人工介入的事项。
 
 ## 停止条件
 
 遇到以下任一情况，必须停止批量执行：
 
-- 当前 issue 验证结果不是 `ready for PR`。
+- 当前 issue 验证结果不是 `verified`。
 - 测试失败、验证命令缺失且无法从项目文档推断。
 - 发现未解决的 HITL 决策点。
 - 依赖关系变化、循环依赖、缺失 blocker 或 blocker 未完成。

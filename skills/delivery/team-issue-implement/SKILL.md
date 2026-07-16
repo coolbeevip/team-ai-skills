@@ -89,6 +89,7 @@ access_policy:
 - 代码变更。
 - 测试变更。
 - 验证结果，包括运行了哪些测试、是否通过。
+- 本地 issue 草稿中的生命周期状态：开始实现后更新为 `implementing`。
 - 默认保持变更停留在本地工作区，不要执行 `git commit`、`git push` 或任何会提前固化历史的操作；实现步骤完成后应立即自动执行 `team-issue-verify` 做确认和收尾。
 - 优先回写原 issue 文件中的 `## Status`、`## Implementation Notes`、`## Acceptance Criteria Coverage` 或同类章节。
 - 如果原 issue 文件不可修改，再写入 `team-spec/active/{slug}/issues/{issue-number}-{short-issue-slug}.implementation.md`，目录只在需要时创建。
@@ -156,7 +157,7 @@ access_policy:
 
 ## 工作流
 
-1. 读取单个 issue，确认 `What to build`、`Type`、`Acceptance criteria` 和 `Blocked by`。
+1. 读取单个 issue，确认 `What to build`、`Type`、`Acceptance criteria` 和 `Blocked by`；如果是可写的本地 issue 草稿，将 `## Status` 更新为 `implementing`。
 2. 读取关联 PRD 和参考材料，只加载完成当前 issue 所需内容。
 3. 探索代码库，找到真实入口、公共接口、现有测试模式、同类实现和模块边界。
 4. 制定简短实现计划，列出 issue 最小路径检查清单、可复用的现有代码、被拒绝的复杂方案和要验证的行为。

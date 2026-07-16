@@ -720,6 +720,17 @@ def write_status(draft: IssueDraft) -> None:
         text = pattern.sub(replacement, text).rstrip() + "\n"
     else:
         text = text.rstrip() + "\n\n" + replacement
+
+    if draft.status in {"created", "skipped"} and draft.remote_url:
+        lifecycle = "## Status\n\npublished\n"
+        pattern = re.compile(
+            r"^##\s+Status\s*$.*?(?=^##\s+|\Z)",
+            re.MULTILINE | re.DOTALL,
+        )
+        if pattern.search(text):
+            text = pattern.sub(lifecycle, text).rstrip() + "\n"
+        else:
+            text = text.rstrip() + "\n\n" + lifecycle
     draft.path.write_text(text, encoding="utf-8")
 
 

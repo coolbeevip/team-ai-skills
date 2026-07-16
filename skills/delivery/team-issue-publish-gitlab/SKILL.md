@@ -182,9 +182,10 @@ GITLAB_URL=https://gitlab.example.com GITLAB_TOKEN=... python3 {skill_dir}/scrip
 
 - GitLab Issue 或 GitLab Issues（默认按依赖顺序批量创建；指定单个 issue 时只创建一个）。
 - 本地回写结果（每个 issue 草稿都应记录）：
+  - Issue 生命周期状态：成功创建或幂等命中远端 issue 后写为 `published`。
   - 远端 issue IID/ID。
   - 远端 issue URL。
-  - 发布状态（created / skipped / failed）。
+  - 发布操作状态（`created` / `skipped` / `failed`），保留在 `Publish Status` 章节用于重试与诊断，不替代 issue 生命周期状态。
   - 错误原因（如失败）。
   - 发布时间戳。
 - 批量发布汇总：

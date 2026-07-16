@@ -889,7 +889,7 @@ def write_issue_mr_tracking(
     text = issue_file.read_text(encoding="utf-8")
     ends_with_newline = text.endswith("\n")
     lines = text.splitlines()
-    lines = upsert_issue_tracking_line(lines, "Status", "MR created")
+    lines = upsert_issue_tracking_line(lines, "Status", "mr-created")
     lines = upsert_issue_tracking_line(lines, "Pushed Branch", source_branch)
     lines = upsert_issue_tracking_line(lines, "MR", mr_url)
     updated = "\n".join(lines)

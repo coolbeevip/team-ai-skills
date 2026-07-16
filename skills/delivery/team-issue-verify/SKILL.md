@@ -86,7 +86,7 @@ access_policy:
 ## 输出物
 
 - 验证报告。
-- Ready 状态：`ready for PR`、`needs changes`、`blocked`。
+- Issue 生命周期状态：`verified`、`needs-changes`、`blocked`。
 - 未覆盖验收标准。
 - 回归风险和建议补测项。
 - 实际运行的验证命令和结果。
@@ -116,7 +116,7 @@ access_policy:
 
 人工黄金用例：
 
-- 小功能避免新增依赖：检查实现是否为了 URL、日期、CSV、列表分组、参数解析等局部需求新增依赖；若标准库、平台能力或已有依赖足够，应标记为 `needs changes`。
+- 小功能避免新增依赖：检查实现是否为了 URL、日期、CSV、列表分组、参数解析等局部需求新增依赖；若标准库、平台能力或已有依赖足够，应标记为 `needs-changes`。
 - 已有 helper 场景优先复用：检查权限、金额、分页、错误响应、表单校验等逻辑是否复用了项目既有 helper；重复造一套相似封装应标记为过度设计风险。
 - 安全边界不可裁剪：检查实现是否为了少代码删除输入校验、权限、数据一致性、错误处理、可访问性、硬件校准或用户明确要求；这类问题优先按正确性或安全风险处理，而不是风格建议。
 
@@ -158,7 +158,7 @@ access_policy:
 
 ## Status
 
-ready for PR / needs changes / blocked
+verified / needs-changes / blocked
 
 ## Acceptance Criteria Coverage
 
@@ -195,7 +195,7 @@ ready for PR / needs changes / blocked
 
 ## 完成标准
 
-只有同时满足以下条件，才能给出 `ready for PR`：
+只有同时满足以下条件，才能给出 `verified`：
 
 - 所有非延期验收标准都有验证证据。
 - 相关测试通过，或未运行测试的原因可接受且已说明。
@@ -203,9 +203,9 @@ ready for PR / needs changes / blocked
 - 没有未解决的 HITL 决策点。
 - 代码变更范围与 issue 匹配。
 
-否则输出 `needs changes` 或 `blocked`，并给出具体补救动作。
+否则输出 `needs-changes` 或 `blocked`，并给出具体补救动作。
 
-当输出 `ready for PR` 时，最终回复必须用有序号的列表选项推荐下一步，方便用户直接回复序号继续推进：
+当输出 `verified` 时，最终回复必须用有序号的列表选项推荐下一步，方便用户直接回复序号继续推进：
 
 推荐前先读取 `team-spec/config.yml` 的 `version_control`。如果缺失，先用 `git remote -v`、`git branch --show-current`、`git branch -r`、`git symbolic-ref refs/remotes/{remote}/HEAD` 和 `git config --get branch.{branch}.remote` 推断平台、主干分支和贡献方式；无法唯一判断时，询问用户缺失的最小信息，并在用户确认后回写 `team-spec/config.yml`。平台信号明确时，只推荐对应的 PR/MR 创建技能，不要机械地同时列 GitHub 和 GitLab。
 
