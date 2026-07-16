@@ -114,7 +114,7 @@ team-spec/active/{slug}/design/codebase-walk/
 10. 每一轮都根据用户反馈调整走读深度、顺序和下一轮问题；不要一次性把所有 feature 全部讲完。
 11. 只写 `team-spec/active/{slug}/design/codebase-walk/`，不得修改业务源码、测试、配置或 onboarding 产物。
 
-## 完成校验
+## 完成标准
 
 完成前必须检查：
 
@@ -128,3 +128,14 @@ team-spec/active/{slug}/design/codebase-walk/
 - 输出中包含建议阅读顺序、核心解释、来源文件和待确认项。
 - 跨文件或专题分析已沉淀到 `sessions/` 或 `deep-dives/`，并更新或建议更新 `question-index.md`。
 - 未修改允许范围之外的文件。
+
+## 最终回复
+
+必须包含：
+
+- 本次走读的 slug、问题类型、选中 feature 和产物路径。
+- 设计意图、应用场景、核心结论和建议阅读路径。
+- onboarding 证据、源码显式证据、代码推断与待确认项的区分。
+- 专有名词解释是否需要及其记录位置。
+- 用户反馈如何影响了本轮范围或深度。
+- 有序号的后续走读、深挖或验证选项。
