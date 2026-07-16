@@ -132,4 +132,12 @@ python3 {skill_dir}/scripts/archive_team_spec.py --slug {slug} --reason complete
 - 目标 slug 的 active 产物已移动到 `team-spec/archive/{slug}/`。
 - `ARCHIVE.md` 已记录归档时间、原因、来源路径和目标路径。
 - `team-spec/active/{slug}/` 中不再存在该 slug 的过程文件。
-- 最终回复说明 dry-run 或 execute 结果，以及是否还有其他 active slug 保留。
+
+## 最终回复
+
+必须包含：
+
+- 本次是 dry-run 还是已执行归档。
+- 归档 slug、原因和目标路径。
+- `ARCHIVE.md` 路径；dry-run 时说明预计生成位置。
+- 是否存在未归档的其他 active slug，并明确它们未受影响。

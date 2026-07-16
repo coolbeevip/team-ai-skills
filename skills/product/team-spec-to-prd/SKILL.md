@@ -215,6 +215,13 @@ team-spec/active/{slug}/prd/prd.md
 
 目录只在需要时创建。
 
+## 完成标准
+
+- PRD 基于同一 slug 下 `Status: ready` 的规格评审结果生成。
+- `team-spec/active/{slug}/prd/prd.md` 已创建或更新。
+- PRD 能独立表达问题、目标、范围、规则、边界情况、验收标准、风险和开放问题。
+- 没有把未确认假设写成工程承诺，且下游 `team-prd-to-issues` 可以直接读取。
+
 ## 最终回复
 
 完成时必须输出：

@@ -156,6 +156,13 @@ access_policy:
 
 如果发现 PRD 或需求表述不清，直接给出更清晰的改写版本。改写应尽量可验证、可分工、可验收。
 
+## 完成标准
+
+- 已生成或更新 `team-spec/active/{slug}/spec/reviews.md`。
+- 所有 P0 和关键 P1 均有证据、影响、建议动作、Owner 和截止点。
+- 阶段评审结果明确为 `ready`、`needs-refinement` 或 `blocked`。
+- `ready` 时已确认可以进入 PRD 固化；其他状态已明确解除阻塞或返回细化所需动作。
+
 ## 最终回复
 
 每次完成评审后，最终回复必须包含：
