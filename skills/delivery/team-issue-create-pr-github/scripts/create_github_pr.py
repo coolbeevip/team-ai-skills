@@ -725,6 +725,21 @@ def upsert_issue_tracking_line(lines: list[str], key: str, value: str) -> list[s
     return lines
 
 
+def upsert_issue_status(text: str, value: str) -> str:
+    pattern = re.compile(
+        r"^##\s+Status\s*$.*?(?=^##\s+|\Z)",
+        re.MULTILINE | re.DOTALL | re.IGNORECASE,
+    )
+    if pattern.search(text):
+        replacement = f"## Status\n\n{value}\n\n"
+        return pattern.sub(replacement, text).rstrip() + "\n"
+
+    ends_with_newline = text.endswith("\n")
+    lines = upsert_issue_tracking_line(text.splitlines(), "Status", value)
+    updated = "\n".join(lines)
+    return updated + "\n" if ends_with_newline else updated
+
+
 def write_issue_pr_tracking(
     issue_file: Path | None,
     pr_url: str | None,
@@ -734,9 +749,9 @@ def write_issue_pr_tracking(
         return None
 
     text = issue_file.read_text(encoding="utf-8")
+    text = upsert_issue_status(text, "pr-created")
     ends_with_newline = text.endswith("\n")
     lines = text.splitlines()
-    lines = upsert_issue_tracking_line(lines, "Status", "pr-created")
     lines = upsert_issue_tracking_line(lines, "Pushed Branch", source_branch)
     lines = upsert_issue_tracking_line(lines, "PR", pr_url)
     updated = "\n".join(lines)
