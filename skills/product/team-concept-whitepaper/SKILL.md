@@ -1,6 +1,6 @@
 ---
 name: team-concept-whitepaper
-description: 在产品规划阶段澄清产品机会、定位、价值、能力边界和演进方向，并编写可供产品、架构、研发与市场共同评审的产品概念白皮书。Create a reviewable product concept white paper during product planning by clarifying the opportunity, positioning, value, capability boundaries, and evolution direction.
+description: 在产品规划阶段澄清产品定位、价值与能力边界，并编写可评审的产品概念白皮书。Create a reviewable product concept white paper by clarifying its positioning, value, and capability boundaries.
 license: MIT
 metadata:
   author: coolbeevip
