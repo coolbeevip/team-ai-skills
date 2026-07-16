@@ -38,19 +38,6 @@ git diff --cached --check
 pre-commit run --all-files
 ```
 
-也可以单独运行技能检查：
-
-```bash
-python3 scripts/check_skills.py
-```
-
-检查单个技能时，可以传入技能目录或 `SKILL.md`：
-
-```bash
-python3 scripts/check_skills.py skills/product/team-spec-refine
-python3 scripts/check_skills.py skills/product/team-spec-refine/SKILL.md
-```
-
 ## 修改技能
 
 - 技能目录名必须与 `SKILL.md` 中的 `name` 一致，并以 `team-` 开头。

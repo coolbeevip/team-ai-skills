@@ -67,7 +67,7 @@
 
 ## 构建、测试与开发命令
 
-当前仓库是 Markdown 技能库，没有构建系统和自动化测试配置。
+当前仓库是 Markdown 技能库，没有构建系统。仓库使用 pre-commit 执行技能结构、暂存区空白、YAML、文件结尾和合并冲突标记检查。
 
 所有 shell 命令都必须通过 `rtk` 执行：
 
@@ -76,6 +76,8 @@
 - `rtk sed -n '1,120p' skills/product/team-spec-refine/SKILL.md`：查看技能内容。
 - `rtk git status --short`：查看本地变更。
 - `rtk git diff`：提交前检查修改。
+- `rtk pre-commit run --all-files`：运行完整仓库检查。
+- `rtk python3 scripts/check_skills.py`：只运行全部技能结构检查。
 
 ## 编写风格与命名规范
 
@@ -145,11 +147,19 @@ triggers:
 
 ## 测试与校验
 
-当前没有自动化测试。修改后应手动检查：
+提交前必须执行：
 
-- frontmatter 是否存在且格式正确。
-- `description` 是否清楚说明技能的触发场景。
+```bash
+rtk pre-commit run --all-files
+```
+
+自动检查覆盖 frontmatter、双语 description、许可、作者、版本、触发词、标准章节、重复标题、YAML、空白和合并冲突标记。
+
+自动检查不能替代语义验证。修改后仍应人工确认：
+
+- `description` 和 triggers 是否准确覆盖真实触发场景。
 - 被引用的辅助文件是否存在，且路径相对于技能目录有效。
+- 输入、输出、状态和下游衔接是否一致。
 - 工作流是否能被执行，不依赖隐藏假设。
 
 ## 提交与 Pull Request 规范
