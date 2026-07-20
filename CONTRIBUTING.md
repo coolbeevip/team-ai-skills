@@ -19,6 +19,8 @@ pre-commit install
 
 安装 hook 后，每次 `git commit` 都会读取仓库中的 `.pre-commit-config.yaml`。
 
+GitHub Actions 会在 main push 和 pull request 上运行同一套检查。远端检查必须通过后才能合并。
+
 ## 提交前检查
 
 pre-commit hook 会执行：

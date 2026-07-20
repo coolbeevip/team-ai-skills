@@ -67,7 +67,7 @@
 
 ## 构建、测试与开发命令
 
-当前仓库是 Markdown 技能库，没有构建系统。仓库使用 pre-commit 执行技能结构、暂存区空白、YAML、文件结尾和合并冲突标记检查。
+当前仓库是 Markdown 技能库，没有构建系统。仓库使用 pre-commit 执行技能结构、暂存区空白、YAML、文件结尾和合并冲突标记检查；GitHub Actions 在 main push 和 pull request 上运行同一套检查。
 
 所有 shell 命令都必须通过 `rtk` 执行：
 
