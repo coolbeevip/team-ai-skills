@@ -10,7 +10,11 @@
 - `skills/product/team-spec-review/`：用于评审规格风险和 ready 状态。
 - `skills/product/team-spec-to-prd/`：用于把 ready 的规格固化成 PRD。
 - `skills/product/team-spec-archive/`：用于把已完成、废弃或暂停的 active 需求产物归档，避免新需求误改旧规格。
-- `skills/architecture/`：架构与方案设计职责。
+- `skills/codebase/`：代码库理解与说明职责，包括第三方代码库接手、源码走读、能力简报和自有项目 README 编写。
+- `skills/codebase/team-codebase-onboarding/`：用于从第三方或陌生代码库提取可追溯的功能清单、架构说明和 AI 接手上下文。
+- `skills/codebase/team-codebase-walk/`：用于基于 onboarding 产物和源码进行功能走读、问答和证据追踪。
+- `skills/codebase/team-codebase-brief/`：用于把代码库事实转化为面向业务、产品和管理者的能力说明与影响分析。
+- `skills/codebase/team-codebase-readme/`：用于为团队自行开发和维护的项目创建、审阅和优化 `README.md`。
 - `skills/delivery/`：交付执行职责，包括 PRD 对齐材料、issue 拆解、发布、实现和验证。
 - `skills/delivery/team-prd-to-alignment/`：用于把 AI 结构化 PRD 转换为需求、研发和项目管理可评审的演示文稿式对齐材料。
 - `skills/delivery/team-prd-to-issues/`：用于把 PRD 拆解成可独立领取的工程 issue。
