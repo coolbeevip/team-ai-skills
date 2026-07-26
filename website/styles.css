@@ -493,20 +493,17 @@ img {
 }
 
 .capability-product,
-.capability-debt {
-  grid-column: span 7;
-}
-
+.capability-debt,
 .capability-delivery,
 .capability-codebase {
-  grid-column: span 5;
+  grid-column: span 6;
 }
 
 .poster-button {
   width: 100%;
   overflow: hidden;
   display: block;
-  padding: 0;
+  padding: clamp(10px, 1.2vw, 18px);
   border: 1px solid var(--line);
   border-radius: var(--radius-poster);
   background: var(--surface);
@@ -516,19 +513,17 @@ img {
 
 .poster-button img {
   width: 100%;
+  height: auto;
   aspect-ratio: 1672 / 941;
-  object-fit: cover;
-  transition: transform 600ms var(--ease-out);
+  border: 1px solid rgba(121, 226, 235, 0.1);
+  border-radius: calc(var(--radius-poster) - 7px);
+  object-fit: contain;
 }
 
 .poster-button:hover,
 .poster-button:focus-visible {
   transform: translateY(-5px);
   border-color: var(--cyan);
-}
-
-.poster-button:hover img {
-  transform: scale(1.012);
 }
 
 .capability-meta {

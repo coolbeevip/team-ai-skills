@@ -63,6 +63,7 @@ Amber and green are semantic workflow colors, not decorative alternatives to cya
 - Panel radius: 12px
 - Poster radius: 18px
 - Poster treatment: framed, with a visible radius, hairline border, and surrounding negative space. Edge-to-edge treatment is not used in production.
+- Capability posters use an equal-width two-column grid, retain their full aspect ratio, and do not scale the image on hover.
 
 ## Elevation and Motion
 
