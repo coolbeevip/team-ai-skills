@@ -14,7 +14,7 @@ const translations = {
     navSkills: "技能",
     navQuickstart: "开始使用",
     heroEyebrow: "FILE-BASED AI TEAM SYSTEM",
-    heroTitle: "<span class=\"title-line title-line-primary\">让 AI 不只回答</span><span class=\"title-line\">让它像团队</span><span class=\"title-line\">一样交付</span>",
+    heroTitle: "<span class=\"title-line title-line-primary\">让 AI 不只回答</span><span class=\"title-line\"><span class=\"title-segment\">让它像团队</span><span class=\"title-segment\">一样交付</span></span>",
     heroDescription: "把模糊需求变成可评审 PRD，把工程意图变成可验证 Issue，再把实现推进到 PR 或 MR。",
     copy: "复制",
     copied: "已复制",

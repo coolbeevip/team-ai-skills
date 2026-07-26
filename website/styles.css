@@ -226,8 +226,8 @@ img {
 .hero {
   min-height: calc(100vh - 76px);
   display: grid;
-  grid-template-columns: minmax(0, 0.78fr) minmax(520px, 1.22fr);
-  gap: clamp(48px, 6vw, 112px);
+  grid-template-columns: minmax(0, 0.96fr) minmax(520px, 1.04fr);
+  gap: clamp(40px, 4.2vw, 72px);
   align-items: center;
   padding: 96px 0 112px;
 }
@@ -262,12 +262,12 @@ img {
 }
 
 .hero h1 {
-  max-width: 760px;
+  max-width: 720px;
   color: var(--ink);
-  font-size: clamp(3.6rem, 4.6vw, 6.3rem);
-  font-weight: 900;
-  line-height: 0.98;
-  letter-spacing: -0.065em;
+  font-size: clamp(3.45rem, 4.25vw, 5.8rem);
+  font-weight: 800;
+  line-height: 1.04;
+  letter-spacing: -0.045em;
   text-wrap: balance;
 }
 
@@ -279,6 +279,10 @@ img {
 
 .hero h1 .title-line {
   display: block;
+}
+
+.hero h1 .title-line + .title-line {
+  margin-top: 0.08em;
 }
 
 .hero h1 .title-line-primary {
@@ -1234,6 +1238,14 @@ img {
 
   .hero h1 {
     font-size: clamp(2.95rem, 13.5vw, 4.7rem);
+  }
+
+  .hero h1 .title-segment {
+    display: block;
+  }
+
+  .hero h1 .title-segment + .title-segment {
+    margin-top: 0.04em;
   }
 
   .hero-description {

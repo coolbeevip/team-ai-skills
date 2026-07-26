@@ -54,6 +54,7 @@ Amber and green are semantic workflow colors, not decorative alternatives to cya
 - Hero scale: `clamp(3.6rem, 7vw, 7.4rem)`
 - Body scale: `clamp(1rem, 1.3vw, 1.18rem)`
 - Chinese display headings use line breaks for cadence and omit punctuation, especially at line endings. Body copy keeps normal punctuation.
+- Hero copy receives roughly half of the desktop canvas, uses open line spacing, and must not be compressed to make room for imagery.
 
 ## Shape and Spacing
 
