@@ -6,6 +6,11 @@ repos:
         entry: python3 scripts/check_skills.py
         language: system
         pass_filenames: false
+      - id: check-website-data
+        name: Check generated website skill data
+        entry: python3 scripts/build_website_data.py --check
+        language: system
+        pass_filenames: false
       - id: staged-diff-check
         name: Check staged diff
         entry: git diff --cached --check
