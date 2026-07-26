@@ -1124,6 +1124,8 @@ img {
 .poster-dialog {
   width: min(94vw, 1500px);
   max-width: none;
+  max-height: calc(100dvh - 48px);
+  margin: auto;
   padding: 0;
   overflow: visible;
   border: 1px solid var(--line-strong);
@@ -1139,7 +1141,9 @@ img {
 
 .poster-dialog img {
   width: 100%;
+  max-height: calc(100dvh - 48px);
   border-radius: inherit;
+  object-fit: contain;
 }
 
 .dialog-close {
