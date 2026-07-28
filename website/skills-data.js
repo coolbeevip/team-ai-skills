@@ -581,5 +581,27 @@ window.SRT_SKILLS = Object.freeze([
     ],
     "version": "1.0",
     "experimental": true
+  },
+  {
+    "name": "team-writing-style",
+    "category": "writing",
+    "description": {
+      "zh": "为团队项目建立、维护和应用统一的自然语言与代码注释风格，减少模板化、空泛和机器化表达。",
+      "en": "Define, maintain, and apply a shared writing and code-comment style for team projects to reduce formulaic, vague, and AI-sounding prose."
+    },
+    "triggers": [
+      "定义写作风格",
+      "去掉 AI 味",
+      "统一文档语气",
+      "规范代码注释",
+      "优化机器化表达",
+      "define writing style",
+      "reduce AI-sounding prose",
+      "standardize documentation tone",
+      "improve code comment style",
+      "humanize team documents"
+    ],
+    "version": "1.0",
+    "experimental": false
   }
 ]);

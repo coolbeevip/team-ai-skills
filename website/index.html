@@ -78,9 +78,14 @@
         </p>
 
         <div class="hero-actions">
-          <button type="button" class="install-button" data-copy-install>
+          <button type="button" class="install-button" data-copy-command="npx skills@latest add coolbeevip/team-ai-skills --agent codex -y">
             <span class="command-prefix">$</span>
-            <code>npx skills@latest add coolbeevip/team-ai-skills --all</code>
+            <code>npx skills@latest add coolbeevip/team-ai-skills --agent codex -y</code>
+            <span class="copy-label" data-i18n="copy">复制</span>
+          </button>
+          <button type="button" class="install-button" data-copy-command="npx skills@latest add coolbeevip/team-ai-skills --agent claude-code -y">
+            <span class="command-prefix">$</span>
+            <code>npx skills@latest add coolbeevip/team-ai-skills --agent claude-code -y</code>
             <span class="copy-label" data-i18n="copy">复制</span>
           </button>
           <a class="secondary-button" href="#skills" data-i18n="explore">浏览全部技能</a>
@@ -242,6 +247,7 @@
           <button type="button" class="filter-button" data-category="codebase" aria-pressed="false" data-i18n="filterCodebase">代码库</button>
           <button type="button" class="filter-button" data-category="delivery" aria-pressed="false" data-i18n="filterDelivery">交付</button>
           <button type="button" class="filter-button" data-category="tech-debt" aria-pressed="false" data-i18n="filterDebt">技术债</button>
+          <button type="button" class="filter-button" data-category="writing" aria-pressed="false" data-i18n="filterWriting">写作</button>
           <button type="button" class="filter-button" data-category="harness" aria-pressed="false" data-i18n="filterExperimental">实验能力</button>
         </div>
       </div>
@@ -310,8 +316,12 @@
           <div>
             <p class="quickstart-label" data-i18n="quickstartInstallLabel">安装技能库</p>
             <h3 data-i18n="quickstartInstallTitle">把全部团队技能加入 Agent</h3>
-            <button type="button" class="code-block" data-copy-install>
-              <code>npx skills@latest add coolbeevip/team-ai-skills --all</code>
+            <button type="button" class="code-block" data-copy-command="npx skills@latest add coolbeevip/team-ai-skills --agent codex -y">
+              <code>npx skills@latest add coolbeevip/team-ai-skills --agent codex -y</code>
+              <span data-i18n="copy">复制</span>
+            </button>
+            <button type="button" class="code-block" data-copy-command="npx skills@latest add coolbeevip/team-ai-skills --agent claude-code -y">
+              <code>npx skills@latest add coolbeevip/team-ai-skills --agent claude-code -y</code>
               <span data-i18n="copy">复制</span>
             </button>
           </div>

@@ -122,6 +122,12 @@ GITLAB_URL=https://gitlab.example.com GITLAB_TOKEN=... python3 {skill_dir}/scrip
 - `Parent`、`Type` 和 `Blocked by` 不进入远端 issue 正文；`Blocked by` 仅用于发布排序、循环依赖检查和 dry-run 汇总。
 - `Local-Issue-Key` 仅作为隐藏 HTML 注释写入远端正文，用于幂等检查；不得显示 `Source` / `来源` 章节。
 
+## 公共写作风格
+
+生成或改写文档、用户可见说明或代码注释前，如果目标项目存在 `team-spec/config.yml`，检查其中的 `writing_style.guide`。该路径指向存在的文件时，写作前必须读取并应用；相对路径以目标项目根目录解析。
+
+优先满足格式、状态、安全、证据和验收合同，再按“用户本轮要求 > 本技能的产物类型规则 > 项目风格指南 > 目标文件相邻内容”处理表达。指南缺失时继续使用本技能规则，不阻塞任务、不猜测路径；需要建立或调整统一风格时使用 `team-writing-style`。
+
 ## 输入物
 
 主输入：

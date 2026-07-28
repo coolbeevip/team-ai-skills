@@ -32,6 +32,8 @@
 - `skills/tech-debt/team-tech-debt-to-issues/`：用于把已评审技术债拆解为工程 issue。
 - `skills/harness/`：实验性 Codex harness 职责，包括项目级 Codex 运行时检索层、入口约束、失败记忆、验证策略和任务入口；不作为稳定主线流程前置条件。
 - `skills/harness/team-codex-harness/`：用于随真实代码和工程演进维护 `AGENTS.md`、入口约束、失败记忆、验证 harness 和任务入口。
+- `skills/writing/`：跨产品、代码库、交付和技术债流程复用的写作职责，包括公共语言风格和代码注释规范。
+- `skills/writing/team-writing-style/`：用于建立和维护目标项目的统一写作风格，通过 `team-spec/config.yml` 为其他技能提供单一公共规则入口。
 
 每个技能目录必须包含 `SKILL.md`。只有当辅助文件被 `SKILL.md` 明确引用时才添加，例如 `CONTEXT-FORMAT.md`、`DECISION-FORMAT.md`。
 
@@ -44,6 +46,7 @@
 技能运行时，所有产物应统一写入目标项目根目录下的 `team-spec/`。`team-spec/active/` 是所有尚未归档需求的集合，不再表示唯一活跃需求；单个需求工作区必须放在 `team-spec/active/{slug}/`。`team-spec/archive/` 保存已完成、废弃或暂停的历史需求。
 
 - `team-spec/CONTEXT.md`：跨多个需求复用的全局产品语境，包括规范术语、角色、通用流程和通用业务规则。
+- `team-spec/STYLE.md`：可选的项目级公共写作风格，约束文档、用户可见说明和代码注释；路径由 `team-spec/config.yml` 的 `writing_style.guide` 指定。
 - `team-spec/decisions/`：跨多个需求长期有效的产品决策记录，仅在决策影响后续多个需求且反悔成本较高时创建。
 - `team-spec/active/{slug}/spec/`：单个需求的规格阶段产物，包括 `CONTEXT.md`、`decisions/`、`refine.md`、`reviews.md`。
 - `team-spec/active/{slug}/concept/`：单个产品或产品体系的概念阶段产物，默认白皮书为 `whitepaper.md`，作为规格细化和后续 PRD 的上游输入。
@@ -94,6 +97,7 @@
 - 交付执行类技能可按输入产物使用 `team-prd-` 或 `team-issue-` 前缀，例如 `team-prd-to-issues`、`team-issue-implement`。
 - 技术债类技能使用 `team-tech-debt-` 前缀，例如 `team-tech-debt-refine`。
 - Codex harness 类技能使用 `team-codex-` 前缀，例如 `team-codex-harness`。
+- 跨流程写作类技能使用 `team-writing-` 前缀，例如 `team-writing-style`。
 - 必需技能文件命名为 `SKILL.md`。
 - `SKILL.md` 必须包含 YAML frontmatter，并提供 `name`、`description`、`triggers`、`license` 和 `metadata`。
 - `description` 必须同时包含中文和英文描述，便于 AI 在不同语言上下文中识别触发场景。
@@ -103,6 +107,8 @@
 - 每个技能必须声明 `## 输入物` 和 `## 输出物`，明确会读取哪些上游技能产物，以及会给哪些下游技能使用。
 - 依赖上游产物的技能必须先确定唯一 slug 或明确文件路径；无法唯一判断时必须要求用户提供，不得猜测。
 - 用户可见说明优先使用中文。
+- 会生成或改写文档、issue/PR/MR 正文、用户可见说明或代码注释的技能，必须读取 `team-spec/config.yml`；如果 `writing_style.guide` 指向存在的文件，写作前必须读取并应用。公共规则只保存在风格指南中，各技能只保留本产物特有的补充规则。
+- 公共风格不得覆盖格式、机器状态、安全、证据和验收合同。风格指南缺失时不阻塞业务技能，也不得猜测路径；需要建立或调整统一风格时使用 `team-writing-style`。
 - 不要添加无关文档文件，例如 `README.md`，除非仓库规范发生变化。
 
 ### 辅助脚本规范

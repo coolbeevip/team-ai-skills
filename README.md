@@ -15,13 +15,21 @@
 
 ### 1. 安装技能
 
-在目标项目中安装全部技能：
+在目标项目中，选择正在使用的 AI 编码客户端安装全部技能。
+
+Codex：
 
 ```bash
-npx skills@latest add coolbeevip/team-ai-skills --all
+npx skills@latest add coolbeevip/team-ai-skills --agent codex -y
 ```
 
-该命令需要访问网络并下载外部包。
+Claude Code：
+
+```bash
+npx skills@latest add coolbeevip/team-ai-skills --agent claude-code -y
+```
+
+安装命令需要访问网络并下载外部包。
 
 ### 2. 调用第一个技能
 

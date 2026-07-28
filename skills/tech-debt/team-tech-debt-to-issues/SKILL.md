@@ -52,6 +52,12 @@ access_policy:
 - 生成“下一步可选”或判断发布平台时，优先参考 `version_control`；缺失时先通过 git 命令推断，无法唯一判断再询问用户，并在用户确认后回写 `team-spec/config.yml`。
 - 在读取技术债规格、评审、代码或写入 issue 草稿前，先读取 `team-spec/config.yml`；如果存在 `access_policy`，先应用目录访问边界，再进入拆解和写入流程。
 
+## 公共写作风格
+
+生成或改写文档、用户可见说明或代码注释前，如果目标项目存在 `team-spec/config.yml`，检查其中的 `writing_style.guide`。该路径指向存在的文件时，写作前必须读取并应用；相对路径以目标项目根目录解析。
+
+优先满足格式、状态、安全、证据和验收合同，再按“用户本轮要求 > 本技能的产物类型规则 > 项目风格指南 > 目标文件相邻内容”处理表达。指南缺失时继续使用本技能规则，不阻塞任务、不猜测路径；需要建立或调整统一风格时使用 `team-writing-style`。
+
 ## 输入物
 
 - 主输入：`team-spec/active/{slug}/spec/refine.md`。

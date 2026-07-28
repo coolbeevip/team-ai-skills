@@ -1,4 +1,3 @@
-const installCommand = "npx skills@latest add coolbeevip/team-ai-skills --all";
 const skills = Array.isArray(window.SRT_SKILLS) ? window.SRT_SKILLS : [];
 
 const translations = {
@@ -54,6 +53,7 @@ const translations = {
     filterCodebase: "代码库",
     filterDelivery: "交付",
     filterDebt: "技术债",
+    filterWriting: "写作",
     filterExperimental: "实验能力",
     resultCount: "显示 {count} / {total} 项技能",
     emptyTitle: "没有匹配的技能",
@@ -134,6 +134,7 @@ const translations = {
     filterCodebase: "Codebase",
     filterDelivery: "Delivery",
     filterDebt: "Tech debt",
+    filterWriting: "Writing",
     filterExperimental: "Experimental",
     resultCount: "Showing {count} of {total} skills",
     emptyTitle: "No matching skills",
@@ -170,6 +171,7 @@ const categoryLabels = {
     codebase: "代码库理解",
     delivery: "交付执行",
     "tech-debt": "技术债治理",
+    writing: "写作规范",
     harness: "实验能力"
   },
   en: {
@@ -177,6 +179,7 @@ const categoryLabels = {
     codebase: "CODEBASE",
     delivery: "DELIVERY",
     "tech-debt": "TECH DEBT",
+    writing: "WRITING",
     harness: "EXPERIMENTAL"
   }
 };
@@ -400,11 +403,11 @@ document.querySelectorAll("[data-language-option]").forEach((button) => {
   button.addEventListener("click", () => setLanguage(button.dataset.languageOption));
 });
 
-document.querySelectorAll("[data-copy-install]").forEach((button) => {
+document.querySelectorAll("[data-copy-command]").forEach((button) => {
   button.addEventListener("click", async () => {
     const label = button.querySelector(".copy-label, [data-i18n=\"copy\"]");
     try {
-      await copyText(installCommand);
+      await copyText(button.dataset.copyCommand);
       if (label) label.textContent = translations[currentLanguage()].copied;
       window.setTimeout(() => {
         if (label) label.textContent = translations[currentLanguage()].copy;
