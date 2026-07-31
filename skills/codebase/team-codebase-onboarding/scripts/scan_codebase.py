@@ -455,7 +455,7 @@ def is_intent_document(path: str, filename: str) -> bool:
         return True
     if any(token in path_tokens for token in ["adr", "adrs", "rfc", "rfcs", "roadmap"]):
         return True
-    if "team-spec" in path_tokens and any(token in path_tokens for token in ["prd", "refine", "reviews", "context", "decision", "decisions", "alignment"]):
+    if "team-spec" in path_tokens and any(token in path_tokens for token in ["prd", "refine", "reviews", "context", "decision", "decisions", "alignment", "brief"]):
         return True
     return False
 

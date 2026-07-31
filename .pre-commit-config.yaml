@@ -11,6 +11,11 @@ repos:
         entry: python3 scripts/build_website_data.py --check
         language: system
         pass_filenames: false
+      - id: test-spec-delivery-workflow
+        name: Test Spec delivery workflow
+        entry: python3 -m unittest discover -s tests
+        language: system
+        pass_filenames: false
       - id: staged-diff-check
         name: Check staged diff
         entry: git diff --cached --check

@@ -14,7 +14,7 @@ const translations = {
     navQuickstart: "开始使用",
     heroEyebrow: "FILE-BASED AI TEAM SYSTEM",
     heroTitle: "<span class=\"title-line title-line-primary\">让 AI 不只回答</span><span class=\"title-line\"><span class=\"title-segment\">让它像团队</span><span class=\"title-segment\">一样交付</span></span>",
-    heroDescription: "把模糊需求变成可评审 PRD，把工程意图变成可验证 Issue，再把实现推进到 PR 或 MR。",
+    heroDescription: "把模糊需求变成可评审 PRD，把工程意图拆成可提交 Task，再以完整 Spec 创建一个 PR 或 MR。",
     copy: "复制",
     copied: "已复制",
     explore: "浏览全部技能",
@@ -33,7 +33,7 @@ const translations = {
     codebaseTitle: "代码库理解",
     codebaseDescription: "把代码变成可追溯的系统知识",
     debtTitle: "技术债治理",
-    debtDescription: "把维护痛点变成优先级 Issue",
+    debtDescription: "把维护痛点变成可提交 Task",
     workflowIndex: "稳定主线",
     workflowTitle: "不是技能菜单<br /><span>是可以接力的团队</span>",
     routeProduct: "产品需求",
@@ -95,7 +95,7 @@ const translations = {
     navQuickstart: "Quickstart",
     heroEyebrow: "FILE-BASED AI TEAM SYSTEM",
     heroTitle: "<span class=\"title-line title-line-primary\">AI should do more than answer.</span><span class=\"title-line\">It should deliver</span><span class=\"title-line\">like a team.</span>",
-    heroDescription: "Turn vague requirements into reviewable PRDs, engineering intent into verifiable issues, and implementation into a ready PR or MR.",
+    heroDescription: "Turn vague requirements into reviewable PRDs, engineering intent into commit-sized Tasks, and each complete Spec into one PR or MR.",
     copy: "Copy",
     copied: "Copied",
     explore: "Browse all skills",
@@ -114,7 +114,7 @@ const translations = {
     codebaseTitle: "Codebase understanding",
     codebaseDescription: "Turn code into traceable system knowledge",
     debtTitle: "Technical debt",
-    debtDescription: "Turn maintenance pain into prioritized issues",
+    debtDescription: "Turn maintenance pain into commit-sized Tasks",
     workflowIndex: "STABLE LINES",
     workflowTitle: "Not a skill menu.<br /><span>A team that hands work forward.</span>",
     routeProduct: "Product delivery",
@@ -189,13 +189,13 @@ const posterAlt = {
     product: "产品定义：从模糊输入到可评审 PRD",
     delivery: "交付执行：从 PRD 到已验证 PR",
     codebase: "代码库理解：把代码变成可追溯的系统知识",
-    "tech-debt": "技术债治理：把维护痛点变成优先级 Issue"
+    "tech-debt": "技术债治理：把维护痛点变成可提交 Task"
   },
   en: {
     product: "Product definition: from vague input to a reviewable PRD",
     delivery: "Delivery execution: from PRD to a verified PR",
     codebase: "Codebase understanding: turn code into traceable system knowledge",
-    "tech-debt": "Technical debt: turn maintenance pain into prioritized issues"
+    "tech-debt": "Technical debt: turn maintenance pain into commit-sized Tasks"
   }
 };
 

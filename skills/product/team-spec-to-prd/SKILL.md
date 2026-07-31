@@ -26,7 +26,7 @@ triggers:
 ## 触发边界
 
 - 适合触发：需求规格已经细化并通过必要评审，需要固化为结构化 PRD 作为工程交接边界。
-- 不适合触发：需求还需要继续问答时，转交 `team-spec-refine`；PRD 已完成且要拆工程任务时，转交 `team-prd-to-issues`。
+- 不适合触发：需求还需要继续问答时，转交 `team-spec-refine`；PRD 已完成且要拆工程任务时，转交 `team-prd-to-tasks`。
 
 ## 运行时配置
 
@@ -80,7 +80,7 @@ access_policy:
 
 - 结构化 PRD。
 - 如果没有外部任务系统，默认保存到 `team-spec/active/{slug}/prd/prd.md`。
-- PRD 中应保留开放问题、风险假设和验收标准，供 `team-prd-to-issues` 继续拆解工程任务。
+- PRD 中应保留开放问题、风险假设和验收标准，供 `team-prd-to-tasks` 继续拆解工程任务。
 - PRD 是需求到工程的正式交接边界。工程拆解技能应以 PRD 为主输入，而不是直接基于澄清过程材料拆任务。
 - 若用户同意回写，更新 `team-spec/config.yml` 的语言设置。
 
@@ -101,8 +101,8 @@ access_policy:
 6. 识别受影响的产品模块、流程、权限、数据对象和运营界面。
 7. 寻找可由研发独立测试的深模块或清晰 ownership 边界。
 8. 按下面模板起草 PRD。
-9. 如果项目已配置 issue tracker 或任务系统，将 PRD 发布到对应系统，并打上团队约定的 `ready-for-agent` 或 `ready-for-engineering` 标签；如果没有外部系统，就按仓库惯例创建或更新本地 Markdown PRD。
-10. PRD 成功固化后，必须明确给出 PRD 路径 `team-spec/active/{slug}/prd/prd.md`，并用有序号的“下一步可选”列表提示后续技能：需要人类评审对齐时使用 `team-prd-to-alignment`，准备工程拆解时使用 `team-prd-to-issues`。
+9. 将 PRD 固化到同 slug 的本地工作区；本技能不直接发布远端 Issue。需要远端跟踪时，在 Task 拆解后使用对应的 `team-spec-create-issue-*` 技能，为整个 Spec 创建一个 Issue。
+10. PRD 成功固化后，必须明确给出 PRD 路径 `team-spec/active/{slug}/prd/prd.md`，并用有序号的“下一步可选”列表提示后续技能：需要人类评审简报时使用 `team-prd-to-brief`，准备工程拆解时使用 `team-prd-to-tasks`。
 
 ## PRD 模板
 
@@ -211,22 +211,22 @@ access_policy:
 - 明确写出假设，不把假设藏进需求描述。
 - 优先使用具体例子，不只写抽象判断。
 
-## 发布方式
+## 保存方式
 
-如果无法发布到外部任务系统，就按仓库已有 PRD 规范保存到本地。若没有现成规范，使用：
+按仓库已有 PRD 规范保存到同 slug 的本地工作区；若没有现成规范，使用：
 
 ```text
 team-spec/active/{slug}/prd/prd.md
 ```
 
-目录只在需要时创建。
+目录只在需要时创建。本技能不直接创建远端 Issue。
 
 ## 完成标准
 
 - PRD 基于同一 slug 下 `Status: ready` 的规格评审结果生成。
 - `team-spec/active/{slug}/prd/prd.md` 已创建或更新。
 - PRD 能独立表达问题、目标、范围、规则、边界情况、验收标准、风险和开放问题。
-- 没有把未确认假设写成工程承诺，且下游 `team-prd-to-issues` 可以直接读取。
+- 没有把未确认假设写成工程承诺，且下游 `team-prd-to-tasks` 可以直接读取。
 
 ## 最终回复
 
@@ -242,6 +242,6 @@ team-spec/active/{slug}/prd/prd.md
 ```text
 PRD 已固化到 team-spec/active/{slug}/prd/prd.md。
 下一步可选：
-1. team-prd-to-alignment：生成需求和研发对齐材料。
-2. team-prd-to-issues：将该 PRD 拆解为工程 issue。
+1. team-prd-to-brief：生成需求和研发评审简报。
+2. team-prd-to-tasks：将该 PRD 拆解为工程 Task。
 ```

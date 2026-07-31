@@ -43,7 +43,7 @@ triggers:
 ## 触发边界
 
 - 适合触发：用户还没有明确技术债规格，需要只读扫描项目、模块或 diff，识别有证据的债务候选项。
-- 不适合触发：用户已有明确债务诉求并要细化验收时，转交 `team-tech-debt-refine`；已有评审通过的债务规格要拆工程任务时，转交 `team-tech-debt-to-issues`。
+- 不适合触发：用户已有明确债务诉求并要细化验收时，转交 `team-tech-debt-refine`；已有评审通过的债务规格要拆工程任务时，转交 `team-tech-debt-to-tasks`。
 
 ## 运行时配置
 
@@ -76,8 +76,8 @@ access_policy:
 - 当前对话中的分析目标、范围、重点模块、已知痛点、近期事故或维护问题。
 - 目标项目中的源码、测试、配置、构建脚本、部署脚本、运行文档、架构说明、错误日志或监控材料。
 - `team-spec/CONTEXT.md` 与 `team-spec/decisions/`（如存在）。
-- 现有 `team-spec/active/{slug}/spec/`、`prd/`、`issues/` 或 `design/`（仅当用户指定同一 slug 或与分析范围直接相关时读取）。
-- `../../delivery/team-issue-implement/references/PLATFORM-STDLIB.md` 中的平台、标准库、数据库、Shell/OS 和项目内已有能力替代清单；技能安装后应按当前技能目录关系解析到 sibling delivery skill。
+- 现有 `team-spec/active/{slug}/spec/`、`prd/`、`tasks/` 或 `design/`（仅当用户指定同一 slug 或与分析范围直接相关时读取）。
+- `../../delivery/team-task-implement/references/PLATFORM-STDLIB.md` 中的平台、标准库、数据库、Shell/OS 和项目内已有能力替代清单；技能安装后应按当前技能目录关系解析到 sibling delivery skill。
 
 必须先确定唯一分析批次 slug。技术债分析批次 slug 必须包含 `debt`，格式建议为 `{yyyy-mm-dd}-debt-{scope-slug}`，例如 `2026-06-10-debt-code-health`。如果用户没有提供 slug，可以根据本轮分析范围生成一个建议 slug；若目标项目中同名 slug 已存在，必须确认是继续已有分析还是创建新 slug。
 
@@ -89,7 +89,7 @@ access_policy:
 - `team-spec/active/{analysis_slug}/tech-debt/analysis.md`：批次级技术债分析报告。
 - 可选更新 `team-spec/active/{analysis_slug}/STATUS.md`：分析报告结果为 `ready` 时记录工作区生命周期状态 `debt-analyzed`；分析无法继续时可记录 `blocked`。阶段报告结果不得直接写入工作区状态。
 
-下游技能读取这些输出物：`team-tech-debt-refine` 默认使用候选项的 `Suggested Slug` 创建独立工作区，并在 `spec/refine.md` 中反向引用来源分析；`team-tech-debt-review` 用于评审已细化债务，`team-tech-debt-to-issues` 用于工程拆解。
+下游技能读取这些输出物：`team-tech-debt-refine` 默认使用候选项的 `Suggested Slug` 创建独立工作区，并在 `spec/refine.md` 中反向引用来源分析；`team-tech-debt-review` 用于评审已细化债务，`team-tech-debt-to-tasks` 用于工程拆解。
 
 推荐链路：
 
@@ -100,7 +100,7 @@ team-spec/active/{analysis_slug}/tech-debt/analysis.md
 单个候选债务闭环：
 team-spec/active/{candidate_slug}/spec/refine.md
 team-spec/active/{candidate_slug}/spec/reviews.md
-team-spec/active/{candidate_slug}/issues/
+team-spec/active/{candidate_slug}/tasks/
 ```
 
 ## 分析范围
@@ -123,7 +123,7 @@ team-spec/active/{candidate_slug}/issues/
 - 为单一当前需求新增无请求抽象、配置层、通用框架、插件机制或未来扩展点。
 - 复杂度来自真实安全、权限、数据一致性、错误处理、可访问性、硬件校准或验收标准要求时，不把它判为可删除债务。
 
-分析 URL query、日期、CSV、分组、深拷贝、格式化、分页、唯一性、数据库约束、Shell/OS 或项目内 helper 相关复杂度时，先读取 `../../delivery/team-issue-implement/references/PLATFORM-STDLIB.md`，用其中替代清单判断是否存在平台能力或标准库替代。
+分析 URL query、日期、CSV、分组、深拷贝、格式化、分页、唯一性、数据库约束、Shell/OS 或项目内 helper 相关复杂度时，先读取 `../../delivery/team-task-implement/references/PLATFORM-STDLIB.md`，用其中替代清单判断是否存在平台能力或标准库替代。
 
 ## 复杂度审计
 

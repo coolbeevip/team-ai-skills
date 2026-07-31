@@ -64,15 +64,15 @@ access_policy:
   user_file_template: team-spec/access_policy/{user_name}.md
 ```
 
-- `language`：统一语言设置（对话回复与 refine/review/prd/issues/design 产物文档）。
+- `language`：统一语言设置（对话回复与 refine/review/prd/tasks/design 产物文档）。
 - `version_control.system`：版本管理系统，例如 `git`。
 - `version_control.trunk_branch`：主干分支名，例如 `main`、`master` 或 `develop`。
 - `version_control.contribution_model`：贡献方式，例如 `fork-pull` 或 `direct`。
 - `version_control.source_remote`：贡献分支默认推送的 remote，`fork-pull` 常见为 `origin`。
-- `version_control.target_remote`：PR/MR 或 issue 默认面向的上游 remote，`fork-pull` 常见为 `upstream`。
+- `version_control.target_remote`：PR/MR 或 Spec 级 Issue 默认面向的上游 remote，`fork-pull` 常见为 `upstream`。
 - `access_policy`：目录访问策略索引。`mode`、`directory_file` 和 `user_file_template` 只负责定位权限正文，不在这里写长篇规则。
 
-`version_control` 是可选配置。首次创建 `team-spec/config.yml` 时，若当前任务只涉及产品规格，不要为了补齐版本管理信息打断用户；只写入已确认的 `language`。当后续技能涉及 issue 发布、实现收尾、PR 或 MR 时，再补充版本管理配置。
+`version_control` 是可选配置。首次创建 `team-spec/config.yml` 时，若当前任务只涉及产品规格，不要为了补齐版本管理信息打断用户；只写入已确认的 `language`。当后续技能涉及 Spec 级 Issue、Task commit、PR 或 MR 时，再补充版本管理配置。
 如果本轮任务涉及访问边界、写入目标项目文件或需要稳定复用的运行时偏好，`access_policy` 应与 `language` 一起作为最小配置的一部分；配置缺失时，先询问是否创建最小配置，再继续写入。
 
 语言优先级必须固定为：
@@ -110,8 +110,9 @@ access_policy:
 │   │       │   ├── refine.md
 │   │       │   └── reviews.md
 │   │       ├── prd/
-│   │       ├── issues/
+│   │       ├── tasks/
 │   │       ├── design/
+│   │       ├── DELIVERY.md
 │   │       └── STATUS.md
 │   └── archive/
 └── docs/

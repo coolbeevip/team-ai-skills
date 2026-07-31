@@ -81,7 +81,7 @@ def build_plan(team_spec_dir: Path, slug: str) -> list[MovePlan]:
         MovePlan(active / "spec" / "refine" / f"{slug}.md", archive / "spec" / "refine.md", "file"),
         MovePlan(active / "spec" / "reviews" / f"{slug}.md", archive / "spec" / "reviews.md", "file"),
         MovePlan(active / "prd" / f"{slug}.md", archive / "prd" / "prd.md", "file"),
-        MovePlan(active / "prd" / f"{slug}-alignment.md", archive / "prd" / "alignment.md", "file"),
+        MovePlan(active / "prd" / f"{slug}-alignment.md", archive / "prd" / "brief.md", "file"),
         MovePlan(active / "issues" / slug, archive / "issues", "directory"),
         MovePlan(active / "design" / f"{slug}.md", archive / "design" / "functional-design.md", "file"),
     ]

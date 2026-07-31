@@ -209,22 +209,22 @@ window.SRT_SKILLS = Object.freeze([
     "experimental": false
   },
   {
-    "name": "team-prd-to-alignment",
+    "name": "team-prd-to-brief",
     "category": "delivery",
     "description": {
-      "zh": "将结构化 PRD 转换为适合需求、研发和项目管理评审的对齐材料。",
-      "en": "Turn structured PRDs into alignment materials for product, engineering, and project management review."
+      "zh": "将结构化 PRD 转换为适合需求、研发和项目管理评审的简报。",
+      "en": "Turn structured PRDs into review briefs for product, engineering, and project management."
     },
     "triggers": [
-      "PRD 对齐材料",
-      "PRD 转评审材料",
+      "PRD 简报",
+      "PRD 转评审简报",
       "生成需求研发对齐文档",
       "PRD 给人看",
       "需求研发对齐",
       "生成评审会材料",
-      "PRD alignment material",
-      "turn PRD into review material",
-      "create PRD alignment deck",
+      "PRD review brief",
+      "turn PRD into review brief",
+      "create PRD brief",
       "make PRD human readable",
       "product engineering alignment",
       "create review meeting material"
@@ -233,201 +233,145 @@ window.SRT_SKILLS = Object.freeze([
     "experimental": false
   },
   {
-    "name": "team-prd-to-issues",
+    "name": "team-prd-to-tasks",
     "category": "delivery",
     "description": {
-      "zh": "将 PRD 拆解为可独立领取、可验证、按依赖排序的端到端工程 issue。",
-      "en": "Break PRDs into independently grabbable, verifiable, dependency-ordered engineering issues."
+      "zh": "将 PRD 拆解为可独立实现、验证并提交的工程 Task。",
+      "en": "Break a PRD into dependency-ordered engineering tasks that each produce one verified local commit."
     },
     "triggers": [
-      "拆 issue",
-      "把 PRD 拆成任务",
-      "工程 issue 拆解",
-      "PRD 已经确认了开始拆工程任务",
-      "生成工程任务",
-      "break PRD into issues",
-      "create issues from PRD",
-      "PRD is approved start issue breakdown",
-      "write engineering issues"
+      "拆 Task",
+      "把 PRD 拆成工程任务",
+      "生成可提交的开发任务",
+      "break PRD into tasks",
+      "create engineering tasks",
+      "plan commit-sized tasks"
     ],
     "version": "1.0",
     "experimental": false
   },
   {
-    "name": "team-issue-publish-github",
+    "name": "team-spec-create-issue-github",
     "category": "delivery",
     "description": {
-      "zh": "将本地工程 issue 草稿发布到 GitHub Issues，并回写发布结果。",
-      "en": "Publish local engineering issue drafts to GitHub Issues and write back publication status."
+      "zh": "将完整 Spec 创建或同步为一个 GitHub Issue，并用 checklist 汇总其所有 Tasks。",
+      "en": "Create or sync one GitHub Issue for a complete spec, with all local tasks represented as a checklist."
     },
     "triggers": [
-      "发布到 GitHub",
-      "发布 issue 到 GitHub",
-      "批量创建 GitHub Issues",
-      "把 issue 草稿发布到 GitHub",
-      "发布单个 issue 到 GitHub",
-      "帮我发 GitHub issue",
-      "publish to GitHub",
-      "publish issue to GitHub",
-      "create GitHub issues from drafts",
-      "create GitHub issue from draft",
-      "batch publish issues to GitHub",
-      "publish issue drafts to GitHub"
+      "为 Spec 创建 GitHub Issue",
+      "发布完整需求到 GitHub",
+      "同步需求跟踪 Issue",
+      "create GitHub issue for spec",
+      "publish spec to GitHub",
+      "sync spec tracking issue"
     ],
     "version": "1.0",
     "experimental": false
   },
   {
-    "name": "team-issue-publish-gitlab",
+    "name": "team-spec-create-issue-gitlab",
     "category": "delivery",
     "description": {
-      "zh": "将本地工程 issue 草稿发布到 GitLab Issues，并回写发布结果。",
-      "en": "Publish local engineering issue drafts to GitLab Issues and write back publication status."
+      "zh": "将完整 Spec 创建或同步为一个 GitLab Issue，并用 checklist 汇总其所有 Tasks。",
+      "en": "Create or sync one GitLab Issue for a complete spec, with all local tasks represented as a checklist."
     },
     "triggers": [
-      "发布到 GitLab",
-      "发布 issue 到 GitLab",
-      "批量创建 GitLab Issues",
-      "把 issue 草稿发布到 GitLab",
-      "发布单个 issue 到 GitLab",
-      "帮我发 GitLab issue",
-      "publish to GitLab",
-      "publish issue to GitLab",
-      "create GitLab issues from drafts",
-      "create GitLab issue from draft",
-      "batch publish issues to GitLab",
-      "publish issue drafts to GitLab"
+      "为 Spec 创建 GitLab Issue",
+      "发布完整需求到 GitLab",
+      "同步需求跟踪 Issue",
+      "create GitLab issue for spec",
+      "publish spec to GitLab",
+      "sync spec tracking issue"
     ],
     "version": "1.0",
     "experimental": false
   },
   {
-    "name": "team-issue-batch-implement",
+    "name": "team-task-batch-implement",
     "category": "delivery",
     "description": {
-      "zh": "按依赖顺序批量编排多个工程 issue 的实现与验证，并保留失败即停和可恢复续跑边界。",
-      "en": "Batch orchestrate multiple engineering issues in dependency order with verification, fail-fast behavior, and resumable boundaries."
+      "zh": "在同一 Spec 分支按依赖顺序批量实现、验证并逐个提交多个 Task。",
+      "en": "Batch implement tasks on one shared spec branch, verifying and committing each task in dependency order with fail-fast recovery."
     },
     "triggers": [
-      "批量实现 issue",
-      "连续处理多个 issue",
-      "批量跑工程任务",
-      "一次实现多个 AFK issue",
-      "批量最小改动实现",
-      "批量不要过度设计",
-      "不要扩大 issue 范围",
-      "batch implement issues",
-      "implement multiple issues",
-      "run issue queue",
-      "process AFK issues in bulk",
-      "lean batch implementation",
-      "avoid batch over-engineering",
-      "keep issue scope minimal"
+      "批量实现 Task",
+      "连续处理多个工程任务",
+      "在同一分支完成所有任务",
+      "batch implement tasks",
+      "implement multiple tasks",
+      "complete tasks on one branch"
     ],
     "version": "1.0",
     "experimental": false
   },
   {
-    "name": "team-issue-implement",
+    "name": "team-task-implement",
     "category": "delivery",
     "description": {
-      "zh": "实现单个工程 issue，优先使用行为测试、TDD、现有代码复用和最小实现模式。",
-      "en": "Implement one engineering issue with behavior-focused tests, TDD, existing-code reuse, and lean implementation."
+      "zh": "在 Spec 共享分支上实现单个工程 Task，验证通过后形成一个本地逻辑 commit。",
+      "en": "Implement one engineering task on its shared spec branch and create one local logical commit after verification."
     },
     "triggers": [
-      "实现 issue",
-      "开始写代码",
-      "按 issue 编码",
-      "实现这个功能",
-      "最小改动实现",
-      "不要过度设计",
-      "简单实现",
-      "优先复用现有代码",
-      "少写代码",
-      "implement issue",
-      "start coding",
-      "implement this feature",
-      "code this issue",
-      "minimal implementation",
-      "avoid over-engineering",
-      "reuse existing code first",
-      "simplest correct change"
+      "实现 Task",
+      "开始工程任务",
+      "实现并提交这个任务",
+      "implement task",
+      "start task coding",
+      "implement and commit task"
     ],
     "version": "1.0",
     "experimental": false
   },
   {
-    "name": "team-issue-verify",
+    "name": "team-task-verify",
     "category": "delivery",
     "description": {
-      "zh": "独立验证单个 issue 实现是否满足验收、PRD、风险和最小实现要求。",
-      "en": "Verify a single issue implementation against acceptance criteria, PRD, risks, and lean implementation expectations."
+      "zh": "独立验证单个 Task 实现是否满足验收、PRD、风险和最小实现要求。",
+      "en": "Independently verify one task implementation against its acceptance criteria, parent spec, risks, and commit boundary."
     },
     "triggers": [
-      "验证实现",
-      "检查 issue 是否完成",
-      "能提 PR 了吗",
-      "实现完了帮我验一下",
-      "检查是否过度设计",
-      "看看有没有写复杂",
-      "最小实现验收",
-      "简化审查",
-      "审查 diff 有没有过度设计",
-      "看看能删掉什么",
-      "verify issue",
-      "check implementation",
-      "ready for PR",
-      "is this implementation complete",
-      "over-engineering review",
-      "check lean implementation",
-      "review unnecessary complexity",
-      "simplify review",
-      "review diff complexity",
-      "what can be deleted"
+      "验证 Task",
+      "检查工程任务是否完成",
+      "这个任务可以提交了吗",
+      "verify task",
+      "review task implementation",
+      "is this task ready to commit"
     ],
     "version": "1.0",
     "experimental": false
   },
   {
-    "name": "team-issue-create-pr-github",
+    "name": "team-spec-create-pr-github",
     "category": "delivery",
     "description": {
-      "zh": "为已完成的单个 issue 分支推送代码并创建关联 issue 的 GitHub Pull Request。",
-      "en": "Push a completed issue branch and create an issue-linked GitHub Pull Request."
+      "zh": "推送一个 Spec 的共享分支，并为其全部已提交 Tasks 创建一个 GitHub Pull Request。",
+      "en": "Push one spec branch and create a single GitHub Pull Request covering all committed tasks in that spec."
     },
     "triggers": [
-      "创建 GitHub PR",
-      "创建 Pull Request",
-      "给这个 issue 建 PR",
-      "推送分支并创建 PR",
-      "准备提 PR",
-      "create GitHub PR",
-      "open pull request",
-      "create pull request for issue",
-      "push branch and open PR",
-      "open PR for this issue"
+      "为 Spec 创建 GitHub PR",
+      "所有 Task 完成后提 PR",
+      "推送需求分支并创建 PR",
+      "create GitHub PR for spec",
+      "open PR after all tasks",
+      "push spec branch and create PR"
     ],
     "version": "1.0",
     "experimental": false
   },
   {
-    "name": "team-issue-create-mr-gitlab",
+    "name": "team-spec-create-mr-gitlab",
     "category": "delivery",
     "description": {
-      "zh": "为已完成的单个 issue 分支推送代码并创建关联 issue 的 GitLab Merge Request。",
-      "en": "Push a completed issue branch and create an issue-linked GitLab Merge Request."
+      "zh": "推送一个 Spec 的共享分支，并为其全部已提交 Tasks 创建一个 GitLab Merge Request。",
+      "en": "Push one spec branch and create a single GitLab Merge Request covering all committed tasks in that spec."
     },
     "triggers": [
-      "创建 GitLab MR",
-      "创建合并请求",
-      "给这个 issue 建 MR",
-      "推送分支并创建 MR",
-      "准备提 MR",
-      "create GitLab MR",
-      "open merge request",
-      "create merge request for issue",
-      "push branch and open MR",
-      "open MR for this issue"
+      "为 Spec 创建 GitLab MR",
+      "所有 Task 完成后提 MR",
+      "推送需求分支并创建 MR",
+      "create GitLab MR for spec",
+      "open MR after all tasks",
+      "push spec branch and create MR"
     ],
     "version": "1.0",
     "experimental": false
@@ -489,8 +433,8 @@ window.SRT_SKILLS = Object.freeze([
     "name": "team-tech-debt-review",
     "category": "tech-debt",
     "description": {
-      "zh": "评审技术债规格的风险、优先级、阻塞项和工程拆解 ready 状态。",
-      "en": "Review technical debt specs for risk, priority, blockers, and readiness for issue breakdown."
+      "zh": "评审技术债规格的风险、优先级、阻塞项和工程 Task 拆解 ready 状态。",
+      "en": "Review technical debt specs for risk, priority, blockers, and readiness for Task breakdown."
     },
     "triggers": [
       "评审技术债",
@@ -501,27 +445,25 @@ window.SRT_SKILLS = Object.freeze([
       "review tech debt",
       "tech debt risk review",
       "is tech debt ready for breakdown",
-      "ready to create tech debt issues"
+      "ready to create tech debt tasks"
     ],
     "version": "1.0",
     "experimental": false
   },
   {
-    "name": "team-tech-debt-to-issues",
+    "name": "team-tech-debt-to-tasks",
     "category": "tech-debt",
     "description": {
-      "zh": "将已评审的技术债规格拆解为可独立领取、可验证、按依赖排序的工程 issue。",
-      "en": "Break reviewed technical debt specs into independently grabbable, verifiable, dependency-ordered engineering issues."
+      "zh": "将已评审技术债规格拆解为可独立实现、验证并提交的工程 Task。",
+      "en": "Break a reviewed technical-debt spec into dependency-ordered tasks that each produce one verified local commit."
     },
     "triggers": [
-      "技术债拆 issue",
-      "把技术债拆成任务",
-      "技术债转工程任务",
-      "技术债已经 ready 开始拆任务",
-      "break tech debt into issues",
-      "create issues from tech debt",
-      "split technical debt work",
-      "tech debt is ready create issues"
+      "技术债拆 Task",
+      "把技术债拆成工程任务",
+      "生成技术债开发计划",
+      "break technical debt into tasks",
+      "create technical debt tasks",
+      "plan technical debt commits"
     ],
     "version": "1.0",
     "experimental": false
@@ -586,19 +528,21 @@ window.SRT_SKILLS = Object.freeze([
     "name": "team-writing-style",
     "category": "writing",
     "description": {
-      "zh": "为团队项目建立、维护和应用统一的自然语言与代码注释风格，减少模板化、空泛和机器化表达。",
-      "en": "Define, maintain, and apply a shared writing and code-comment style for team projects to reduce formulaic, vague, and AI-sounding prose."
+      "zh": "为团队项目建立、维护和应用统一的自然语言、代码注释与交互标记风格。",
+      "en": "Define and apply a shared writing, code-comment, and interaction-marker style for team projects."
     },
     "triggers": [
       "定义写作风格",
       "去掉 AI 味",
       "统一文档语气",
       "规范代码注释",
+      "规范 Emoji 使用",
       "优化机器化表达",
       "define writing style",
       "reduce AI-sounding prose",
       "standardize documentation tone",
       "improve code comment style",
+      "standardize emoji usage",
       "humanize team documents"
     ],
     "version": "1.0",

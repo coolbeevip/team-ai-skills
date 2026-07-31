@@ -1,6 +1,6 @@
 ---
 name: team-writing-style
-description: 为团队项目建立、维护和应用统一的自然语言与代码注释风格，减少模板化、空泛和机器化表达。Define, maintain, and apply a shared writing and code-comment style for team projects to reduce formulaic, vague, and AI-sounding prose.
+description: 为团队项目建立、维护和应用统一的自然语言、代码注释与交互标记风格。Define and apply a shared writing, code-comment, and interaction-marker style for team projects.
 license: MIT
 metadata:
   author: coolbeevip
@@ -10,11 +10,13 @@ triggers:
   - 去掉 AI 味
   - 统一文档语气
   - 规范代码注释
+  - 规范 Emoji 使用
   - 优化机器化表达
   - define writing style
   - reduce AI-sounding prose
   - standardize documentation tone
   - improve code comment style
+  - standardize emoji usage
   - humanize team documents
 ---
 
@@ -46,7 +48,7 @@ writing_style:
 
 ## 输入物
 
-- 用户对 AI 味、语气、句式、格式或代码注释的反馈。
+- 用户对 AI 味、语气、句式、格式、Emoji 或代码注释的反馈。
 - 用户认可和不认可的真实文档、注释或改写样例。
 - 目标项目已有的 `team-spec/config.yml`、风格指南和相邻内容。
 - 相关业务技能对产物结构、状态、证据和安全的硬性要求。
@@ -70,6 +72,7 @@ writing_style:
    - 公共规则：跨文档类型稳定成立，例如直接、具体、少用元话语。
    - 类型规则：只适用于 PRD、README、评审材料或代码注释，留在对应技能中。
    - 一次偏好：只适用于当前文档，不写入公共指南。
+   - 用户交互标记：统一语义和使用边界写入公共指南；具体菜单内容留在对应业务技能。
 4. 项目没有风格指南时，以 `./assets/STYLE.md` 为模板创建 `team-spec/STYLE.md`；已有指南时做最小增量修改，不重写用户原有规则。
 5. 合并更新 `team-spec/config.yml` 的 `writing_style.guide`。如果用户指定现有指南路径，记录该路径，不再创建默认文件。
 6. 使用至少一段文档和一段代码注释做人工检查，确认规则能指导具体改写，不只是表达态度。
@@ -82,6 +85,7 @@ writing_style:
 - 不要求机械统一。README、PRD、评审材料和代码注释可以有不同密度与结构。
 - 保留作者和项目已有的有效表达，不把“统一风格”变成全面重写。
 - 对代码注释单独说明：解释原因、约束、风险和反直觉行为，不复述语法。
+- 对 Emoji 单独说明：只保留帮助扫描和判断的功能性标记，不把装饰偏好扩散到正式产物。
 - 自检项控制在能快速执行的范围内，避免为了消除 AI 味引入另一套僵硬模板。
 
 ## 完成标准
@@ -89,6 +93,7 @@ writing_style:
 - 公共规则只有一个权威文件，配置可以稳定定位该文件。
 - 相关业务技能只需要读取公共指南，不需要复制完整规则。
 - 文档规则和代码注释规则均包含可执行判断与例子。
+- Emoji 规则明确允许范围、禁用范围、固定语义和无障碍要求。
 - 配置更新保留所有无关字段，已有指南和用户内容没有被无关重写。
 - 至少用一个文档片段和一个代码注释片段完成人工检查。
 - 最终回复说明创建或修改的指南路径、配置变化、采用的样例和仍需人工确认的偏好。

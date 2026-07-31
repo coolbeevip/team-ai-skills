@@ -4,7 +4,7 @@
 
 使用方式：
 
-- 修改 `team-issue-implement`、`team-issue-verify`、`team-tech-debt-analyze`、`team-skill-evolve` 或 `PLATFORM-STDLIB.md` 后，至少人工跑 3 个场景。
+- 修改 `team-task-implement`、`team-task-verify`、`team-tech-debt-analyze`、`team-skill-evolve` 或 `PLATFORM-STDLIB.md` 后，至少人工跑 3 个场景。
 - 不只比较代码行数。必须同时记录新增依赖数、新增文件数、验收是否通过、安全边界是否保留。
 - 如果目标项目缺少对应技术栈，用同等复杂度的本地场景替代，并保留替代原因。
 

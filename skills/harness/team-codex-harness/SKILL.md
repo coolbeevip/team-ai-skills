@@ -45,7 +45,7 @@ Codex harness 应该优先“检索友好”，而不是“阅读友好”。不
 本技能不负责：
 
 - 维护本团队技能库自身；技能定义、触发词、脚本和流程演进应使用 `team-skill-evolve`。
-- 写 PRD、拆 issue、实现 issue、验证 issue 或发布 issue。
+- 写 PRD、拆 Task、实现 Task、验证 Task，或创建 Spec 级远端 Issue/PR/MR。
 - 生成完整架构设计说明书；需要面向评审的功能设计时应使用架构类技能。
 - 整理普通项目文档、会议纪要、一次性任务日志或人类知识库。
 - 维护完整编码规范、评审制度、团队流程或长期决策记录。
@@ -54,7 +54,7 @@ Codex harness 应该优先“检索友好”，而不是“阅读友好”。不
 
 ## 运行时配置
 
-Codex harness 独立于需求、PRD、issue 拆解或技术债流程，但可以读取目标项目根目录下的 `team-spec/config.yml` 作为运行时配置入口。该配置只服务于 Codex 的运行时决策，不替代需求文档，也不承载业务知识库。
+Codex harness 独立于需求、PRD、Task 拆解或技术债流程，但可以读取目标项目根目录下的 `team-spec/config.yml` 作为运行时配置入口。该配置只服务于 Codex 的运行时决策，不替代需求文档，也不承载业务知识库。
 
 当目标项目需要统一语言、版本管理信息或目录访问策略时，优先按 `team-spec/config.yml` 汇总这些机器可读入口，再把它们注入后续技能的提示词和执行上下文。
 
@@ -79,7 +79,7 @@ Harness 目录识别规则：
 - 优先从现有 `AGENTS.md` 中识别已链接的 Codex harness 目录。
 - 如果项目没有现成目录，应使用项目内独立目录保存 harness 文件，优先选择 `docs/codex-harness/`。
 - 如果项目已经有 `docs/agent-harness/` 等等价目录，可以继续沿用，不为改名而制造迁移。
-- 目录必须是相对项目根目录的路径，不应是绝对路径，不应位于需求、PRD、issue 或归档工作区下。
+- 目录必须是相对项目根目录的路径，不应是绝对路径，不应位于需求、PRD、Task 或归档工作区下。
 - 如果无法从现有文件唯一判断目录，只问用户一个问题确认 harness 目录，不展开多轮访谈。
 
 执行要求：
@@ -100,7 +100,7 @@ Harness 目录识别规则：
 - 当前项目的真实代码、目录结构、构建配置、测试配置、脚本、CI 配置和本地开发工具。
 - Codex 最近执行真实任务时遇到的卡点、失败测试、CI 日志、命令错误、人工修复记录或交付事故。
 - 已有 Codex harness 目录，例如 `docs/codex-harness/` 或项目现有等价目录。
-- 可选：来自 `team-prd-to-issues`、`team-issue-implement` 或 `team-issue-verify` 的真实工程任务反馈，但本技能只把其中与 Codex 运行时检索相关的部分写入 harness。
+- 可选：来自 `team-prd-to-tasks`、`team-task-implement` 或 `team-task-verify` 的真实工程任务反馈，但本技能只把其中与 Codex 运行时检索相关的部分写入 harness。
 
 如果用户没有提供明确范围，应先判断本轮是在初始化检索层、补失败记忆、补验证策略、补任务入口，还是刷新入口约束。无法唯一判断时，只问一个最关键的问题。
 
@@ -280,8 +280,8 @@ Harness 目录识别规则：
 ## 与其他技能的关系
 
 - `team-skill-evolve`：维护团队技能库自身。Codex harness 技能定义、触发词、脚本或流程需要修改时，使用它。
-- `team-prd-to-issues`：拆 PRD 时如果发现入口约束、验证策略或任务入口不清楚，可以转入本技能补 harness。
-- `team-issue-implement` / `team-issue-verify`：真实实现或验证暴露的失败记忆、验证盲区和任务入口缺口，可以反馈给本技能。
+- `team-prd-to-tasks`：拆 PRD 时如果发现入口约束、验证策略或任务入口不清楚，可以转入本技能补 harness。
+- `team-task-implement` / `team-task-verify`：真实实现或验证暴露的失败记忆、验证盲区和任务入口缺口，可以反馈给本技能。
 
 ## 完成标准
 

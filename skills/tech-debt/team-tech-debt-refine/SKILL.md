@@ -74,7 +74,7 @@ access_policy:
 - `team-spec/active/{slug}/spec/decisions/{number}-{decision-slug}.md`：当出现只影响当前技术债的决策时创建。
 - `team-spec/active/{slug}/STATUS.md`：可选，记录工作区生命周期状态 `debt-refining`；不得写入阶段评审结果。
 
-下游技能读取这些输出物：`team-tech-debt-review` 用于风险评审，`team-tech-debt-to-issues` 用于工程拆解。
+下游技能读取这些输出物：`team-tech-debt-review` 用于风险评审，`team-tech-debt-to-tasks` 用于工程拆解。
 
 ## 细化重点
 

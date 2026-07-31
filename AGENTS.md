@@ -15,21 +15,21 @@
 - `skills/codebase/team-codebase-walk/`：用于基于 onboarding 产物和源码进行功能走读、问答和证据追踪。
 - `skills/codebase/team-codebase-brief/`：用于把代码库事实转化为面向业务、产品和管理者的能力说明与影响分析。
 - `skills/codebase/team-codebase-readme/`：用于为团队自行开发和维护的项目创建、审阅和优化 `README.md`。
-- `skills/delivery/`：交付执行职责，包括 PRD 对齐材料、issue 拆解、发布、实现和验证。
-- `skills/delivery/team-prd-to-alignment/`：用于把 AI 结构化 PRD 转换为需求、研发和项目管理可评审的演示文稿式对齐材料。
-- `skills/delivery/team-prd-to-issues/`：用于把 PRD 拆解成可独立领取的工程 issue。
-- `skills/delivery/team-issue-publish-github/`：用于把本地 issue 草稿发布到 GitHub Issues，支持整目录批量发布或指定单个 issue。
-- `skills/delivery/team-issue-publish-gitlab/`：用于把本地 issue 草稿发布到 GitLab Issues，支持整目录批量发布或指定单个 issue。
-- `skills/delivery/team-issue-batch-implement/`：用于按依赖顺序批量编排多个 AFK issue，逐个衔接实现与验证。
-- `skills/delivery/team-issue-implement/`：用于按行为测试和 TDD 循环实现单个 issue。
-- `skills/delivery/team-issue-verify/`：用于验证单个 issue 实现是否满足验收标准和 PRD。
-- `skills/delivery/team-issue-create-mr-gitlab/`：用于推送已完成的 issue 分支并创建关联 issue 的 GitLab Merge Request。
-- `skills/delivery/team-issue-create-pr-github/`：用于推送已完成的 issue 分支并创建关联 issue 的 GitHub Pull Request。
+- `skills/delivery/`：交付执行职责，包括 PRD 评审简报、Task 拆解、实现、验证和 Spec 级远端交付。
+- `skills/delivery/team-prd-to-brief/`：用于把 AI 结构化 PRD 转换为需求、研发和项目管理可评审的演示文稿式简报。
+- `skills/delivery/team-prd-to-tasks/`：用于把 PRD 拆解成可独立实现、验证并提交的工程 Task。
+- `skills/delivery/team-task-batch-implement/`：用于在同一 Spec 分支按依赖顺序批量实现、验证并逐个提交多个 Task。
+- `skills/delivery/team-task-implement/`：用于按行为测试和 TDD 循环实现单个 Task，验证后形成一个本地 commit。
+- `skills/delivery/team-task-verify/`：用于验证单个 Task 实现是否满足验收标准、PRD 和 commit 边界。
+- `skills/delivery/team-spec-create-issue-github/`：用于把完整 Spec 创建或同步为一个 GitHub Issue，Tasks 作为 checklist。
+- `skills/delivery/team-spec-create-issue-gitlab/`：用于把完整 Spec 创建或同步为一个 GitLab Issue，Tasks 作为 checklist。
+- `skills/delivery/team-spec-create-pr-github/`：用于推送 Spec 共享分支并为全部 Task commits 创建一个 GitHub Pull Request。
+- `skills/delivery/team-spec-create-mr-gitlab/`：用于推送 Spec 共享分支并为全部 Task commits 创建一个 GitLab Merge Request。
 - `skills/tech-debt/`：技术债治理职责，包括技术债分析、细化、评审和工程拆解。
 - `skills/tech-debt/team-tech-debt-analyze/`：用于对项目或模块进行只读技术债分析，输出证据化债务候选清单。
 - `skills/tech-debt/team-tech-debt-refine/`：用于把模糊技术债诉求细化为可评审规格。
 - `skills/tech-debt/team-tech-debt-review/`：用于评审技术债风险、优先级和可执行性。
-- `skills/tech-debt/team-tech-debt-to-issues/`：用于把已评审技术债拆解为工程 issue。
+- `skills/tech-debt/team-tech-debt-to-tasks/`：用于把已评审技术债拆解为工程 Task。
 - `skills/harness/`：实验性 Codex harness 职责，包括项目级 Codex 运行时检索层、入口约束、失败记忆、验证策略和任务入口；不作为稳定主线流程前置条件。
 - `skills/harness/team-codex-harness/`：用于随真实代码和工程演进维护 `AGENTS.md`、入口约束、失败记忆、验证 harness 和任务入口。
 - `skills/writing/`：跨产品、代码库、交付和技术债流程复用的写作职责，包括公共语言风格和代码注释规范。
@@ -41,7 +41,7 @@
 
 ## Team Spec 工作空间
 
-`team-spec/` 是技能安装到业务项目后的运行时工作空间，不是本技能库需要提交的业务产物。不要在本仓库沉淀真实需求、PRD、风险报告或工程 issue。
+`team-spec/` 是技能安装到业务项目后的运行时工作空间，不是本技能库需要提交的业务产物。不要在本仓库沉淀真实需求、PRD、风险报告或工程 Task。
 
 技能运行时，所有产物应统一写入目标项目根目录下的 `team-spec/`。`team-spec/active/` 是所有尚未归档需求的集合，不再表示唯一活跃需求；单个需求工作区必须放在 `team-spec/active/{slug}/`。`team-spec/archive/` 保存已完成、废弃或暂停的历史需求。
 
@@ -50,11 +50,12 @@
 - `team-spec/decisions/`：跨多个需求长期有效的产品决策记录，仅在决策影响后续多个需求且反悔成本较高时创建。
 - `team-spec/active/{slug}/spec/`：单个需求的规格阶段产物，包括 `CONTEXT.md`、`decisions/`、`refine.md`、`reviews.md`。
 - `team-spec/active/{slug}/concept/`：单个产品或产品体系的概念阶段产物，默认白皮书为 `whitepaper.md`，作为规格细化和后续 PRD 的上游输入。
-- `team-spec/active/{slug}/prd/`：单个需求的 PRD 固化产物，是需求到工程的正式交接边界，包括 `prd.md` 与可选 `alignment.md`。
-- `team-spec/active/{slug}/issues/`：单个需求 PRD 拆解后的工程 issue 草稿。
+- `team-spec/active/{slug}/prd/`：单个需求的 PRD 固化产物，是需求到工程的正式交接边界，包括 `prd.md` 与可选 `brief.md`。
+- `team-spec/active/{slug}/tasks/`：单个需求 PRD 或技术债规格拆解后的工程 Task。
+- `team-spec/active/{slug}/DELIVERY.md`：可选的 Spec 级交付记录，包括共享分支、远端 Issue、Task/commit 映射和 PR/MR；不得加入产品代码 commit。
 - `team-spec/active/{slug}/design/`：单个需求的功能设计说明书，默认文件为 `functional-design.md`。
-- `team-spec/active/{slug}/STATUS.md`：可选状态文件，只记录整个工作区的生命周期状态，不记录阶段评审结果或单个 issue 的交付状态。
-- `team-spec/archive/{slug}/`：单个历史需求的归档目录，包括 `spec/`、`prd/`、`issues/`、`design/`、`STATUS.md` 和 `ARCHIVE.md`。
+- `team-spec/active/{slug}/STATUS.md`：可选状态文件，只记录整个工作区的生命周期状态，不记录阶段评审结果或单个 Task 的交付状态。
+- `team-spec/archive/{slug}/`：单个历史需求的归档目录，包括 `spec/`、`prd/`、`tasks/`、`design/`、`DELIVERY.md`、`STATUS.md` 和 `ARCHIVE.md`。
 
 ### 状态合同
 
@@ -62,15 +63,17 @@
 
 1. 工作区生命周期状态：写入 `team-spec/active/{slug}/STATUS.md`。产品需求链路使用 `concept-drafting`、`concept-review`、`concept-ready`、`refining`、`spec-ready`、`prd-ready`、`implementing`、`paused`、`blocked`；技术债链路使用 `debt-analyzed`、`debt-refining`、`debt-ready`、`implementing`、`paused`、`blocked`。
 2. 阶段评审结果：写入 `team-spec/active/{slug}/spec/reviews.md` 或其他阶段报告，不写入工作区 `STATUS.md`。统一使用 `ready`、`needs-refinement`、`blocked`。
-3. Issue 与交付状态：写入对应 issue 草稿，不写入工作区 `STATUS.md`。统一使用 kebab-case，例如 `draft`、`published`、`implementing`、`needs-changes`、`verified`、`pr-created`、`mr-created`。
+3. Task 状态：写入对应 Task 文件，不写入工作区 `STATUS.md`。统一使用 `draft`、`implementing`、`needs-changes`、`blocked`、`verified`、`committed`。`pr-created`、`mr-created` 不属于 Task 状态；Spec 级远端信息写入 `DELIVERY.md`。
 
-同一个 `blocked` 可以出现在不同对象中，但只表示该对象被阻塞；读取方必须结合文件位置判断是工作区、阶段评审还是 issue 被阻塞。用户可见回复可以使用自然语言，写入文件的状态值必须使用上述机器值。
+同一个 `blocked` 可以出现在不同对象中，但只表示该对象被阻塞；读取方必须结合文件位置判断是工作区、阶段评审还是 Task 被阻塞。用户可见回复可以使用自然语言，写入文件的状态值必须使用上述机器值。
 
-每个需求使用唯一 slug 串联全流程，格式为 `{yyyy-mm-dd}-{short-english-slug}`。例如：`team-spec/active/2026-05-10-export-filter/concept/whitepaper.md`、`team-spec/active/2026-05-10-export-filter/spec/refine.md`、`team-spec/active/2026-05-10-export-filter/spec/reviews.md`、`team-spec/active/2026-05-10-export-filter/prd/prd.md`、`team-spec/active/2026-05-10-export-filter/issues/`。
+每个需求使用唯一 slug 串联全流程，格式为 `{yyyy-mm-dd}-{short-english-slug}`。例如：`team-spec/active/2026-05-10-export-filter/concept/whitepaper.md`、`team-spec/active/2026-05-10-export-filter/spec/refine.md`、`team-spec/active/2026-05-10-export-filter/spec/reviews.md`、`team-spec/active/2026-05-10-export-filter/prd/prd.md`、`team-spec/active/2026-05-10-export-filter/tasks/`。
+
+同一个 slug 的所有 Task 必须在同一个 `{slug}` 本地分支上开发，分支名不得添加 `spec/` 前缀。每个 Task 验证通过后形成一个逻辑 commit；全部必需 Task 都达到 `committed` 后，才允许为该 Spec 一次性创建一个 PR 或 MR。
 
 开始新需求前，`team-spec-refine` 只需检查目标 slug 是否已存在。若 `team-spec/active/` 下有其他 slug，不得要求用户归档；应允许多个未归档需求并行存在。只有当用户请求无法唯一确定 slug 或目标文件路径时，才要求用户指定 slug、继续某个已有需求或创建新的 slug。
 
-下游技能应默认读取全局上下文和同一 slug 的上游阶段产物。例如 `team-prd-to-issues` 默认以 `team-spec/active/{slug}/prd/prd.md` 为主输入，并参考 `team-spec/CONTEXT.md`、`team-spec/decisions/`、`team-spec/active/{slug}/spec/CONTEXT.md`、`team-spec/active/{slug}/spec/decisions/` 和评审报告。`team-spec/archive/` 默认只读；除非用户显式指定归档 slug 或文件路径，否则技能不得扫描或修改 archive 内容。
+下游技能应默认读取全局上下文和同一 slug 的上游阶段产物。例如 `team-prd-to-tasks` 默认以 `team-spec/active/{slug}/prd/prd.md` 为主输入，并参考 `team-spec/CONTEXT.md`、`team-spec/decisions/`、`team-spec/active/{slug}/spec/CONTEXT.md`、`team-spec/active/{slug}/spec/decisions/` 和评审报告。`team-spec/archive/` 默认只读；除非用户显式指定归档 slug 或文件路径，否则技能不得扫描或修改 archive 内容。
 
 ## 构建、测试与开发命令
 
@@ -85,6 +88,7 @@
 - `rtk git diff`：提交前检查修改。
 - `rtk pre-commit run --all-files`：运行完整仓库检查。
 - `rtk python3 scripts/check_skills.py`：只运行全部技能结构检查。
+- `rtk python3 -m unittest discover -s tests -v`：运行 Spec/Task/PR/MR 交付工作流回归测试。
 
 ## 编写风格与命名规范
 
@@ -94,7 +98,7 @@
 - 目录名使用 kebab-case，例如 `team-spec-review`。
 - 所有技能名必须以 `team-` 开头。
 - 产品规格类技能使用 `team-spec-` 前缀，例如 `team-spec-refine`。
-- 交付执行类技能可按输入产物使用 `team-prd-` 或 `team-issue-` 前缀，例如 `team-prd-to-issues`、`team-issue-implement`。
+- 交付执行类技能按输入和聚合边界使用 `team-prd-`、`team-task-` 或 `team-spec-` 前缀，例如 `team-prd-to-tasks`、`team-task-implement`、`team-spec-create-pr-github`。
 - 技术债类技能使用 `team-tech-debt-` 前缀，例如 `team-tech-debt-refine`。
 - Codex harness 类技能使用 `team-codex-` 前缀，例如 `team-codex-harness`。
 - 跨流程写作类技能使用 `team-writing-` 前缀，例如 `team-writing-style`。
@@ -107,7 +111,7 @@
 - 每个技能必须声明 `## 输入物` 和 `## 输出物`，明确会读取哪些上游技能产物，以及会给哪些下游技能使用。
 - 依赖上游产物的技能必须先确定唯一 slug 或明确文件路径；无法唯一判断时必须要求用户提供，不得猜测。
 - 用户可见说明优先使用中文。
-- 会生成或改写文档、issue/PR/MR 正文、用户可见说明或代码注释的技能，必须读取 `team-spec/config.yml`；如果 `writing_style.guide` 指向存在的文件，写作前必须读取并应用。公共规则只保存在风格指南中，各技能只保留本产物特有的补充规则。
+- 会生成或改写文档、Task、Issue/PR/MR 正文、用户可见说明或代码注释的技能，必须读取 `team-spec/config.yml`；如果 `writing_style.guide` 指向存在的文件，写作前必须读取并应用。公共规则只保存在风格指南中，各技能只保留本产物特有的补充规则。
 - 公共风格不得覆盖格式、机器状态、安全、证据和验收合同。风格指南缺失时不阻塞业务技能，也不得猜测路径；需要建立或调整统一风格时使用 `team-writing-style`。
 - 不要添加无关文档文件，例如 `README.md`，除非仓库规范发生变化。
 
@@ -115,7 +119,7 @@
 
 当技能需要 `scripts/` 辅助脚本时，遵守以下规则：
 
-- `scripts/` 只能放在具体技能目录内，例如 `skills/delivery/team-issue-publish-github/scripts/`。
+- `scripts/` 只能放在具体技能目录内，例如 `skills/delivery/team-spec-create-issue-github/scripts/`。
 - 脚本用于沉淀确定性流程，例如远端 API 操作、批量文件处理、格式转换、依赖排序、幂等检查和回写状态。
 - `SKILL.md` 必须说明脚本用途、主要参数、默认 dry-run 行为、正式执行开关和安全要求。
 - `SKILL.md` 内引用脚本时必须使用相对 `SKILL.md` 的路径，例如 `./scripts/publish_gitlab_issues.py`。
@@ -129,11 +133,11 @@
 为了保持技能目录可独立复制，技能运行时不得依赖仓库根目录的公共 Python 模块。跨多个技能复用的稳定辅助代码采用 vendored copy 方式维护：
 
 - 根目录 `scripts/_team_common.py` 是公共辅助代码的唯一源文件。
-- 各技能如需使用公共辅助代码，应在本技能自己的 `scripts/` 目录下放置 `_team_common.py` 副本，例如 `skills/delivery/team-issue-create-mr-gitlab/scripts/_team_common.py`。
+- 各技能如需使用公共辅助代码，应在本技能自己的 `scripts/` 目录下放置 `_team_common.py` 副本，例如 `skills/delivery/team-spec-create-mr-gitlab/scripts/_team_common.py`。
 - 修改公共辅助代码时，只修改根目录 `scripts/_team_common.py`，然后执行 `rtk python3 scripts/check_vendored_common.py`，用根目录源文件覆盖所有不一致的技能目录副本。
 - 提交前执行 `rtk python3 scripts/check_vendored_common.py --check`，确保所有 vendored `_team_common.py` 与根目录源文件一致。
 - 根目录 `scripts/check_vendored_common.py` 只用于仓库维护；技能 `SKILL.md` 中不得把它写成业务项目运行时依赖。
-- `_team_common.py` 只放跨技能稳定基础能力，例如 HTTP 请求、`no_proxy` 处理、请求调试输出和通用错误包装；不要放 issue、PR、MR 的业务流程逻辑。
+- `_team_common.py` 只放跨技能稳定基础能力，例如 HTTP 请求、`no_proxy` 处理、请求调试输出和通用错误包装；不要放 Task、Issue、PR、MR 的业务流程逻辑。
 
 最小 frontmatter 示例：
 
@@ -163,7 +167,7 @@ triggers:
 rtk pre-commit run --all-files
 ```
 
-自动检查覆盖 frontmatter、双语 description、许可、作者、版本、触发词、标准章节、重复标题、YAML、空白和合并冲突标记。
+自动检查覆盖 frontmatter、双语 description、许可、作者、版本、触发词、标准章节、重复标题、Spec 交付工作流、YAML、空白和合并冲突标记。
 
 自动检查不能替代语义验证。修改后仍应人工确认：
 

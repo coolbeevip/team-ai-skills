@@ -18,6 +18,25 @@ MAX_DESCRIPTION_CHARS = 220
 CANONICAL_RUNTIME_HEADING = "运行时配置"
 DEPRECATED_RUNTIME_HEADINGS = {"运行时语言配置", "语言约定"}
 DEPRECATED_FINAL_REPLY_HEADING = "完成输出"
+DEPRECATED_SKILL_NAMES = {
+    "team-prd-to-alignment",
+    "team-prd-to-issues",
+    "team-tech-debt-to-issues",
+    "team-issue-batch-implement",
+    "team-issue-create-mr-gitlab",
+    "team-issue-create-pr-github",
+    "team-issue-implement",
+    "team-issue-publish-github",
+    "team-issue-publish-gitlab",
+    "team-issue-verify",
+}
+DEPRECATED_RUNTIME_PATHS = {
+    "team-spec/active/{slug}/prd/alignment.md",
+    "team-spec/active/{slug}/issues/",
+    "team-spec/archive/{slug}/prd/alignment.md",
+    "team-spec/archive/{slug}/issues/",
+}
+DEPRECATED_BRANCH_TEMPLATE = "spec/{slug}"
 
 
 def parse_frontmatter(path: Path) -> tuple[dict[str, object], list[str]]:
@@ -163,6 +182,53 @@ def check_skill(path: Path) -> list[str]:
     if "## 最终回复" not in text:
         errors.append("missing ## 最终回复 section")
 
+    if name == "team-prd-to-tasks":
+        required_confirmation_contract = (
+            "## 拆解确认交互",
+            "所有需要用户介入的节点",
+            "✅ 接受当前拆解并写入",
+            "🔄 粒度偏细，希望合并",
+            "🔄 粒度偏粗，希望拆分",
+            "⚠️ 依赖或顺序需要调整",
+            "👤 局部调整某个 Task",
+            "⛔ 取消本次拆解",
+            "## 请选择如何调整该 Task",
+        )
+        for required_text in required_confirmation_contract:
+            if required_text not in text:
+                errors.append(
+                    f"missing task confirmation contract text {required_text!r}"
+                )
+
+    if name == "team-writing-style":
+        required_emoji_contract = (
+            "用户交互与 Emoji",
+            "功能性标记",
+            "正式产物默认不使用",
+            "Emoji 后必须保留完整文字",
+        )
+        style_template = path.parent / "assets" / "STYLE.md"
+        if not style_template.exists():
+            errors.append("missing default style template assets/STYLE.md")
+        else:
+            style_text = style_template.read_text(encoding="utf-8")
+            for required_text in required_emoji_contract:
+                if required_text not in style_text:
+                    errors.append(
+                        f"missing emoji style contract text {required_text!r}"
+                    )
+
+    if name == "team-prd-to-brief":
+        required_brief_contract = (
+            "team-spec/active/{slug}/prd/brief.md",
+            "## 评审简报结构",
+            "## 评审简报表达",
+            "team-prd-to-tasks",
+        )
+        for required_text in required_brief_contract:
+            if required_text not in text:
+                errors.append(f"missing PRD brief contract text {required_text!r}")
+
     heading_lines: dict[str, list[int]] = {}
     for line_number, heading in iter_markdown_headings(text):
         heading_lines.setdefault(heading, []).append(line_number)
@@ -179,6 +245,19 @@ def check_skill(path: Path) -> list[str]:
 
     if DEPRECATED_FINAL_REPLY_HEADING in heading_lines:
         errors.append("use ## 最终回复 instead of ## 完成输出")
+
+    for deprecated_name in sorted(DEPRECATED_SKILL_NAMES):
+        if deprecated_name in text:
+            errors.append(f"deprecated skill reference: {deprecated_name}")
+
+    for deprecated_path in sorted(DEPRECATED_RUNTIME_PATHS):
+        if deprecated_path in text:
+            errors.append(f"deprecated runtime path: {deprecated_path}")
+
+    if DEPRECATED_BRANCH_TEMPLATE in text:
+        errors.append(
+            f"deprecated branch template: {DEPRECATED_BRANCH_TEMPLATE}; use {{slug}}"
+        )
 
     return errors
 

@@ -85,7 +85,7 @@ access_policy:
 - 对话中的规格评审报告：ready 结论、阻塞项、风险清单、需要补充的问题和建议改写。
 - `team-spec/active/{slug}/spec/reviews.md`：与 refinement 使用同一个 slug 的规格评审报告。
 - 可被 `team-spec-to-prd` 读取的 PRD 前置检查结果。
-- 可被 `team-prd-to-issues` 参考的工程拆解风险提示，例如 blocker、HITL 决策点和验收风险。
+- 可被 `team-prd-to-tasks` 参考的工程拆解风险提示，例如 blocker、HITL 决策点和验收风险。
 - 若用户同意回写，更新 `team-spec/config.yml` 的语言设置。
 
 如果项目需要沉淀评审报告，默认保存到 `team-spec/active/{slug}/spec/reviews.md`，目录只在需要时创建。
@@ -94,7 +94,7 @@ access_policy:
 
 本技能不要直接修改 `team-spec/active/{slug}/spec/refine.md`。如果规格需要修订，输出 `Status: needs-refinement`，并在 `Questions For User` 与 `Required Refinement` 中给出明确问题和修改方向，由 `team-spec-refine` 继续与用户确认并更新同一个 refine 文件。
 
-本技能属于规格评审阶段，只允许引导用户修正规格、补充评审证据或进入 PRD 固化。不要在最终回复的“下一步可选”中建议修改代码、要求用户授予这些文件的写入权限。任何代码或业务文档写入，只能在 `team-issue-implement` 阶段由工程 issue 明确驱动。
+本技能属于规格评审阶段，只允许引导用户修正规格、补充评审证据或进入 PRD 固化。不要在最终回复的“下一步可选”中建议修改代码、要求用户授予这些文件的写入权限。任何代码或业务文档写入，只能在 `team-task-implement` 阶段由工程 Task 明确驱动。
 
 ## 分析维度
 

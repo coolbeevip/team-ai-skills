@@ -20,7 +20,7 @@ triggers:
 
 # 需求归档
 
-这个技能用于把 `team-spec/active/{slug}/` 中某个需求 slug 的过程产物移动到 `team-spec/archive/{slug}/`。归档是需求生命周期动作，不负责继续细化、评审、生成 PRD、拆 issue 或实现代码。`team-spec/active/` 允许存在多个未归档需求；归档一个 slug 不应影响其他 slug。
+这个技能用于把 `team-spec/active/{slug}/` 中某个需求 slug 的过程产物移动到 `team-spec/archive/{slug}/`。归档是需求生命周期动作，不负责继续细化、评审、生成 PRD、拆 Task 或实现代码。`team-spec/active/` 允许存在多个未归档需求；归档一个 slug 不应影响其他 slug。
 
 归档只处理指定 slug 的工作区，不移动跨需求共享上下文 `team-spec/CONTEXT.md` 和 `team-spec/decisions/`。
 
@@ -51,12 +51,13 @@ triggers:
 - `team-spec/active/{slug}/spec/CONTEXT.md`
 - `team-spec/active/{slug}/spec/decisions/`
 - `team-spec/active/{slug}/prd/prd.md`
-- `team-spec/active/{slug}/prd/alignment.md`
-- `team-spec/active/{slug}/issues/`
+- `team-spec/active/{slug}/prd/brief.md`
+- `team-spec/active/{slug}/tasks/`
 - `team-spec/active/{slug}/design/`
+- `team-spec/active/{slug}/DELIVERY.md`
 - `team-spec/active/{slug}/STATUS.md`
 
-兼容旧布局时，也可以归档 `team-spec/active/spec/refine/{slug}.md`、`team-spec/active/spec/reviews/{slug}.md`、`team-spec/active/prd/{slug}.md`、`team-spec/active/prd/{slug}-alignment.md`、`team-spec/active/issues/{slug}/` 和 `team-spec/active/design/{slug}.md`。
+兼容旧布局时，也可以归档 `team-spec/active/spec/refine/{slug}.md`、`team-spec/active/spec/reviews/{slug}.md`、`team-spec/active/prd/{slug}.md`、旧版 `team-spec/active/prd/{slug}-alignment.md`、`team-spec/active/issues/{slug}/` 和 `team-spec/active/design/{slug}.md`；旧版对齐材料归档为 `brief.md`。
 
 不可归档的全局产物：
 
@@ -71,9 +72,10 @@ triggers:
 - `team-spec/archive/{slug}/spec/refine.md`
 - `team-spec/archive/{slug}/spec/reviews.md`
 - `team-spec/archive/{slug}/prd/prd.md`
-- `team-spec/archive/{slug}/prd/alignment.md`
-- `team-spec/archive/{slug}/issues/`
+- `team-spec/archive/{slug}/prd/brief.md`
+- `team-spec/archive/{slug}/tasks/`
 - `team-spec/archive/{slug}/design/`
+- `team-spec/archive/{slug}/DELIVERY.md`
 - `team-spec/archive/{slug}/STATUS.md`
 - `team-spec/archive/{slug}/ARCHIVE.md`
 
@@ -130,7 +132,7 @@ python3 {skill_dir}/scripts/archive_team_spec.py --slug {slug} --reason complete
 
 - 不覆盖已有 `team-spec/archive/{slug}/`。
 - 新布局下只归档指定 `team-spec/active/{slug}/`；任何布局都不归档或删除 `team-spec/CONTEXT.md` 与 `team-spec/decisions/`；旧布局兼容模式也不归档或删除 `team-spec/active/spec/CONTEXT.md` 与 `team-spec/active/spec/decisions/`。
-- 不修改 PRD、规格正文、issue 内容或验收状态，只移动归档并生成归档记录。
+- 不修改 PRD、规格正文、Task 内容或验收状态，只移动归档并生成归档记录。
 - 不执行 `git add`、`git commit`、`git push`。
 
 ## 完成标准

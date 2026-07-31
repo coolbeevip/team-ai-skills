@@ -1,6 +1,6 @@
 ---
 name: team-tech-debt-review
-description: 评审技术债规格的风险、优先级、阻塞项和工程拆解 ready 状态。Review technical debt specs for risk, priority, blockers, and readiness for issue breakdown.
+description: 评审技术债规格的风险、优先级、阻塞项和工程 Task 拆解 ready 状态。Review technical debt specs for risk, priority, blockers, and readiness for Task breakdown.
 license: MIT
 metadata:
   author: coolbeevip
@@ -14,17 +14,17 @@ triggers:
   - review tech debt
   - tech debt risk review
   - is tech debt ready for breakdown
-  - ready to create tech debt issues
+  - ready to create tech debt tasks
 ---
 
 # 技术债评审
 
-这个技能用于评审技术债规格是否足够清晰、可执行、可验收，并判断是否可以进入工程 issue 拆解。
+这个技能用于评审技术债规格是否足够清晰、可执行、可验收，并判断是否可以进入工程 Task 拆解。
 
 ## 触发边界
 
 - 适合触发：已有技术债规格或 refine 产物，需要评审风险、优先级、阻塞项和拆解 ready 状态。
-- 不适合触发：债务诉求仍然模糊时，转交 `team-tech-debt-refine`；评审已 ready 且要拆 issue 时，转交 `team-tech-debt-to-issues`。
+- 不适合触发：债务诉求仍然模糊时，转交 `team-tech-debt-refine`；评审已 ready 且要拆 Task 时，转交 `team-tech-debt-to-tasks`。
 
 ## 运行时配置
 
@@ -66,7 +66,7 @@ access_policy:
 
 - 对话中的评审结论：`ready` / `needs-refinement` / `blocked`。
 - `team-spec/active/{slug}/spec/reviews.md`：技术债评审报告。
-- 给下游 `team-tech-debt-to-issues` 的拆解前置结论（阻塞项、依赖、验收风险、HITL 决策点）。
+- 给下游 `team-tech-debt-to-tasks` 的拆解前置结论（阻塞项、依赖、验收风险、HITL 决策点）。
 - `team-spec/active/{slug}/STATUS.md`：评审结果为 `ready` 时可更新为工作区生命周期状态 `debt-ready`；不得把阶段评审结果直接写入工作区状态。
 
 ## 评审维度
@@ -87,7 +87,7 @@ access_policy:
 ## 完成标准
 
 - 生成 `team-spec/active/{slug}/spec/reviews.md`。
-- 明确是否可进入 `team-tech-debt-to-issues`。
+- 明确是否可进入 `team-tech-debt-to-tasks`。
 - 如果不可进入，明确 Required Refinement 与 Questions For User。
 
 ## 最终回复
@@ -97,7 +97,7 @@ access_policy:
 - 评审报告路径：`team-spec/active/{slug}/spec/reviews.md`，如果本次已保存。
 - `Status`：`ready`、`needs-refinement` 或 `blocked`。这是阶段评审结果，写入 `spec/reviews.md`，不得写入工作区 `STATUS.md`。
 - 下一步可选：必须使用有序号的列表选项输出，方便用户直接回复序号继续推进。
-  - 当 `Status: ready` 时，选项 1 必须是 `team-tech-debt-to-issues`，用于把通过评审的技术债规格拆解为工程 issue。
+  - 当 `Status: ready` 时，选项 1 必须是 `team-tech-debt-to-tasks`，用于把通过评审的技术债规格拆解为工程 Task。
   - 当 `Status: needs-refinement` 时，选项 1 必须是 `team-tech-debt-refine`，并说明需要补充或修订哪些关键内容。
   - 当 `Status: blocked` 时，选项 1 必须是解除阻塞动作；如能判断解除后技能，再作为后续编号选项列出。
 
@@ -106,5 +106,5 @@ access_policy:
 ```text
 技术债评审已完成，Status: ready。
 下一步可选：
-1. team-tech-debt-to-issues：将通过评审的技术债规格拆解为工程 issue。
+1. team-tech-debt-to-tasks：将通过评审的技术债规格拆解为工程 Task。
 ```

@@ -52,7 +52,7 @@ team-spec/
 
 产品、交付、代码库理解和技术债主线通常在目标项目的 `team-spec/` 中读写运行时产物；`team-codebase-readme` 等局部技能会直接处理用户指定的文件，不要求创建需求 slug。
 
-> 本仓库只维护技能本身。真实业务需求、PRD、风险报告和工程 issue 应保留在安装技能的目标项目中，不要提交到本仓库。
+> 本仓库只维护技能本身。真实业务需求、PRD、风险报告和工程 Task 应保留在安装技能的目标项目中，不要提交到本仓库。
 
 ## 推荐流程
 
@@ -62,17 +62,18 @@ team-spec/
 team-spec-refine
   -> team-spec-review
   -> team-spec-to-prd
-  -> team-prd-to-issues
-  -> team-issue-implement / team-issue-batch-implement
-  -> team-issue-verify
+  -> team-prd-to-tasks
+  -> team-task-implement / team-task-batch-implement
+  -> team-task-verify
+  -> team-spec-create-pr-github / team-spec-create-mr-gitlab
 ```
 
 以下步骤按场景使用，不是主线的强制前置条件：
 
 - 产品规划阶段需要先明确定位和能力边界时，在 `team-spec-refine` 前使用 `team-concept-whitepaper`。
-- PRD 需要转成人类评审会材料时，使用 `team-prd-to-alignment`。
-- 本地 issue 草稿需要发布到远端时，选择 `team-issue-publish-github` 或 `team-issue-publish-gitlab`。
-- 实现验证通过后需要交付代码评审时，选择 `team-issue-create-pr-github` 或 `team-issue-create-mr-gitlab`。
+- PRD 需要转成人类评审简报时，使用 `team-prd-to-brief`。
+- 需要远端需求跟踪对象时，选择 `team-spec-create-issue-github` 或 `team-spec-create-issue-gitlab`，为整个 Spec 创建一个 Issue。
+- 所有 Task 已验证并分别提交后，选择 `team-spec-create-pr-github` 或 `team-spec-create-mr-gitlab`，为共享 Spec 分支创建一个 PR/MR。
 - 需求完成、暂停或废弃后，使用 `team-spec-archive` 归档对应 slug。
 
 ### 技术债主线
@@ -81,12 +82,13 @@ team-spec-refine
 team-tech-debt-analyze
   -> team-tech-debt-refine
   -> team-tech-debt-review
-  -> team-tech-debt-to-issues
-  -> team-issue-implement / team-issue-batch-implement
-  -> team-issue-verify
+  -> team-tech-debt-to-tasks
+  -> team-task-implement / team-task-batch-implement
+  -> team-task-verify
+  -> team-spec-create-pr-github / team-spec-create-mr-gitlab
 ```
 
-技术债生成 issue 后，可以复用产品需求主线中的远端发布和 PR/MR 交付技能。
+技术债生成 Tasks 后，可以复用 Spec 级远端 Issue 和 PR/MR 交付技能。
 
 ### 代码库理解与说明
 
@@ -125,17 +127,17 @@ Codex Harness 不在稳定主线内。只有当项目的工程入口、验证方
 
 ### 交付执行
 
-把 PRD 拆成可领取的 issue，并推动实现、验证和代码协作平台交付。
+把 PRD 拆成可提交的 Task，并在同一 Spec 分支完成实现、验证和代码协作平台交付。
 
-- `team-prd-to-alignment`：把结构化 PRD 转换为适合需求、研发和项目管理评审的对齐材料。
-- `team-prd-to-issues`：把 PRD 拆解为可独立领取、可验证、按依赖排序的端到端工程 issue。
-- `team-issue-publish-github`：将本地 issue 草稿发布到 GitHub Issues，并回写发布结果。
-- `team-issue-publish-gitlab`：将本地 issue 草稿发布到 GitLab Issues，并回写发布结果。
-- `team-issue-batch-implement`：按依赖顺序批量编排多个可自主执行 issue 的实现与验证，并支持失败即停和恢复续跑。
-- `team-issue-implement`：围绕单个 issue 使用行为测试、TDD、现有代码复用和最小实现模式完成变更。
-- `team-issue-verify`：独立验证单个 issue 的实现是否满足验收标准、PRD、风险和最小实现要求。
-- `team-issue-create-pr-github`：推送已完成的 issue 分支并创建关联 issue 的 GitHub Pull Request。
-- `team-issue-create-mr-gitlab`：推送已完成的 issue 分支并创建关联 issue 的 GitLab Merge Request。
+- `team-prd-to-brief`：把结构化 PRD 转换为适合需求、研发和项目管理评审的简报。
+- `team-prd-to-tasks`：把 PRD 拆解为可独立实现、验证并形成一个逻辑 commit 的工程 Task。
+- `team-task-batch-implement`：在同一 Spec 分支按依赖顺序批量实现、验证并逐个提交多个 Task。
+- `team-task-implement`：围绕单个 Task 使用行为测试、TDD、现有代码复用和最小实现模式完成一个本地 commit。
+- `team-task-verify`：独立验证单个 Task 是否满足验收标准、PRD、风险和 commit 边界。
+- `team-spec-create-issue-github`：将完整 Spec 创建或同步为一个 GitHub Issue，Tasks 作为 checklist。
+- `team-spec-create-issue-gitlab`：将完整 Spec 创建或同步为一个 GitLab Issue，Tasks 作为 checklist。
+- `team-spec-create-pr-github`：推送 Spec 共享分支并为全部 Task commits 创建一个 GitHub Pull Request。
+- `team-spec-create-mr-gitlab`：推送 Spec 共享分支并为全部 Task commits 创建一个 GitLab Merge Request。
 
 ### 技术债治理
 
@@ -144,7 +146,7 @@ Codex Harness 不在稳定主线内。只有当项目的工程入口、验证方
 - `team-tech-debt-analyze`：只读分析项目或模块，输出有证据的维护性、稳定性、测试、架构和交付风险。
 - `team-tech-debt-refine`：通过用户确认细化技术债需求，明确证据、影响范围、风险等级和验收口径。
 - `team-tech-debt-review`：评审技术债规格的风险、优先级、阻塞项和工程拆解 ready 状态。
-- `team-tech-debt-to-issues`：把已评审的技术债规格拆解为可独立领取、可验证、按依赖排序的工程 issue。
+- `team-tech-debt-to-tasks`：把已评审的技术债规格拆解为可独立实现、验证并提交的工程 Task。
 
 ### 实验能力：Codex Harness
 
@@ -174,8 +176,9 @@ team-spec/
 │       │   └── reviews.md
 │       ├── prd/
 │       │   ├── prd.md
-│       │   └── alignment.md                # 可选：人类评审材料
-│       ├── issues/
+│       │   └── brief.md                    # 可选：人类评审简报
+│       ├── tasks/                          # T001 等本地工程执行单元
+│       ├── DELIVERY.md                     # 可选：分支、远端 Issue 和 PR/MR
 │       ├── design/
 │       │   ├── functional-design.md        # 按需创建
 │       │   ├── codebase-onboarding/        # 代码库接手知识库
@@ -197,14 +200,15 @@ team-spec/
 
 - `team-spec-refine` 可以继承同一 slug 下的 `concept/whitepaper.md`。
 - `team-spec-to-prd` 读取已细化规格和评审报告。
-- `team-prd-to-issues` 以 `prd/prd.md` 为主输入，并参考全局语境、产品决策、规格语境和评审报告。
+- `team-prd-to-tasks` 以 `prd/prd.md` 为主输入，并参考全局语境、产品决策、规格语境和评审报告。
 - `team-codebase-walk` 读取 `design/codebase-onboarding/`，并把走读记录写入 `design/codebase-walk/`。
 
 机器可读状态按写入位置区分：
 
 - `active/{slug}/STATUS.md` 只记录整个工作区的生命周期。
 - `spec/reviews.md` 记录 `ready`、`needs-refinement` 或 `blocked` 等阶段评审结果。
-- issue 草稿记录 `draft`、`published`、`implementing`、`verified`、`pr-created` 或 `mr-created` 等交付状态。
+- Task 文件记录 `draft`、`implementing`、`needs-changes`、`blocked`、`verified` 或 `committed`。
+- `DELIVERY.md` 记录整个 Spec 的共享分支、远端 Issue、Task/commit 映射和 PR/MR。
 
 ## 参与维护
 
@@ -216,6 +220,7 @@ team-spec/
 
 ```bash
 python3 scripts/check_skills.py
+python3 -m unittest discover -s tests -v
 pre-commit run --all-files
 ```
 
