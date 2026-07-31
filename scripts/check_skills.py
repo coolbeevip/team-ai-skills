@@ -261,6 +261,24 @@ def check_skill(path: Path) -> list[str]:
                     f"missing batch commit confirmation text {required_text!r}"
                 )
 
+    if name == "team-discovery-robotics":
+        required_interaction_mode_contract = (
+            "## 交互模式",
+            "### 同步引导模式",
+            "### 异步批量模式",
+            "每批默认提出五到八个高价值问题，最多十个",
+            "不得在同一批次中并列强依赖问题",
+            "Q{批次}.{序号}",
+            "收到部分回答时",
+            "批次复盘",
+            "用户可以在同一 slug 中随时切换模式",
+        )
+        for required_text in required_interaction_mode_contract:
+            if required_text not in text:
+                errors.append(
+                    f"missing robotics discovery interaction text {required_text!r}"
+                )
+
     heading_lines: dict[str, list[int]] = {}
     for line_number, heading in iter_markdown_headings(text):
         heading_lines.setdefault(heading, []).append(line_number)

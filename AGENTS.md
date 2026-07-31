@@ -6,7 +6,7 @@
 
 - `skills/product/`：产品定义职责，包括产品概念白皮书、机器人场景需求发现、需求细化、规格评审和 PRD 固化。
 - `skills/product/team-concept-whitepaper/`：用于在产品规划阶段定义产品机会、定位、价值、能力边界和演进方向，并编写产品概念白皮书。
-- `skills/product/team-discovery-robotics/`：用于通过引导启发式访谈，把具身智能、服务机器人或工业机器人的模糊想法转化为有边界、可验证的场景需求。
+- `skills/product/team-discovery-robotics/`：用于通过同步逐问或异步批量的引导启发式访谈，把具身智能、服务机器人或工业机器人的模糊想法转化为有边界、可验证的场景需求。
 - `skills/product/team-spec-refine/`：用于与用户反复确认并打磨规格。
 - `skills/product/team-spec-review/`：用于评审规格风险和 ready 状态。
 - `skills/product/team-spec-to-prd/`：用于把 ready 的规格固化成 PRD。

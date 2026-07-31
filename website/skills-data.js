@@ -26,18 +26,22 @@ window.SRT_SKILLS = Object.freeze([
     "name": "team-discovery-robotics",
     "category": "product",
     "description": {
-      "zh": "通过引导启发式访谈，将具身智能、服务机器人或工业机器人的模糊想法转化为有边界、可实现、可验证的场景需求。",
-      "en": "Guide product teams through heuristic discovery of scoped, feasible, and testable robotics scenarios."
+      "zh": "通过同步逐问或异步批量的引导启发式访谈，将具身智能、服务机器人或工业机器人的模糊想法转化为有边界、可验证的场景需求。",
+      "en": "Guide product teams through live or asynchronous discovery of scoped and testable robotics scenarios."
     },
     "triggers": [
       "梳理机器人场景需求",
       "访谈机器人客户需求",
       "具身智能需求不清楚",
       "规划机器人场景 MVP",
+      "和客户现场逐问需求",
+      "生成异步机器人访谈问题",
       "discover robotics requirements",
       "scope a robotics scenario",
       "interview for embodied AI needs",
-      "define a robotics MVP"
+      "define a robotics MVP",
+      "run a live robotics discovery interview",
+      "prepare asynchronous robotics discovery questions"
     ],
     "version": "1.0",
     "experimental": false
