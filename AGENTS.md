@@ -4,8 +4,9 @@
 
 本仓库是团队大语言模型技能库。技能统一放在标准目录 `skills/` 下，`skills/` 的一级子目录代表团队职责域。
 
-- `skills/product/`：产品定义职责，包括产品概念白皮书、需求细化、规格评审和 PRD 固化。
+- `skills/product/`：产品定义职责，包括产品概念白皮书、机器人场景需求发现、需求细化、规格评审和 PRD 固化。
 - `skills/product/team-concept-whitepaper/`：用于在产品规划阶段定义产品机会、定位、价值、能力边界和演进方向，并编写产品概念白皮书。
+- `skills/product/team-discovery-robotics/`：用于通过引导启发式访谈，把具身智能、服务机器人或工业机器人的模糊想法转化为有边界、可验证的场景需求。
 - `skills/product/team-spec-refine/`：用于与用户反复确认并打磨规格。
 - `skills/product/team-spec-review/`：用于评审规格风险和 ready 状态。
 - `skills/product/team-spec-to-prd/`：用于把 ready 的规格固化成 PRD。
@@ -18,8 +19,8 @@
 - `skills/delivery/`：交付执行职责，包括 PRD 评审简报、Task 拆解、实现、验证和 Spec 级远端交付。
 - `skills/delivery/team-prd-to-brief/`：用于把 AI 结构化 PRD 转换为需求、研发和项目管理可评审的演示文稿式简报。
 - `skills/delivery/team-prd-to-tasks/`：用于把 PRD 拆解成可独立实现、验证并提交的工程 Task。
-- `skills/delivery/team-task-batch-implement/`：用于在同一 Spec 分支按依赖顺序批量实现、验证并逐个提交多个 Task。
-- `skills/delivery/team-task-implement/`：用于按行为测试和 TDD 循环实现单个 Task，验证后形成一个本地 commit。
+- `skills/delivery/team-task-batch-implement/`：用于在同一 Spec 分支按依赖顺序批量实现和验证多个 Task，并在用户逐个检查差异、确认后提交。
+- `skills/delivery/team-task-implement/`：用于按行为测试和 TDD 循环实现单个 Task，验证后等待用户检查差异并确认，再形成一个本地 commit。
 - `skills/delivery/team-task-verify/`：用于验证单个 Task 实现是否满足验收标准、PRD 和 commit 边界。
 - `skills/delivery/team-spec-create-issue-github/`：用于把完整 Spec 创建或同步为一个 GitHub Issue，Tasks 作为 checklist。
 - `skills/delivery/team-spec-create-issue-gitlab/`：用于把完整 Spec 创建或同步为一个 GitLab Issue，Tasks 作为 checklist。
@@ -48,7 +49,7 @@
 - `team-spec/CONTEXT.md`：跨多个需求复用的全局产品语境，包括规范术语、角色、通用流程和通用业务规则。
 - `team-spec/STYLE.md`：可选的项目级公共写作风格，约束文档、用户可见说明和代码注释；路径由 `team-spec/config.yml` 的 `writing_style.guide` 指定。
 - `team-spec/decisions/`：跨多个需求长期有效的产品决策记录，仅在决策影响后续多个需求且反悔成本较高时创建。
-- `team-spec/active/{slug}/spec/`：单个需求的规格阶段产物，包括 `CONTEXT.md`、`decisions/`、`refine.md`、`reviews.md`。
+- `team-spec/active/{slug}/spec/`：单个需求的规格阶段产物，包括可选的机器人场景发现文档 `discovery.md`，以及 `CONTEXT.md`、`decisions/`、`refine.md`、`reviews.md`。
 - `team-spec/active/{slug}/concept/`：单个产品或产品体系的概念阶段产物，默认白皮书为 `whitepaper.md`，作为规格细化和后续 PRD 的上游输入。
 - `team-spec/active/{slug}/prd/`：单个需求的 PRD 固化产物，是需求到工程的正式交接边界，包括 `prd.md` 与可选 `brief.md`。
 - `team-spec/active/{slug}/tasks/`：单个需求 PRD 或技术债规格拆解后的工程 Task。
@@ -67,13 +68,13 @@
 
 同一个 `blocked` 可以出现在不同对象中，但只表示该对象被阻塞；读取方必须结合文件位置判断是工作区、阶段评审还是 Task 被阻塞。用户可见回复可以使用自然语言，写入文件的状态值必须使用上述机器值。
 
-每个需求使用唯一 slug 串联全流程，格式为 `{yyyy-mm-dd}-{short-english-slug}`。例如：`team-spec/active/2026-05-10-export-filter/concept/whitepaper.md`、`team-spec/active/2026-05-10-export-filter/spec/refine.md`、`team-spec/active/2026-05-10-export-filter/spec/reviews.md`、`team-spec/active/2026-05-10-export-filter/prd/prd.md`、`team-spec/active/2026-05-10-export-filter/tasks/`。
+每个需求使用唯一 slug 串联全流程，格式为 `{yyyy-mm-dd}-{short-english-slug}`。例如：`team-spec/active/2026-05-10-export-filter/concept/whitepaper.md`、`team-spec/active/2026-05-10-export-filter/spec/discovery.md`、`team-spec/active/2026-05-10-export-filter/spec/refine.md`、`team-spec/active/2026-05-10-export-filter/spec/reviews.md`、`team-spec/active/2026-05-10-export-filter/prd/prd.md`、`team-spec/active/2026-05-10-export-filter/tasks/`。
 
-同一个 slug 的所有 Task 必须在同一个 `{slug}` 本地分支上开发，分支名不得添加 `spec/` 前缀。每个 Task 验证通过后形成一个逻辑 commit；全部必需 Task 都达到 `committed` 后，才允许为该 Spec 一次性创建一个 PR 或 MR。
+同一个 slug 的所有 Task 必须在同一个 `{slug}` 本地分支上开发，分支名不得添加 `spec/` 前缀。每个 Task 验证通过后，必须先保持未暂存状态供用户检查实际差异；只有用户明确确认后才形成一个逻辑 commit。全部必需 Task 都达到 `committed` 后，才允许为该 Spec 一次性创建一个 PR 或 MR。
 
 开始新需求前，`team-spec-refine` 只需检查目标 slug 是否已存在。若 `team-spec/active/` 下有其他 slug，不得要求用户归档；应允许多个未归档需求并行存在。只有当用户请求无法唯一确定 slug 或目标文件路径时，才要求用户指定 slug、继续某个已有需求或创建新的 slug。
 
-下游技能应默认读取全局上下文和同一 slug 的上游阶段产物。例如 `team-prd-to-tasks` 默认以 `team-spec/active/{slug}/prd/prd.md` 为主输入，并参考 `team-spec/CONTEXT.md`、`team-spec/decisions/`、`team-spec/active/{slug}/spec/CONTEXT.md`、`team-spec/active/{slug}/spec/decisions/` 和评审报告。`team-spec/archive/` 默认只读；除非用户显式指定归档 slug 或文件路径，否则技能不得扫描或修改 archive 内容。
+下游技能应默认读取全局上下文和同一 slug 的上游阶段产物。例如 `team-spec-refine` 在同一 slug 存在 `spec/discovery.md` 时必须读取并继承已确认的场景结论；`team-prd-to-tasks` 默认以 `team-spec/active/{slug}/prd/prd.md` 为主输入，并参考 `team-spec/CONTEXT.md`、`team-spec/decisions/`、`team-spec/active/{slug}/spec/CONTEXT.md`、`team-spec/active/{slug}/spec/decisions/` 和评审报告。`team-spec/archive/` 默认只读；除非用户显式指定归档 slug 或文件路径，否则技能不得扫描或修改 archive 内容。
 
 ## 构建、测试与开发命令
 
@@ -98,6 +99,7 @@
 - 目录名使用 kebab-case，例如 `team-spec-review`。
 - 所有技能名必须以 `team-` 开头。
 - 产品规格类技能使用 `team-spec-` 前缀，例如 `team-spec-refine`。
+- 领域需求发现技能使用 `team-discovery-` 前缀，例如 `team-discovery-robotics`。
 - 交付执行类技能按输入和聚合边界使用 `team-prd-`、`team-task-` 或 `team-spec-` 前缀，例如 `team-prd-to-tasks`、`team-task-implement`、`team-spec-create-pr-github`。
 - 技术债类技能使用 `team-tech-debt-` 前缀，例如 `team-tech-debt-refine`。
 - Codex harness 类技能使用 `team-codex-` 前缀，例如 `team-codex-harness`。

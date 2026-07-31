@@ -89,7 +89,7 @@ triggers:
 - 通过的验收项已勾选，未通过项保留并说明原因。
 - 记录实际执行的命令、结果和跳过项。
 - 未创建 commit、push、远端 Issue、PR 或 MR。
-- 结果可供 `team-task-implement` 决定是否创建 Task commit。
+- 结果可供 `team-task-implement` 进入提交前确认；验证本身不授权创建 Task commit。
 
 ## 最终回复
 
@@ -100,4 +100,4 @@ triggers:
 - 实际验证命令、结果和跳过项。
 - 单 commit 边界结论。
 - 原 Task 回写路径。
-- `verified` 时说明可由实现流程创建本地 commit；其他状态给出补救动作。
+- `verified` 时说明应先由用户检查实际差异并确认，再由实现流程创建本地 commit；其他状态给出补救动作。

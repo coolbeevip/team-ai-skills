@@ -1,6 +1,6 @@
 ---
 name: team-prd-to-tasks
-description: 将 PRD 拆解为可独立实现、验证并提交的工程 Task。Break a PRD into dependency-ordered engineering tasks that each produce one verified local commit.
+description: 将 PRD 拆解为可独立实现、验证并在用户确认差异后提交的工程 Task。Break a PRD into dependency-ordered tasks that each produce one user-confirmed local commit after verification.
 license: MIT
 metadata:
   author: coolbeevip
@@ -16,7 +16,7 @@ triggers:
 
 # PRD 转工程 Tasks
 
-把一个已确认 PRD 拆成可独立实现、独立验证，并在验证通过后形成一个逻辑 commit 的工程 Task。Task 是本地执行单元，不等同于 GitHub Issue 或 GitLab Issue。
+把一个已确认 PRD 拆成可独立实现、独立验证，并在验证通过、用户检查差异且明确确认后形成一个逻辑 commit 的工程 Task。Task 是本地执行单元，不等同于 GitHub Issue 或 GitLab Issue。
 
 ## 触发边界
 
@@ -84,7 +84,7 @@ access_policy:
 - 覆盖一个窄而完整的工程行为切片。
 - 有独立验收标准和明确依赖。
 - 能在 Spec 共享分支上独立实现和验证。
-- 验证通过后形成一个逻辑 commit。
+- 验证通过并经用户检查实际差异、明确确认后形成一个逻辑 commit。
 - 不要求独立分支、独立 PR 或独立 MR。
 - 使用本地稳定标识 `T001`、`T002`、`T003`，不把远端 Issue 编号当成本地 Task ID。
 

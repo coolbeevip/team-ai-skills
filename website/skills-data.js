@@ -23,6 +23,26 @@ window.SRT_SKILLS = Object.freeze([
     "experimental": false
   },
   {
+    "name": "team-discovery-robotics",
+    "category": "product",
+    "description": {
+      "zh": "通过引导启发式访谈，将具身智能、服务机器人或工业机器人的模糊想法转化为有边界、可实现、可验证的场景需求。",
+      "en": "Guide product teams through heuristic discovery of scoped, feasible, and testable robotics scenarios."
+    },
+    "triggers": [
+      "梳理机器人场景需求",
+      "访谈机器人客户需求",
+      "具身智能需求不清楚",
+      "规划机器人场景 MVP",
+      "discover robotics requirements",
+      "scope a robotics scenario",
+      "interview for embodied AI needs",
+      "define a robotics MVP"
+    ],
+    "version": "1.0",
+    "experimental": false
+  },
+  {
     "name": "team-spec-refine",
     "category": "product",
     "description": {
@@ -236,8 +256,8 @@ window.SRT_SKILLS = Object.freeze([
     "name": "team-prd-to-tasks",
     "category": "delivery",
     "description": {
-      "zh": "将 PRD 拆解为可独立实现、验证并提交的工程 Task。",
-      "en": "Break a PRD into dependency-ordered engineering tasks that each produce one verified local commit."
+      "zh": "将 PRD 拆解为可独立实现、验证并在用户确认差异后提交的工程 Task。",
+      "en": "Break a PRD into dependency-ordered tasks that each produce one user-confirmed local commit after verification."
     },
     "triggers": [
       "拆 Task",
@@ -290,8 +310,8 @@ window.SRT_SKILLS = Object.freeze([
     "name": "team-task-batch-implement",
     "category": "delivery",
     "description": {
-      "zh": "在同一 Spec 分支按依赖顺序批量实现、验证并逐个提交多个 Task。",
-      "en": "Batch implement tasks on one shared spec branch, verifying and committing each task in dependency order with fail-fast recovery."
+      "zh": "在同一 Spec 分支按依赖顺序批量实现多个 Task，每个 Task 验证后等待用户检查差异并确认提交。",
+      "en": "Batch implement tasks on one shared spec branch with per-task diff review and commit confirmation."
     },
     "triggers": [
       "批量实现 Task",
@@ -308,8 +328,8 @@ window.SRT_SKILLS = Object.freeze([
     "name": "team-task-implement",
     "category": "delivery",
     "description": {
-      "zh": "在 Spec 共享分支上实现单个工程 Task，验证通过后形成一个本地逻辑 commit。",
-      "en": "Implement one engineering task on its shared spec branch and create one local logical commit after verification."
+      "zh": "在 Spec 共享分支实现单个工程 Task，验证通过并经用户检查差异、明确确认后创建本地逻辑 commit。",
+      "en": "Implement one task on its shared spec branch, pausing for user diff review and confirmation before the local commit."
     },
     "triggers": [
       "实现 Task",
@@ -454,8 +474,8 @@ window.SRT_SKILLS = Object.freeze([
     "name": "team-tech-debt-to-tasks",
     "category": "tech-debt",
     "description": {
-      "zh": "将已评审技术债规格拆解为可独立实现、验证并提交的工程 Task。",
-      "en": "Break a reviewed technical-debt spec into dependency-ordered tasks that each produce one verified local commit."
+      "zh": "将已评审技术债拆为可独立实现、验证并在用户确认差异后提交的 Task。",
+      "en": "Break a reviewed technical-debt spec into tasks that each produce one user-confirmed local commit after verification."
     },
     "triggers": [
       "技术债拆 Task",

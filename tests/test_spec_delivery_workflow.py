@@ -182,6 +182,36 @@ def create_git_delivery_repo(remote_url: str) -> tuple[tempfile.TemporaryDirecto
 
 
 class SpecDeliveryWorkflowTests(unittest.TestCase):
+    def test_task_implement_requires_post_verification_commit_confirmation(self) -> None:
+        text = (
+            ROOT / "skills/delivery/team-task-implement/SKILL.md"
+        ).read_text(encoding="utf-8")
+
+        verified = text.index("9. 验证通过后、暂存任何文件之前")
+        confirmed = text.index("11. 只有用户明确选择")
+        committed = text.index("12. 创建一个逻辑 commit")
+
+        self.assertLess(verified, confirmed)
+        self.assertLess(confirmed, committed)
+        self.assertIn("🔍 暂不提交，我要先查看 diff", text)
+        self.assertIn("🔄 继续修改当前 Task", text)
+        self.assertIn("不得把用户在任务开始时说的“实现并提交”", text)
+
+    def test_task_batch_requires_confirmation_for_each_task(self) -> None:
+        text = (
+            ROOT / "skills/delivery/team-task-batch-implement/SKILL.md"
+        ).read_text(encoding="utf-8")
+
+        previewed = text.index("8. 当前 Task 达到 `verified` 后展示")
+        confirmed = text.index("10. 只有用户明确确认当前 Task 后")
+        next_task = text.index("11. 当前 Task 达到 `committed` 后继续下一个")
+
+        self.assertLess(previewed, confirmed)
+        self.assertLess(confirmed, next_task)
+        self.assertIn("## 逐 Task 提交确认", text)
+        self.assertIn("一次确认只覆盖一个 Task 的当前实际 diff", text)
+        self.assertIn("🔍 暂不提交，我要先查看 diff", text)
+
     def test_legacy_alignment_archives_as_brief(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

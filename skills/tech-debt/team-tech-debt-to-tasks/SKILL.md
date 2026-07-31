@@ -1,6 +1,6 @@
 ---
 name: team-tech-debt-to-tasks
-description: 将已评审技术债规格拆解为可独立实现、验证并提交的工程 Task。Break a reviewed technical-debt spec into dependency-ordered tasks that each produce one verified local commit.
+description: 将已评审技术债拆为可独立实现、验证并在用户确认差异后提交的 Task。Break a reviewed technical-debt spec into tasks that each produce one user-confirmed local commit after verification.
 license: MIT
 metadata:
   author: coolbeevip
@@ -16,7 +16,7 @@ triggers:
 
 # 技术债转工程 Tasks
 
-把通过评审的技术债规格拆成可独立实现、验证并形成一个逻辑 commit 的工程 Task。Task 是本地执行单元，不等同于远端 Issue。
+把通过评审的技术债规格拆成可独立实现、验证，并在用户检查实际差异且明确确认后形成一个逻辑 commit 的工程 Task。Task 是本地执行单元，不等同于远端 Issue。
 
 ## 触发边界
 
@@ -57,7 +57,7 @@ triggers:
 - 处理一个明确技术债风险或可独立验证的治理切片。
 - 给出当前证据、预期改善、验证方法和回滚边界。
 - 在与 slug 完全同名的 `{slug}` 分支上实现，不添加 `spec/` 前缀。
-- 验证通过后形成一个逻辑 commit。
+- 验证通过并经用户检查实际差异、明确确认后形成一个逻辑 commit。
 - 使用 `T001` 等本地 ID，不复用远端 Issue 编号。
 
 状态使用 `draft`、`implementing`、`needs-changes`、`blocked`、`verified`、`committed`。PR/MR 状态不得写入 Task。

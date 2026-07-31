@@ -229,6 +229,38 @@ def check_skill(path: Path) -> list[str]:
             if required_text not in text:
                 errors.append(f"missing PRD brief contract text {required_text!r}")
 
+    if name == "team-task-implement":
+        required_commit_confirmation_contract = (
+            "## 提交前确认",
+            "验证通过后、暂存任何文件之前",
+            "✅ 接受当前实现并提交",
+            "🔍 暂不提交，我要先查看 diff",
+            "🔄 继续修改当前 Task",
+            "⏸️ 暂停并保留当前改动",
+            "不得把用户在任务开始时说的“实现并提交”",
+        )
+        for required_text in required_commit_confirmation_contract:
+            if required_text not in text:
+                errors.append(
+                    f"missing task commit confirmation text {required_text!r}"
+                )
+
+    if name == "team-task-batch-implement":
+        required_batch_confirmation_contract = (
+            "## 逐 Task 提交确认",
+            "每个 Task 都必须独立执行提交前确认",
+            "✅ 接受当前实现并提交",
+            "🔍 暂不提交，我要先查看 diff",
+            "🔄 继续修改当前 Task",
+            "⏸️ 暂停并保留当前改动",
+            "一次确认只覆盖一个 Task 的当前实际 diff",
+        )
+        for required_text in required_batch_confirmation_contract:
+            if required_text not in text:
+                errors.append(
+                    f"missing batch commit confirmation text {required_text!r}"
+                )
+
     heading_lines: dict[str, list[int]] = {}
     for line_number, heading in iter_markdown_headings(text):
         heading_lines.setdefault(heading, []).append(line_number)

@@ -22,6 +22,7 @@ CATEGORY_ORDER = {
 }
 SKILL_ORDER = [
     "team-concept-whitepaper",
+    "team-discovery-robotics",
     "team-spec-refine",
     "team-spec-review",
     "team-spec-to-prd",

@@ -1,6 +1,6 @@
 ---
 name: team-task-implement
-description: 在 Spec 共享分支上实现单个工程 Task，验证通过后形成一个本地逻辑 commit。Implement one engineering task on its shared spec branch and create one local logical commit after verification.
+description: 在 Spec 共享分支实现单个工程 Task，验证通过并经用户检查差异、明确确认后创建本地逻辑 commit。Implement one task on its shared spec branch, pausing for user diff review and confirmation before the local commit.
 license: MIT
 metadata:
   author: coolbeevip
@@ -16,7 +16,7 @@ triggers:
 
 # Task 实现
 
-实现 `team-prd-to-tasks` 或 `team-tech-debt-to-tasks` 生成的一个 Task。所有同 slug Task 共用与 slug 完全同名的 `{slug}` 分支，不添加 `spec/` 前缀；每个 Task 验证通过后形成一个本地逻辑 commit。
+实现 `team-prd-to-tasks` 或 `team-tech-debt-to-tasks` 生成的一个 Task。所有同 slug Task 共用与 slug 完全同名的 `{slug}` 分支，不添加 `spec/` 前缀；每个 Task 验证通过后，必须先让用户检查实际差异并确认，再形成一个本地逻辑 commit。
 
 ## 触发边界
 
@@ -56,8 +56,8 @@ triggers:
 
 - 满足 Task 验收标准的代码和测试。
 - `team-task-verify` 的独立验证结果。
-- 验证通过后的一个本地逻辑 commit。
-- Task 文件中的 `Status: committed`、commit SHA、实现和验证记录。
+- 用户检查差异并明确确认后创建的一个本地逻辑 commit。
+- 等待确认时 Task 文件中的 `Status: verified`；提交后更新为 `Status: committed`，并记录 commit SHA、实现和验证结果。
 
 不得 push、创建远端 Issue、PR 或 MR。`team-spec/` 下的运行时文件不得加入代码 commit。
 
@@ -90,10 +90,12 @@ triggers:
 6. 运行 Task 相关测试。
 7. 自动衔接 `team-task-verify`，不在验证前提交。
 8. 验证不是 `verified` 时停止，不创建 commit。
-9. 验证通过后，只暂存本 Task 的代码、测试和必要配置；排除 `team-spec/` 和无关改动。
-10. 创建一个逻辑 commit，推荐信息为 `T001: {task title}`。
-11. 确认 commit 已创建且工作区没有遗留的本 Task 代码变更。
-12. 回写 Task：`Status: committed`、`Commit: {sha}`、实现、验证命令和残余风险；不得暂存该回写。
+9. 验证通过后、暂存任何文件之前，生成提交前检查摘要并进入“提交前确认”。
+10. 用户选择继续修改时，完成修改、重新运行受影响验证并再次生成检查摘要；旧确认立即失效。
+11. 只有用户明确选择“接受当前实现并提交”后，才暂存本 Task 的代码、测试和必要配置；排除 `team-spec/` 和无关改动。
+12. 创建一个逻辑 commit，推荐信息为 `T001: {task title}`。
+13. 确认 commit 已创建且工作区没有遗留的本 Task 代码变更。
+14. 回写 Task：`Status: committed`、`Commit: {sha}`、实现、验证命令和残余风险；不得暂存该回写。
 
 ## TDD 循环
 
@@ -105,10 +107,33 @@ REFACTOR：相关测试通过后再整理结构
 
 测试应走真实公共路径；Mock 只用于外部系统、时间、随机性、网络或昂贵依赖。
 
+## 提交前确认
+
+验证通过后、暂存任何文件之前，必须暂停自动流程，让用户有机会在本地检查实际代码差异。不得先执行 `git add`，否则普通 `git diff` 无法直接展示待提交变化。
+
+先向用户提供：
+
+- 当前 Task、分支和验证状态。
+- 修改及新增文件清单、`git diff --stat` 摘要和拟提交范围。
+- 已运行的验证命令、结果、跳过项和残余风险。
+- 可在本地使用的检查入口：`git status --short`、`git diff --stat` 和 `git diff`。这些命令只写在用户可复制的说明中，不添加环境专用执行包装器。
+
+然后给出以下选择并等待用户明确回复：
+
+1. `✅ 接受当前实现并提交`：按已展示范围暂存并创建本地 commit。
+2. `🔍 暂不提交，我要先查看 diff`：保持所有实现未暂存、未提交，等待用户检查后再次决定。
+3. `🔄 继续修改当前 Task`：询问或读取修改意见，修改并重新验证，再回到本确认节点。
+4. `⏸️ 暂停并保留当前改动`：停止本轮，不提交、不回滚，保持 `Status: verified` 和当前工作区。
+
+不得把用户在任务开始时说的“实现并提交”、AFK 授权或批量执行授权视为这次提交确认。确认只对当前已展示的 Task、文件范围和实际 diff 有效；确认后只要代码、测试或必要配置再次变化，就必须重新验证并再次确认。
+
+提交前确认是代码交付控制点，不是产品或技术方案决策，不改变 Task 原有的 AFK/HITL 分类。
+
 ## Commit 合同
 
 - 一个 Task 对应一个最终逻辑 commit。
 - commit 只能在 Task 验证通过后创建。
+- commit 只能在用户查看提交前摘要并明确确认当前实际 diff 后创建。
 - commit 范围必须与 Task 验收标准一致。
 - 不提交 `team-spec/`、无关格式化、顺手重构或其他 Task 的提前实现。
 - 若实现无法安全形成一个 commit，应停止并回到拆解技能调整边界。
@@ -118,8 +143,9 @@ REFACTOR：相关测试通过后再整理结构
 
 - 当前分支是该 slug 的 Spec 共享分支。
 - Task 的所有验收标准通过独立验证。
+- 用户已基于当前实际 diff 明确确认提交。
 - 已创建且只创建一个对应逻辑 commit。
-- Task 文件记录 `committed` 和有效 commit SHA。
+- Task 文件记录 `committed` 和有效 commit SHA；如果用户选择查看、继续修改或暂停，则保持 `verified`，不得伪装为完成。
 - 没有 push、远端 Issue、PR 或 MR。
 - `team-spec/` 回写保持未暂存。
 
@@ -130,6 +156,6 @@ REFACTOR：相关测试通过后再整理结构
 - Task 路径、ID、slug 和共享分支。
 - 主要代码和测试变化。
 - 验收覆盖、验证命令和结果。
-- commit SHA、commit 信息和范围。
+- 提交前确认结果；已提交时包含 commit SHA、commit 信息和范围，未提交时明确说明当前改动仍可用 `git diff` 检查。
 - 未提交的 `team-spec/` 回写。
 - 跳过项、残余风险和下一步。
