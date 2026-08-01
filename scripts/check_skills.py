@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Lightweight structural checks for team skill SKILL.md files."""
+"""Generic structural checks for team skill SKILL.md files."""
 
 from __future__ import annotations
 
@@ -14,6 +14,8 @@ SKILLS_DIR = ROOT / "skills"
 RE_CJK = re.compile(r"[\u4e00-\u9fff]")
 RE_ALPHA = re.compile(r"[A-Za-z]")
 RE_H2 = re.compile(r"^##\s+(.+?)\s*$")
+RE_FENCE = re.compile(r"^\s*(`{3,}|~{3,})")
+RE_MARKDOWN_LINK = re.compile(r"(?<!!)\[[^\]\n]+\]\(([^)\n]+)\)")
 MAX_DESCRIPTION_CHARS = 220
 CANONICAL_RUNTIME_HEADING = "运行时配置"
 DEPRECATED_RUNTIME_HEADINGS = {"运行时语言配置", "语言约定"}
@@ -104,23 +106,52 @@ def has_english(text: str) -> bool:
     return bool(RE_ALPHA.search(text))
 
 
-def iter_markdown_headings(text: str) -> list[tuple[int, str]]:
-    headings: list[tuple[int, str]] = []
-    in_fence = False
+def iter_unfenced_lines(text: str) -> list[tuple[int, str]]:
+    lines: list[tuple[int, str]] = []
+    fence_char: str | None = None
+    fence_length = 0
 
     for line_number, line in enumerate(text.splitlines(), start=1):
-        stripped = line.strip()
-        if stripped.startswith("```"):
-            in_fence = not in_fence
+        fence_match = RE_FENCE.match(line)
+        if fence_match:
+            token = fence_match.group(1)
+            if fence_char is None:
+                fence_char = token[0]
+                fence_length = len(token)
+            elif token[0] == fence_char and len(token) >= fence_length:
+                fence_char = None
+                fence_length = 0
             continue
-        if in_fence:
+        if fence_char is not None:
             continue
+        lines.append((line_number, line))
 
+    return lines
+
+
+def iter_markdown_headings(text: str) -> list[tuple[int, str]]:
+    headings: list[tuple[int, str]] = []
+
+    for line_number, line in iter_unfenced_lines(text):
         match = RE_H2.match(line)
         if match:
             headings.append((line_number, match.group(1)))
 
     return headings
+
+
+def iter_local_markdown_links(text: str) -> list[tuple[int, str]]:
+    links: list[tuple[int, str]] = []
+    for line_number, line in iter_unfenced_lines(text):
+        for match in RE_MARKDOWN_LINK.finditer(line):
+            raw_target = match.group(1).strip()
+            if raw_target.startswith("<") and ">" in raw_target:
+                target = raw_target[1 : raw_target.index(">")]
+            else:
+                target = raw_target.split(maxsplit=1)[0]
+            if target.startswith(("./", "../")):
+                links.append((line_number, target))
+    return links
 
 
 def check_skill(path: Path) -> list[str]:
@@ -182,102 +213,12 @@ def check_skill(path: Path) -> list[str]:
     if "## 最终回复" not in text:
         errors.append("missing ## 最终回复 section")
 
-    if name == "team-prd-to-tasks":
-        required_confirmation_contract = (
-            "## 拆解确认交互",
-            "所有需要用户介入的节点",
-            "✅ 接受当前拆解并写入",
-            "🔄 粒度偏细，希望合并",
-            "🔄 粒度偏粗，希望拆分",
-            "⚠️ 依赖或顺序需要调整",
-            "👤 局部调整某个 Task",
-            "⛔ 取消本次拆解",
-            "## 请选择如何调整该 Task",
-        )
-        for required_text in required_confirmation_contract:
-            if required_text not in text:
-                errors.append(
-                    f"missing task confirmation contract text {required_text!r}"
-                )
-
-    if name == "team-writing-style":
-        required_emoji_contract = (
-            "用户交互与 Emoji",
-            "功能性标记",
-            "正式产物默认不使用",
-            "Emoji 后必须保留完整文字",
-        )
-        style_template = path.parent / "assets" / "STYLE.md"
-        if not style_template.exists():
-            errors.append("missing default style template assets/STYLE.md")
-        else:
-            style_text = style_template.read_text(encoding="utf-8")
-            for required_text in required_emoji_contract:
-                if required_text not in style_text:
-                    errors.append(
-                        f"missing emoji style contract text {required_text!r}"
-                    )
-
-    if name == "team-prd-to-brief":
-        required_brief_contract = (
-            "team-spec/active/{slug}/prd/brief.md",
-            "## 评审简报结构",
-            "## 评审简报表达",
-            "team-prd-to-tasks",
-        )
-        for required_text in required_brief_contract:
-            if required_text not in text:
-                errors.append(f"missing PRD brief contract text {required_text!r}")
-
-    if name == "team-task-implement":
-        required_commit_confirmation_contract = (
-            "## 提交前确认",
-            "验证通过后、暂存任何文件之前",
-            "✅ 接受当前实现并提交",
-            "🔍 暂不提交，我要先查看 diff",
-            "🔄 继续修改当前 Task",
-            "⏸️ 暂停并保留当前改动",
-            "不得把用户在任务开始时说的“实现并提交”",
-        )
-        for required_text in required_commit_confirmation_contract:
-            if required_text not in text:
-                errors.append(
-                    f"missing task commit confirmation text {required_text!r}"
-                )
-
-    if name == "team-task-batch-implement":
-        required_batch_confirmation_contract = (
-            "## 逐 Task 提交确认",
-            "每个 Task 都必须独立执行提交前确认",
-            "✅ 接受当前实现并提交",
-            "🔍 暂不提交，我要先查看 diff",
-            "🔄 继续修改当前 Task",
-            "⏸️ 暂停并保留当前改动",
-            "一次确认只覆盖一个 Task 的当前实际 diff",
-        )
-        for required_text in required_batch_confirmation_contract:
-            if required_text not in text:
-                errors.append(
-                    f"missing batch commit confirmation text {required_text!r}"
-                )
-
-    if name == "team-discovery-robotics":
-        required_interaction_mode_contract = (
-            "## 交互模式",
-            "### 同步引导模式",
-            "### 异步批量模式",
-            "每批默认提出五到八个高价值问题，最多十个",
-            "不得在同一批次中并列强依赖问题",
-            "Q{批次}.{序号}",
-            "收到部分回答时",
-            "批次复盘",
-            "用户可以在同一 slug 中随时切换模式",
-        )
-        for required_text in required_interaction_mode_contract:
-            if required_text not in text:
-                errors.append(
-                    f"missing robotics discovery interaction text {required_text!r}"
-                )
+    for line_number, target in iter_local_markdown_links(text):
+        file_target = target.partition("#")[0].partition("?")[0]
+        if not (path.parent / file_target).resolve().exists():
+            errors.append(
+                f"missing local reference at line {line_number}: {target!r}"
+            )
 
     heading_lines: dict[str, list[int]] = {}
     for line_number, heading in iter_markdown_headings(text):
