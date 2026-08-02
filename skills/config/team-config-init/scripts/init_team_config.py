@@ -13,6 +13,7 @@ from typing import Any
 
 TOP_LEVEL_RE = re.compile(r"^([A-Za-z0-9_-]+):(?:\s*(.*?))?\s*$")
 CHILD_RE = re.compile(r"^  ([A-Za-z0-9_-]+):(?:\s*(.*?))?\s*$")
+SCOPE_CHOICES = ("basic", "version-control", "access-policy", "writing-style", "all")
 
 
 def parse_args() -> argparse.Namespace:
@@ -31,6 +32,15 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--directory-file")
     parser.add_argument("--user-file-template")
     parser.add_argument("--writing-style-guide")
+    parser.add_argument(
+        "--scope",
+        action="append",
+        choices=SCOPE_CHOICES,
+        help=(
+            "Validation scope. Repeat for multiple scopes; use 'all' for the standalone "
+            "project baseline check. Defaults to 'basic'."
+        ),
+    )
     parser.add_argument("--overwrite", action="store_true")
     parser.add_argument("--execute", action="store_true")
     parser.add_argument("--json", action="store_true")
@@ -235,6 +245,84 @@ def unified_diff(path: Path, original: str, updated: str) -> str:
     )
 
 
+def configured_value(lines: list[str], path: tuple[str, ...]) -> str | None:
+    bounds = section_bounds(lines, path[0])
+    if bounds is None:
+        return None
+    start, end, raw = bounds
+    if len(path) == 1:
+        return scalar_value(raw) if raw else None
+    if raw:
+        return None
+    for index in range(start + 1, end):
+        match = CHILD_RE.match(lines[index])
+        if match and match.group(1) == path[1]:
+            child_raw = (match.group(2) or "").strip()
+            return scalar_value(child_raw) if child_raw else None
+    return None
+
+
+def validation_scopes(args: argparse.Namespace, lines: list[str]) -> list[str]:
+    requested = set(args.scope or ["basic"])
+    if "all" in requested:
+        requested = {"basic", "version-control"}
+    if section_bounds(lines, "version_control") is not None:
+        requested.add("version-control")
+    if section_bounds(lines, "access_policy") is not None:
+        requested.add("access-policy")
+    if section_bounds(lines, "writing_style") is not None:
+        requested.add("writing-style")
+    order = ("basic", "version-control", "access-policy", "writing-style")
+    return [scope for scope in order if scope in requested]
+
+
+def resolve_reference(raw_path: str) -> Path:
+    path = Path(raw_path)
+    return path if path.is_absolute() else Path.cwd() / path
+
+
+def validate_configuration(args: argparse.Namespace, updated: str) -> dict[str, Any]:
+    lines = updated.splitlines()
+    scopes = validation_scopes(args, lines)
+    required_fields: dict[str, tuple[tuple[str, ...], ...]] = {
+        "basic": (("language",),),
+        "version-control": (("version_control", "language"),),
+        "access-policy": (
+            ("access_policy", "mode"),
+            ("access_policy", "directory_file"),
+        ),
+        "writing-style": (("writing_style", "guide"),),
+    }
+    missing_fields: list[str] = []
+    for scope in scopes:
+        for path in required_fields[scope]:
+            if not configured_value(lines, path):
+                missing_fields.append(".".join(path))
+
+    missing_files: list[dict[str, str]] = []
+    references = (
+        ("access-policy", ("access_policy", "directory_file")),
+        ("writing-style", ("writing_style", "guide")),
+    )
+    for scope, path in references:
+        if scope not in scopes:
+            continue
+        value = configured_value(lines, path)
+        if not value:
+            continue
+        resolved = resolve_reference(value)
+        if not resolved.is_file():
+            missing_files.append({"field": ".".join(path), "path": value})
+
+    status = "valid" if not missing_fields and not missing_files else "incomplete"
+    return {
+        "status": status,
+        "scopes": scopes,
+        "missing_fields": missing_fields,
+        "missing_files": missing_files,
+    }
+
+
 def plan(args: argparse.Namespace) -> dict[str, Any]:
     path = Path(args.path)
     exists = path.exists()
@@ -253,6 +341,7 @@ def plan(args: argparse.Namespace) -> dict[str, Any]:
         "changes": changes,
         "diff": unified_diff(path, original, updated),
         "content": updated,
+        "validation": validate_configuration(args, updated),
     }
 
 
@@ -260,10 +349,17 @@ def main() -> int:
     args = parse_args()
     try:
         result = plan(args)
-        if args.execute and result["action"] != "unchanged":
-            path = Path(args.path)
-            path.parent.mkdir(parents=True, exist_ok=True)
-            path.write_text(result["content"], encoding="utf-8")
+        result["write_status"] = "not-requested"
+        if args.execute:
+            if result["validation"]["status"] != "valid":
+                result["write_status"] = "blocked-incomplete"
+            elif result["action"] == "unchanged":
+                result["write_status"] = "not-needed"
+            else:
+                path = Path(args.path)
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_text(result["content"], encoding="utf-8")
+                result["write_status"] = "written"
     except (OSError, ValueError) as error:
         if args.json:
             print(json.dumps({"error": str(error)}, ensure_ascii=False))
@@ -276,11 +372,17 @@ def main() -> int:
         print(f"Mode: {result['mode']}")
         print(f"Action: {result['action']}")
         print(f"Path: {result['path']}")
+        print(f"Write status: {result['write_status']}")
         if result["changes"]:
             print("Fields: " + ", ".join(result["changes"]))
         if result["diff"]:
             print(result["diff"], end="")
-    return 0
+        print(f"Validation: {result['validation']['status']}")
+        if result["validation"]["missing_fields"]:
+            print("Missing fields: " + ", ".join(result["validation"]["missing_fields"]))
+        for missing in result["validation"]["missing_files"]:
+            print(f"Missing file: {missing['field']} -> {missing['path']}")
+    return 0 if result["validation"]["status"] == "valid" else 2
 
 
 if __name__ == "__main__":

@@ -64,6 +64,93 @@ class ConfigInitTests(unittest.TestCase):
             config = (root / "team-spec/config.yml").read_text(encoding="utf-8")
             self.assertEqual('language: "zh-CN"\n', config)
 
+    def test_full_scope_reports_missing_version_control(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            config_path = root / "team-spec/config.yml"
+            config_path.parent.mkdir(parents=True)
+            config_path.write_text("language: zh-CN\n", encoding="utf-8")
+
+            result = run("--scope", "all", "--json", cwd=root)
+
+            self.assertEqual(2, result.returncode, result.stdout)
+            plan = json.loads(result.stdout)
+            self.assertEqual("unchanged", plan["action"])
+            self.assertEqual("incomplete", plan["validation"]["status"])
+            self.assertIn(
+                "version_control.language", plan["validation"]["missing_fields"]
+            )
+
+    def test_configured_reference_must_exist(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            config_path = root / "team-spec/config.yml"
+            config_path.parent.mkdir(parents=True)
+            config_path.write_text(
+                "language: zh-CN\n"
+                "access_policy:\n"
+                "  mode: default-readonly\n"
+                "  directory_file: team-spec/access_policy/default.md\n"
+                "  user_file_template: team-spec/access_policy/{user_name}.md\n",
+                encoding="utf-8",
+            )
+
+            result = run("--json", cwd=root)
+
+            self.assertEqual(2, result.returncode, result.stdout)
+            plan = json.loads(result.stdout)
+            self.assertEqual("incomplete", plan["validation"]["status"])
+            self.assertEqual(
+                [
+                    {
+                        "field": "access_policy.directory_file",
+                        "path": "team-spec/access_policy/default.md",
+                    }
+                ],
+                plan["validation"]["missing_files"],
+            )
+
+    def test_execute_is_blocked_when_selected_scope_is_incomplete(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            result = run(
+                "--language",
+                "zh-CN",
+                "--scope",
+                "all",
+                "--execute",
+                "--json",
+                cwd=root,
+            )
+
+            self.assertEqual(2, result.returncode, result.stdout)
+            plan = json.loads(result.stdout)
+            self.assertEqual("created", plan["action"])
+            self.assertEqual("blocked-incomplete", plan["write_status"])
+            self.assertFalse((root / "team-spec/config.yml").exists())
+
+    def test_user_file_template_does_not_require_concrete_file(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            policy_path = root / "team-spec/access_policy/default.md"
+            policy_path.parent.mkdir(parents=True)
+            policy_path.write_text("# Default access policy\n", encoding="utf-8")
+            config_path = root / "team-spec/config.yml"
+            config_path.write_text(
+                "language: zh-CN\n"
+                "access_policy:\n"
+                "  mode: default-readonly\n"
+                "  directory_file: team-spec/access_policy/default.md\n"
+                "  user_file_template: team-spec/access_policy/{user_name}.md\n",
+                encoding="utf-8",
+            )
+
+            result = run("--json", cwd=root)
+
+            self.assertEqual(0, result.returncode, result.stdout)
+            plan = json.loads(result.stdout)
+            self.assertEqual("valid", plan["validation"]["status"])
+
     def test_incremental_update_preserves_unknown_fields(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

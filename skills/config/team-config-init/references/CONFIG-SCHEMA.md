@@ -5,8 +5,9 @@
 1. 配置结构
 2. 字段职责
 3. 渐进式配置
-4. 优先级与兼容性
-5. 修改规则
+4. 校验范围与引用完整性
+5. 优先级与兼容性
+6. 修改规则
 
 ## 配置结构
 
@@ -58,6 +59,18 @@ language: zh-CN
 只有当前操作需要访问边界时才补充 `access_policy`。只有首次执行 Commit、Issue、PR 或 MR 且必需字段无法从 Git 证据唯一推断时，才补充 `version_control`。只有已有公共写作指南时才登记 `writing_style.guide`。
 
 纯对话、只读分析和不依赖稳定配置的预览不得仅因配置不存在而阻塞。
+
+## 校验范围与引用完整性
+
+- `basic`：要求 `language`。
+- `version-control`：要求 `version_control.language`；其他版本控制字段只在当前操作无法从 Git 证据唯一推断时补充。
+- `access-policy`：要求 `access_policy.mode`、`access_policy.directory_file`，并要求 `directory_file` 指向已存在的文件。
+- `writing-style`：要求 `writing_style.guide` 指向已存在的文件。
+- `all`：用户单独初始化或全面检查时使用，至少覆盖 `basic` 和 `version-control`，并校验配置中已经启用的可选节。
+
+配置中已经出现 `access_policy` 或 `writing_style` 时，即使当前只请求其他范围，也必须校验其具体文件引用，避免把悬空引用传播给下游技能。`user_file_template` 是动态路径模板，不要求所有潜在用户文件预先存在；只有解析到具体协作者且当前操作依赖该文件时才检查对应文件。
+
+`action: unchanged` 只表示 YAML 文本没有差异。只有 `validation.status: valid` 才表示所选范围配置完整；缺失字段或具体引用文件时使用 `incomplete`。
 
 ## 优先级与兼容性
 
