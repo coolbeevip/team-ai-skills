@@ -39,6 +39,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--repo", help="Target repository as owner/repo.")
     parser.add_argument("--remote", help="Git remote used to infer the target repo.")
     parser.add_argument("--title", help="Override the PRD-derived issue title.")
+    parser.add_argument("--body-file", help="Use a prewritten localized Issue body.")
     parser.add_argument("--token-env", default="GITHUB_TOKEN")
     parser.add_argument("--label", action="append", default=[])
     parser.add_argument("--milestone", type=int)
@@ -206,7 +207,13 @@ def language_labels(language: str) -> dict[str, str]:
     }
 
 
-def build_body(slug: str, prd_sections: dict[str, str], tasks: list[Task], language: str) -> str:
+def build_body(
+    slug: str,
+    prd_sections: dict[str, str],
+    tasks: list[Task],
+    language: str,
+    body_file: str | None = None,
+) -> str:
     zh = language.lower().startswith("zh")
     fallback = "未在 PRD 中单独说明。" if zh else "Not stated separately in the PRD."
     goal = section(prd_sections, "Goal", "目标", "Problem", "问题") or fallback
@@ -235,7 +242,21 @@ def build_body(slug: str, prd_sections: dict[str, str], tasks: list[Task], langu
         "acceptance": acceptance,
         "tasks": checklist,
     }
-    return Template(TEMPLATE_PATH.read_text(encoding="utf-8")).substitute(values).strip() + "\n"
+    generated = (
+        Template(TEMPLATE_PATH.read_text(encoding="utf-8"))
+        .substitute(values)
+        .strip()
+    )
+    if not body_file:
+        return generated + "\n"
+    custom = Path(body_file).read_text(encoding="utf-8").strip()
+    marker = f"<!-- team-spec-slug: {slug} -->"
+    additions = []
+    if marker not in custom:
+        additions.append(marker)
+    if any(task.task_id not in custom for task in tasks):
+        additions.append(f"## {values['tasks_heading']}\n\n{checklist}")
+    return custom + ("\n\n" + "\n\n".join(additions) if additions else "") + "\n"
 
 
 def delivery_sections(text: str) -> dict[str, str]:
@@ -371,12 +392,17 @@ def main() -> int:
     prd_sections = split_sections(prd_text)
     tasks = load_tasks(workspace)
     config = config_values()
-    language = args.language or config.get("language") or "en-US"
+    language = (
+        args.language
+        or config.get("version_control.language")
+        or config.get("language")
+        or "en-US"
+    )
     repo = infer_repo(args, config)
     title = args.title or first_heading(prd_text)
     if not title:
         raise SystemExit("Cannot derive Issue title from PRD; provide --title.")
-    body = build_body(args.slug, prd_sections, tasks, language)
+    body = build_body(args.slug, prd_sections, tasks, language, args.body_file)
     delivery_path = workspace / "DELIVERY.md"
     delivery_text = (
         delivery_path.read_text(encoding="utf-8") if delivery_path.exists() else ""

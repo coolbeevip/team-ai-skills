@@ -25,7 +25,7 @@ triggers:
 
 ## 运行时配置
 
-先读取 `team-spec/config.yml`，应用语言、访问策略和 `version_control`。目标项目优先级：用户参数 > `target_remote` > `upstream` > 唯一 GitLab remote。
+先读取 `team-spec/config.yml`，应用语言、访问策略和 `version_control`。文件不存在或正式发布所需字段无法从参数与 Git 证据唯一确定时，先使用 `team-config-init` 创建或增量补全；本技能不得自行回写配置。Issue 语言按“本次 `--language` 或用户明确指定 > `version_control.language` > 顶层 `language` > `en-US`”确定。目标项目优先级：用户参数 > `target_remote` > `upstream` > 唯一 GitLab remote。
 
 GitLab 地址必须从 `GITLAB_URL` 读取。
 
@@ -78,6 +78,7 @@ GITLAB_URL=https://gitlab.example.com GITLAB_TOKEN=... python3 {skill_dir}/scrip
 - `--project namespace/project`
 - `--remote upstream`
 - `--title "[Component] Requirement title"`
+- `--body-file path/to/localized-issue.md`
 - `--label label`
 - `--assignee-id id`
 - `--milestone-id id`
@@ -92,6 +93,7 @@ GITLAB_URL=https://gitlab.example.com GITLAB_TOKEN=... python3 {skill_dir}/scrip
 - 一个 slug 最多对应一个 GitLab Issue。
 - 标题来自显式参数或 PRD 一级标题。
 - 正文从完整 PRD/Spec 生成，不从单个 Task 生成。
+- PRD/Task 语言与 Issue 语言不同时，生成对应语言的标题和完整正文，并通过 `--title`、`--body-file` 传入；不修改源文档。Task ID、代码标识符、命令、路径和专有名词保持原样。
 - 所有 `T{nnn}` Task 作为 checklist。
 - `committed` Task 显示完成，其他状态显示未完成。
 - 正文保留 slug 标记。

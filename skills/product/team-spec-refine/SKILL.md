@@ -38,7 +38,7 @@ triggers:
 
 ## 首轮动作
 
-0. 启动检查：优先读取 `team-spec/config.yml`。若不存在，不报错，只询问一次语言偏好后创建配置；同时确认本轮只做规格细化，不修改代码实现。
+0. 启动检查：优先读取 `team-spec/config.yml`。若不存在，纯对话澄清可以继续；准备写入规格产物前先使用 `team-config-init` 创建最小配置。同时确认本轮只做规格细化，不修改代码实现。
 1. 用一到两句话复述当前需求。
 2. 找出最阻碍共识的一个未知点。
 3. 提出一个聚焦问题，并给出你的推荐答案。
@@ -48,49 +48,24 @@ triggers:
 
 ## 运行时配置
 
-`team-spec/` 是运行时工作空间。项目级配置统一使用目标项目根目录的 `team-spec/config.yml`：
+`team-spec/` 是运行时工作空间。开始前读取目标项目根目录的 `team-spec/config.yml`，应用 `language`、`access_policy` 和 `writing_style.guide`。
 
-```yaml
-language: zh-CN
-version_control:
-  system: git
-  trunk_branch: main
-  contribution_model: fork-pull
-  source_remote: origin
-  target_remote: upstream
-access_policy:
-  mode: default-readonly
-  directory_file: team-spec/access_policy/default.md
-  user_file_template: team-spec/access_policy/{user_name}.md
-```
+文件不存在或缺少本技能写入所需字段时，先使用 `team-config-init` 创建或增量补全；本技能不得自行创建、补全或回写配置。纯对话和只读调研可以按用户本轮语言继续，但写入 `team-spec/` 规格产物前必须完成所需配置。
 
-- `language`：统一语言设置（对话回复与 refine/review/prd/tasks/design 产物文档）。
-- `version_control.system`：版本管理系统，例如 `git`。
-- `version_control.trunk_branch`：主干分支名，例如 `main`、`master` 或 `develop`。
-- `version_control.contribution_model`：贡献方式，例如 `fork-pull` 或 `direct`。
-- `version_control.source_remote`：贡献分支默认推送的 remote，`fork-pull` 常见为 `origin`。
-- `version_control.target_remote`：PR/MR 或 Spec 级 Issue 默认面向的上游 remote，`fork-pull` 常见为 `upstream`。
-- `access_policy`：目录访问策略索引。`mode`、`directory_file` 和 `user_file_template` 只负责定位权限正文，不在这里写长篇规则。
-
-`version_control` 是可选配置。首次创建 `team-spec/config.yml` 时，若当前任务只涉及产品规格，不要为了补齐版本管理信息打断用户；只写入已确认的 `language`。当后续技能涉及 Spec 级 Issue、Task commit、PR 或 MR 时，再补充版本管理配置。
-如果本轮任务涉及访问边界、写入目标项目文件或需要稳定复用的运行时偏好，`access_policy` 应与 `language` 一起作为最小配置的一部分；配置缺失时，先询问是否创建最小配置，再继续写入。
-
-语言优先级必须固定为：
+对话与需求文档的语言优先级必须固定为：
 
 1. 用户本轮明确指定。
-2. `team-spec/config.yml`。
-3. 首次询问用户并落盘到 `team-spec/config.yml`。
+2. 配置中的 `language`。
 
 显式覆盖规则：
 
 - 用户在单次会话临时要求切换语言时，本次立即生效。
-- 临时切换后，应询问是否回写 `team-spec/config.yml`；用户同意才更新配置。
+- 临时切换后，只有用户希望长期保存时才使用 `team-config-init` 展示并确认配置差异。
 
 兼容性兜底：
 
-- 旧项目没有 `team-spec/config.yml` 时，不得报错或中断；走“询问一次并创建配置”的流程。
-- 旧项目没有 `version_control` 时，相关交付技能应先通过 `git remote -v`、`git branch --show-current`、`git branch -r`、`git symbolic-ref refs/remotes/{remote}/HEAD` 和 `git config --get branch.{branch}.remote` 等轻量命令推断。
-- 如果命令推断仍无法唯一确定版本管理系统、主干分支或贡献方式，只问用户缺失的最小问题；得到用户确认后再回写 `team-spec/config.yml`。
+- 旧项目没有 `team-spec/config.yml` 时，不因纯对话或只读调研报错；准备写入时使用 `team-config-init`。
+- 既有配置缺少与本技能无关的 `version_control` 字段时，不阻塞规格细化。
 
 ## 需求上下文
 
@@ -161,7 +136,6 @@ access_policy:
 - `team-spec/active/{slug}/spec/CONTEXT.md`：条件输出。仅当用户确认某个术语、角色、流程或业务规则只属于当前需求，但会被 PRD、任务拆解、功能设计或后续研发讨论反复复用后，才创建或更新。
 - `team-spec/active/{slug}/spec/decisions/{number}-{decision-slug}.md`：当出现只影响当前需求的产品决策时创建。
 - `team-spec/active/{slug}/STATUS.md`：可选状态文件，只记录工作区生命周期状态。当前技能使用 `refining`；规格通过评审后由评审流程更新为 `spec-ready`。跨阶段还可使用 `paused` 或 `blocked`。
-- `team-spec/config.yml`：首次进入工作空间且缺失配置时创建；用户明确同意时可更新语言设置，相关交付技能在确认后可补充 `version_control` 配置。
 - 在读取或写入 `team-spec/active/{slug}/` 之前，先读取 `team-spec/config.yml`；如果存在 `access_policy`，再据此判断当前协作者对目录的读取和写入边界。
 
 本技能不得输出代码补丁、测试修改、配置修改、依赖变更、迁移文件或构建脚本变更。发现代码现状与需求目标不一致时，只能记录为当前行为、差异、风险、开放问题或后续实现建议。

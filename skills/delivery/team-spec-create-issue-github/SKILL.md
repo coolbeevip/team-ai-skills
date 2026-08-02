@@ -25,7 +25,7 @@ triggers:
 
 ## 运行时配置
 
-先读取 `team-spec/config.yml`，应用语言、访问策略和 `version_control`。目标仓库优先级：用户参数 > `target_remote` > `upstream` > 唯一 GitHub remote。
+先读取 `team-spec/config.yml`，应用语言、访问策略和 `version_control`。文件不存在或正式发布所需字段无法从参数与 Git 证据唯一确定时，先使用 `team-config-init` 创建或增量补全；本技能不得自行回写配置。Issue 语言按“本次 `--language` 或用户明确指定 > `version_control.language` > 顶层 `language` > `en-US`”确定。目标仓库优先级：用户参数 > `target_remote` > `upstream` > 唯一 GitHub remote。
 
 ## 公共写作风格
 
@@ -77,6 +77,7 @@ GITHUB_TOKEN=... python3 {skill_dir}/scripts/create_github_issue.py --slug {slug
 - `--remote upstream`
 - `--github-url https://github.example.com`
 - `--title "[Component] Requirement title"`
+- `--body-file path/to/localized-issue.md`
 - `--label label`
 - `--assignee login`
 - `--milestone number`
@@ -91,6 +92,7 @@ GITHUB_TOKEN=... python3 {skill_dir}/scripts/create_github_issue.py --slug {slug
 - 一个 slug 最多对应一个 GitHub Issue。
 - 标题来自显式参数或 PRD 一级标题。
 - 正文从完整 PRD/Spec 生成，不从单个 Task 生成。
+- PRD/Task 语言与 Issue 语言不同时，生成对应语言的标题和完整正文，并通过 `--title`、`--body-file` 传入；不修改源文档。Task ID、代码标识符、命令、路径和专有名词保持原样。
 - 所有 `T{nnn}` Task 作为 checklist。
 - checklist 仅反映本地 Task 状态：`committed` 为已完成，其他状态为未完成。
 - 正文保留 slug 标记，供重复执行定位。

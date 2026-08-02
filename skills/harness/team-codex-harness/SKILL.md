@@ -58,19 +58,7 @@ Codex harness 独立于需求、PRD、Task 拆解或技术债流程，但可以�
 
 当目标项目需要统一语言、版本管理信息或目录访问策略时，优先按 `team-spec/config.yml` 汇总这些机器可读入口，再把它们注入后续技能的提示词和执行上下文。
 
-如果 `team-spec/config.yml` 不存在，且本轮任务涉及需要稳定复用的运行时偏好或访问边界，先询问用户是否要创建最小配置文件；只收集本轮必须的最少字段，不把一次性偏好写成长期规则。
-
-推荐的最小结构如下：
-
-```yml
-language: zh-CN
-version_control:
-  system: git
-access_policy:
-  mode: default-readonly
-  directory_file: team-spec/access_policy/default.md
-  user_file_template: team-spec/access_policy/{user_name}.md
-```
+如果 `team-spec/config.yml` 不存在或缺少本轮需要稳定复用的运行时字段，先使用 `team-config-init` 创建或增量补全。本技能不得自行创建或回写配置；纯只读 harness 分析可以继续，但写入 harness 文件前必须完成所需配置。
 
 `access_policy` 只作为目录访问策略的索引，不把长篇规则直接塞进 `config.yml`。具体权限正文建议拆到 `team-spec/access_policy/default.md` 和按协作者命名的策略文件中。
 
@@ -113,7 +101,6 @@ Harness 目录识别规则：
 - `{harness_dir}/failure-memory.md`：失败记忆，记录真实失败模式和恢复方式。
 - `{harness_dir}/verification-harness.md`：验证 harness，记录不同变更类型的最低验证路径。
 - `{harness_dir}/task-entry.md`：任务入口，记录常见任务从哪里开始。
-- `team-spec/config.yml`：最小运行时配置索引，记录语言、版本管理和目录访问策略的入口文件。
 
 不建议新增：
 
@@ -128,7 +115,6 @@ Harness 目录识别规则：
 落盘规则：
 
 - 初始化 Codex harness：至少创建或更新 `AGENTS.md`，并创建 4 个核心检索文件中有真实证据支撑的文件；没有证据的文件可以只放标题和“暂无记录”。
-- 初始化运行时配置：如果用户同意创建配置，补写 `team-spec/config.yml` 的最小字段，并在需要时补充 `team-spec/access_policy/default.md` 或协作者策略文件的路径约定。
 - 更新入口约束：只更新 `entry-constraints.md` 和 `AGENTS.md` 中必要的路由。
 - 更新失败记忆：只更新 `failure-memory.md`；如果失败暴露验证缺口，再同步更新 `verification-harness.md`。
 - 更新验证策略：只更新 `verification-harness.md`。

@@ -25,7 +25,7 @@ triggers:
 
 ## 运行时配置
 
-先读取 `team-spec/config.yml`，应用其中的语言、版本管理和访问策略。存在 `access_policy` 时，必须先确定允许读取和写入的目录。
+先读取 `team-spec/config.yml`，应用其中的语言和访问策略。文件不存在或缺少写入 Task 所需字段时，先使用 `team-config-init` 创建或增量补全；本技能不得自行回写配置。存在 `access_policy` 时，必须先确定允许读取和写入的目录。本技能不创建 commit，因此不要求 `version_control` 完整。
 
 ## 公共写作风格
 

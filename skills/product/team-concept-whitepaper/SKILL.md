@@ -35,14 +35,14 @@ triggers:
 
 允许写入的运行时产物仅限：
 
-- `team-spec/config.yml`：缺失时按配置规则创建最小配置。
+- `team-spec/config.yml`：项目级运行时配置；缺失或缺少写入所需字段时先使用 `team-config-init`。
 - `team-spec/active/{slug}/concept/whitepaper.md`：白皮书正文。
 - `team-spec/active/{slug}/STATUS.md`：可选，记录 `concept-drafting`、`concept-review`、`concept-ready`、`paused` 或 `blocked`。
 - 已有全局或当前需求上下文文件：只有在用户确认信息适用范围后，才按既有规范更新。
 
 ## 运行时配置与 slug
 
-开始前读取 `team-spec/config.yml`。语言优先级固定为：用户本轮明确指定 > 配置中的 `language` > 询问一次并创建最小配置。存在 `access_policy` 时，先遵守其读写边界。
+开始前读取 `team-spec/config.yml`。文件不存在时可继续纯对话探索；准备写入白皮书且配置缺失或缺少必需字段时，先使用 `team-config-init` 创建或增量补全，本技能不得自行回写配置。语言优先级固定为：用户本轮明确指定 > 配置中的 `language`。存在 `access_policy` 时，先遵守其读写边界。
 
 在读取或写入需求工作区前，必须确定唯一 `{slug}`，格式为 `{yyyy-mm-dd}-{short-english-slug}`。如果无法从用户请求、当前对话或明确路径唯一判断，要求用户指定继续哪个 slug 或创建哪个新 slug，不得猜测。`team-spec/archive/` 默认只读。
 

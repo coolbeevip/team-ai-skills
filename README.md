@@ -70,6 +70,7 @@ team-spec-refine
 
 以下步骤按场景使用，不是主线的强制前置条件：
 
+- 首次需要写入 `team-spec/`、创建 commit 或执行远端交付，而 `team-spec/config.yml` 不存在或缺少必需字段时，使用 `team-config-init` 创建或增量补全配置。
 - 产品规划阶段需要先明确定位和能力边界时，在 `team-spec-refine` 前使用 `team-concept-whitepaper`。
 - PRD 需要转成人类评审简报时，使用 `team-prd-to-brief`。
 - 需要远端需求跟踪对象时，选择 `team-spec-create-issue-github` 或 `team-spec-create-issue-gitlab`，为整个 Spec 创建一个 Issue。
@@ -104,7 +105,11 @@ Codex Harness 不在稳定主线内。只有当项目的工程入口、验证方
 
 ## 技能地图
 
-技能按团队职责分为以下五组。
+技能按团队职责分为以下七组。
+
+### 运行时配置
+
+- `team-config-init`：集中初始化、校验和增量补全 `team-spec/config.yml`，为其他技能提供语言、版本控制、访问策略和写作风格入口。
 
 ### 产品定义
 
@@ -148,6 +153,10 @@ Codex Harness 不在稳定主线内。只有当项目的工程入口、验证方
 - `team-tech-debt-review`：评审技术债规格的风险、优先级、阻塞项和工程拆解 ready 状态。
 - `team-tech-debt-to-tasks`：把已评审的技术债规格拆解为可独立实现、验证并提交的工程 Task。
 
+### 写作规范
+
+- `team-writing-style`：建立和维护跨产品、代码库、交付与技术债流程复用的公共写作风格。
+
 ### 实验能力：Codex Harness
 
 - `team-codex-harness`：维护具体项目的 Codex 运行时检索层、入口约束、失败记忆和验证 harness。
@@ -159,7 +168,7 @@ Codex Harness 不在稳定主线内。只有当项目的工程入口、验证方
 
 ```text
 team-spec/
-├── config.yml                              # 语言、版本管理和访问策略入口
+├── config.yml                              # 语言、版本管理、访问策略和写作风格入口
 ├── access_policy/                          # 可选：目录访问策略
 │   ├── default.md
 │   └── {user_name}.md

@@ -25,23 +25,15 @@ triggers:
 
 ## 运行时配置
 
-在读取 PRD、规格、代码或写入 Task 前，先读取目标项目根目录的 `team-spec/config.yml`。如果存在 `access_policy`，先应用目录访问边界。
+在读取 PRD、规格、代码或写入 Task 前，读取目标项目根目录的 `team-spec/config.yml`。本技能只应用：
 
-```yaml
-language: zh-CN
-version_control:
-  system: git
-  trunk_branch: main
-  contribution_model: fork-pull
-  source_remote: origin
-  target_remote: upstream
-access_policy:
-  mode: default-readonly
-  directory_file: team-spec/access_policy/default.md
-  user_file_template: team-spec/access_policy/{user_name}.md
-```
+- `language`：Task 文档和用户交互语言。
+- `access_policy`：PRD、代码和 `tasks/` 的读写边界。
+- `writing_style.guide`：Task 文档的公共写作风格。
 
-缺少配置时，不猜测写入权限、主干分支或远端；仅生成本地 Task 草稿不需要创建 git 分支。
+`version_control` 由后续 Task 实现和远端交付技能使用。本技能不要求主干分支、贡献模式或 remote 配置完整，也不据此创建分支、commit、Issue、PR 或 MR。配置缺失时，不因版本控制信息不足而阻塞本地 Task 拆解；无法确认写入权限时只展示预览，不写入文件。
+
+文件不存在或缺少写入 Task 所需的 `language`、访问策略入口时，先使用 `team-config-init` 创建或增量补全；本技能不得自行创建或回写配置。
 
 ## 公共写作风格
 

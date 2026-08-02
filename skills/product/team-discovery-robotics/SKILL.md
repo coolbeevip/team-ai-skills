@@ -56,7 +56,7 @@ triggers:
 
 ## 运行时配置
 
-开始前读取目标项目根目录下的 `team-spec/config.yml`。语言优先级为：用户本轮明确指定 > 配置中的 `language` > 询问一次并创建最小配置。存在 `access_policy` 时，先遵守其读写边界。
+开始前读取目标项目根目录下的 `team-spec/config.yml`。文件不存在时仍可继续同步或异步探索；准备写入探索产物且配置缺失或缺少必需字段时，先使用 `team-config-init` 创建或增量补全，本技能不得自行回写配置。语言优先级为：用户本轮明确指定 > 配置中的 `language`。存在 `access_policy` 时，先遵守其读写边界。
 
 在读取或写入需求工作区前，必须确定唯一 `{slug}`，格式为 `{yyyy-mm-dd}-{short-english-slug}`。如果无法从用户请求、当前对话或明确路径唯一判断，要求用户指定继续哪个 slug 或创建哪个新 slug，不得猜测。`team-spec/archive/` 默认只读。
 
@@ -83,7 +83,7 @@ triggers:
 - `team-spec/active/{slug}/design/solution-specification.md`：系统与硬件 Solution Specification，包含推荐系统架构、具体硬件型号与 BOM、选型矩阵、运行时分层与 RACI、接口、性能预算、PoC、风险和实施里程碑。
 - `team-spec/active/{slug}/design/software-specification.md`：完整 Software Specification，包含底层与通信、软件架构、AI 与感知算法、导航与操作、语音交互、数据闭环、Skill 与 Capability/Motion API、部署、降级和测试方案。
 - `team-spec/active/{slug}/design/proposal.md`：正式项目方案书终稿，在前三份产物一致且关键事项全部确认后呈现客户问题、最终方案、软硬件组合、部署运营、实施周期、商务约定、PoC、验收和风险，不解释探索、推导或选型过程。
-- `team-spec/config.yml`：首次进入工作空间且缺失配置时，按用户确认创建最小配置；用户明确同意时更新语言或写作风格设置。
+- `team-spec/config.yml`：项目级运行时配置；本技能只读取，缺失或需要持久化调整时使用 `team-config-init`。
 
 四份产物共同构成本技能的独立交付闭环。本技能不生成工程 Task 或代码补丁，不定义其他技能如何消费这些文件，也不在完成时自动发起后续技能。
 

@@ -32,17 +32,11 @@ triggers:
 
 ## 运行时配置
 
-公共风格入口写入目标项目根目录的 `team-spec/config.yml`：
-
-```yaml
-language: zh-CN
-writing_style:
-  guide: team-spec/STYLE.md
-```
+开始前读取目标项目根目录的 `team-spec/config.yml`。文件不存在或缺少 `writing_style.guide` 时，先完成风格指南内容和路径确认，再使用 `team-config-init` 展示并确认配置差异；本技能不得直接创建或合并配置。
 
 - `guide` 可以使用目标项目根目录下的相对路径，也可以使用绝对路径；相对路径必须以目标项目根目录解析。
 - 如果项目已经有正式风格指南，优先让 `guide` 指向现有文件，不重复创建 `team-spec/STYLE.md`。
-- 更新配置时只合并 `writing_style`，保留已有 `language`、`version_control`、`access_policy` 和未知字段。
+- 登记风格入口时只请求 `team-config-init` 补充或更新 `writing_style.guide`，保留其他配置和未知字段。
 - 风格优先级为：产物格式、状态、安全与证据合同 > 用户本轮明确要求 > 当前技能针对产物类型的补充规则 > 项目风格指南 > 目标文件相邻内容。
 - 风格指南不得改变机器可读状态、固定字段、验收标准、引用准确性、安全要求或用户明确要求保留的内容。
 
@@ -59,7 +53,7 @@ writing_style:
 ## 输出物
 
 - `team-spec/STYLE.md` 或用户指定的现有风格指南：公共语言与代码注释规则。
-- `team-spec/config.yml`：新增或更新 `writing_style.guide`，不覆盖无关配置。
+- 通过 `team-config-init` 登记或更新的 `writing_style.guide` 配置入口。
 - 可选的对话审阅结果：指出机器化表达、修改理由和建议沉淀的规则。
 
 本技能不创建真实需求、PRD、issue 或技术债产物。用户要求把风格应用到具体文档或代码时，仍由对应业务技能负责内容正确性和写入边界。
@@ -74,7 +68,7 @@ writing_style:
    - 一次偏好：只适用于当前文档，不写入公共指南。
    - 用户交互标记：统一语义和使用边界写入公共指南；具体菜单内容留在对应业务技能。
 4. 项目没有风格指南时，以 `./assets/STYLE.md` 为模板创建 `team-spec/STYLE.md`；已有指南时做最小增量修改，不重写用户原有规则。
-5. 合并更新 `team-spec/config.yml` 的 `writing_style.guide`。如果用户指定现有指南路径，记录该路径，不再创建默认文件。
+5. 使用 `team-config-init` dry-run 登记 `writing_style.guide`；用户确认配置差异后正式写入。如果用户指定现有指南路径，记录该路径，不再创建默认文件。
 6. 使用至少一段文档和一段代码注释做人工检查，确认规则能指导具体改写，不只是表达态度。
 7. 检查风格规则没有覆盖产物硬合同，没有把所有句式变成绝对禁令，也没有要求所有技能复制规则全文。
 

@@ -14,13 +14,15 @@ from check_skills import ROOT, iter_skill_files, parse_frontmatter
 
 OUTPUT_PATH = ROOT / "website" / "skills-data.js"
 CATEGORY_ORDER = {
-    "product": 0,
-    "codebase": 1,
-    "delivery": 2,
-    "tech-debt": 3,
-    "harness": 4,
+    "config": 0,
+    "product": 1,
+    "codebase": 2,
+    "delivery": 3,
+    "tech-debt": 4,
+    "harness": 5,
 }
 SKILL_ORDER = [
+    "team-config-init",
     "team-concept-whitepaper",
     "team-discovery-robotics",
     "team-spec-refine",

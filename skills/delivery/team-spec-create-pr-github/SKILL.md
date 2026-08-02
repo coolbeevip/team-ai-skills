@@ -25,7 +25,7 @@ triggers:
 
 ## 运行时配置
 
-先读取 `team-spec/config.yml`，应用语言、访问策略和版本管理配置。source/target repo、remote 和主干优先级为：用户参数 > 已确认配置 > git 证据 > 询问用户。
+先读取 `team-spec/config.yml`，应用语言、访问策略和版本管理配置。文件不存在或正式创建 PR 所需字段无法从参数与 Git 证据唯一确定时，先使用 `team-config-init` 创建或增量补全；本技能不得自行回写配置。PR 语言按“本次 `--language` 或用户明确指定 > `version_control.language` > 顶层 `language` > `en-US`”确定。source/target repo、remote 和主干优先级为：用户参数 > 已确认配置 > git 证据 > 询问用户。
 
 ## 公共写作风格
 
@@ -109,6 +109,7 @@ GITHUB_TOKEN=... python3 {skill_dir}/scripts/create_github_pr.py --slug {slug} -
 - 一个 slug 最多一个打开的 GitHub PR。
 - 标题来自显式参数或 PRD 一级标题。
 - 正文从完整 Spec/PRD 生成。
+- PRD/Task 语言与 PR 语言不同时，生成对应语言的标题和完整正文，并通过 `--title`、`--body-file` 传入；不修改源文档。Task ID、commit SHA、代码标识符、命令、路径和专有名词保持原样。
 - 正文包含所有 Task ID、标题和 commit SHA。
 - 如果 `DELIVERY.md` 或参数提供 Spec 级 GitHub Issue，正文使用 `Fixes #{number}`。
 - 没有远端 Issue 时不强制 Closing keyword。

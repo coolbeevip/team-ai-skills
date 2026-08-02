@@ -49,6 +49,7 @@ const translations = {
     searchPlaceholder: "搜索技能、任务或产物…",
     clearSearch: "清除",
     filterAll: "全部",
+    filterConfig: "配置",
     filterProduct: "产品",
     filterCodebase: "代码库",
     filterDelivery: "交付",
@@ -130,6 +131,7 @@ const translations = {
     searchPlaceholder: "Search skills, tasks, or artifacts…",
     clearSearch: "Clear",
     filterAll: "All",
+    filterConfig: "Config",
     filterProduct: "Product",
     filterCodebase: "Codebase",
     filterDelivery: "Delivery",
@@ -167,6 +169,7 @@ const translations = {
 
 const categoryLabels = {
   zh: {
+    config: "运行时配置",
     product: "产品定义",
     codebase: "代码库理解",
     delivery: "交付执行",
@@ -175,6 +178,7 @@ const categoryLabels = {
     harness: "实验能力"
   },
   en: {
+    config: "CONFIG",
     product: "PRODUCT",
     codebase: "CODEBASE",
     delivery: "DELIVERY",

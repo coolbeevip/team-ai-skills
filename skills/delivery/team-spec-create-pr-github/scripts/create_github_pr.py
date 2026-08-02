@@ -560,7 +560,12 @@ def main() -> int:
     issue_number = args.issue_number or (
         int(tracked_issue) if tracked_issue and tracked_issue.isdigit() else None
     )
-    language = args.language or config.get("language") or "en-US"
+    language = (
+        args.language
+        or config.get("version_control.language")
+        or config.get("language")
+        or "en-US"
+    )
     body = build_body(args, prd_sections, tasks, language, issue_number)
     plan: dict[str, Any] = {
         "mode": "execute" if args.execute else "dry-run",

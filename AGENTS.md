@@ -11,6 +11,8 @@
 - `skills/product/team-spec-review/`：用于评审规格风险和 ready 状态。
 - `skills/product/team-spec-to-prd/`：用于把 ready 的规格固化成 PRD。
 - `skills/product/team-spec-archive/`：用于把已完成、废弃或暂停的 active 需求产物归档，避免新需求误改旧规格。
+- `skills/config/`：跨流程运行时配置职责，包括 `team-spec/config.yml` 的初始化、校验和增量补全。
+- `skills/config/team-config-init/`：用于集中创建、校验和安全补全语言、版本控制、访问策略及写作风格入口配置。
 - `skills/codebase/`：代码库理解与说明职责，包括第三方代码库接手、源码走读、能力简报和自有项目 README 编写。
 - `skills/codebase/team-codebase-onboarding/`：用于从第三方或陌生代码库提取可追溯的功能清单、架构说明和 AI 接手上下文。
 - `skills/codebase/team-codebase-walk/`：用于基于 onboarding 产物和源码进行功能走读、问答和证据追踪。
@@ -37,6 +39,8 @@
 - `skills/writing/team-writing-style/`：用于建立和维护目标项目的统一写作风格，通过 `team-spec/config.yml` 为其他技能提供单一公共规则入口。
 
 每个技能目录必须包含 `SKILL.md`。只有当辅助文件被 `SKILL.md` 明确引用时才添加，例如 `CONTEXT-FORMAT.md`、`DECISION-FORMAT.md`。
+
+`team-spec/config.yml` 的结构、初始化、校验和增量补全统一由 `team-config-init` 负责。其他技能只读取配置并声明当前操作所需字段；配置文件不存在或缺少必需字段时，先使用 `team-config-init`，不得在业务技能中复制完整配置模式或自行回写配置。纯对话、只读分析和不依赖稳定配置的预览不因配置缺失而阻塞。
 
 如果技能需要稳定执行 API 调用、文件解析、批量发布、幂等检查、拓扑排序或其他容易因大模型临时生成代码而出错的操作，应在技能目录下新增 `scripts/` 目录沉淀固定脚本。脚本必须由 `SKILL.md` 明确引用，且路径按相对 `SKILL.md` 的形式书写，例如 `./scripts/publish_github_issues.py`，不要在技能说明中硬编码本仓库源码路径。
 

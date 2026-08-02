@@ -25,7 +25,9 @@ triggers:
 
 ## 运行时配置
 
-在读取 Task、代码或测试前，先读取 `team-spec/config.yml`。应用 `language`、`version_control` 和 `access_policy`；缺少写权限或无法确定主干分支时停止。
+在读取 Task、代码或测试前，先读取 `team-spec/config.yml`。文件不存在或实现、提交所需字段缺失时，先使用 `team-config-init` 创建或增量补全；本技能不得自行回写配置。应用 `language`、`version_control` 和 `access_policy`；缺少写权限或无法确定主干分支时停止。
+
+Commit message 语言按“用户对本次提交的明确指定 > `version_control.language` > 顶层 `language` > `en-US`”确定。交付语言与 Task 文档语言不同时，只转换 commit 标题，不修改 Task 原文；Task ID、代码标识符和专有名词保持原样。
 
 默认 Spec 分支为 `{slug}`。用户显式指定且已确认的分支名可以覆盖默认值，但同一 slug 的所有 Task 必须使用同一个分支。
 
@@ -93,7 +95,7 @@ triggers:
 9. 验证通过后、暂存任何文件之前，生成提交前检查摘要并进入“提交前确认”。
 10. 用户选择继续修改时，完成修改、重新运行受影响验证并再次生成检查摘要；旧确认立即失效。
 11. 只有用户明确选择“接受当前实现并提交”后，才暂存本 Task 的代码、测试和必要配置；排除 `team-spec/` 和无关改动。
-12. 创建一个逻辑 commit，推荐信息为 `T001: {task title}`。
+12. 创建一个逻辑 commit，推荐信息为 `T001: {localized task title}`；标题使用已确定的版本控制交付语言。
 13. 确认 commit 已创建且工作区没有遗留的本 Task 代码变更。
 14. 回写 Task：`Status: committed`、`Commit: {sha}`、实现、验证命令和残余风险；不得暂存该回写。
 

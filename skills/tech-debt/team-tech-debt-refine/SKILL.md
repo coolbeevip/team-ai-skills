@@ -28,17 +28,9 @@ triggers:
 
 ## 运行时配置
 
-统一读取目标项目根目录 `team-spec/config.yml`：
+开始前读取目标项目根目录的 `team-spec/config.yml`。文件不存在或缺少本技能写入所需字段时，先使用 `team-config-init` 创建或增量补全；本技能不得自行创建或回写配置。只读澄清可按用户本轮语言继续，但写入技术债规格前必须完成所需配置。
 
-```yaml
-language: zh-CN
-access_policy:
-  mode: default-readonly
-  directory_file: team-spec/access_policy/default.md
-  user_file_template: team-spec/access_policy/{user_name}.md
-```
-
-语言优先级：用户本轮明确指定 > `team-spec/config.yml` > 首次询问并落盘。若配置不存在，不报错，走"询问并创建"流程。
+语言优先级：用户本轮明确指定 > 配置中的 `language`。
 
 执行要求：
 

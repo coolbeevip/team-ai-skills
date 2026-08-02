@@ -119,6 +119,7 @@ No API compatibility changes.
         root / "team-spec" / "config.yml",
         """language: en-US
 version_control:
+  language: zh-CN
   system: git
   trunk_branch: main
   source_remote: origin
@@ -284,6 +285,7 @@ class SpecDeliveryWorkflowTests(unittest.TestCase):
             self.assertEqual("create-or-sync", plan["action"])
             self.assertIn("T001 Add export path", plan["body"])
             self.assertIn("T002 Add tests", plan["body"])
+            self.assertIn("## 目标", plan["body"])
             self.assertIn(f"team-spec-slug: {SLUG}", plan["body"])
 
     def test_gitlab_issue_dry_run_aggregates_all_tasks(self) -> None:
@@ -312,6 +314,60 @@ class SpecDeliveryWorkflowTests(unittest.TestCase):
             self.assertEqual("create-or-sync", plan["action"])
             self.assertIn("T001 Add export path", plan["body"])
             self.assertIn("T002 Add tests", plan["body"])
+            self.assertIn("## 目标", plan["body"])
+            self.assertIn(f"team-spec-slug: {SLUG}", plan["body"])
+
+    def test_issue_language_argument_overrides_version_control_language(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            create_workspace(
+                root,
+                [("T001", "Add export path", "draft", "Pending", "None")],
+            )
+            result = run(
+                ROOT
+                / "skills/delivery/team-spec-create-issue-github/scripts/create_github_issue.py",
+                "--slug",
+                SLUG,
+                "--repo",
+                "owner/repo",
+                "--language",
+                "en-US",
+                "--json",
+                cwd=root,
+            )
+            plan = json.loads(result.stdout)
+            self.assertIn("## Goal", plan["body"])
+            self.assertNotIn("## 目标", plan["body"])
+
+    def test_github_issue_accepts_localized_body_file(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            create_workspace(
+                root,
+                [
+                    ("T001", "Add export path", "committed", "abc1234", "None"),
+                    ("T002", "Add tests", "draft", "Pending", "T001"),
+                ],
+            )
+            body_file = root / "localized-issue.md"
+            write(body_file, "# Localized issue\n\nLocalized summary.\n")
+            result = run(
+                ROOT
+                / "skills/delivery/team-spec-create-issue-github/scripts/create_github_issue.py",
+                "--slug",
+                SLUG,
+                "--repo",
+                "owner/repo",
+                "--body-file",
+                str(body_file),
+                "--json",
+                cwd=root,
+            )
+            plan = json.loads(result.stdout)
+            self.assertIn("Localized summary.", plan["body"])
+            self.assertIn("T001 Add export path", plan["body"])
+            self.assertIn("T002 Add tests", plan["body"])
             self.assertIn(f"team-spec-slug: {SLUG}", plan["body"])
 
     def test_github_pr_dry_run_requires_one_spec_branch_with_task_commits(self) -> None:
@@ -335,6 +391,7 @@ class SpecDeliveryWorkflowTests(unittest.TestCase):
         self.assertEqual(SLUG, plan["branch"])
         self.assertEqual(commits, plan["branch_commits"])
         self.assertEqual(2, plan["task_count"])
+        self.assertIn("## 变更目的", plan["body"])
 
     def test_gitlab_mr_dry_run_requires_one_spec_branch_with_task_commits(self) -> None:
         temporary, root, commits = create_git_delivery_repo(
@@ -358,6 +415,7 @@ class SpecDeliveryWorkflowTests(unittest.TestCase):
         self.assertEqual(SLUG, plan["branch"])
         self.assertEqual(commits, plan["branch_commits"])
         self.assertEqual(2, plan["task_count"])
+        self.assertIn("## 变更目的", plan["body"])
 
     def test_github_pr_rejects_uncommitted_task_status(self) -> None:
         temporary, root, _ = create_git_delivery_repo(
