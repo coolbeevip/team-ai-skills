@@ -27,7 +27,7 @@ triggers:
 
 在读取 Task、代码或测试前，先读取 `team-spec/config.yml`。文件不存在或实现、提交所需字段缺失时，先使用 `team-config-init` 创建或增量补全；本技能不得自行回写配置。应用 `language`、`version_control` 和 `access_policy`；缺少写权限或无法确定主干分支时停止。
 
-Commit message 语言按“用户对本次提交的明确指定 > `version_control.language` > 顶层 `language` > `en-US`”确定。交付语言与 Task 文档语言不同时，只转换 commit 标题，不修改 Task 原文；Task ID、代码标识符和专有名词保持原样。
+Commit message 语言按“用户对本次提交的明确指定 > `version_control.language` > 顶层 `language` > `en-US`”确定。交付语言与 Task 文档语言不同时，只转换变更摘要，不修改 Task 原文；代码标识符和专有名词保持原样。Commit message 只写简洁的变更摘要，不添加 `T001` 等 Task ID 前缀或后缀。
 
 默认 Spec 分支为 `{slug}`。用户显式指定且已确认的分支名可以覆盖默认值，但同一 slug 的所有 Task 必须使用同一个分支。
 
@@ -95,7 +95,7 @@ Commit message 语言按“用户对本次提交的明确指定 > `version_contr
 9. 验证通过后、暂存任何文件之前，生成提交前检查摘要并进入“提交前确认”。
 10. 用户选择继续修改时，完成修改、重新运行受影响验证并再次生成检查摘要；旧确认立即失效。
 11. 只有用户明确选择“接受当前实现并提交”后，才暂存本 Task 的代码、测试和必要配置；排除 `team-spec/` 和无关改动。
-12. 创建一个逻辑 commit，推荐信息为 `T001: {localized task title}`；标题使用已确定的版本控制交付语言。
+12. 创建一个逻辑 commit，推荐信息为 `{concise localized change summary}`，例如 `Add filtered export support`；不得添加 Task ID，标题使用已确定的版本控制交付语言。
 13. 确认 commit 已创建且工作区没有遗留的本 Task 代码变更。
 14. 回写 Task：`Status: committed`、`Commit: {sha}`、实现、验证命令和残余风险；不得暂存该回写。
 
@@ -137,6 +137,7 @@ REFACTOR：相关测试通过后再整理结构
 - commit 只能在 Task 验证通过后创建。
 - commit 只能在用户查看提交前摘要并明确确认当前实际 diff 后创建。
 - commit 范围必须与 Task 验收标准一致。
+- commit message 使用简洁的祈使句或变更摘要，不包含 `T001` 等 Task ID；Task 与 commit 的关联只通过 Task 文件中的 `Commit: {sha}` 和后续 Task/commit 映射维护。
 - 不提交 `team-spec/`、无关格式化、顺手重构或其他 Task 的提前实现。
 - 若实现无法安全形成一个 commit，应停止并回到拆解技能调整边界。
 - 创建 commit 不代表允许 push；远端操作只由 Spec 级技能执行。

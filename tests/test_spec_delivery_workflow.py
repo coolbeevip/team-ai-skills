@@ -169,7 +169,7 @@ def create_git_delivery_repo(remote_url: str) -> tuple[tempfile.TemporaryDirecto
     for index in (1, 2):
         write(root / f"task-{index}.txt", f"task {index}\n")
         git(root, "add", f"task-{index}.txt")
-        git(root, "commit", "-m", f"T{index:03d}: task {index}")
+        git(root, "commit", "-m", f"Implement task {index}")
         commits.append(git(root, "rev-parse", "HEAD"))
 
     create_workspace(
@@ -197,6 +197,8 @@ class SpecDeliveryWorkflowTests(unittest.TestCase):
         self.assertIn("🔍 暂不提交，我要先查看 diff", text)
         self.assertIn("🔄 继续修改当前 Task", text)
         self.assertIn("不得把用户在任务开始时说的“实现并提交”", text)
+        self.assertIn("不添加 `T001` 等 Task ID", text)
+        self.assertNotIn("`T001: ", text)
 
     def test_task_batch_requires_confirmation_for_each_task(self) -> None:
         text = (
@@ -212,6 +214,7 @@ class SpecDeliveryWorkflowTests(unittest.TestCase):
         self.assertIn("## 逐 Task 提交确认", text)
         self.assertIn("一次确认只覆盖一个 Task 的当前实际 diff", text)
         self.assertIn("🔍 暂不提交，我要先查看 diff", text)
+        self.assertIn("不添加 `T001` 等 Task ID", text)
 
     def test_legacy_alignment_archives_as_brief(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

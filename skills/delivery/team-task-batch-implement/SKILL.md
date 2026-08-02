@@ -29,7 +29,7 @@ triggers:
 
 先读取 `team-spec/config.yml`。文件不存在或批量实现、提交所需字段缺失时，先使用 `team-config-init` 创建或增量补全；本技能不得自行回写配置。应用语言、访问策略、主干、source remote 和 target remote。无法确认唯一 slug、写权限或主干分支时停止。
 
-每个 Commit message 统一使用“用户对本次批次的明确指定 > `version_control.language` > 顶层 `language` > `en-US`”确定的版本控制交付语言。交付语言与 Task 文档语言不同时，只转换 commit 标题，不修改 Task 原文；Task ID、代码标识符和专有名词保持原样。
+每个 Commit message 统一使用“用户对本次批次的明确指定 > `version_control.language` > 顶层 `language` > `en-US`”确定的版本控制交付语言。交付语言与 Task 文档语言不同时，只转换变更摘要，不修改 Task 原文；代码标识符和专有名词保持原样。Commit message 不添加 `T001` 等 Task ID 前缀或后缀，Task 关联只记录在 Task 文件和 Task/commit 映射中。
 
 ## 公共写作风格
 
