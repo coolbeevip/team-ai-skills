@@ -216,6 +216,18 @@ class SpecDeliveryWorkflowTests(unittest.TestCase):
         self.assertIn("🔍 暂不提交，我要先查看 diff", text)
         self.assertIn("不添加 `T001` 等 Task ID", text)
 
+    def test_prd_to_tasks_defaults_to_cohesive_delivery_outcomes(self) -> None:
+        text = (
+            ROOT / "skills/delivery/team-prd-to-tasks/SKILL.md"
+        ).read_text(encoding="utf-8")
+
+        self.assertIn("一个内聚、完整且值得单独交付的工程结果", text)
+        self.assertIn("不是缩小 Task 的目标", text)
+        self.assertIn("实现及其单元、集成和回归测试", text)
+        self.assertIn("超过 6 个候选 Task", text)
+        self.assertIn("不设固定减少比例", text)
+        self.assertNotIn("默认目标是将 Task 数量减少约三分之一", text)
+
     def test_legacy_alignment_archives_as_brief(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
