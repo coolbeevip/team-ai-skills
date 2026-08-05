@@ -25,7 +25,7 @@ triggers:
 
 ## 运行时配置
 
-在读取 Task、代码或测试前，先读取 `team-spec/config.yml`。文件不存在或实现、提交所需字段缺失时，先使用 `team-config-init` 创建或增量补全；本技能不得自行回写配置。应用 `language`、`version_control` 和 `access_policy`；缺少写权限或无法确定主干分支时停止。
+在读取 Task、代码或测试前，先读取 `team-spec/config.yml`。文件不存在或实现、提交所需字段缺失时，先使用 `team-config-init` 创建或增量补全；本技能不得自行回写配置。应用 `language`、`version_control`（含 `trunk_branch`、`contribution_model`、`source_remote`、`target_remote`）和 `access_policy`；缺少写权限或无法确定主干分支时停止。
 
 Commit message 语言按“用户对本次提交的明确指定 > `version_control.language` > 顶层 `language` > `en-US`”确定。交付语言与 Task 文档语言不同时，只转换变更摘要，不修改 Task 原文；代码标识符和专有名词保持原样。Commit message 只写简洁的变更摘要，不添加 `T001` 等 Task ID 前缀或后缀。
 
@@ -65,14 +65,18 @@ Commit message 语言按“用户对本次提交的明确指定 > `version_contr
 
 ## 共享分支合同
 
-1. 从 `team-spec/config.yml` 确定主干分支。
+1. 从 `team-spec/config.yml` 确定 `trunk_branch`、`contribution_model`、`source_remote` 和 `target_remote`。
 2. 将 Spec 分支计算为 `{slug}`，不得添加 `spec/` 或其他前缀。
 3. 当前分支不是 Spec 分支时：
    - 工作区有未提交变更则停止。
-   - 分支已存在则切换到该分支。
-   - 分支不存在则从已确认主干创建。
-4. 后续 Task 必须继续使用同一分支。
-5. 不创建 Task 独立分支，不把其他 slug 的 commit 混入当前分支。
+   - 分支已存在：切换到该分支，不执行主干同步。
+   - 分支不存在：先同步主干，再从主干创建。
+4. 同步主干规则（仅在创建新分支时执行）：
+   - `contribution_model = direct`（source_remote 与 target_remote 相同）：`git fetch {source_remote} {trunk_branch}` 然后 `git pull {source_remote} {trunk_branch}`。
+   - `contribution_model = fork-pull`（target_remote 为上游仓库）：`git fetch {target_remote} {trunk_branch}` 然后 `git switch {trunk_branch}` 然后 `git merge {target_remote}/{trunk_branch}`。
+   - 同步后，`git switch -c {slug} {trunk_branch}` 创建新分支。
+5. 后续 Task 必须继续使用同一分支。
+6. 不创建 Task 独立分支，不把其他 slug 的 commit 混入当前分支。
 
 ## 最小实现模式
 

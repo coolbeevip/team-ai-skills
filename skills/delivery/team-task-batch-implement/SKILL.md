@@ -27,7 +27,7 @@ triggers:
 
 ## 运行时配置
 
-先读取 `team-spec/config.yml`。文件不存在或批量实现、提交所需字段缺失时，先使用 `team-config-init` 创建或增量补全；本技能不得自行回写配置。应用语言、访问策略、主干、source remote 和 target remote。无法确认唯一 slug、写权限或主干分支时停止。
+先读取 `team-spec/config.yml`。文件不存在或批量实现、提交所需字段缺失时，先使用 `team-config-init` 创建或增量补全；本技能不得自行回写配置。应用语言、访问策略、`trunk_branch`、`contribution_model`、`source_remote` 和 `target_remote`。无法确认唯一 slug、写权限或主干分支时停止。
 
 每个 Commit message 统一使用“用户对本次批次的明确指定 > `version_control.language` > 顶层 `language` > `en-US`”确定的版本控制交付语言。交付语言与 Task 文档语言不同时，只转换变更摘要，不修改 Task 原文；代码标识符和专有名词保持原样。Commit message 不添加 `T001` 等 Task ID 前缀或后缀，Task 关联只记录在 Task 文件和 Task/commit 映射中。
 
@@ -75,9 +75,12 @@ python3 {skill_dir}/scripts/plan_task_batch.py --slug {slug} --limit 3 --json
 ## 共享分支合同
 
 - 整个批次只使用与 slug 完全相同的 `{slug}` 分支。
-- 创建分支时使用 `git switch -c {slug} {trunk_branch}`，不得添加 `spec/` 前缀。
 - 开始前工作区不得有无法归因的变化。
-- 分支不存在时从已确认主干创建；存在时继续使用。
+- 分支不存在时，先同步主干再创建；分支已存在时直接使用，不执行主干同步。
+- 同步主干规则（仅在创建新分支时执行）：
+  - `contribution_model = direct`（source_remote 与 target_remote 相同）：`git fetch {source_remote} {trunk_branch}` 然后 `git pull {source_remote} {trunk_branch}`。
+  - `contribution_model = fork-pull`（target_remote 为上游仓库）：`git fetch {target_remote} {trunk_branch}` 然后 `git switch {trunk_branch}` 然后 `git merge {target_remote}/{trunk_branch}`。
+  - 同步后，`git switch -c {slug} {trunk_branch}` 创建新分支，不得添加 `spec/` 前缀。
 - 每个 Task commit 后再次确认分支和工作区边界。
 - 不为 Task 创建独立分支，不在批次中切换到其他 slug。
 

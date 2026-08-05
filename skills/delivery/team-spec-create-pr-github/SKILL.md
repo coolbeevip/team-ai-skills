@@ -136,6 +136,15 @@ GITHUB_TOKEN=... python3 {skill_dir}/scripts/create_github_pr.py --slug {slug} -
 - 发现非 `team-spec/` 未提交变化时停止。
 - 不修改历史，不自动 rebase、reset 或 stash。
 
+## 合并后同步主干
+
+PR 合并后，提醒用户同步本地主干，确保下次创建 Spec 分支时基于最新代码：
+
+- `contribution_model = direct`：`git switch {trunk_branch} && git pull {source_remote} {trunk_branch}`
+- `contribution_model = fork-pull`：`git switch {trunk_branch} && git pull {target_remote} {trunk_branch} && git push {source_remote} {trunk_branch}`
+
+不得自动执行同步操作，只提供可复制命令供用户确认。
+
 ## 完成标准
 
 - Spec 分支已推送到正确 source remote。
@@ -153,4 +162,5 @@ GITHUB_TOKEN=... python3 {skill_dir}/scripts/create_github_pr.py --slug {slug} -
 - Task 数量与 commit SHA 汇总。
 - PR URL和关联的 Spec Issue（如果有）。
 - `DELIVERY.md` 回写和剩余未提交 `team-spec/` 变化。
+- PR 合并后的主干同步命令（仅展示，不自动执行）。
 - 失败阶段和安全重试入口。
