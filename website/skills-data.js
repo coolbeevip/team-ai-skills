@@ -525,27 +525,25 @@ window.SRT_SKILLS = Object.freeze([
     "experimental": false
   },
   {
-    "name": "team-codex-harness",
+    "name": "team-archive-distill",
     "category": "harness",
     "description": {
-      "zh": "为具体代码项目维护 Codex 运行时检索层、入口约束、失败记忆和验证 harness。",
-      "en": "Maintain a Codex runtime retrieval layer, entry constraints, failure memory, and verification harness for a concrete code project."
+      "zh": "从已归档的 team-spec 中提取决策模式和工程惯例，高度抽象为规则后写入 AGENTS.md。",
+      "en": "Extract decision patterns and engineering conventions from archived team-specs, abstract them into high-level rules, and write them into AGENTS.md."
     },
     "triggers": [
-      "维护 Codex harness",
-      "改进 AGENTS.md",
-      "Codex 不知道怎么验证",
-      "沉淀 Codex 失败记忆",
-      "Codex 找不到任务入口",
-      "Codex 需要入口约束",
-      "Codex 需要配置引导",
-      "maintain Codex harness",
-      "improve AGENTS.md",
-      "Codex failure memory",
-      "Codex verification harness",
-      "Codex task entry points",
-      "Codex entry constraints",
-      "Codex runtime config"
+      "从归档提取规则",
+      "归档决策抽象",
+      "更新 AGENTS.md 规则",
+      "从历史需求提炼规则",
+      "过去决策总结",
+      "复盘历史 spec",
+      "extract rules from archive",
+      "abstract archived decisions",
+      "distill rules from past specs",
+      "update AGENTS.md from history",
+      "summarize past decisions",
+      "review archived specs"
     ],
     "version": "1.0",
     "experimental": true

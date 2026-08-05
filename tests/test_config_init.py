@@ -35,7 +35,7 @@ class ConfigInitTests(unittest.TestCase):
             "skills/tech-debt/team-tech-debt-analyze/SKILL.md",
             "skills/tech-debt/team-tech-debt-refine/SKILL.md",
             "skills/tech-debt/team-tech-debt-review/SKILL.md",
-            "skills/harness/team-codex-harness/SKILL.md",
+            "skills/harness/team-archive-distill/SKILL.md",
             "skills/writing/team-writing-style/SKILL.md",
         ]
         for relative_path in skill_paths:

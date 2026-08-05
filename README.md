@@ -159,7 +159,7 @@ Codex Harness 不在稳定主线内。只有当项目的工程入口、验证方
 
 ### 实验能力：Codex Harness
 
-- `team-codex-harness`：维护具体项目的 Codex 运行时检索层、入口约束、失败记忆和验证 harness。
+- `team-archive-distill`：从已归档 spec 中提取决策模式和工程惯例，高度抽象为规则后写入 AGENTS.md。
 - `team-skill-evolve`：根据真实反馈、失败案例和执行日志提出可审核的技能进化建议。
 
 ## 运行时工作空间

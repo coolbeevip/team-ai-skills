@@ -33,8 +33,8 @@
 - `skills/tech-debt/team-tech-debt-refine/`：用于把模糊技术债诉求细化为可评审规格。
 - `skills/tech-debt/team-tech-debt-review/`：用于评审技术债风险、优先级和可执行性。
 - `skills/tech-debt/team-tech-debt-to-tasks/`：用于把已评审技术债拆解为工程 Task。
-- `skills/harness/`：实验性 Codex harness 职责，包括项目级 Codex 运行时检索层、入口约束、失败记忆、验证策略和任务入口；不作为稳定主线流程前置条件。
-- `skills/harness/team-codex-harness/`：用于随真实代码和工程演进维护 `AGENTS.md`、入口约束、失败记忆、验证 harness 和任务入口。
+- `skills/harness/`：从已归档 spec 中提炼可复用规则和决策模式，独立于主线交付流程。
+- `skills/harness/team-archive-distill/`：用于从 `team-spec/archive/` 下已归档的 spec 中提取决策模式和工程惯例，高度抽象为规则后写入 `AGENTS.md`。
 - `skills/writing/`：跨产品、代码库、交付和技术债流程复用的写作职责，包括公共语言风格和代码注释规范。
 - `skills/writing/team-writing-style/`：用于建立和维护目标项目的统一写作风格，通过 `team-spec/config.yml` 为其他技能提供单一公共规则入口。
 
@@ -106,7 +106,7 @@
 - 领域需求发现技能使用 `team-discovery-` 前缀，例如 `team-discovery-robotics`。
 - 交付执行类技能按输入和聚合边界使用 `team-prd-`、`team-task-` 或 `team-spec-` 前缀，例如 `team-prd-to-tasks`、`team-task-implement`、`team-spec-create-pr-github`。
 - 技术债类技能使用 `team-tech-debt-` 前缀，例如 `team-tech-debt-refine`。
-- Codex harness 类技能使用 `team-codex-` 前缀，例如 `team-codex-harness`。
+- 归档决策提炼类技能使用 `team-archive-` 前缀，例如 `team-archive-distill`。
 - 跨流程写作类技能使用 `team-writing-` 前缀，例如 `team-writing-style`。
 - 必需技能文件命名为 `SKILL.md`。
 - `SKILL.md` 必须包含 YAML frontmatter，并提供 `name`、`description`、`triggers`、`license` 和 `metadata`。
