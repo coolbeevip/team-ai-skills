@@ -549,36 +549,6 @@ window.SRT_SKILLS = Object.freeze([
     "experimental": true
   },
   {
-    "name": "team-skill-evolve",
-    "category": "harness",
-    "description": {
-      "zh": "根据真实反馈、失败案例和执行日志复盘团队技能库，并提出可审核的技能进化建议。",
-      "en": "Review real feedback, failures, and execution logs to propose auditable improvements to the team skill library."
-    },
-    "triggers": [
-      "技能复盘",
-      "改进技能",
-      "技能自进化",
-      "根据反馈优化 skill",
-      "复盘 agent 失败",
-      "优化触发词",
-      "技能过度设计",
-      "技能写太多代码",
-      "没有复用现有代码",
-      "skill evolution",
-      "improve this skill",
-      "review skill feedback",
-      "refine agent workflow",
-      "analyze agent failure",
-      "update skill triggers",
-      "skill over-engineered",
-      "agent wrote too much code",
-      "missed existing reuse"
-    ],
-    "version": "1.0",
-    "experimental": true
-  },
-  {
     "name": "team-writing-style",
     "category": "writing",
     "description": {
