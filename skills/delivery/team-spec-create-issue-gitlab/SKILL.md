@@ -33,22 +33,51 @@ GitLab 地址必须从 `GITLAB_URL` 读取。
 
 生成远端 Issue 正文和用户可见说明前，读取配置中的 `writing_style.guide`（如果存在）。正文结构、slug 标记和安全合同不受风格覆盖。
 
+Issue 正文遵守以下原则：
+- 直接陈述事实，不夸大意义（禁止"标志着""为……奠定基础""彰显了"等）
+- 用具体数字代替形容词（写"误差不超过 0.005m"不写"高精度"）
+- 不堆砌三段式（不要硬凑"快速、稳定、安全"）
+- 不用破折号制造"强调"效果
+
+## Issue 正文模板
+
+从 PRD 提取信息后，按以下结构用自然语言组织：
+
+```markdown
+## 背景
+
+{一段话说明为什么要做这件事，当前有什么问题。}
+
+## 要做什么
+
+{一段话或几个要点说明具体要改什么，不涉及实现细节。}
+
+## 做完的标准
+
+- {用自然语言描述验收条件，不用 Given/When/Then 格式}
+- {每条一句话，直接说"什么情况下应该怎样"}
+- {不列编号，不分内外范围}
+
+<!-- team-spec-slug: {slug} -->
+```
+
+模板只是参考结构，不是强制格式。如果 PRD 内容更适合其他组织方式，按实际调整。核心原则：一个人花两分钟读完就能理解要做什么、怎么算做完。
+
 ## 输入物
 
 必须先确定唯一 `{slug}`，默认读取：
 
 - `team-spec/active/{slug}/prd/prd.md`
 - `team-spec/active/{slug}/spec/refine.md`
-- `team-spec/active/{slug}/tasks/T*.md`
 - `team-spec/active/{slug}/DELIVERY.md`（如果存在）
 - `team-spec/config.yml`
 
-缺少 PRD、slug 不唯一或 Tasks 目录不存在时停止。不得扫描 archive 猜测。
+缺少 PRD 或 slug 不唯一时停止。不得扫描 archive 猜测。
 
 ## 输出物
 
 - 一个 GitLab Issue，代表整个 Spec。
-- Issue 正文中的目标、范围、验收标准和 Task checklist。
+- Issue 正文用自然语言描述背景、要做什么和做完的标准。
 - `team-spec/active/{slug}/DELIVERY.md` 中的 GitLab Issue IID 和 URL。
 
 本技能不创建分支、commit、push 或 MR。
@@ -92,18 +121,18 @@ GITLAB_URL=https://gitlab.example.com GITLAB_TOKEN=... python3 {skill_dir}/scrip
 
 - 一个 slug 最多对应一个 GitLab Issue。
 - 标题来自显式参数或 PRD 一级标题。
-- 正文从完整 PRD/Spec 生成，不从单个 Task 生成。
-- PRD/Task 语言与 Issue 语言不同时，生成对应语言的标题和完整正文，并通过 `--title`、`--body-file` 传入；不修改源文档。Task ID、代码标识符、命令、路径和专有名词保持原样。
-- 所有 `T{nnn}` Task 作为 checklist。
-- `committed` Task 显示完成，其他状态显示未完成。
-- 正文保留 slug 标记。
+- **Issue 是给人看的，不是给 AI 看的**。正文用自然语言写成一段可读的概述，不要复刻 PRD 的章节结构，不要用 Given/When/Then 格式。
+- 正文从 PRD 中提取三个核心信息：背景（为什么做）、要做什么、做完的标准（用自然语言描述，不用僵硬格式）。
+- 规格文档本身不会上传到 Git，Issue 正文中不得出现指向本地规格文件的链接或路径。
+- 不暴露工程 Task 编号（T{nnn}），Issue 只需要描述工作内容，不需要透漏内部 Task 拆解。
+- 正文末尾保留一行隐藏式的 slug 标记用于幂等识别，格式为 `<!-- team-spec-slug: {slug} -->`，人类读者不可见。
 - 远端 Issue 是可选跟踪对象；没有它也允许后续创建 MR。
 
 ## 工作流
 
-1. 读取配置、slug、PRD、Tasks 和已有 `DELIVERY.md`。
+1. 读取配置、slug、PRD 和已有 `DELIVERY.md`。
 2. 确认项目、`GITLAB_URL`、语言和 token 来源。
-3. 生成标题、正文、Task checklist 和幂等标记。
+3. 从 PRD 中提取背景、目标和验收标准，用自然语言改写为 Issue 正文。
 4. 运行 dry-run。
 5. 用户已要求正式发布时追加 `--execute`。
 6. 创建或更新一个 GitLab Issue。
@@ -120,7 +149,8 @@ GITLAB_URL=https://gitlab.example.com GITLAB_TOKEN=... python3 {skill_dir}/scrip
 ## 完成标准
 
 - 只存在一个与 slug 对应的 GitLab Issue。
-- 正文表示完整 Spec，并包含全部 Task checklist。
+- 正文是自然语言概述，包含背景、要做什么和做完的标准，不包含 Given/When/Then、T{nnn} 编号或本地文件链接。
+- 正文末尾有隐藏式 slug 标记。
 - `DELIVERY.md` 记录 IID 和 URL。
 - 未执行任何 git 提交或推送。
 
@@ -130,6 +160,5 @@ GITLAB_URL=https://gitlab.example.com GITLAB_TOKEN=... python3 {skill_dir}/scrip
 
 - dry-run 或 execute 状态。
 - slug、项目、Issue IID 和 URL。
-- Task checklist 数量。
 - `DELIVERY.md` 回写结果。
 - 失败阶段、安全重试入口和下一步。
