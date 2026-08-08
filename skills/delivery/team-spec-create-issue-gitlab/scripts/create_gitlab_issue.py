@@ -47,6 +47,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--force", action="store_true", help="Ignore local Issue tracking.")
     parser.add_argument("--execute", action="store_true")
     parser.add_argument("--json", action="store_true")
+    parser.add_argument(
+        "--debug",
+        action="store_true",
+        help="Print outgoing GitLab API requests (method, URL, payload) to stderr.",
+    )
     return parser.parse_args()
 
 
@@ -296,6 +301,8 @@ def request(
     url: str,
     token: str,
     payload: dict[str, Any] | None = None,
+    *,
+    debug: bool = False,
 ) -> Any:
     return api_request(
         method,
@@ -304,7 +311,7 @@ def request(
         {"PRIVATE-TOKEN": token},
         payload=payload,
         service="GitLab",
-        debug=True,
+        debug=debug,
     )
 
 
@@ -318,18 +325,20 @@ def find_issue(
     token: str,
     slug: str,
     tracked_iid: int | None,
+    *,
+    debug: bool = False,
 ) -> dict[str, Any] | None:
     base = project_api_base(base_url, project)
     marker = f"<!-- team-spec-slug: {slug} -->"
     if tracked_iid:
-        issue = request("GET", f"{base}/issues/{tracked_iid}", token)
+        issue = request("GET", f"{base}/issues/{tracked_iid}", token, debug=debug)
         if isinstance(issue, dict):
             if marker not in (issue.get("description") or ""):
                 raise SystemExit(
                     f"Tracked GitLab Issue #{tracked_iid} does not belong to Spec {slug}."
                 )
             return issue
-    issues = request("GET", f"{base}/issues?scope=all&per_page=100", token)
+    issues = request("GET", f"{base}/issues?scope=all&per_page=100", token, debug=debug)
     for issue in issues or []:
         if marker in (issue.get("description") or ""):
             return issue
@@ -354,6 +363,7 @@ def execute(
         token,
         args.slug,
         None if args.force else tracked_iid,
+        debug=args.debug,
     )
     payload: dict[str, Any] = {"title": title, "description": body}
     if args.label:
@@ -364,10 +374,10 @@ def execute(
         payload["milestone_id"] = args.milestone_id
     base = project_api_base(base_url, project)
     if existing:
-        issue = request("PUT", f"{base}/issues/{existing['iid']}", token, payload)
+        issue = request("PUT", f"{base}/issues/{existing['iid']}", token, payload, debug=args.debug)
         action = "updated"
     else:
-        issue = request("POST", f"{base}/issues", token, payload)
+        issue = request("POST", f"{base}/issues", token, payload, debug=args.debug)
         action = "created"
     write_delivery(delivery_path, args.slug, int(issue["iid"]), str(issue["web_url"]))
     return {
