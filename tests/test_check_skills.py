@@ -98,6 +98,40 @@ class CheckSkillsTests(unittest.TestCase):
 
             self.assertEqual([], CHECK_SKILLS.check_skill(skill))
 
+    def test_codebase_writer_requires_runtime_contract(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            skill_dir = Path(directory) / "team-codebase-onboarding"
+            skill_dir.mkdir(parents=True)
+            skill = skill_dir / "SKILL.md"
+            skill.write_text(
+                skill_text("team-codebase-onboarding"), encoding="utf-8"
+            )
+
+            errors = CHECK_SKILLS.check_skill(skill)
+            self.assertIn("missing ## 运行时配置 section", errors)
+            self.assertTrue(
+                any("access_policy" in error for error in errors), errors
+            )
+
+    def test_codebase_writer_accepts_complete_runtime_contract(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            skill_dir = Path(directory) / "team-codebase-onboarding"
+            skill_dir.mkdir(parents=True)
+            skill = skill_dir / "SKILL.md"
+            skill.write_text(
+                skill_text(
+                    "team-codebase-onboarding",
+                    """## 运行时配置
+
+读取 `team-spec/config.yml` 中的 `language` 和 `access_policy`；缺失时使用
+`team-config-init`，本技能不得自行回写配置。
+""",
+                ),
+                encoding="utf-8",
+            )
+
+            self.assertEqual([], CHECK_SKILLS.check_skill(skill))
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -78,7 +78,7 @@ python3 {skill_dir}/scripts/plan_task_batch.py --slug {slug} --limit 3 --json
 - 开始前工作区不得有无法归因的变化。
 - 分支不存在时，先同步主干再创建；分支已存在时直接使用，不执行主干同步。
 - 同步主干规则（仅在创建新分支时执行）：
-  - `contribution_model = direct`（source_remote 与 target_remote 相同）：`git fetch {source_remote} {trunk_branch}` 然后 `git pull {source_remote} {trunk_branch}`。
+  - `contribution_model = direct`（source_remote 与 target_remote 相同）：`git switch {trunk_branch}`，然后 `git fetch {source_remote} {trunk_branch}`，再执行 `git pull --ff-only {source_remote} {trunk_branch}`。切换主干前必须确认工作区干净；无法 fast-forward 时停止，不自动 merge 或 rebase。
   - `contribution_model = fork-pull`（target_remote 为上游仓库）：`git fetch {target_remote} {trunk_branch}` 然后 `git switch {trunk_branch}` 然后 `git merge {target_remote}/{trunk_branch}`。
   - 同步后，`git switch -c {slug} {trunk_branch}` 创建新分支，不得添加 `spec/` 前缀。
 - 每个 Task commit 后再次确认分支和工作区边界。

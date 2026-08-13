@@ -39,6 +39,11 @@ DEPRECATED_RUNTIME_PATHS = {
     "team-spec/archive/{slug}/issues/",
 }
 DEPRECATED_BRANCH_TEMPLATE = "spec/{slug}"
+RUNTIME_CONTRACT_SKILLS = {
+    "team-codebase-onboarding",
+    "team-codebase-walk",
+    "team-codebase-brief",
+}
 
 
 def parse_frontmatter(path: Path) -> tuple[dict[str, object], list[str]]:
@@ -249,6 +254,20 @@ def check_skill(path: Path) -> list[str]:
         errors.append(
             f"deprecated branch template: {DEPRECATED_BRANCH_TEMPLATE}; use {{slug}}"
         )
+
+    if name in RUNTIME_CONTRACT_SKILLS:
+        if CANONICAL_RUNTIME_HEADING not in heading_lines:
+            errors.append(f"missing ## {CANONICAL_RUNTIME_HEADING} section")
+        for required_term in (
+            "team-spec/config.yml",
+            "team-config-init",
+            "language",
+            "access_policy",
+        ):
+            if required_term not in text:
+                errors.append(
+                    f"runtime contract for {name} must reference {required_term!r}"
+                )
 
     return errors
 

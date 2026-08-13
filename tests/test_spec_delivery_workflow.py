@@ -183,6 +183,50 @@ def create_git_delivery_repo(remote_url: str) -> tuple[tempfile.TemporaryDirecto
 
 
 class SpecDeliveryWorkflowTests(unittest.TestCase):
+    def test_robotics_dashboard_does_not_overload_workspace_status(self) -> None:
+        skill = (
+            ROOT / "skills/product/team-discovery-robotics/SKILL.md"
+        ).read_text(encoding="utf-8")
+        status_format = (
+            ROOT
+            / "skills/product/team-discovery-robotics/references/STATUS-FORMAT.md"
+        ).read_text(encoding="utf-8")
+        dashboard_format = (
+            ROOT
+            / "skills/product/team-discovery-robotics/references/PROJECT-DASHBOARD-FORMAT.md"
+        ).read_text(encoding="utf-8")
+
+        self.assertIn("design/project-dashboard.md", skill)
+        self.assertIn("只记录一个产品需求链路机器状态", skill)
+        self.assertNotIn("STATUS.md`：项目仪表盘", skill)
+        self.assertIn("只记录整个工作区的生命周期状态", status_format)
+        self.assertNotIn("成本跟踪", status_format)
+        self.assertIn("design/project-dashboard.md", dashboard_format)
+        self.assertIn("本表不复制机器状态", dashboard_format)
+
+    def test_direct_branch_initialization_switches_and_fast_forwards_trunk(self) -> None:
+        for relative_path in (
+            "skills/delivery/team-task-implement/SKILL.md",
+            "skills/delivery/team-task-batch-implement/SKILL.md",
+        ):
+            with self.subTest(skill=relative_path):
+                text = (ROOT / relative_path).read_text(encoding="utf-8")
+                direct_rule = next(
+                    line
+                    for line in text.splitlines()
+                    if "`contribution_model = direct`" in line
+                    and "git switch" in line
+                )
+                switched = direct_rule.index("git switch {trunk_branch}")
+                fetched = direct_rule.index("git fetch {source_remote} {trunk_branch}")
+                pulled = direct_rule.index(
+                    "git pull --ff-only {source_remote} {trunk_branch}"
+                )
+
+                self.assertLess(switched, fetched)
+                self.assertLess(fetched, pulled)
+                self.assertIn("无法 fast-forward 时停止", direct_rule)
+
     def test_task_implement_requires_post_verification_commit_confirmation(self) -> None:
         text = (
             ROOT / "skills/delivery/team-task-implement/SKILL.md"

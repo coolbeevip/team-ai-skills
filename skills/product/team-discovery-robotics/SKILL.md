@@ -99,7 +99,7 @@ triggers:
 
 ## 文档写作风格
 
-生成的所有产物文档（discovery、solution-specification、software-specification、proposal、interview、STATUS）必须去除 AI 写作痕迹，读起来像专业人士写的技术文档。
+生成的所有产物文档（discovery、solution-specification、software-specification、proposal、interview、project-dashboard、STATUS）必须去除 AI 写作痕迹，读起来像专业人士写的技术文档。
 
 ### 禁止的 AI 写作模式
 
@@ -192,10 +192,11 @@ triggers:
 - `team-spec/active/{slug}/design/solution-specification.md`：系统与硬件 Solution Specification，包含推荐系统架构、具体硬件型号与 BOM、选型矩阵、运行时分层与 RACI、接口、性能预算、PoC、**风险登记册**（标准化概率/影响/RAG 评估）、**需求追溯矩阵**（REQ → DEC → PoC → 验证结果）和实施里程碑。
 - `team-spec/active/{slug}/design/software-specification.md`：完整 Software Specification，包含底层与通信、软件架构、AI 与感知算法、导航与操作、语音交互、数据闭环、Skill 与 Capability/Motion API、部署、降级和测试方案。
 - `team-spec/active/{slug}/design/proposal.md`：正式项目方案书，在前三份产物一致且关键事项全部确认后呈现客户问题、最终方案、软硬件组合、部署运营、实施周期、商务约定、PoC、验收和风险，不解释探索、推导或选型过程。格式按 [PROPOSAL-FORMAT.md](./references/PROPOSAL-FORMAT.md) 统一模板生成。方案书是版本化交付物（0.x 草案、1.0 终稿），每次重大变更升版，确保所有方案书产出风格一致。
-- `team-spec/active/{slug}/STATUS.md`：项目仪表盘，项目经理的日常运营视图。按 [STATUS-FORMAT.md](./references/STATUS-FORMAT.md) 格式维护，包含整体 RAG 状态、阶段进度、本周决策快照、阻塞项清单、证据欠账清单、里程碑日历、风险 TOP 5、成本跟踪和干系人沟通记录。每次阶段转换、重大决策、风险变化或里程碑达成时更新。生命周期状态字段使用 `concept-drafting`、`concept-review`、`concept-ready`、`refining`、`spec-ready`、`prd-ready`、`implementing`、`paused`、`blocked` 等机器可读状态。
+- `team-spec/active/{slug}/STATUS.md`：可选的工作区生命周期状态文件。按 [STATUS-FORMAT.md](./references/STATUS-FORMAT.md) 只记录一个产品需求链路机器状态，不写入阶段评审、Task、风险、成本、里程碑或沟通信息。
+- `team-spec/active/{slug}/design/project-dashboard.md`：项目经理的日常运营视图。按 [PROJECT-DASHBOARD-FORMAT.md](./references/PROJECT-DASHBOARD-FORMAT.md) 维护整体 RAG、阶段进度、决策快照、阻塞项、证据欠账、里程碑、风险、成本和沟通记录；只引用 `STATUS.md`，不复制机器生命周期状态。
 - `team-spec/config.yml`：项目级运行时配置；本技能只读取，缺失或需要持久化调整时使用 `team-config-init`。
 
-六份产物共同构成本技能的独立交付闭环。本技能不生成工程 Task 或代码补丁，不定义其他技能如何消费这些文件，也不在完成时自动发起后续技能。
+上述产物共同构成本技能的独立交付闭环。本技能不生成工程 Task 或代码补丁，不定义其他技能如何消费这些文件，也不在完成时自动发起后续技能。
 
 ## 核心 SOP：五步推导、三步闭环
 
@@ -510,7 +511,7 @@ python3 {skill_dir}/scripts/camera_pixel_budget.py \
 
 ## 方案产物
 
-访谈过程按 [INTERVIEW-FORMAT.md](./references/INTERVIEW-FORMAT.md) 持续写入 `spec/interview.md`。项目状态按 [STATUS-FORMAT.md](./references/STATUS-FORMAT.md) 维护 `STATUS.md` 仪表盘。场景基线写入 `spec/discovery.md` 后，继续生成两个相互引用的详细规格，最后汇编方案书：
+访谈过程按 [INTERVIEW-FORMAT.md](./references/INTERVIEW-FORMAT.md) 持续写入 `spec/interview.md`。工作区生命周期按 [STATUS-FORMAT.md](./references/STATUS-FORMAT.md) 写入 `STATUS.md`；项目进度按 [PROJECT-DASHBOARD-FORMAT.md](./references/PROJECT-DASHBOARD-FORMAT.md) 写入 `design/project-dashboard.md`。场景基线写入 `spec/discovery.md` 后，继续生成两个相互引用的详细规格，最后汇编方案书：
 
 - 按 [SOLUTION-SPECIFICATION-FORMAT.md](./references/SOLUTION-SPECIFICATION-FORMAT.md) 编写 `design/solution-specification.md`，负责系统级方案、具体硬件、BOM、部署、PoC、成本假设和实施里程碑。
 - 按 [SOFTWARE-SPECIFICATION-FORMAT.md](./references/SOFTWARE-SPECIFICATION-FORMAT.md) 编写 `design/software-specification.md`，负责软件架构、底层通信、AI 与感知、规划控制、语音交互、数据与模型闭环、接口和测试。
@@ -683,7 +684,7 @@ python3 {skill_dir}/scripts/camera_pixel_budget.py \
 - `design/solution-specification.md` 已创建或更新，风险登记册和需求追溯矩阵已建立。
 - `design/software-specification.md` 已创建或更新。
 - `design/proposal.md` 已按统一模板生成，版本号完整，不含过程性内容、方法论词汇或内部简写。
-- `STATUS.md` 已按仪表盘格式创建并持续更新，内容与当前产物一致。
+- `STATUS.md` 如已创建，只包含当前工作区生命周期状态；项目仪表盘已写入 `design/project-dashboard.md` 并与当前产物一致。
 
 如果关键业务目标、目标状态、现场安全边界或 MVP 闭环仍未知，不要宣称完整方案完成；说明当前成熟度并继续引导。关键选型事实不足时仍给出条件化推荐基线，但不得把它描述为已验证或可直接采购的最终结论。
 

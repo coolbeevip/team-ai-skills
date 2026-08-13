@@ -72,7 +72,7 @@ Commit message 语言按“用户对本次提交的明确指定 > `version_contr
    - 分支已存在：切换到该分支，不执行主干同步。
    - 分支不存在：先同步主干，再从主干创建。
 4. 同步主干规则（仅在创建新分支时执行）：
-   - `contribution_model = direct`（source_remote 与 target_remote 相同）：`git fetch {source_remote} {trunk_branch}` 然后 `git pull {source_remote} {trunk_branch}`。
+   - `contribution_model = direct`（source_remote 与 target_remote 相同）：`git switch {trunk_branch}`，然后 `git fetch {source_remote} {trunk_branch}`，再执行 `git pull --ff-only {source_remote} {trunk_branch}`。切换主干前必须确认工作区干净；无法 fast-forward 时停止，不自动 merge 或 rebase。
    - `contribution_model = fork-pull`（target_remote 为上游仓库）：`git fetch {target_remote} {trunk_branch}` 然后 `git switch {trunk_branch}` 然后 `git merge {target_remote}/{trunk_branch}`。
    - 同步后，`git switch -c {slug} {trunk_branch}` 创建新分支。
 5. 后续 Task 必须继续使用同一分支。
