@@ -59,6 +59,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--language")
     parser.add_argument("--execute", action="store_true")
     parser.add_argument("--json", action="store_true")
+    parser.add_argument(
+        "--debug",
+        action="store_true",
+        help="Print outgoing GitLab API requests (method, URL, payload) to stderr.",
+    )
     return parser.parse_args()
 
 
@@ -454,6 +459,8 @@ def request(
     url: str,
     token: str,
     payload: dict[str, Any] | None = None,
+    *,
+    debug: bool = False,
 ) -> Any:
     return api_request(
         method,
@@ -462,7 +469,7 @@ def request(
         {"PRIVATE-TOKEN": token},
         payload=payload,
         service="GitLab",
-        debug=True,
+        debug=debug,
     )
 
 
@@ -470,8 +477,8 @@ def project_api_base(base_url: str, project: str) -> str:
     return f"{base_url}/api/v4/projects/{urllib.parse.quote(project, safe='')}"
 
 
-def project_id(base_url: str, project: str, token: str) -> int:
-    result = request("GET", project_api_base(base_url, project), token)
+def project_id(base_url: str, project: str, token: str, *, debug: bool = False) -> int:
+    result = request("GET", project_api_base(base_url, project), token, debug=debug)
     return int(result["id"])
 
 
@@ -481,6 +488,8 @@ def find_existing_mr(
     branch: str,
     target_branch: str,
     token: str,
+    *,
+    debug: bool = False,
 ) -> dict[str, Any] | None:
     query = urllib.parse.urlencode(
         {
@@ -494,6 +503,7 @@ def find_existing_mr(
         "GET",
         f"{project_api_base(base_url, source.project)}/merge_requests?{query}",
         token,
+        debug=debug,
     )
     return merge_requests[0] if merge_requests else None
 
@@ -512,14 +522,14 @@ def execute(
         raise SystemExit(f"Missing token environment variable: {args.token_env}")
     subprocess.run(["git", "push", "-u", source.remote, plan["branch"]], check=True)
     existing = find_existing_mr(
-        base_url, source, plan["branch"], plan["target_branch"], token
+        base_url, source, plan["branch"], plan["target_branch"], token, debug=args.debug
     )
     if existing:
         merge_request = existing
         action = "existing"
     else:
-        source_id = project_id(base_url, source.project, token)
-        target_id = project_id(base_url, target.project, token)
+        source_id = project_id(base_url, source.project, token, debug=args.debug)
+        target_id = project_id(base_url, target.project, token, debug=args.debug)
         title = plan["title"]
         if args.draft and not title.lower().startswith(("draft:", "wip:")):
             title = "Draft: " + title
@@ -542,6 +552,7 @@ def execute(
             f"{base_url}/api/v4/projects/{source_id}/merge_requests",
             token,
             payload,
+            debug=args.debug,
         )
         action = "created"
     write_delivery(

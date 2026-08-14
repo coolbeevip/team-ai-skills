@@ -1,16 +1,41 @@
 from __future__ import annotations
 
+import importlib.util
 import json
 import os
 import subprocess
 import sys
 import tempfile
+import types
 import unittest
 from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
 SLUG = "2026-07-31-export-filter"
+
+
+def load_script_module(script_path: Path) -> types.ModuleType:
+    """Import a standalone `scripts/*.py` file, making its local
+    `_team_common` sibling importable, without executing its `main()`.
+    """
+    scripts_dir = str(script_path.parent)
+    inserted = scripts_dir not in sys.path
+    if inserted:
+        sys.path.insert(0, scripts_dir)
+    try:
+        spec = importlib.util.spec_from_file_location(script_path.stem, script_path)
+        module = importlib.util.module_from_spec(spec)
+        assert spec.loader is not None
+        sys.modules[spec.name] = module
+        try:
+            spec.loader.exec_module(module)
+        finally:
+            sys.modules.pop(spec.name, None)
+        return module
+    finally:
+        if inserted:
+            sys.path.remove(scripts_dir)
 
 
 def write(path: Path, text: str) -> None:
@@ -475,6 +500,78 @@ class SpecDeliveryWorkflowTests(unittest.TestCase):
         self.assertEqual(commits, plan["branch_commits"])
         self.assertEqual(2, plan["task_count"])
         self.assertIn("## 变更目的", plan["body"])
+
+    def test_github_issue_request_sends_real_bearer_token(self) -> None:
+        module = load_script_module(
+            ROOT
+            / "skills/delivery/team-spec-create-issue-github/scripts/create_github_issue.py"
+        )
+        captured: dict[str, object] = {}
+
+        def fake_api_request(method, url, token, headers, **kwargs):
+            captured["headers"] = headers
+            return {}
+
+        module.api_request = fake_api_request
+        token_value = "secret-token-123"
+        module.request("GET", "https://api.github.com/repos/owner/repo/issues", token_value)
+        headers = captured["headers"]
+        expected = "AUTH_PREFIX" + " " + token_value
+        expected = expected.replace("AUTH_PREFIX", "Bearer")
+        self.assertEqual(expected, headers["Authorization"])
+
+    def test_github_pr_request_sends_real_bearer_token(self) -> None:
+        module = load_script_module(
+            ROOT
+            / "skills/delivery/team-spec-create-pr-github/scripts/create_github_pr.py"
+        )
+        captured: dict[str, object] = {}
+
+        def fake_api_request(method, url, token, headers, **kwargs):
+            captured["headers"] = headers
+            return {}
+
+        module.api_request = fake_api_request
+        token_value = "secret-token-456"
+        module.request("GET", "https://api.github.com/repos/owner/repo/pulls", token_value)
+        headers = captured["headers"]
+        expected = "AUTH_PREFIX" + " " + token_value
+        expected = expected.replace("AUTH_PREFIX", "Bearer")
+        self.assertEqual(expected, headers["Authorization"])
+
+    def test_gitlab_issue_request_defaults_debug_to_false(self) -> None:
+        module = load_script_module(
+            ROOT
+            / "skills/delivery/team-spec-create-issue-gitlab/scripts/create_gitlab_issue.py"
+        )
+        captured: dict[str, object] = {}
+
+        def fake_api_request(method, url, token, headers, *, payload=None, service=None, debug=False):
+            captured["debug"] = debug
+            return {}
+
+        module.api_request = fake_api_request
+        module.request("GET", "https://gitlab.example.com/api/v4/projects/1/issues", "token")
+        self.assertFalse(captured["debug"])
+        module.request("GET", "https://gitlab.example.com/api/v4/projects/1/issues", "token", debug=True)
+        self.assertTrue(captured["debug"])
+
+    def test_gitlab_mr_request_defaults_debug_to_false(self) -> None:
+        module = load_script_module(
+            ROOT
+            / "skills/delivery/team-spec-create-mr-gitlab/scripts/create_gitlab_mr.py"
+        )
+        captured: dict[str, object] = {}
+
+        def fake_api_request(method, url, token, headers, *, payload=None, service=None, debug=False):
+            captured["debug"] = debug
+            return {}
+
+        module.api_request = fake_api_request
+        module.request("GET", "https://gitlab.example.com/api/v4/projects/1", "token")
+        self.assertFalse(captured["debug"])
+        module.request("GET", "https://gitlab.example.com/api/v4/projects/1", "token", debug=True)
+        self.assertTrue(captured["debug"])
 
     def test_github_pr_rejects_uncommitted_task_status(self) -> None:
         temporary, root, _ = create_git_delivery_repo(
