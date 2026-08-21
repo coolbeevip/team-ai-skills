@@ -54,7 +54,8 @@ triggers:
 
 ## 输入物
 
-- `team-spec/archive/` 下所有已归档 slug 的产物，重点读取：
+- 用户明确指定的一个或多个归档 slug，或 `team-spec/archive/{slug}/` 下的具体文件路径。只读取被指定的归档范围，不默认枚举或扫描整个 `team-spec/archive/`。
+- 被指定归档 slug 的以下产物（如存在）：
   - `spec/refine.md`：细化过程中确认的需求和决策。
   - `spec/reviews.md`：评审中发现的风险、约束和修正。
   - `prd/prd.md`：固化的功能边界、验收标准和工程约束。
@@ -63,7 +64,7 @@ triggers:
   - `ARCHIVE.md`：归档原因和生命周期总结。
 - 目标项目根目录已有的 `AGENTS.md`。
 
-如果 `team-spec/archive/` 为空或不存在，停止并告知用户无归档可提取。
+如果用户没有明确指定归档 slug 或文件路径，停止并要求用户提供，不得通过扫描 archive 猜测范围。如果指定范围不存在或为空，停止并说明没有可提取内容。
 
 ## 输出物
 
@@ -107,8 +108,8 @@ triggers:
 
 ## 工作流
 
-1. 列出 `team-spec/archive/` 下所有已归档 slug。
-2. 逐一读取每个 slug 的关键文件（`refine.md`、`reviews.md`、`prd.md`、`functional-design.md`、`DELIVERY.md`、`ARCHIVE.md`）。
+1. 确认用户明确指定的归档 slug 或文件路径，并拒绝自动扩大到其他归档。
+2. 逐一读取指定 slug 的关键文件（`refine.md`、`reviews.md`、`prd.md`、`functional-design.md`、`DELIVERY.md`、`ARCHIVE.md`）。
 3. 从每个文件中识别决策、约束、惯例、经验教训和模式。
 4. 将相似决策归并，抽象为高层规则，消除重复。
 5. 按 6 个分类组织规则，为每条规则标注来源 slug。
@@ -128,6 +129,10 @@ triggers:
 本技能读取目标项目根目录下的 `team-spec/config.yml` 作为运行时配置入口，主要用于获取 `writing_style.guide` 路径。
 
 如果 `team-spec/config.yml` 不存在或缺少本轮需要的字段，先使用 `team-config-init` 创建或增量补全。本技能不得自行创建或回写配置；纯对话和只读分析可以继续，但写入 `AGENTS.md` 前必须完成所需配置。
+
+如果配置存在 `access_policy`，读取指定 archive 内容和写入 `AGENTS.md` 前都必须先应用对应目录边界。访问策略不能被“只读提炼”或用户笼统要求扫描历史记录所绕过。
+
+语言优先级为：用户本轮明确指定 > 配置中的 `language` > 目标 `AGENTS.md` 的既有主要语言。
 
 ## 公共写作风格
 

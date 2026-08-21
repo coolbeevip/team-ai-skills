@@ -58,7 +58,7 @@
 - `team-spec/active/{slug}/prd/`：单个需求的 PRD 固化产物，是需求到工程的正式交接边界，包括 `prd.md` 与可选 `brief.md`。
 - `team-spec/active/{slug}/tasks/`：单个需求 PRD 或技术债规格拆解后的工程 Task。
 - `team-spec/active/{slug}/DELIVERY.md`：可选的 Spec 级交付记录，包括共享分支、远端 Issue、Task/commit 映射和 PR/MR；不得加入产品代码 commit。
-- `team-spec/active/{slug}/design/`：单个需求的功能设计说明书，默认文件为 `functional-design.md`。
+- `team-spec/active/{slug}/design/`：单个需求的可选功能设计说明书，默认文件为 `functional-design.md`。当前技能库不提供通用功能设计生成技能；该文件由用户或团队另行提供时，下游 Task 拆解、实现和验证必须读取，但不得因文件不存在而阻塞已 ready 的 PRD。
 - `team-spec/active/{slug}/STATUS.md`：可选状态文件，只记录整个工作区的生命周期状态，不记录阶段评审结果或单个 Task 的交付状态。
 - `team-spec/archive/{slug}/`：单个历史需求的归档目录，包括 `spec/`、`prd/`、`tasks/`、`design/`、`DELIVERY.md`、`STATUS.md` 和 `ARCHIVE.md`。
 

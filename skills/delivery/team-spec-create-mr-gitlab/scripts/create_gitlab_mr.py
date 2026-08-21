@@ -462,7 +462,6 @@ def request(
         {"PRIVATE-TOKEN": token},
         payload=payload,
         service="GitLab",
-        debug=True,
     )
 
 

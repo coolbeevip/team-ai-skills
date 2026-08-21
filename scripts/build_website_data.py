@@ -19,7 +19,8 @@ CATEGORY_ORDER = {
     "codebase": 2,
     "delivery": 3,
     "tech-debt": 4,
-    "harness": 5,
+    "writing": 5,
+    "harness": 6,
 }
 SKILL_ORDER = [
     "team-config-init",
@@ -46,6 +47,7 @@ SKILL_ORDER = [
     "team-tech-debt-refine",
     "team-tech-debt-review",
     "team-tech-debt-to-tasks",
+    "team-writing-style",
     "team-archive-distill",
 ]
 DESCRIPTION_SPLIT = re.compile(r"^(.*?[。！？])\s*([A-Z].*)$", re.DOTALL)

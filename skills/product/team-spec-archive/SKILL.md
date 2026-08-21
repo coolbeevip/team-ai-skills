@@ -29,6 +29,12 @@ triggers:
 - 适合触发：用户明确要归档某个已完成、废弃或暂停的 `team-spec/active/{slug}/` 工作区。
 - 不适合触发：用户只是开始新需求或存在多个 active slug 时，不要求归档；应让对应产品或交付技能继续处理目标 slug。
 
+## 运行时配置
+
+开始前读取目标项目根目录的 `team-spec/config.yml`。纯只读检查和 dry-run 可在配置缺失时继续；正式归档会移动文件并生成记录，配置不存在或缺少本轮必需字段时，先使用 `team-config-init` 创建或增量补全，本技能不得自行回写配置。
+
+如果配置存在 `access_policy`，列出 active 工作区、读取待归档内容、创建 staging 目录或执行移动前，必须先确认当前协作者对来源与目标目录均有相应权限。语言优先级为：用户本轮明确指定 > 配置中的 `language`。
+
 ## 公共写作风格
 
 生成或改写文档、用户可见说明或代码注释前，如果目标项目存在 `team-spec/config.yml`，检查其中的 `writing_style.guide`。该路径指向存在的文件时，写作前必须读取并应用；相对路径以目标项目根目录解析。
@@ -92,7 +98,8 @@ triggers:
 脚本能力：
 
 - 默认 dry-run，只输出将移动的文件和目录。
-- `--execute` 时移动对应 slug 的 active 工作区并生成 `ARCHIVE.md`。
+- `--execute` 时先写入持久化事务清单，再把对应 slug 的 active 产物移动到隐藏 staging 目录；生成 `ARCHIVE.md` 后原子切换为最终归档目录。可捕获的执行错误会立即回滚；进程被强制终止后，下次运行会识别未完成事务并停止。
+- `--recover-staging` 会根据事务清单把未完成归档恢复到 `active/`；必须显式提供 `--slug`，且不能与 `--execute` 同时使用。恢复后重新运行 dry-run，不能直接把未知 staging 当成完整归档发布。
 - 如果未传 `--slug`，仅在 active 中能唯一识别 slug 时自动推断。
 - 如果目标归档目录已存在，停止执行。
 - 新布局下移动 `team-spec/active/{slug}/`；旧布局兼容模式只移动同 slug 产物，不移动全局 `team-spec/CONTEXT.md`、`team-spec/decisions/`、旧布局共享 `CONTEXT.md`、`decisions/`、缓存文件或其他无关文件。
@@ -109,6 +116,12 @@ python3 {skill_dir}/scripts/archive_team_spec.py --slug {slug}
 python3 {skill_dir}/scripts/archive_team_spec.py --slug {slug} --reason completed --execute
 ```
 
+如果脚本报告未完成事务，先展示 staging 和事务清单路径，取得用户确认后恢复：
+
+```sh
+python3 {skill_dir}/scripts/archive_team_spec.py --slug {slug} --recover-staging
+```
+
 其中 `{skill_dir}` 是当前技能目录。技能内部定位脚本时应使用相对 `SKILL.md` 的路径 `./scripts/archive_team_spec.py`，执行命令时再解析成实际文件路径。
 
 常用参数：
@@ -117,21 +130,26 @@ python3 {skill_dir}/scripts/archive_team_spec.py --slug {slug} --reason complete
 - `--team-spec-dir team-spec`：指定目标项目中的 `team-spec/` 目录，默认是当前工作目录下的 `team-spec`。
 - `--reason completed|abandoned|superseded|paused|manual`：归档原因，默认 `manual`。
 - `--execute`：正式移动文件；不传时只 dry-run。
+- `--recover-staging`：恢复一次被进程终止的未完成归档；本参数本身会移动文件，执行前必须取得用户确认。
 - `--json`：输出机器可读 JSON。
 
 ## 工作流
 
 1. 确认目标项目根目录和 `team-spec/` 位置。
 2. 确认唯一 slug；如果 active 中存在多个 slug 或无法判断，要求用户提供。
-3. 运行固定脚本 dry-run，展示将归档的文件、目录和目标路径。
-4. 如果 dry-run 结果为空，说明 active 中没有该 slug 的可归档产物，停止并说明原因。
-5. 用户确认后追加 `--execute` 正式归档。
-6. 归档完成后，输出 `ARCHIVE.md` 路径，并说明其他 active 需求未受影响。
+3. 如果脚本发现隐藏 staging 或事务清单，停止新归档；展示恢复范围，取得用户确认后执行 `--recover-staging`，再重新 dry-run。
+4. 运行固定脚本 dry-run，展示将归档的文件、目录和目标路径。
+5. 如果 dry-run 结果为空，说明 active 中没有该 slug 的可归档产物，停止并说明原因。
+6. 用户确认后追加 `--execute` 正式归档。
+7. 归档完成后，输出 `ARCHIVE.md` 路径，并说明其他 active 需求未受影响。
 
 ## 安全要求
 
 - 不覆盖已有 `team-spec/archive/{slug}/`。
+- 正式执行前必须应用 `access_policy`（如存在），并确认来源与目标目录都在允许范围内。
 - 新布局下只归档指定 `team-spec/active/{slug}/`；任何布局都不归档或删除 `team-spec/CONTEXT.md` 与 `team-spec/decisions/`；旧布局兼容模式也不归档或删除 `team-spec/active/spec/CONTEXT.md` 与 `team-spec/active/spec/decisions/`。
+- 移动通过同一归档 staging 目录完成；普通文件系统错误会回滚已移动产物，不保留半完成的最终归档目录。SIGKILL、掉电或解释器崩溃无法在当次进程内回滚，因此必须保留事务清单，并在再次归档前通过显式恢复把产物移回 `active/`。
+- staging 缺少有效事务清单、事务路径越过目标 `team-spec/active/`，或来源与 staging 同时存在时，不得自动删除、覆盖或猜测恢复方向；停止并要求人工检查。
 - 不修改 PRD、规格正文、Task 内容或验收状态，只移动归档并生成归档记录。
 - 不执行 `git add`、`git commit`、`git push`。
 

@@ -40,7 +40,7 @@ triggers:
 - `team-spec/active/{slug}/STATUS.md`：可选，记录 `concept-drafting`、`concept-review`、`concept-ready`、`paused` 或 `blocked`。
 - 已有全局或当前需求上下文文件：只有在用户确认信息适用范围后，才按既有规范更新。
 
-## 运行时配置与 slug
+## 运行时配置
 
 开始前读取 `team-spec/config.yml`。文件不存在时可继续纯对话探索；准备写入白皮书且配置缺失或缺少必需字段时，先使用 `team-config-init` 创建或增量补全，本技能不得自行回写配置。语言优先级固定为：用户本轮明确指定 > 配置中的 `language`。存在 `access_policy` 时，先遵守其读写边界。
 

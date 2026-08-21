@@ -8,10 +8,10 @@ metadata:
 triggers:
   - 为 Spec 创建 GitHub Issue
   - 发布完整需求到 GitHub
-  - 同步需求跟踪 Issue
+  - 同步 GitHub 需求跟踪 Issue
   - create GitHub issue for spec
   - publish spec to GitHub
-  - sync spec tracking issue
+  - sync GitHub spec tracking issue
 ---
 
 # 为 Spec 创建 GitHub Issue

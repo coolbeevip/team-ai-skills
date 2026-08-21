@@ -196,6 +196,24 @@ ROUTE_PATTERNS = [
 ]
 
 TODO_PATTERN = re.compile(r"\b(TODO|FIXME|HACK|XXX)\b[:\-\s]*(.*)", re.I)
+SENSITIVE_MARKER_TOKENS = {
+    "authorization",
+    "bearer",
+    "credential",
+    "credentials",
+    "password",
+    "passwd",
+    "secret",
+    "token",
+}
+SENSITIVE_MARKER_COMPOUNDS = {
+    "accesskey",
+    "accesstoken",
+    "apikey",
+    "authtoken",
+    "clientsecret",
+    "privatekey",
+}
 
 INTENT_TOKENS = {
     "prd",
@@ -405,18 +423,32 @@ def role_item(path: str, role: str, evidence: str, confidence: str = "medium", *
     return item
 
 
+def contains_sensitive_marker_text(text: str) -> bool:
+    expanded = re.sub(r"(?<=[A-Z])(?=[A-Z][a-z])", " ", text)
+    expanded = re.sub(r"(?<=[a-z0-9])(?=[A-Z])", " ", expanded)
+    tokens = [token.casefold() for token in re.findall(r"[A-Za-z0-9]+", expanded)]
+    if any(token in SENSITIVE_MARKER_TOKENS for token in tokens):
+        return True
+    compact = "".join(tokens)
+    return any(compound in compact for compound in SENSITIVE_MARKER_COMPOUNDS)
+
+
 def extract_todo_markers(text: str, path: str, limit: int) -> list[dict[str, Any]]:
     markers: list[dict[str, Any]] = []
     for line_number, line in enumerate(text.splitlines(), start=1):
         match = TODO_PATTERN.search(line)
         if not match:
             continue
+        marker = match.group(1).upper()
+        marker_text = f"{marker}: {match.group(2).strip()}".rstrip()
+        if contains_sensitive_marker_text(marker_text):
+            marker_text = f"{marker}: [REDACTED: sensitive content]"
         markers.append(
             {
                 "path": path,
                 "line": line_number,
-                "marker": match.group(1).upper(),
-                "text": line.strip()[:220],
+                "marker": marker,
+                "text": marker_text[:220],
                 "area": classify_area(path),
                 "confidence": "medium",
             }
@@ -858,6 +890,7 @@ def scan_repo(args: argparse.Namespace) -> dict[str, Any]:
         "human_review_next_steps": [],
     }
 
+    scan_limit_reached = False
     for current, dirnames, filenames in os.walk(root):
         current_path = Path(current)
         current_rel = "" if current_path == root else relpath(current_path, root)
@@ -888,6 +921,7 @@ def scan_repo(args: argparse.Namespace) -> dict[str, Any]:
                         "reason": f"Stopped after {args.max_files} included files.",
                     }
                 )
+                scan_limit_reached = True
                 break
 
             counts["files"] += 1
@@ -975,6 +1009,9 @@ def scan_repo(args: argparse.Namespace) -> dict[str, Any]:
             for keyword, service in THIRD_PARTY_KEYWORDS.items():
                 if keyword in lower_text:
                     third_party_hits[service].add(rel)
+
+        if scan_limit_reached:
+            break
 
     top_level_dirs = []
     try:

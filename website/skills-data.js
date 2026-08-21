@@ -316,10 +316,10 @@ window.SRT_SKILLS = Object.freeze([
     "triggers": [
       "为 Spec 创建 GitHub Issue",
       "发布完整需求到 GitHub",
-      "同步需求跟踪 Issue",
+      "同步 GitHub 需求跟踪 Issue",
       "create GitHub issue for spec",
       "publish spec to GitHub",
-      "sync spec tracking issue"
+      "sync GitHub spec tracking issue"
     ],
     "version": "1.0",
     "experimental": false
@@ -334,10 +334,10 @@ window.SRT_SKILLS = Object.freeze([
     "triggers": [
       "为 Spec 创建 GitLab Issue",
       "发布完整需求到 GitLab",
-      "同步需求跟踪 Issue",
+      "同步 GitLab 需求跟踪 Issue",
       "create GitLab issue for spec",
       "publish spec to GitLab",
-      "sync spec tracking issue"
+      "sync GitLab spec tracking issue"
     ],
     "version": "1.0",
     "experimental": false
@@ -525,30 +525,6 @@ window.SRT_SKILLS = Object.freeze([
     "experimental": false
   },
   {
-    "name": "team-archive-distill",
-    "category": "harness",
-    "description": {
-      "zh": "从已归档的 team-spec 中提取决策模式和工程惯例，高度抽象为规则后写入 AGENTS.md。",
-      "en": "Extract decision patterns and engineering conventions from archived team-specs, abstract them into high-level rules, and write them into AGENTS.md."
-    },
-    "triggers": [
-      "从归档提取规则",
-      "归档决策抽象",
-      "更新 AGENTS.md 规则",
-      "从历史需求提炼规则",
-      "过去决策总结",
-      "复盘历史 spec",
-      "extract rules from archive",
-      "abstract archived decisions",
-      "distill rules from past specs",
-      "update AGENTS.md from history",
-      "summarize past decisions",
-      "review archived specs"
-    ],
-    "version": "1.0",
-    "experimental": true
-  },
-  {
     "name": "team-writing-style",
     "category": "writing",
     "description": {
@@ -571,5 +547,29 @@ window.SRT_SKILLS = Object.freeze([
     ],
     "version": "1.0",
     "experimental": false
+  },
+  {
+    "name": "team-archive-distill",
+    "category": "harness",
+    "description": {
+      "zh": "从已归档的 team-spec 中提取决策模式和工程惯例，高度抽象为规则后写入 AGENTS.md。",
+      "en": "Extract decision patterns and engineering conventions from archived team-specs, abstract them into high-level rules, and write them into AGENTS.md."
+    },
+    "triggers": [
+      "从归档提取规则",
+      "归档决策抽象",
+      "更新 AGENTS.md 规则",
+      "从历史需求提炼规则",
+      "过去决策总结",
+      "复盘历史 spec",
+      "extract rules from archive",
+      "abstract archived decisions",
+      "distill rules from past specs",
+      "update AGENTS.md from history",
+      "summarize past decisions",
+      "review archived specs"
+    ],
+    "version": "1.0",
+    "experimental": true
   }
 ]);

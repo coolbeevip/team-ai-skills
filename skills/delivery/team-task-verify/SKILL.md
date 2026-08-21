@@ -35,7 +35,7 @@ triggers:
 
 - 唯一 Task 文件：`team-spec/active/{slug}/tasks/T{nnn}-{short-task-slug}.md`。
 - 当前未提交实现，或 Task 已记录的 commit。
-- 同 slug 的 PRD、规格、评审、上下文和决策。
+- 同 slug 的 PRD、规格、评审、上下文、决策和可选的 `design/functional-design.md`；文件存在时验证实现是否满足其中已确认的约束。
 - 测试、静态检查、代码差异和 `../team-task-implement/references/PLATFORM-STDLIB.md`。
 
 无法确认 Task、验收标准、实现范围或父 slug 时不得给出 `verified`。

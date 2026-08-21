@@ -58,10 +58,19 @@ def print_request_debug(
     url: str,
     payload: dict[str, Any] | None,
 ) -> None:
+    def summarize(value: Any) -> Any:
+        if isinstance(value, dict):
+            return {key: summarize(item) for key, item in value.items()}
+        if isinstance(value, list):
+            return [summarize(item) for item in value]
+        if isinstance(value, str):
+            return f"<redacted string: {len(value)} chars>"
+        return value
+
     request_info = {
         "method": method,
         "url": url,
-        "payload": payload or {},
+        "payload": summarize(payload or {}),
     }
     print(
         f"{service} request: "

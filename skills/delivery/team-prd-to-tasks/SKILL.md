@@ -56,9 +56,12 @@ triggers:
 - `team-spec/active/{slug}/spec/reviews.md`
 - `team-spec/active/{slug}/spec/CONTEXT.md`
 - `team-spec/active/{slug}/spec/decisions/`
+- `team-spec/active/{slug}/design/functional-design.md`（如果由用户或团队另行提供）
 - `team-spec/CONTEXT.md`
 - `team-spec/decisions/`
 - 当前代码库、测试、ADR 和已有实现。
+
+当前技能库不负责生成通用 `functional-design.md`。该文件存在时把它作为实现约束和设计证据读取；不存在时以已通过评审的 PRD 为正式交接边界，不得凭空补写设计决定，也不得仅因缺少该可选文件而阻塞拆解。
 
 ## 输出物
 

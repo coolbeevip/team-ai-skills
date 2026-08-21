@@ -8,10 +8,10 @@ metadata:
 triggers:
   - 为 Spec 创建 GitLab Issue
   - 发布完整需求到 GitLab
-  - 同步需求跟踪 Issue
+  - 同步 GitLab 需求跟踪 Issue
   - create GitLab issue for spec
   - publish spec to GitLab
-  - sync spec tracking issue
+  - sync GitLab spec tracking issue
 ---
 
 # 为 Spec 创建 GitLab Issue

@@ -42,7 +42,7 @@ Commit message 语言按“用户对本次提交的明确指定 > `version_contr
 - `team-spec/active/{slug}/tasks/T{nnn}-{short-task-slug}.md`
 - 或用户显式指定的 Task 文件。
 
-参考输入包括同 slug 的 PRD、规格、评审、上下文、决策、代码、测试和 `./references/PLATFORM-STDLIB.md`。
+参考输入包括同 slug 的 PRD、规格、评审、上下文、决策、可选的 `design/functional-design.md`、代码、测试和 `./references/PLATFORM-STDLIB.md`。功能设计文件不存在时不阻塞实现；存在时不得绕过其中已确认的接口、数据、兼容或迁移约束。
 
 必须确认：
 

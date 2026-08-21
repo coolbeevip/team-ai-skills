@@ -39,11 +39,7 @@ DEPRECATED_RUNTIME_PATHS = {
     "team-spec/archive/{slug}/issues/",
 }
 DEPRECATED_BRANCH_TEMPLATE = "spec/{slug}"
-RUNTIME_CONTRACT_SKILLS = {
-    "team-codebase-onboarding",
-    "team-codebase-walk",
-    "team-codebase-brief",
-}
+RUNTIME_CONTRACT_EXEMPT_SKILLS = {"team-config-init"}
 
 
 def parse_frontmatter(path: Path) -> tuple[dict[str, object], list[str]]:
@@ -143,6 +139,24 @@ def iter_markdown_headings(text: str) -> list[tuple[int, str]]:
             headings.append((line_number, match.group(1)))
 
     return headings
+
+
+def h2_section_text(text: str, heading_name: str) -> str | None:
+    headings = iter_markdown_headings(text)
+    matching = [line_number for line_number, heading in headings if heading == heading_name]
+    if not matching:
+        return None
+
+    start = matching[0]
+    end = next(
+        (line_number for line_number, _ in headings if line_number > start),
+        len(text.splitlines()) + 1,
+    )
+    return "\n".join(
+        line
+        for line_number, line in iter_unfenced_lines(text)
+        if start < line_number < end
+    )
 
 
 def iter_local_markdown_links(text: str) -> list[tuple[int, str]]:
@@ -255,19 +269,27 @@ def check_skill(path: Path) -> list[str]:
             f"deprecated branch template: {DEPRECATED_BRANCH_TEMPLATE}; use {{slug}}"
         )
 
-    if name in RUNTIME_CONTRACT_SKILLS:
-        if CANONICAL_RUNTIME_HEADING not in heading_lines:
+    if isinstance(name, str) and name not in RUNTIME_CONTRACT_EXEMPT_SKILLS:
+        runtime_contract = h2_section_text(text, CANONICAL_RUNTIME_HEADING)
+        if runtime_contract is None:
             errors.append(f"missing ## {CANONICAL_RUNTIME_HEADING} section")
-        for required_term in (
-            "team-spec/config.yml",
-            "team-config-init",
-            "language",
-            "access_policy",
-        ):
-            if required_term not in text:
+            runtime_contract = ""
+        for required_term in ("team-spec/config.yml", "team-config-init"):
+            if required_term not in runtime_contract:
                 errors.append(
                     f"runtime contract for {name} must reference {required_term!r}"
                 )
+        if not any(term in runtime_contract for term in ("language", "语言")):
+            errors.append(
+                f"runtime contract for {name} must define language handling"
+            )
+        if not any(
+            term in runtime_contract
+            for term in ("access_policy", "访问策略", "访问边界", "读写边界")
+        ):
+            errors.append(
+                f"runtime contract for {name} must define access_policy handling"
+            )
 
     return errors
 
