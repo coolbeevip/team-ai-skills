@@ -282,6 +282,33 @@ class SpecDeliveryWorkflowTests(unittest.TestCase):
         self.assertIn("🔍 暂不提交，我要先查看 diff", text)
         self.assertIn("不添加 `T001` 等 Task ID", text)
 
+    def test_task_implementation_maintains_the_current_test_contract(self) -> None:
+        implement = (
+            ROOT / "skills/delivery/team-task-implement/SKILL.md"
+        ).read_text(encoding="utf-8")
+        verify = (
+            ROOT / "skills/delivery/team-task-verify/SKILL.md"
+        ).read_text(encoding="utf-8")
+        batch = (
+            ROOT / "skills/delivery/team-task-batch-implement/SKILL.md"
+        ).read_text(encoding="utf-8")
+
+        self.assertIn("测试是当前受支持契约的可执行说明", implement)
+        self.assertIn("不是历史行为档案，也不是只增不减的记录", implement)
+        self.assertIn("没有依据时不得生成“旧参数检查”测试", implement)
+        self.assertIn("测试数量可以下降", implement)
+        self.assertIn("合理的错误实现下失败", implement)
+
+        self.assertIn("每个保留引用都必须有明确的兼容", verify)
+        self.assertIn("否则判为 `needs-changes`", verify)
+        self.assertIn("不以测试数量下降判定覆盖退化", verify)
+        self.assertIn("关键行为无法证明时使用 `needs-changes`", verify)
+
+        self.assertIn("批量编排不得简化", batch)
+        self.assertIn("没有依据的旧参数检查使当前 Task 保持 `needs-changes`", batch)
+        self.assertIn("覆盖已完成 Task 的受影响回归测试", batch)
+        self.assertIn("测试数量下降本身不是失败", batch)
+
     def test_prd_to_tasks_defaults_to_cohesive_delivery_outcomes(self) -> None:
         text = (
             ROOT / "skills/delivery/team-prd-to-tasks/SKILL.md"
