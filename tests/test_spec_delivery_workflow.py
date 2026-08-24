@@ -183,49 +183,6 @@ def create_git_delivery_repo(remote_url: str) -> tuple[tempfile.TemporaryDirecto
 
 
 class SpecDeliveryWorkflowTests(unittest.TestCase):
-    def test_robotics_dashboard_does_not_overload_workspace_status(self) -> None:
-        skill = (
-            ROOT / "skills/product/team-discovery-robotics/SKILL.md"
-        ).read_text(encoding="utf-8")
-        status_format = (
-            ROOT
-            / "skills/product/team-discovery-robotics/references/STATUS-FORMAT.md"
-        ).read_text(encoding="utf-8")
-        dashboard_format = (
-            ROOT
-            / "skills/product/team-discovery-robotics/references/PROJECT-DASHBOARD-FORMAT.md"
-        ).read_text(encoding="utf-8")
-
-        self.assertIn("design/project-dashboard.md", skill)
-        self.assertIn("只记录一个产品需求链路机器状态", skill)
-        self.assertNotIn("STATUS.md`：项目仪表盘", skill)
-        self.assertIn("只记录整个工作区的生命周期状态", status_format)
-        self.assertNotIn("成本跟踪", status_format)
-        self.assertIn("design/project-dashboard.md", dashboard_format)
-        self.assertIn("本表不复制机器状态", dashboard_format)
-
-    def test_robotics_workflow_uses_one_stage_mapping_and_declares_handoff(self) -> None:
-        skill = (
-            ROOT / "skills/product/team-discovery-robotics/SKILL.md"
-        ).read_text(encoding="utf-8")
-        workflow = (
-            ROOT
-            / "skills/product/team-discovery-robotics/references/WORKFLOW.md"
-        ).read_text(encoding="utf-8")
-
-        for obsolete_step in range(9, 16):
-            self.assertNotIn(f"步骤 {obsolete_step}", skill)
-            self.assertNotIn(f"步骤 {obsolete_step}", workflow)
-
-        self.assertIn("阶段一 | 场景定义与 5W | 步骤 1–3", skill)
-        self.assertIn("阶段四 | 系统方案决策 | 步骤 6a", skill)
-        self.assertIn("阶段五 | 软件算法方案 | 步骤 6b", skill)
-        self.assertIn("阶段七 | 方案书汇编 | 步骤 8", skill)
-        self.assertIn("team-spec-refine", skill)
-        self.assertIn("八步 SOP 与阶段的唯一映射", workflow)
-        self.assertIn("把在线检索列为阶段四阻塞项", skill)
-        self.assertNotIn("把在线检索列为阶段六阻塞项", skill)
-
     def test_direct_branch_initialization_switches_and_fast_forwards_trunk(self) -> None:
         for relative_path in (
             "skills/delivery/team-task-implement/SKILL.md",

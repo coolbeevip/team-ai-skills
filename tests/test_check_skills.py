@@ -122,11 +122,11 @@ class CheckSkillsTests(unittest.TestCase):
 
     def test_does_not_require_skill_specific_prose(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
-            skill_dir = Path(directory) / "team-discovery-robotics"
+            skill_dir = Path(directory) / "team-example-skill"
             skill_dir.mkdir(parents=True)
             skill = skill_dir / "SKILL.md"
             skill.write_text(
-                skill_text("team-discovery-robotics"), encoding="utf-8"
+                skill_text("team-example-skill"), encoding="utf-8"
             )
 
             self.assertEqual([], CHECK_SKILLS.check_skill(skill))

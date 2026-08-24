@@ -4,9 +4,8 @@
 
 本仓库是团队大语言模型技能库。技能统一放在标准目录 `skills/` 下，`skills/` 的一级子目录代表团队职责域。
 
-- `skills/product/`：产品定义职责，包括产品概念白皮书、机器人场景需求发现、需求细化、规格评审和 PRD 固化。
+- `skills/product/`：产品定义职责，包括产品概念白皮书、需求细化、规格评审和 PRD 固化。
 - `skills/product/team-concept-whitepaper/`：用于在产品规划阶段定义产品机会、定位、价值、能力边界和演进方向，并编写产品概念白皮书。
-- `skills/product/team-discovery-robotics/`：用于通过同步逐问或异步批量的引导启发式访谈，把具身智能、服务机器人或工业机器人的模糊想法转化为有边界、可验证的场景需求。
 - `skills/product/team-spec-refine/`：用于与用户反复确认并打磨规格。
 - `skills/product/team-spec-review/`：用于评审规格风险和 ready 状态。
 - `skills/product/team-spec-to-prd/`：用于把 ready 的规格固化成 PRD。
@@ -103,7 +102,6 @@
 - 目录名使用 kebab-case，例如 `team-spec-review`。
 - 所有技能名必须以 `team-` 开头。
 - 产品规格类技能使用 `team-spec-` 前缀，例如 `team-spec-refine`。
-- 领域需求发现技能使用 `team-discovery-` 前缀，例如 `team-discovery-robotics`。
 - 交付执行类技能按输入和聚合边界使用 `team-prd-`、`team-task-` 或 `team-spec-` 前缀，例如 `team-prd-to-tasks`、`team-task-implement`、`team-spec-create-pr-github`。
 - 技术债类技能使用 `team-tech-debt-` 前缀，例如 `team-tech-debt-refine`。
 - 归档决策提炼类技能使用 `team-archive-` 前缀，例如 `team-archive-distill`。

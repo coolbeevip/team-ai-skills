@@ -41,44 +41,6 @@ window.SRT_SKILLS = Object.freeze([
     "experimental": false
   },
   {
-    "name": "team-discovery-robotics",
-    "category": "product",
-    "description": {
-      "zh": "将机器人场景或既有本体适配需求转化为有证据的软硬件、算法与实施方案。",
-      "en": "Turn robotics scenarios or fixed-platform constraints into evidence-backed solution and software specifications."
-    },
-    "triggers": [
-      "梳理机器人场景需求",
-      "访谈机器人客户需求",
-      "具身智能需求不清楚",
-      "规划机器人场景 MVP",
-      "和客户现场逐问需求",
-      "生成批量机器人访谈问题",
-      "设计机器人软硬件方案",
-      "编写机器人软件算法规格",
-      "推荐机器人和传感器型号",
-      "评估场景是否适配现有机器人",
-      "基于指定机器人本体设计方案",
-      "比较 VLA 技术方案",
-      "检索最新机器人技术选型",
-      "discover robotics requirements",
-      "scope a robotics scenario",
-      "interview for embodied AI needs",
-      "define a robotics MVP",
-      "run a live robotics discovery interview",
-      "prepare asynchronous robotics discovery questions",
-      "design a robotics solution",
-      "specify robotics software and algorithms",
-      "recommend robot and sensor models",
-      "assess scenario fit for an existing robot",
-      "design around a fixed robot platform",
-      "compare VLA technology options",
-      "research current robotics technology choices"
-    ],
-    "version": "1.0",
-    "experimental": false
-  },
-  {
     "name": "team-spec-refine",
     "category": "product",
     "description": {

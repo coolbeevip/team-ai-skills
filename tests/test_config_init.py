@@ -28,7 +28,6 @@ class ConfigInitTests(unittest.TestCase):
         skill_paths = [
             "skills/product/team-spec-refine/SKILL.md",
             "skills/product/team-concept-whitepaper/SKILL.md",
-            "skills/product/team-discovery-robotics/SKILL.md",
             "skills/product/team-spec-review/SKILL.md",
             "skills/product/team-spec-to-prd/SKILL.md",
             "skills/delivery/team-prd-to-brief/SKILL.md",
