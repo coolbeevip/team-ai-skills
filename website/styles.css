@@ -343,7 +343,7 @@ img {
 }
 
 html[data-language="zh"] .hero h1 {
-  letter-spacing: -0.018em;
+  letter-spacing: 0.018em;
 }
 
 .title-line {
@@ -615,7 +615,7 @@ html[data-language="zh"] .hero h1 {
 
 html[data-language="zh"] .section-heading h2,
 html[data-language="zh"] .artifact-copy h2 {
-  letter-spacing: -0.018em;
+  letter-spacing: 0.018em;
 }
 
 .section-heading > p,

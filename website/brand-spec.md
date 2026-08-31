@@ -60,7 +60,7 @@ The ground includes a fixed atmospheric layer: broad, low-contrast navy glows, o
 - The production page does not block rendering on external font requests.
 - Hero scale: `clamp(4rem, 5.8vw, 5.2rem)`
 - Body scale: `clamp(1rem, 1.25vw, 1.14rem)`
-- Chinese display headings use `-0.018em` tracking, keep deliberate line breaks for cadence, and omit punctuation at line endings. English display headings retain tighter tracking. Body copy keeps normal punctuation.
+- Chinese display headings use `0.018em` tracking, keep deliberate line breaks for cadence, and omit punctuation at line endings. English display headings retain tighter tracking. Body copy keeps normal punctuation.
 - Hero copy receives roughly three fifths of the desktop canvas. Installation is presented as a paper-toned functional component rather than hero imagery. Agent selection updates one shared command instead of repeating the install flow.
 
 ## Shape and Spacing
