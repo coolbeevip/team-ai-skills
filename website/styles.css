@@ -162,6 +162,80 @@ img {
   background-size: 631px 487px, 829px 613px;
 }
 
+.meteor {
+  --meteor-angle: -32deg;
+  --meteor-distance-x: -360px;
+  --meteor-distance-y: 220px;
+  --meteor-opacity: 0.72;
+  --meteor-fade-opacity: 0.53;
+  position: absolute;
+  width: clamp(68px, 6vw, 92px);
+  height: 1px;
+  border-radius: 999px;
+  opacity: 0;
+  background: linear-gradient(90deg, rgba(243, 238, 223, 0.9), rgba(243, 238, 223, 0.24) 38%, transparent 100%);
+  filter: drop-shadow(0 0 3px rgba(243, 238, 223, 0.24));
+  transform: translate3d(0, 0, 0) rotate(var(--meteor-angle));
+  transform-origin: left center;
+  will-change: transform, opacity;
+}
+
+.meteor::before {
+  position: absolute;
+  top: 50%;
+  left: -1px;
+  width: 2px;
+  height: 2px;
+  border-radius: 50%;
+  background: rgba(243, 238, 223, 0.92);
+  box-shadow: 0 0 5px rgba(243, 238, 223, 0.42);
+  content: "";
+  transform: translateY(-50%);
+}
+
+.meteor-one {
+  top: -28px;
+  left: 82%;
+  animation: meteor-pass 16s linear 4.8s infinite;
+}
+
+.meteor-two {
+  --meteor-angle: -27deg;
+  --meteor-distance-x: -290px;
+  --meteor-distance-y: 148px;
+  --meteor-opacity: 0.5;
+  --meteor-fade-opacity: 0.36;
+  top: 14%;
+  left: 105%;
+  width: clamp(54px, 4.8vw, 74px);
+  animation: meteor-pass 29s linear 13.2s infinite;
+}
+
+@keyframes meteor-pass {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 0, 0) rotate(var(--meteor-angle));
+  }
+
+  1.4% {
+    opacity: var(--meteor-opacity);
+  }
+
+  8% {
+    opacity: var(--meteor-fade-opacity);
+  }
+
+  11% {
+    opacity: 0;
+    transform: translate3d(var(--meteor-distance-x), var(--meteor-distance-y), 0) rotate(var(--meteor-angle));
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate3d(var(--meteor-distance-x), var(--meteor-distance-y), 0) rotate(var(--meteor-angle));
+  }
+}
+
 .scroll-progress {
   position: fixed;
   top: 0;
@@ -266,6 +340,10 @@ img {
   line-height: 1;
   letter-spacing: -0.058em;
   text-wrap: balance;
+}
+
+html[data-language="zh"] .hero h1 {
+  letter-spacing: -0.018em;
 }
 
 .title-line {
@@ -533,6 +611,11 @@ img {
   line-height: 1.02;
   letter-spacing: -0.052em;
   text-wrap: balance;
+}
+
+html[data-language="zh"] .section-heading h2,
+html[data-language="zh"] .artifact-copy h2 {
+  letter-spacing: -0.018em;
 }
 
 .section-heading > p,
@@ -1078,6 +1161,16 @@ img {
 }
 
 @media (max-width: 1080px) {
+  .meteor-one {
+    --meteor-distance-x: -220px;
+    --meteor-distance-y: 112px;
+    left: 96%;
+  }
+
+  .meteor-two {
+    display: none;
+  }
+
   .hero {
     min-height: auto;
     grid-template-columns: minmax(0, 1fr);
@@ -1354,6 +1447,10 @@ img {
   }
 
   .scroll-progress {
+    display: none;
+  }
+
+  .meteor {
     display: none;
   }
 

@@ -60,7 +60,7 @@ The ground includes a fixed atmospheric layer: broad, low-contrast navy glows, o
 - The production page does not block rendering on external font requests.
 - Hero scale: `clamp(4rem, 5.8vw, 5.2rem)`
 - Body scale: `clamp(1rem, 1.25vw, 1.14rem)`
-- Chinese display headings use line breaks for cadence and omit punctuation, especially at line endings. Body copy keeps normal punctuation.
+- Chinese display headings use `-0.018em` tracking, keep deliberate line breaks for cadence, and omit punctuation at line endings. English display headings retain tighter tracking. Body copy keeps normal punctuation.
 - Hero copy receives roughly three fifths of the desktop canvas. Installation is presented as a paper-toned functional component rather than hero imagery. Agent selection updates one shared command instead of repeating the install flow.
 
 ## Shape and Spacing
@@ -77,7 +77,8 @@ The ground includes a fixed atmospheric layer: broad, low-contrast navy glows, o
 - Prefer borders and contrast over elevation. The production page does not use decorative shadows.
 - Reserve orange for active, selected, and actionable elements.
 - Interaction feedback: 180-240ms.
-- Use restrained reveal motion to clarify reading order, a scroll-progress line for orientation on the long catalog, and a short command transition for Agent state changes. Motion must not exist only as decoration.
+- Use restrained reveal motion to clarify reading order, a scroll-progress line for orientation on the long catalog, and a short command transition for Agent state changes.
+- The atmospheric layer may show one brief meteor at a time. Meteors use only transform and opacity, remain invisible for most of their 16-29 second cycles, and disappear entirely when `prefers-reduced-motion` is active.
 - No autoplay carousel.
 - Respect `prefers-reduced-motion`.
 
