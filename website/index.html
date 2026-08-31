@@ -5,7 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="Skills For Real Teams：把产品定义、代码库理解、交付执行与技术债治理组织成可追溯的 AI 团队工作流。" />
   <meta name="robots" content="index, follow" />
-  <meta name="theme-color" content="#070b0f" />
+  <meta name="theme-color" content="#07101d" />
+  <link rel="icon" href="data:," />
   <link rel="canonical" href="https://coolbeevip.github.io/team-ai-skills/" />
   <meta property="og:title" content="Skills For Real Teams" />
   <meta property="og:description" content="File-based AI team workflows for real software delivery." />
@@ -22,12 +23,7 @@
   <meta name="twitter:title" content="Skills For Real Teams" />
   <meta name="twitter:description" content="File-based AI team workflows for real software delivery." />
   <meta name="twitter:image" content="https://coolbeevip.github.io/team-ai-skills/assets/srt-brand/og-image.png" />
-  <title>Skills For Real Teams — AI 团队工作流</title>
-  <link rel="icon" type="image/png" href="assets/srt-brand/favicon.png" />
-  <link rel="apple-touch-icon" href="assets/srt-brand/favicon.png" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&amp;family=Noto+Sans+SC:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet" />
+  <title>Skills For Real Teams · AI 团队工作流</title>
   <link rel="stylesheet" href="styles.css" />
   <script type="application/ld+json">
     {
@@ -45,194 +41,108 @@
 <body>
   <a class="skip-link" href="#main-content" data-i18n="skipLink">跳到主要内容</a>
   <div class="page-grid" aria-hidden="true"></div>
-
-  <nav class="site-nav" aria-label="主导航" data-i18n-aria-label="mainNavigation">
-    <a class="brand" href="#top" aria-label="Skills For Real Teams">
-      <img class="brand-logo" src="assets/srt-brand/logo.png" width="144" height="80" alt="" aria-hidden="true" />
-      <span class="brand-name">Skills For Real Teams</span>
-    </a>
-
-    <div class="nav-links">
-      <a href="#capabilities" data-i18n="navCapabilities">能力</a>
-      <a href="#workflow" data-i18n="navWorkflow">工作流</a>
-      <a href="#skills" data-i18n="navSkills">技能</a>
-      <a href="#quickstart" data-i18n="navQuickstart">开始使用</a>
-    </div>
-
-    <div class="nav-actions">
-      <div class="language-switch" aria-label="Language">
-        <button type="button" class="language-button is-active" data-language-option="zh" aria-pressed="true">中</button>
-        <button type="button" class="language-button" data-language-option="en" aria-pressed="false">EN</button>
-      </div>
-      <a class="github-link" href="https://github.com/coolbeevip/team-ai-skills" target="_blank" rel="noopener">GitHub</a>
-    </div>
-  </nav>
+  <div class="scroll-progress" aria-hidden="true"></div>
 
   <main id="main-content">
     <section class="hero" id="top">
-      <div class="hero-copy">
-        <p class="eyebrow"><span class="signal-dot"></span><span data-i18n="heroEyebrow">FILE-BASED AI TEAM SYSTEM</span></p>
-        <h1 data-i18n-html="heroTitle"><span class="title-line title-line-primary">让 AI 不只回答</span><span class="title-line"><span class="title-segment">让它像团队</span><span class="title-segment">一样交付</span></span></h1>
+      <div class="hero-language" role="group" aria-label="语言 / Language">
+        <button type="button" class="language-button is-active" data-language-option="zh" aria-pressed="true">中</button>
+        <button type="button" class="language-button" data-language-option="en" aria-pressed="false">EN</button>
+      </div>
+
+      <div class="hero-copy" data-reveal>
+        <h1 data-i18n-html="heroTitle">让 AI 像团队一样<span class="title-line">真正完成<span class="title-emphasis">交付</span></span></h1>
         <p class="hero-description" data-i18n="heroDescription">
-          把模糊需求变成可评审 PRD，把工程意图拆成可提交 Task，再以完整 Spec 创建一个 PR 或 MR。
+          从可评审 PRD 到可提交 Task，再用一个 PR 或 MR 完成交付。
         </p>
-
         <div class="hero-actions">
-          <button type="button" class="install-button" data-copy-command="npx skills@latest add coolbeevip/team-ai-skills --agent codex -y">
-            <span class="command-prefix">$</span>
-            <code>npx skills@latest add coolbeevip/team-ai-skills --agent codex -y</code>
-            <span class="copy-label" data-i18n="copy">复制</span>
-          </button>
-          <button type="button" class="install-button" data-copy-command="npx skills@latest add coolbeevip/team-ai-skills --agent claude-code -y">
-            <span class="command-prefix">$</span>
-            <code>npx skills@latest add coolbeevip/team-ai-skills --agent claude-code -y</code>
-            <span class="copy-label" data-i18n="copy">复制</span>
-          </button>
-          <a class="secondary-button" href="#skills" data-i18n="explore">浏览全部技能</a>
-        </div>
-
-        <div class="hero-proof" aria-label="Product characteristics">
-          <span data-i18n="proofOne">产品定义</span>
-          <span data-i18n="proofTwo">代码库理解</span>
-          <span data-i18n="proofThree">交付执行</span>
-          <span data-i18n="proofFour">技术债治理</span>
+          <a class="primary-button" href="#skills" data-i18n="explore">浏览全部技能</a>
+          <a class="text-link" href="#workflow"><span data-i18n="seeWorkflow">查看工作流</span><span aria-hidden="true">→</span></a>
         </div>
       </div>
 
-      <div class="hero-gallery" aria-label="产品海报预览" data-i18n-aria-label="posterPreview">
-        <figure class="hero-poster hero-poster-main">
-          <img data-poster="product" src="assets/srt-brand/posters/zh/product.png" width="1672" height="941" fetchpriority="high" alt="产品定义海报" />
-        </figure>
-        <figure class="hero-poster hero-poster-secondary">
-          <img data-poster="delivery" src="assets/srt-brand/posters/zh/delivery.png" width="1672" height="941" alt="交付执行海报" />
-        </figure>
-        <div class="gallery-status">
-          <span>01—04</span>
-          <span data-i18n="galleryStatus">真实工作流 · 真实产物</span>
+      <aside class="hero-console" aria-label="技能安装" data-i18n-aria-label="heroConsoleAria" data-reveal data-reveal-delay="1">
+        <div class="console-heading">
+          <span data-i18n="heroInstallLabel">安装完整技能库</span>
         </div>
-      </div>
-    </section>
-
-    <section class="capabilities section-shell" id="capabilities">
-      <header class="section-heading">
-        <p class="section-index">01 / <span data-i18n="capabilityIndex">能力图谱</span></p>
-        <h2 data-i18n-html="capabilityTitle">四条能力线<br /><span>一套交付秩序</span></h2>
-        <p data-i18n="capabilityDescription">
-          每张海报对应一条真实工作流。点击海报可查看完整画面。
-        </p>
-      </header>
-
-      <div class="poster-grid">
-        <article class="capability-card capability-product">
-          <button class="poster-button" type="button" data-poster-modal="product" aria-label="查看产品定义海报">
-            <img data-poster="product" src="assets/srt-brand/posters/zh/product.png" width="1672" height="941" loading="lazy" alt="产品定义：从模糊输入到可评审 PRD" />
-          </button>
-          <div class="capability-meta">
-            <span class="capability-number">01</span>
-            <div>
-              <h3 data-i18n="productTitle">产品定义</h3>
-              <p data-i18n="productDescription">从模糊输入到可评审 PRD</p>
-            </div>
+        <div class="console-body">
+          <p data-i18n="heroInstallDescription">选择 Agent，再复制这一条安装命令。</p>
+          <div class="agent-switch" role="group" aria-label="选择 Agent" data-i18n-aria-label="agentPickerAria">
+            <button type="button" class="agent-button is-active" data-agent-command="npx skills@latest add coolbeevip/team-ai-skills --agent codex -y" aria-pressed="true">
+              Codex
+            </button>
+            <button type="button" class="agent-button" data-agent-command="npx skills@latest add coolbeevip/team-ai-skills --agent claude-code -y" aria-pressed="false">
+              Claude Code
+            </button>
           </div>
-        </article>
-
-        <article class="capability-card capability-delivery">
-          <button class="poster-button" type="button" data-poster-modal="delivery" aria-label="查看交付执行海报">
-            <img data-poster="delivery" src="assets/srt-brand/posters/zh/delivery.png" width="1672" height="941" loading="lazy" alt="交付执行：从 PRD 到已验证 PR / MR" />
-          </button>
-          <div class="capability-meta">
-            <span class="capability-number">02</span>
-            <div>
-              <h3 data-i18n="deliveryTitle">交付执行</h3>
-              <p data-i18n="deliveryDescription">从 PRD 到已验证的 PR / MR</p>
-            </div>
+          <div class="active-command">
+            <code data-active-command>npx skills@latest add coolbeevip/team-ai-skills --agent codex -y</code>
+            <button type="button" class="command-copy-button" data-copy-active-command>
+              <span class="copy-label" data-i18n="copy" aria-live="polite">复制</span>
+            </button>
           </div>
-        </article>
-
-        <article class="capability-card capability-codebase">
-          <button class="poster-button" type="button" data-poster-modal="codebase" aria-label="查看代码库理解海报">
-            <img data-poster="codebase" src="assets/srt-brand/posters/zh/codebase.png" width="1672" height="941" loading="lazy" alt="代码库理解：把代码变成可追溯的系统知识" />
-          </button>
-          <div class="capability-meta">
-            <span class="capability-number">03</span>
-            <div>
-              <h3 data-i18n="codebaseTitle">代码库理解</h3>
-              <p data-i18n="codebaseDescription">把代码变成可追溯的系统知识</p>
-            </div>
-          </div>
-        </article>
-
-        <article class="capability-card capability-debt">
-          <button class="poster-button" type="button" data-poster-modal="tech-debt" aria-label="查看技术债治理海报">
-            <img data-poster="tech-debt" src="assets/srt-brand/posters/zh/tech-debt.png" width="1672" height="941" loading="lazy" alt="技术债治理：把维护痛点变成可提交 Task" />
-          </button>
-          <div class="capability-meta">
-            <span class="capability-number">04</span>
-            <div>
-              <h3 data-i18n="debtTitle">技术债治理</h3>
-              <p data-i18n="debtDescription">把维护痛点变成可提交 Task</p>
-            </div>
-          </div>
-        </article>
-      </div>
+        </div>
+        <div class="hero-stats">
+          <div><strong data-skill-count>25</strong><span data-i18n="skillStatLabel">项技能</span></div>
+          <div><strong data-domain-count>7</strong><span data-i18n="domainStatLabel">个领域</span></div>
+          <div><strong>2</strong><span data-i18n="agentStatLabel">种 Agent</span></div>
+        </div>
+      </aside>
     </section>
 
     <section class="workflow section-shell" id="workflow">
-      <header class="section-heading workflow-heading">
-        <p class="section-index">02 / <span data-i18n="workflowIndex">稳定主线</span></p>
-        <h2 data-i18n-html="workflowTitle">不是技能菜单<br /><span>是可以接力的团队</span></h2>
+      <header class="section-heading" data-reveal>
+        <h2 data-i18n-html="workflowTitle">从想清楚<br /><span>到真正交付</span></h2>
+        <p data-i18n="workflowDescription">技能不是孤立菜单。每条路径都明确上游输入、阶段产物和下一位接棒者。</p>
       </header>
 
       <div class="workflow-board">
-        <article class="workflow-route route-product">
+        <article class="workflow-route route-product" data-reveal>
           <div class="route-label">
-            <span class="route-number">A</span>
             <div>
               <h3 data-i18n="routeProduct">产品需求</h3>
               <p data-i18n="routeProductNote">从规格到一个 Spec PR / MR</p>
             </div>
           </div>
           <div class="route-steps" aria-label="Product workflow">
-            <span title="team-spec-refine">Refine</span><i></i>
-            <span title="team-spec-review">Review</span><i></i>
-            <span title="team-spec-to-prd">PRD</span><i></i>
-            <span title="team-prd-to-tasks">Tasks</span><i></i>
-            <span title="team-task-implement / team-task-batch-implement">Implement</span><i></i>
-            <span title="team-task-verify">Verify</span><i></i>
+            <span title="team-spec-refine">Refine</span>
+            <span title="team-spec-review">Review</span>
+            <span title="team-spec-to-prd">PRD</span>
+            <span title="team-prd-to-tasks">Tasks</span>
+            <span title="team-task-implement / team-task-batch-implement">Implement</span>
+            <span title="team-task-verify">Verify</span>
             <span title="team-spec-create-pr-github / team-spec-create-mr-gitlab">PR/MR</span>
           </div>
         </article>
 
-        <article class="workflow-route route-debt">
+        <article class="workflow-route route-debt" data-reveal data-reveal-delay="1">
           <div class="route-label">
-            <span class="route-number">B</span>
             <div>
               <h3 data-i18n="routeDebt">技术债</h3>
               <p data-i18n="routeDebtNote">从证据到可提交修复</p>
             </div>
           </div>
           <div class="route-steps" aria-label="Technical debt workflow">
-            <span title="team-tech-debt-analyze">Analyze</span><i></i>
-            <span title="team-tech-debt-refine">Refine</span><i></i>
-            <span title="team-tech-debt-review">Review</span><i></i>
-            <span title="team-tech-debt-to-tasks">Tasks</span><i></i>
-            <span title="team-task-implement / team-task-batch-implement">Implement</span><i></i>
-            <span title="team-task-verify">Verify</span><i></i>
+            <span title="team-tech-debt-analyze">Analyze</span>
+            <span title="team-tech-debt-refine">Refine</span>
+            <span title="team-tech-debt-review">Review</span>
+            <span title="team-tech-debt-to-tasks">Tasks</span>
+            <span title="team-task-implement / team-task-batch-implement">Implement</span>
+            <span title="team-task-verify">Verify</span>
             <span title="team-spec-create-pr-github / team-spec-create-mr-gitlab">PR/MR</span>
           </div>
         </article>
 
-        <article class="workflow-route route-codebase">
+        <article class="workflow-route route-codebase" data-reveal data-reveal-delay="2">
           <div class="route-label">
-            <span class="route-number">C</span>
             <div>
               <h3 data-i18n="routeCodebase">代码库理解</h3>
               <p data-i18n="routeCodebaseNote">从接手到业务说明</p>
             </div>
           </div>
           <div class="route-steps" aria-label="Codebase workflow">
-            <span title="team-codebase-onboarding">Onboarding</span><i></i>
-            <span title="team-codebase-walk">Walk</span><i></i>
+            <span title="team-codebase-onboarding">Onboarding</span>
+            <span title="team-codebase-walk">Walk</span>
             <span title="team-codebase-brief">Brief</span>
           </div>
         </article>
@@ -240,61 +150,52 @@
     </section>
 
     <section class="skills-section section-shell" id="skills">
-      <header class="section-heading">
-        <p class="section-index">03 / <span data-i18n="skillsIndex">技能索引</span></p>
-        <h2 data-i18n-html="skillsTitle">找到此刻需要的<br /><span>团队角色</span></h2>
-        <p data-i18n="skillsDescription">
-          技能目录由仓库中的 SKILL.md 自动生成。搜索任务、产物或技能名称，快速定位下一步。
-        </p>
+      <header class="section-heading" data-reveal>
+        <h2 data-i18n-html="skillsTitle">按工作场景<br /><span>找到下一棒</span></h2>
+        <p data-i18n="skillsDescription">技能目录由仓库中的 SKILL.md 自动生成。搜索任务、产物或技能名称，快速定位下一步。</p>
       </header>
 
-      <div class="skill-controls">
-        <label class="skill-search">
-          <span class="visually-hidden" data-i18n="searchLabel">搜索技能</span>
-          <span class="search-glyph" aria-hidden="true"></span>
-          <input type="search" data-skill-search autocomplete="off" placeholder="搜索技能、任务或产物…" />
-          <button type="button" class="search-clear" data-search-clear hidden data-i18n="clearSearch">清除</button>
-        </label>
-        <div class="skill-filters" role="group" aria-label="技能分类筛选" data-i18n-aria-label="skillFilters">
-          <button type="button" class="filter-button is-active" data-category="all" aria-pressed="true" data-i18n="filterAll">全部</button>
-          <button type="button" class="filter-button" data-category="config" aria-pressed="false" data-i18n="filterConfig">配置</button>
-          <button type="button" class="filter-button" data-category="product" aria-pressed="false" data-i18n="filterProduct">产品</button>
-          <button type="button" class="filter-button" data-category="codebase" aria-pressed="false" data-i18n="filterCodebase">代码库</button>
-          <button type="button" class="filter-button" data-category="delivery" aria-pressed="false" data-i18n="filterDelivery">交付</button>
-          <button type="button" class="filter-button" data-category="tech-debt" aria-pressed="false" data-i18n="filterDebt">技术债</button>
-          <button type="button" class="filter-button" data-category="writing" aria-pressed="false" data-i18n="filterWriting">写作</button>
-          <button type="button" class="filter-button" data-category="harness" aria-pressed="false" data-i18n="filterArchive">归档提炼</button>
+      <div class="skills-explorer">
+        <div class="skills-toolbar">
+          <label class="skill-search">
+            <span class="visually-hidden" data-i18n="searchLabel">搜索技能</span>
+            <span class="search-glyph" aria-hidden="true"></span>
+            <input type="search" data-skill-search autocomplete="off" placeholder="搜索技能、任务或产物…" />
+            <button type="button" class="search-clear" data-search-clear hidden data-i18n="clearSearch">清除</button>
+          </label>
+          <div class="skill-filters" role="group" aria-label="技能分类筛选" data-i18n-aria-label="skillFilters">
+            <button type="button" class="filter-button is-active" data-category="all" aria-pressed="true" data-i18n="filterAll">全部</button>
+            <button type="button" class="filter-button" data-category="config" aria-pressed="false" data-i18n="filterConfig">配置</button>
+            <button type="button" class="filter-button" data-category="product" aria-pressed="false" data-i18n="filterProduct">产品</button>
+            <button type="button" class="filter-button" data-category="codebase" aria-pressed="false" data-i18n="filterCodebase">代码库</button>
+            <button type="button" class="filter-button" data-category="delivery" aria-pressed="false" data-i18n="filterDelivery">交付</button>
+            <button type="button" class="filter-button" data-category="tech-debt" aria-pressed="false" data-i18n="filterDebt">技术债</button>
+            <button type="button" class="filter-button" data-category="writing" aria-pressed="false" data-i18n="filterWriting">写作</button>
+            <button type="button" class="filter-button" data-category="harness" aria-pressed="false" data-i18n="filterArchive">归档提炼</button>
+          </div>
+          <div class="skill-result-meta" aria-live="polite" data-skill-result-count></div>
         </div>
-      </div>
 
-      <div class="skill-result-meta" aria-live="polite" data-skill-result-count></div>
-      <div class="skills-grid" data-skills-grid></div>
-      <noscript>
-        <p class="noscript-note">完整技能索引需要启用 JavaScript；技能清单也可在 GitHub README 中查看。</p>
-      </noscript>
-      <div class="skill-empty" data-skill-empty hidden>
-        <span class="empty-mark" aria-hidden="true">∅</span>
-        <h3 data-i18n="emptyTitle">没有匹配的技能</h3>
-        <p data-i18n="emptyDescription">换一个关键词，或清除分类筛选。</p>
-        <button type="button" class="secondary-button" data-reset-skills data-i18n="resetFilters">重置筛选</button>
+        <div class="skills-results">
+          <div class="skill-groups" data-skills-grid></div>
+          <noscript><p class="noscript-note">完整技能索引需要启用 JavaScript；技能清单也可在 GitHub README 中查看。</p></noscript>
+          <div class="skill-empty" data-skill-empty hidden>
+            <span class="empty-mark" aria-hidden="true">∅</span>
+            <h3 data-i18n="emptyTitle">没有匹配的技能</h3>
+            <p data-i18n="emptyDescription">换一个关键词，或清除分类筛选。</p>
+            <button type="button" class="secondary-button" data-reset-skills data-i18n="resetFilters">重置筛选</button>
+          </div>
+        </div>
       </div>
     </section>
 
     <section class="artifacts section-shell" id="artifacts">
-      <div class="artifact-copy">
-        <p class="section-index">04 / <span data-i18n="artifactIndex">文件即状态</span></p>
+      <div class="artifact-copy" data-reveal>
         <h2 data-i18n-html="artifactTitle">对话会消失<br /><span>产物会留下</span></h2>
-        <p data-i18n="artifactDescription">
-          每一步都写入明确路径，让下一个 skill、人类评审者或开发者知道当前状态、证据和下一步。
-        </p>
+        <p data-i18n="artifactDescription">每一步都写入明确路径，让下一个技能、评审者或开发者知道当前状态、证据和下一步。</p>
       </div>
-
-      <div class="artifact-terminal" aria-label="team-spec file tree">
-        <div class="terminal-top">
-          <span class="terminal-lights" aria-hidden="true"><i></i><i></i><i></i></span>
-          <span>team-spec / active / 2026-05-10-export-filter</span>
-          <span class="terminal-state">prd-ready</span>
-        </div>
+      <div class="artifact-terminal" aria-label="team-spec file tree" data-reveal data-reveal-delay="1">
+        <div class="terminal-top"><span>team-spec / active / 2026-05-10-export-filter</span><span class="terminal-state">[ prd-ready ]</span></div>
         <pre><span class="tree-muted">team-spec/</span>
 ├── config.yml
 ├── CONTEXT.md
@@ -311,74 +212,16 @@
         │   └── T002-filter-ui.md
         ├── DELIVERY.md
         └── STATUS.md</pre>
-        <div class="terminal-foot">
-          <span data-i18n="terminalFoot">可追溯 · 可评审 · 可恢复</span>
-          <span>[ <span data-skill-summary>25 SKILLS · 7 DOMAINS</span> ]</span>
-        </div>
+        <div class="terminal-foot"><span data-i18n="terminalFoot">可追溯 / 可评审 / 可恢复</span><span>[ <span data-skill-summary>25 项技能 / 7 个领域</span> ]</span></div>
       </div>
     </section>
 
-    <section class="quickstart section-shell" id="quickstart">
-      <header class="section-heading quickstart-heading">
-        <p class="section-index">05 / <span data-i18n="quickstartIndex">开始使用</span></p>
-        <h2 data-i18n-html="quickstartTitle">安装一次<br /><span>按自然语言开始</span></h2>
-        <p data-i18n="quickstartDescription">
-          不需要记忆命令菜单。把目标交给 AI，它会匹配对应 skill，并把阶段产物写入项目。
-        </p>
-      </header>
-
-      <ol class="quickstart-steps">
-        <li class="quickstart-card">
-          <span class="quickstart-number">01</span>
-          <div>
-            <p class="quickstart-label" data-i18n="quickstartInstallLabel">安装技能库</p>
-            <h3 data-i18n="quickstartInstallTitle">把全部团队技能加入 Agent</h3>
-            <button type="button" class="code-block" data-copy-command="npx skills@latest add coolbeevip/team-ai-skills --agent codex -y">
-              <code>npx skills@latest add coolbeevip/team-ai-skills --agent codex -y</code>
-              <span data-i18n="copy">复制</span>
-            </button>
-            <button type="button" class="code-block" data-copy-command="npx skills@latest add coolbeevip/team-ai-skills --agent claude-code -y">
-              <code>npx skills@latest add coolbeevip/team-ai-skills --agent claude-code -y</code>
-              <span data-i18n="copy">复制</span>
-            </button>
-          </div>
-        </li>
-        <li class="quickstart-card">
-          <span class="quickstart-number">02</span>
-          <div>
-            <p class="quickstart-label" data-i18n="quickstartInvokeLabel">描述目标</p>
-            <h3 data-i18n="quickstartInvokeTitle">直接说出你要推进的工作</h3>
-            <blockquote data-i18n="quickstartPrompt">“请帮我细化导出筛选需求，并把规格写入 team-spec。”</blockquote>
-          </div>
-        </li>
-        <li class="quickstart-card">
-          <span class="quickstart-number">03</span>
-          <div>
-            <p class="quickstart-label" data-i18n="quickstartArtifactLabel">审阅产物</p>
-            <h3 data-i18n="quickstartArtifactTitle">沿同一个 slug 持续交接</h3>
-            <div class="path-block"><code>team-spec/active/{yyyy-mm-dd}-{slug}/</code></div>
-          </div>
-        </li>
-      </ol>
-    </section>
   </main>
 
   <footer class="site-footer">
-    <div>
-      <p class="footer-brand">Skills For Real Teams</p>
-      <p data-i18n="footerNote">面向真实软件团队的文件化 AI 工作流。</p>
-    </div>
-    <div class="footer-links">
-      <a href="https://github.com/coolbeevip/team-ai-skills" target="_blank" rel="noopener">GitHub</a>
-      <a href="https://github.com/coolbeevip/team-ai-skills/blob/main/README.md" target="_blank" rel="noopener">README</a>
-      <span>MIT · coolbeevip</span>
-    </div>
+    <div><p class="footer-brand">Skills For Real Teams</p><p data-i18n="footerNote">面向真实软件团队的文件化 AI 工作流。</p></div>
+    <div class="footer-links"><a href="https://github.com/coolbeevip/team-ai-skills" target="_blank" rel="noopener">GitHub ↗</a><a href="https://github.com/coolbeevip/team-ai-skills/blob/main/README.md" target="_blank" rel="noopener">README ↗</a><span>MIT · coolbeevip</span></div>
   </footer>
-
-  <dialog class="poster-dialog" data-poster-dialog>
-    <button class="dialog-close" type="button" data-close-dialog aria-label="Close">×</button>
-    <img src="" alt="" data-dialog-image />
-  </dialog>
 
   <script src="skills-data.js"></script>
   <script src="script.js"></script>

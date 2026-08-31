@@ -2,40 +2,27 @@ const skills = Array.isArray(window.SRT_SKILLS) ? window.SRT_SKILLS : [];
 
 const translations = {
   zh: {
-    pageTitle: "Skills For Real Teams — AI 团队工作流",
+    pageTitle: "Skills For Real Teams · AI 团队工作流",
     pageDescription: "Skills For Real Teams：把产品定义、代码库理解、交付执行与技术债治理组织成可追溯的 AI 团队工作流。",
     skipLink: "跳到主要内容",
-    mainNavigation: "主导航",
-    posterPreview: "产品海报预览",
     skillFilters: "技能分类筛选",
-    navCapabilities: "能力",
-    navWorkflow: "工作流",
-    navSkills: "技能",
-    navQuickstart: "开始使用",
-    heroEyebrow: "FILE-BASED AI TEAM SYSTEM",
-    heroTitle: "<span class=\"title-line title-line-primary\">让 AI 不只回答</span><span class=\"title-line\"><span class=\"title-segment\">让它像团队</span><span class=\"title-segment\">一样交付</span></span>",
-    heroDescription: "把模糊需求变成可评审 PRD，把工程意图拆成可提交 Task，再以完整 Spec 创建一个 PR 或 MR。",
+    heroTitle: "让 AI 像团队一样<span class=\"title-line\">真正完成<span class=\"title-emphasis\">交付</span></span>",
+    heroDescription: "从可评审 PRD 到可提交 Task，再用一个 PR 或 MR 完成交付。",
     copy: "复制",
     copied: "已复制",
+    copyFailed: "复制失败",
     explore: "浏览全部技能",
-    proofOne: "产品定义",
-    proofTwo: "代码库理解",
-    proofThree: "交付执行",
-    proofFour: "技术债治理",
-    galleryStatus: "真实工作流 · 真实产物",
-    capabilityIndex: "能力图谱",
-    capabilityTitle: "四条能力线<br /><span>一套交付秩序</span>",
-    capabilityDescription: "每张海报对应一条真实工作流。点击海报可查看完整画面。",
-    productTitle: "产品定义",
-    productDescription: "从模糊输入到可评审 PRD",
-    deliveryTitle: "交付执行",
-    deliveryDescription: "从 PRD 到已验证的 PR / MR",
-    codebaseTitle: "代码库理解",
-    codebaseDescription: "把代码变成可追溯的系统知识",
-    debtTitle: "技术债治理",
-    debtDescription: "把维护痛点变成可提交 Task",
+    seeWorkflow: "查看工作流",
+    heroConsoleAria: "技能安装",
+    heroInstallLabel: "安装完整技能库",
+    heroInstallDescription: "选择 Agent，再复制这一条安装命令。",
+    agentPickerAria: "选择 Agent",
+    skillStatLabel: "项技能",
+    domainStatLabel: "个领域",
+    agentStatLabel: "种 Agent",
     workflowIndex: "稳定主线",
-    workflowTitle: "不是技能菜单<br /><span>是可以接力的团队</span>",
+    workflowTitle: "从想清楚<br /><span>到真正交付</span>",
+    workflowDescription: "技能不是孤立菜单。每条路径都明确上游输入、阶段产物和下一位接棒者。",
     routeProduct: "产品需求",
     routeProductNote: "从规格到一个 Spec PR / MR",
     routeDebt: "技术债",
@@ -43,7 +30,7 @@ const translations = {
     routeCodebase: "代码库理解",
     routeCodebaseNote: "从接手到业务说明",
     skillsIndex: "技能索引",
-    skillsTitle: "找到此刻需要的<br /><span>团队角色</span>",
+    skillsTitle: "按工作场景<br /><span>找到下一棒</span>",
     skillsDescription: "技能目录由仓库中的 SKILL.md 自动生成。搜索任务、产物或技能名称，快速定位下一步。",
     searchLabel: "搜索技能",
     searchPlaceholder: "搜索技能、任务或产物…",
@@ -57,6 +44,7 @@ const translations = {
     filterWriting: "写作",
     filterArchive: "归档提炼",
     resultCount: "显示 {count} / {total} 项技能",
+    groupCount: "{count} 项",
     emptyTitle: "没有匹配的技能",
     emptyDescription: "换一个关键词，或清除分类筛选。",
     resetFilters: "重置筛选",
@@ -65,58 +53,33 @@ const translations = {
     copySkillAria: "复制技能名称 {name}",
     artifactIndex: "文件即状态",
     artifactTitle: "对话会消失<br /><span>产物会留下</span>",
-    artifactDescription: "每一步都写入明确路径，让下一个 skill、人类评审者或开发者知道当前状态、证据和下一步。",
-    terminalFoot: "可追溯 · 可评审 · 可恢复",
-    skillSummary: "{skills} 项技能 · {domains} 个领域",
-    quickstartIndex: "开始使用",
-    quickstartTitle: "安装一次<br /><span>按自然语言开始</span>",
-    quickstartDescription: "不需要记忆命令菜单。把目标交给 AI，它会匹配对应 skill，并把阶段产物写入项目。",
-    quickstartInstallLabel: "安装技能库",
-    quickstartInstallTitle: "把全部团队技能加入 Agent",
-    quickstartInvokeLabel: "描述目标",
-    quickstartInvokeTitle: "直接说出你要推进的工作",
-    quickstartPrompt: "“请帮我细化导出筛选需求，并把规格写入 team-spec。”",
-    quickstartArtifactLabel: "审阅产物",
-    quickstartArtifactTitle: "沿同一个 slug 持续交接",
-    footerNote: "面向真实软件团队的文件化 AI 工作流。",
-    viewPoster: "查看{name}海报",
-    closePoster: "关闭海报"
+    artifactDescription: "每一步都写入明确路径，让下一个技能、评审者或开发者知道当前状态、证据和下一步。",
+    terminalFoot: "可追溯 / 可评审 / 可恢复",
+    skillSummary: "{skills} 项技能 / {domains} 个领域",
+    footerNote: "面向真实软件团队的文件化 AI 工作流。"
   },
   en: {
-    pageTitle: "Skills For Real Teams — File-based AI team workflows",
+    pageTitle: "Skills For Real Teams · File-based AI team workflows",
     pageDescription: "Skills For Real Teams organizes product definition, codebase understanding, delivery execution, and technical-debt work into traceable AI team workflows.",
     skipLink: "Skip to main content",
-    mainNavigation: "Main navigation",
-    posterPreview: "Product poster preview",
     skillFilters: "Skill category filters",
-    navCapabilities: "Capabilities",
-    navWorkflow: "Workflow",
-    navSkills: "Skills",
-    navQuickstart: "Quickstart",
-    heroEyebrow: "FILE-BASED AI TEAM SYSTEM",
-    heroTitle: "<span class=\"title-line title-line-primary\">AI should do more than answer.</span><span class=\"title-line\">It should deliver</span><span class=\"title-line\">like a team.</span>",
-    heroDescription: "Turn vague requirements into reviewable PRDs, engineering intent into commit-sized Tasks, and each complete Spec into one PR or MR.",
+    heroTitle: "Make AI a teammate.<span class=\"title-line\">Then <span class=\"title-emphasis\">ship.</span></span>",
+    heroDescription: "Turn each reviewable PRD into commit-sized Tasks, then deliver the Spec through one PR or MR.",
     copy: "Copy",
     copied: "Copied",
+    copyFailed: "Copy failed",
     explore: "Browse all skills",
-    proofOne: "Product definition",
-    proofTwo: "Codebase understanding",
-    proofThree: "Delivery execution",
-    proofFour: "Technical debt",
-    galleryStatus: "REAL WORKFLOW · REAL ARTIFACTS",
-    capabilityIndex: "CAPABILITY ATLAS",
-    capabilityTitle: "Four capability lines.<span>One delivery system.</span>",
-    capabilityDescription: "Each poster represents a real workflow. Select one to see the full image.",
-    productTitle: "Product definition",
-    productDescription: "From vague input to a reviewable PRD",
-    deliveryTitle: "Delivery execution",
-    deliveryDescription: "From PRD to a verified PR or MR",
-    codebaseTitle: "Codebase understanding",
-    codebaseDescription: "Turn code into traceable system knowledge",
-    debtTitle: "Technical debt",
-    debtDescription: "Turn maintenance pain into commit-sized Tasks",
+    seeWorkflow: "See the workflow",
+    heroConsoleAria: "Skill installation",
+    heroInstallLabel: "Install the complete skill set",
+    heroInstallDescription: "Choose an agent, then copy this single install command.",
+    agentPickerAria: "Choose an agent",
+    skillStatLabel: "skills",
+    domainStatLabel: "domains",
+    agentStatLabel: "agents",
     workflowIndex: "STABLE LINES",
-    workflowTitle: "Not a skill menu.<br /><span>A team that hands work forward.</span>",
+    workflowTitle: "From clear intent<br /><span>to real delivery.</span>",
+    workflowDescription: "Skills are not an isolated menu. Every route defines its upstream input, stage artifact, and next handoff.",
     routeProduct: "Product delivery",
     routeProductNote: "From specification to one Spec PR or MR",
     routeDebt: "Technical debt",
@@ -124,7 +87,7 @@ const translations = {
     routeCodebase: "Codebase understanding",
     routeCodebaseNote: "From onboarding to stakeholder clarity",
     skillsIndex: "SKILL INDEX",
-    skillsTitle: "Find the team role<br /><span>you need right now.</span>",
+    skillsTitle: "Browse by the work.<br /><span>Find the next handoff.</span>",
     skillsDescription: "The index is generated from SKILL.md files in the repository. Search by task, artifact, or skill name to find the next move.",
     searchLabel: "Search skills",
     searchPlaceholder: "Search skills, tasks, or artifacts…",
@@ -138,6 +101,7 @@ const translations = {
     filterWriting: "Writing",
     filterArchive: "Archive",
     resultCount: "Showing {count} of {total} skills",
+    groupCount: "{count} skills",
     emptyTitle: "No matching skills",
     emptyDescription: "Try another term or clear the category filter.",
     resetFilters: "Reset filters",
@@ -147,21 +111,9 @@ const translations = {
     artifactIndex: "FILES AS STATE",
     artifactTitle: "Conversations disappear.<br /><span>Artifacts remain.</span>",
     artifactDescription: "Every step writes to an explicit path so the next skill, reviewer, or developer can see the current state, evidence, and next move.",
-    terminalFoot: "TRACEABLE · REVIEWABLE · RESUMABLE",
-    skillSummary: "{skills} SKILLS · {domains} DOMAINS",
-    quickstartIndex: "QUICKSTART",
-    quickstartTitle: "Install once.<br /><span>Start in natural language.</span>",
-    quickstartDescription: "There is no command menu to memorize. Give the AI your goal; it matches the right skill and writes each stage artifact into the project.",
-    quickstartInstallLabel: "INSTALL THE LIBRARY",
-    quickstartInstallTitle: "Add every team skill to your agent",
-    quickstartInvokeLabel: "DESCRIBE THE GOAL",
-    quickstartInvokeTitle: "Say what you need to move forward",
-    quickstartPrompt: "“Refine the export-filter requirement and write the specification to team-spec.”",
-    quickstartArtifactLabel: "REVIEW THE ARTIFACTS",
-    quickstartArtifactTitle: "Keep handing work forward under one slug",
-    footerNote: "File-based AI workflows for real software teams.",
-    viewPoster: "View the {name} poster",
-    closePoster: "Close poster"
+    terminalFoot: "TRACEABLE / REVIEWABLE / RESUMABLE",
+    skillSummary: "{skills} SKILLS / {domains} DOMAINS",
+    footerNote: "File-based AI workflows for real software teams."
   }
 };
 
@@ -176,33 +128,62 @@ const categoryLabels = {
     harness: "归档提炼"
   },
   en: {
-    config: "CONFIG",
-    product: "PRODUCT",
-    codebase: "CODEBASE",
-    delivery: "DELIVERY",
-    "tech-debt": "TECH DEBT",
-    writing: "WRITING",
-    harness: "ARCHIVE"
+    config: "Runtime config",
+    product: "Product definition",
+    codebase: "Codebase understanding",
+    delivery: "Delivery execution",
+    "tech-debt": "Technical debt",
+    writing: "Writing standards",
+    harness: "Archive distillation"
   }
 };
 
-const posterAlt = {
-  zh: {
-    product: "产品定义：从模糊输入到可评审 PRD",
-    delivery: "交付执行：从 PRD 到已验证 PR / MR",
-    codebase: "代码库理解：把代码变成可追溯的系统知识",
-    "tech-debt": "技术债治理：把维护痛点变成可提交 Task"
-  },
-  en: {
-    product: "Product definition: from vague input to a reviewable PRD",
-    delivery: "Delivery execution: from PRD to a verified PR or MR",
-    codebase: "Codebase understanding: turn code into traceable system knowledge",
-    "tech-debt": "Technical debt: turn maintenance pain into commit-sized Tasks"
-  }
-};
+const categoryOrder = [
+  "config",
+  "product",
+  "codebase",
+  "delivery",
+  "tech-debt",
+  "writing",
+  "harness"
+];
 
 let activeCategory = "all";
 let activeSearch = "";
+let revealObserver = null;
+
+function observeReveals(root = document) {
+  const elements = root.querySelectorAll(
+    "[data-reveal]:not([data-reveal-observed])"
+  );
+  if (!elements.length) return;
+
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    elements.forEach((element) => {
+      element.dataset.revealObserved = "true";
+      element.dataset.revealState = "visible";
+    });
+    return;
+  }
+
+  if (!revealObserver) {
+    revealObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          entry.target.dataset.revealState = "visible";
+          revealObserver.unobserve(entry.target);
+        });
+      },
+      { rootMargin: "0px 0px -8%", threshold: 0.12 }
+    );
+  }
+
+  elements.forEach((element) => {
+    element.dataset.revealObserved = "true";
+    revealObserver.observe(element);
+  });
+}
 
 function format(template, values) {
   return Object.entries(values).reduce(
@@ -241,33 +222,22 @@ async function copyText(text) {
   if (!copied) throw new Error("Copy command failed");
 }
 
-function createSkillCard(skill, language) {
+function createSkillRow(skill, language) {
   const dictionary = translations[language];
-  const card = document.createElement("article");
-  card.className = "skill-card";
-  card.dataset.category = skill.category;
-
-  const top = document.createElement("div");
-  top.className = "skill-card-top";
-
-  const category = document.createElement("span");
-  category.className = "skill-category";
-  category.textContent = categoryLabels[language][skill.category] || skill.category;
-  top.append(category);
+  const row = document.createElement("article");
+  row.className = "skill-row";
+  row.dataset.category = skill.category;
 
   const name = document.createElement("h3");
+  name.className = "skill-name";
   name.textContent = skill.name;
 
   const description = document.createElement("p");
-  description.className = "skill-card-description";
+  description.className = "skill-description";
   description.textContent = skill.description[language];
 
-  const foot = document.createElement("div");
-  foot.className = "skill-card-foot";
-
-  const version = document.createElement("span");
-  version.className = "skill-version";
-  version.textContent = `${dictionary.version} ${skill.version}`;
+  const actions = document.createElement("div");
+  actions.className = "skill-actions";
 
   const copyButton = document.createElement("button");
   copyButton.type = "button";
@@ -285,13 +255,41 @@ function createSkillCard(skill, language) {
         copyButton.textContent = translations[currentLanguage()].copySkill;
       }, 1400);
     } catch {
-      copyButton.textContent = translations[currentLanguage()].copySkill;
+      copyButton.textContent = translations[currentLanguage()].copyFailed;
+      window.setTimeout(() => {
+        copyButton.textContent = translations[currentLanguage()].copySkill;
+      }, 1400);
     }
   });
 
-  foot.append(version, copyButton);
-  card.append(top, name, description, foot);
-  return card;
+  actions.append(copyButton);
+  row.append(name, actions, description);
+  return row;
+}
+
+function createSkillGroup(category, groupSkills, language) {
+  const dictionary = translations[language];
+  const group = document.createElement("section");
+  group.className = "skill-group";
+  group.dataset.category = category;
+  group.dataset.reveal = "";
+
+  const heading = document.createElement("header");
+  heading.className = "skill-group-heading";
+
+  const title = document.createElement("h3");
+  title.textContent = categoryLabels[language][category] || category;
+
+  const count = document.createElement("span");
+  count.textContent = format(dictionary.groupCount, { count: groupSkills.length });
+
+  const list = document.createElement("div");
+  list.className = "skill-list";
+  list.append(...groupSkills.map((skill) => createSkillRow(skill, language)));
+
+  heading.append(title, count);
+  group.append(heading, list);
+  return group;
 }
 
 function renderSkills() {
@@ -315,33 +313,32 @@ function renderSkills() {
   const count = document.querySelector("[data-skill-result-count]");
   if (!grid || !empty || !count) return;
 
-  grid.replaceChildren(
-    ...filteredSkills.map((skill) => createSkillCard(skill, language))
-  );
+  const categories = [
+    ...categoryOrder,
+    ...filteredSkills
+      .map((skill) => skill.category)
+      .filter((category) => !categoryOrder.includes(category))
+  ];
+  const groups = categories
+    .map((category) => ({
+      category,
+      groupSkills: filteredSkills.filter((skill) => skill.category === category)
+    }))
+    .filter(({ groupSkills }) => groupSkills.length > 0)
+    .map(({ category, groupSkills }) =>
+      createSkillGroup(category, groupSkills, language)
+    );
+
+  grid.replaceChildren(...groups);
   grid.hidden = filteredSkills.length === 0;
   empty.hidden = filteredSkills.length !== 0;
   count.textContent = format(dictionary.resultCount, {
     count: filteredSkills.length,
     total: skills.length
   });
-}
-
-function updatePosterLanguage(language) {
-  document.querySelectorAll("[data-poster]").forEach((image) => {
-    const poster = image.dataset.poster;
-    image.src = `assets/srt-brand/posters/${language}/${poster}.png`;
-    image.alt = posterAlt[language][poster];
-  });
-
-  document.querySelectorAll("[data-poster-modal]").forEach((button) => {
-    const poster = button.dataset.posterModal;
-    button.setAttribute(
-      "aria-label",
-      format(translations[language].viewPoster, {
-        name: categoryLabels[language][poster]
-      })
-    );
-  });
+  if (document.documentElement.classList.contains("motion-ready")) {
+    observeReveals(grid);
+  }
 }
 
 function setLanguage(language, save = true) {
@@ -372,12 +369,20 @@ function setLanguage(language, save = true) {
   if (searchInput) searchInput.placeholder = dictionary.searchPlaceholder;
 
   const skillSummary = document.querySelector("[data-skill-summary]");
+  const domainCount = new Set(skills.map((skill) => skill.category)).size;
   if (skillSummary) {
     skillSummary.textContent = format(dictionary.skillSummary, {
       skills: skills.length,
-      domains: new Set(skills.map((skill) => skill.category)).size
+      domains: domainCount
     });
   }
+
+  document.querySelectorAll("[data-skill-count]").forEach((element) => {
+    element.textContent = String(skills.length);
+  });
+  document.querySelectorAll("[data-domain-count]").forEach((element) => {
+    element.textContent = String(domainCount);
+  });
 
   document.querySelectorAll("[data-language-option]").forEach((button) => {
     const active = button.dataset.languageOption === language;
@@ -385,11 +390,6 @@ function setLanguage(language, save = true) {
     button.setAttribute("aria-pressed", String(active));
   });
 
-  document
-    .querySelector("[data-close-dialog]")
-    ?.setAttribute("aria-label", dictionary.closePoster);
-
-  updatePosterLanguage(language);
   renderSkills();
   if (save) persistLanguage(language);
 }
@@ -398,40 +398,40 @@ document.querySelectorAll("[data-language-option]").forEach((button) => {
   button.addEventListener("click", () => setLanguage(button.dataset.languageOption));
 });
 
-document.querySelectorAll("[data-copy-command]").forEach((button) => {
-  button.addEventListener("click", async () => {
-    const label = button.querySelector(".copy-label, [data-i18n=\"copy\"]");
-    try {
-      await copyText(button.dataset.copyCommand);
-      if (label) label.textContent = translations[currentLanguage()].copied;
-      window.setTimeout(() => {
-        if (label) label.textContent = translations[currentLanguage()].copy;
-      }, 1400);
-    } catch {
-      if (label) label.textContent = translations[currentLanguage()].copy;
-    }
-  });
-});
+const agentButtons = document.querySelectorAll("[data-agent-command]");
+const activeCommand = document.querySelector("[data-active-command]");
+const activeCommandPanel = activeCommand?.closest(".active-command");
 
-const posterDialog = document.querySelector("[data-poster-dialog]");
-const dialogImage = document.querySelector("[data-dialog-image]");
-
-document.querySelectorAll("[data-poster-modal]").forEach((button) => {
+agentButtons.forEach((button) => {
   button.addEventListener("click", () => {
-    const poster = button.dataset.posterModal;
-    const language = currentLanguage();
-    dialogImage.src = `assets/srt-brand/posters/${language}/${poster}.png`;
-    dialogImage.alt = posterAlt[language][poster];
-    posterDialog.showModal();
+    agentButtons.forEach((agentButton) => {
+      const active = agentButton === button;
+      agentButton.classList.toggle("is-active", active);
+      agentButton.setAttribute("aria-pressed", String(active));
+    });
+    if (!activeCommand) return;
+    activeCommand.textContent = button.dataset.agentCommand;
+    activeCommandPanel?.classList.remove("is-switching");
+    window.requestAnimationFrame(() => {
+      activeCommandPanel?.classList.add("is-switching");
+    });
   });
 });
 
-document
-  .querySelector("[data-close-dialog]")
-  ?.addEventListener("click", () => posterDialog.close());
-
-posterDialog?.addEventListener("click", (event) => {
-  if (event.target === posterDialog) posterDialog.close();
+document.querySelector("[data-copy-active-command]")?.addEventListener("click", async (event) => {
+  const label = event.currentTarget.querySelector(".copy-label");
+  const command = document.querySelector("[data-agent-command].is-active")?.dataset
+    .agentCommand;
+  if (!command) return;
+  try {
+    await copyText(command);
+    if (label) label.textContent = translations[currentLanguage()].copied;
+  } catch {
+    if (label) label.textContent = translations[currentLanguage()].copyFailed;
+  }
+  window.setTimeout(() => {
+    if (label) label.textContent = translations[currentLanguage()].copy;
+  }, 1400);
 });
 
 const searchInput = document.querySelector("[data-skill-search]");
@@ -490,3 +490,5 @@ const initialLanguage = ["zh", "en"].includes(queryLanguage)
     : "zh";
 
 setLanguage(initialLanguage, false);
+document.documentElement.classList.add("motion-ready");
+observeReveals();
