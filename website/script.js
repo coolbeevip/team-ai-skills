@@ -37,9 +37,9 @@ const translations = {
     workflowIndex: "稳定主线",
     workflowTitle: "不是技能菜单<br /><span>是可以接力的团队</span>",
     routeProduct: "产品需求",
-    routeProductNote: "从规格到验证",
+    routeProductNote: "从规格到一个 Spec PR / MR",
     routeDebt: "技术债",
-    routeDebtNote: "从证据到修复",
+    routeDebtNote: "从证据到可提交修复",
     routeCodebase: "代码库理解",
     routeCodebaseNote: "从接手到业务说明",
     skillsIndex: "技能索引",
@@ -55,12 +55,11 @@ const translations = {
     filterDelivery: "交付",
     filterDebt: "技术债",
     filterWriting: "写作",
-    filterExperimental: "实验能力",
+    filterArchive: "归档提炼",
     resultCount: "显示 {count} / {total} 项技能",
     emptyTitle: "没有匹配的技能",
     emptyDescription: "换一个关键词，或清除分类筛选。",
     resetFilters: "重置筛选",
-    experimental: "实验性",
     version: "版本",
     copySkill: "复制名称",
     copySkillAria: "复制技能名称 {name}",
@@ -119,9 +118,9 @@ const translations = {
     workflowIndex: "STABLE LINES",
     workflowTitle: "Not a skill menu.<br /><span>A team that hands work forward.</span>",
     routeProduct: "Product delivery",
-    routeProductNote: "From specification to verification",
+    routeProductNote: "From specification to one Spec PR or MR",
     routeDebt: "Technical debt",
-    routeDebtNote: "From evidence to remediation",
+    routeDebtNote: "From evidence to commit-sized remediation",
     routeCodebase: "Codebase understanding",
     routeCodebaseNote: "From onboarding to stakeholder clarity",
     skillsIndex: "SKILL INDEX",
@@ -137,12 +136,11 @@ const translations = {
     filterDelivery: "Delivery",
     filterDebt: "Tech debt",
     filterWriting: "Writing",
-    filterExperimental: "Experimental",
+    filterArchive: "Archive",
     resultCount: "Showing {count} of {total} skills",
     emptyTitle: "No matching skills",
     emptyDescription: "Try another term or clear the category filter.",
     resetFilters: "Reset filters",
-    experimental: "EXPERIMENTAL",
     version: "VERSION",
     copySkill: "Copy name",
     copySkillAria: "Copy skill name {name}",
@@ -175,7 +173,7 @@ const categoryLabels = {
     delivery: "交付执行",
     "tech-debt": "技术债治理",
     writing: "写作规范",
-    harness: "实验能力"
+    harness: "归档提炼"
   },
   en: {
     config: "CONFIG",
@@ -184,20 +182,20 @@ const categoryLabels = {
     delivery: "DELIVERY",
     "tech-debt": "TECH DEBT",
     writing: "WRITING",
-    harness: "EXPERIMENTAL"
+    harness: "ARCHIVE"
   }
 };
 
 const posterAlt = {
   zh: {
     product: "产品定义：从模糊输入到可评审 PRD",
-    delivery: "交付执行：从 PRD 到已验证 PR",
+    delivery: "交付执行：从 PRD 到已验证 PR / MR",
     codebase: "代码库理解：把代码变成可追溯的系统知识",
     "tech-debt": "技术债治理：把维护痛点变成可提交 Task"
   },
   en: {
     product: "Product definition: from vague input to a reviewable PRD",
-    delivery: "Delivery execution: from PRD to a verified PR",
+    delivery: "Delivery execution: from PRD to a verified PR or MR",
     codebase: "Codebase understanding: turn code into traceable system knowledge",
     "tech-debt": "Technical debt: turn maintenance pain into commit-sized Tasks"
   }
@@ -256,13 +254,6 @@ function createSkillCard(skill, language) {
   category.className = "skill-category";
   category.textContent = categoryLabels[language][skill.category] || skill.category;
   top.append(category);
-
-  if (skill.experimental) {
-    const experimental = document.createElement("span");
-    experimental.className = "skill-experimental";
-    experimental.textContent = dictionary.experimental;
-    top.append(experimental);
-  }
 
   const name = document.createElement("h3");
   name.textContent = skill.name;

@@ -100,7 +100,6 @@ def build_records() -> list[dict[str, object]]:
                 },
                 "triggers": [str(trigger) for trigger in triggers],
                 "version": str(metadata.get("version", "")),
-                "experimental": category == "harness",
             }
         )
 

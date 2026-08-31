@@ -797,8 +797,7 @@ img {
 }
 
 .skill-category,
-.skill-version,
-.skill-experimental {
+.skill-version {
   font-family: var(--font-mono);
   font-size: 0.64rem;
   letter-spacing: 0.04em;
@@ -818,13 +817,6 @@ img {
 
 .skill-card[data-category="harness"] .skill-category {
   color: var(--muted);
-}
-
-.skill-experimental {
-  padding: 4px 7px;
-  border: 1px solid rgba(255, 181, 71, 0.3);
-  border-radius: 4px;
-  color: var(--amber);
 }
 
 .skill-card h3 {

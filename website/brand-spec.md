@@ -31,7 +31,7 @@ The product posters are the primary recognition assets. Website HTML must refere
 - `assets/srt-brand/posters/en/codebase.png`
 - `assets/srt-brand/posters/en/tech-debt.png`
 
-The supplied posters contain the real SRT logo. The website uses an exact raster crop of that mark for navigation and favicon assets; it does not redraw or regenerate the logo. A future official SVG export can replace `logo.png` without changing the layout.
+The supplied posters contain the real SRT logo. The website uses an exact raster crop of that mark for navigation and favicon assets; it does not redraw or regenerate the logo. A future official SVG export can replace `logo.png` without changing the layout. Delivery and technical-debt posters must describe local Tasks as the implementation unit; a remote Issue is optional Spec-level tracking, not the main workflow boundary.
 
 ## Color System
 
@@ -80,4 +80,5 @@ Amber and green are semantic workflow colors, not decorative alternatives to cya
 
 - `index.html`, `styles.css`, and `script.js` implement the production site.
 - The skill index is generated from `skills/*/*/SKILL.md` into `skills-data.js`; website copy must not maintain a separate manual skill list.
+- The four capability posters cover the primary product, delivery, codebase, and technical-debt lines. Config, writing style, and archive distillation remain supporting domains in the generated skill index.
 - GitHub Pages regenerates skill data before publishing.

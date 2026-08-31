@@ -138,7 +138,7 @@
 
         <article class="capability-card capability-delivery">
           <button class="poster-button" type="button" data-poster-modal="delivery" aria-label="查看交付执行海报">
-            <img data-poster="delivery" src="assets/srt-brand/posters/zh/delivery.png" width="1672" height="941" loading="lazy" alt="交付执行：从 PRD 到已验证 PR" />
+            <img data-poster="delivery" src="assets/srt-brand/posters/zh/delivery.png" width="1672" height="941" loading="lazy" alt="交付执行：从 PRD 到已验证 PR / MR" />
           </button>
           <div class="capability-meta">
             <span class="capability-number">02</span>
@@ -189,11 +189,17 @@
             <span class="route-number">A</span>
             <div>
               <h3 data-i18n="routeProduct">产品需求</h3>
-              <p data-i18n="routeProductNote">从规格到验证</p>
+              <p data-i18n="routeProductNote">从规格到一个 Spec PR / MR</p>
             </div>
           </div>
           <div class="route-steps" aria-label="Product workflow">
-            <span>Refine</span><i></i><span>Review</span><i></i><span>PRD</span><i></i><span>Tasks</span><i></i><span>PR/MR</span>
+            <span title="team-spec-refine">Refine</span><i></i>
+            <span title="team-spec-review">Review</span><i></i>
+            <span title="team-spec-to-prd">PRD</span><i></i>
+            <span title="team-prd-to-tasks">Tasks</span><i></i>
+            <span title="team-task-implement / team-task-batch-implement">Implement</span><i></i>
+            <span title="team-task-verify">Verify</span><i></i>
+            <span title="team-spec-create-pr-github / team-spec-create-mr-gitlab">PR/MR</span>
           </div>
         </article>
 
@@ -202,11 +208,17 @@
             <span class="route-number">B</span>
             <div>
               <h3 data-i18n="routeDebt">技术债</h3>
-              <p data-i18n="routeDebtNote">从证据到修复</p>
+              <p data-i18n="routeDebtNote">从证据到可提交修复</p>
             </div>
           </div>
           <div class="route-steps" aria-label="Technical debt workflow">
-            <span>Analyze</span><i></i><span>Refine</span><i></i><span>Review</span><i></i><span>Tasks</span><i></i><span>PR/MR</span>
+            <span title="team-tech-debt-analyze">Analyze</span><i></i>
+            <span title="team-tech-debt-refine">Refine</span><i></i>
+            <span title="team-tech-debt-review">Review</span><i></i>
+            <span title="team-tech-debt-to-tasks">Tasks</span><i></i>
+            <span title="team-task-implement / team-task-batch-implement">Implement</span><i></i>
+            <span title="team-task-verify">Verify</span><i></i>
+            <span title="team-spec-create-pr-github / team-spec-create-mr-gitlab">PR/MR</span>
           </div>
         </article>
 
@@ -219,7 +231,9 @@
             </div>
           </div>
           <div class="route-steps" aria-label="Codebase workflow">
-            <span>Onboarding</span><i></i><span>Walk</span><i></i><span>Brief</span>
+            <span title="team-codebase-onboarding">Onboarding</span><i></i>
+            <span title="team-codebase-walk">Walk</span><i></i>
+            <span title="team-codebase-brief">Brief</span>
           </div>
         </article>
       </div>
@@ -249,7 +263,7 @@
           <button type="button" class="filter-button" data-category="delivery" aria-pressed="false" data-i18n="filterDelivery">交付</button>
           <button type="button" class="filter-button" data-category="tech-debt" aria-pressed="false" data-i18n="filterDebt">技术债</button>
           <button type="button" class="filter-button" data-category="writing" aria-pressed="false" data-i18n="filterWriting">写作</button>
-          <button type="button" class="filter-button" data-category="harness" aria-pressed="false" data-i18n="filterExperimental">实验能力</button>
+          <button type="button" class="filter-button" data-category="harness" aria-pressed="false" data-i18n="filterArchive">归档提炼</button>
         </div>
       </div>
 
@@ -278,10 +292,11 @@
       <div class="artifact-terminal" aria-label="team-spec file tree">
         <div class="terminal-top">
           <span class="terminal-lights" aria-hidden="true"><i></i><i></i><i></i></span>
-          <span>team-spec / active / export-filter</span>
-          <span class="terminal-state">spec-ready</span>
+          <span>team-spec / active / 2026-05-10-export-filter</span>
+          <span class="terminal-state">prd-ready</span>
         </div>
         <pre><span class="tree-muted">team-spec/</span>
+├── config.yml
 ├── CONTEXT.md
 ├── decisions/
 └── active/
@@ -292,13 +307,13 @@
         ├── prd/
         │   └── <span class="tree-green">prd.md</span>
         ├── tasks/
+        │   ├── T001-export-query.md
+        │   └── T002-filter-ui.md
         ├── DELIVERY.md
-        │   ├── 01-export-query.md
-        │   └── 02-filter-ui.md
         └── STATUS.md</pre>
         <div class="terminal-foot">
           <span data-i18n="terminalFoot">可追溯 · 可评审 · 可恢复</span>
-          <span>[ <span data-skill-summary>24 SKILLS · 5 DOMAINS</span> ]</span>
+          <span>[ <span data-skill-summary>25 SKILLS · 7 DOMAINS</span> ]</span>
         </div>
       </div>
     </section>

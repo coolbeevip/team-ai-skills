@@ -15,8 +15,7 @@ window.SRT_SKILLS = Object.freeze([
       "create team-spec config",
       "complete project configuration"
     ],
-    "version": "1.0",
-    "experimental": false
+    "version": "1.0"
   },
   {
     "name": "team-concept-whitepaper",
@@ -37,8 +36,7 @@ window.SRT_SKILLS = Object.freeze([
       "define product positioning and boundaries",
       "document a product vision"
     ],
-    "version": "1.0",
-    "experimental": false
+    "version": "1.0"
   },
   {
     "name": "team-spec-refine",
@@ -58,8 +56,7 @@ window.SRT_SKILLS = Object.freeze([
       "spec is unclear",
       "help me think through this requirement"
     ],
-    "version": "1.0",
-    "experimental": false
+    "version": "1.0"
   },
   {
     "name": "team-spec-review",
@@ -79,8 +76,7 @@ window.SRT_SKILLS = Object.freeze([
       "check requirement risks",
       "is the spec ready"
     ],
-    "version": "1.0",
-    "experimental": false
+    "version": "1.0"
   },
   {
     "name": "team-spec-to-prd",
@@ -102,8 +98,7 @@ window.SRT_SKILLS = Object.freeze([
       "spec is ready produce PRD",
       "produce PRD from reviewed spec"
     ],
-    "version": "1.0",
-    "experimental": false
+    "version": "1.0"
   },
   {
     "name": "team-spec-archive",
@@ -124,8 +119,7 @@ window.SRT_SKILLS = Object.freeze([
       "close this requirement",
       "archive this slug"
     ],
-    "version": "1.0",
-    "experimental": false
+    "version": "1.0"
   },
   {
     "name": "team-codebase-onboarding",
@@ -150,8 +144,7 @@ window.SRT_SKILLS = Object.freeze([
       "large C++ codebase onboarding",
       "telecom codebase analysis"
     ],
-    "version": "1.0",
-    "experimental": false
+    "version": "1.0"
   },
   {
     "name": "team-codebase-walk",
@@ -179,8 +172,7 @@ window.SRT_SKILLS = Object.freeze([
       "codebase Q&A",
       "trace implementation path"
     ],
-    "version": "1.0",
-    "experimental": false
+    "version": "1.0"
   },
   {
     "name": "team-codebase-brief",
@@ -203,8 +195,7 @@ window.SRT_SKILLS = Object.freeze([
       "capability brief",
       "stakeholder alignment"
     ],
-    "version": "1.0",
-    "experimental": false
+    "version": "1.0"
   },
   {
     "name": "team-codebase-readme",
@@ -223,8 +214,7 @@ window.SRT_SKILLS = Object.freeze([
       "improve repository documentation",
       "rewrite the project README"
     ],
-    "version": "1.0",
-    "experimental": false
+    "version": "1.0"
   },
   {
     "name": "team-prd-to-brief",
@@ -247,8 +237,7 @@ window.SRT_SKILLS = Object.freeze([
       "product engineering alignment",
       "create review meeting material"
     ],
-    "version": "1.0",
-    "experimental": false
+    "version": "1.0"
   },
   {
     "name": "team-prd-to-tasks",
@@ -265,8 +254,7 @@ window.SRT_SKILLS = Object.freeze([
       "create engineering tasks",
       "plan commit-sized tasks"
     ],
-    "version": "1.0",
-    "experimental": false
+    "version": "1.0"
   },
   {
     "name": "team-spec-create-issue-github",
@@ -283,8 +271,7 @@ window.SRT_SKILLS = Object.freeze([
       "publish spec to GitHub",
       "sync GitHub spec tracking issue"
     ],
-    "version": "1.0",
-    "experimental": false
+    "version": "1.0"
   },
   {
     "name": "team-spec-create-issue-gitlab",
@@ -301,8 +288,7 @@ window.SRT_SKILLS = Object.freeze([
       "publish spec to GitLab",
       "sync GitLab spec tracking issue"
     ],
-    "version": "1.0",
-    "experimental": false
+    "version": "1.0"
   },
   {
     "name": "team-task-batch-implement",
@@ -319,8 +305,7 @@ window.SRT_SKILLS = Object.freeze([
       "implement multiple tasks",
       "complete tasks on one branch"
     ],
-    "version": "1.0",
-    "experimental": false
+    "version": "1.0"
   },
   {
     "name": "team-task-implement",
@@ -337,8 +322,7 @@ window.SRT_SKILLS = Object.freeze([
       "start task coding",
       "implement and commit task"
     ],
-    "version": "1.0",
-    "experimental": false
+    "version": "1.0"
   },
   {
     "name": "team-task-verify",
@@ -355,8 +339,7 @@ window.SRT_SKILLS = Object.freeze([
       "review task implementation",
       "is this task ready to commit"
     ],
-    "version": "1.0",
-    "experimental": false
+    "version": "1.0"
   },
   {
     "name": "team-spec-create-pr-github",
@@ -373,8 +356,7 @@ window.SRT_SKILLS = Object.freeze([
       "open PR after all tasks",
       "push spec branch and create PR"
     ],
-    "version": "1.0",
-    "experimental": false
+    "version": "1.0"
   },
   {
     "name": "team-spec-create-mr-gitlab",
@@ -391,8 +373,7 @@ window.SRT_SKILLS = Object.freeze([
       "open MR after all tasks",
       "push spec branch and create MR"
     ],
-    "version": "1.0",
-    "experimental": false
+    "version": "1.0"
   },
   {
     "name": "team-tech-debt-analyze",
@@ -423,8 +404,7 @@ window.SRT_SKILLS = Object.freeze([
       "collect deferred debt",
       "collect team-minimal comments"
     ],
-    "version": "1.0",
-    "experimental": false
+    "version": "1.0"
   },
   {
     "name": "team-tech-debt-refine",
@@ -444,8 +424,7 @@ window.SRT_SKILLS = Object.freeze([
       "tech debt is unclear",
       "define tech debt acceptance"
     ],
-    "version": "1.0",
-    "experimental": false
+    "version": "1.0"
   },
   {
     "name": "team-tech-debt-review",
@@ -465,8 +444,7 @@ window.SRT_SKILLS = Object.freeze([
       "is tech debt ready for breakdown",
       "ready to create tech debt tasks"
     ],
-    "version": "1.0",
-    "experimental": false
+    "version": "1.0"
   },
   {
     "name": "team-tech-debt-to-tasks",
@@ -483,8 +461,7 @@ window.SRT_SKILLS = Object.freeze([
       "create technical debt tasks",
       "plan technical debt commits"
     ],
-    "version": "1.0",
-    "experimental": false
+    "version": "1.0"
   },
   {
     "name": "team-writing-style",
@@ -507,8 +484,7 @@ window.SRT_SKILLS = Object.freeze([
       "standardize emoji usage",
       "humanize team documents"
     ],
-    "version": "1.0",
-    "experimental": false
+    "version": "1.0"
   },
   {
     "name": "team-archive-distill",
@@ -531,7 +507,6 @@ window.SRT_SKILLS = Object.freeze([
       "summarize past decisions",
       "review archived specs"
     ],
-    "version": "1.0",
-    "experimental": true
+    "version": "1.0"
   }
 ]);
