@@ -127,6 +127,8 @@ team-spec/active/{slug}/brief/codebase-brief/
 - 产品规划：`product-impact.md`、`risk-and-constraints.md`。
 - 会前准备：`stakeholder-qa.md`、`alignment-outline.md`。
 
+按 `../SKILL.md` 的“可视化预览”判断是否生成同目录的 `preview.html`，并完成可执行的渲染检查；预览使用本次材料及其证据，不扩展来源范围。
+
 ## 8. 证据不足处理
 
 按以下顺序处理：

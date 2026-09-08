@@ -186,6 +186,7 @@ window.SRT_SKILLS = Object.freeze([
       "给产品讲代码能力",
       "代码库业务解读",
       "系统能力说明",
+      "可视化展示代码库能力",
       "产品影响分析",
       "面向业务汇报",
       "codebase brief",
@@ -193,6 +194,7 @@ window.SRT_SKILLS = Object.freeze([
       "product-facing technical brief",
       "explain codebase to product",
       "capability brief",
+      "visualize a codebase capability brief",
       "stakeholder alignment"
     ],
     "version": "1.0"
@@ -228,12 +230,14 @@ window.SRT_SKILLS = Object.freeze([
       "PRD 转评审简报",
       "生成需求研发对齐文档",
       "PRD 给人看",
+      "可视化展示 PRD 简报",
       "需求研发对齐",
       "生成评审会材料",
       "PRD review brief",
       "turn PRD into review brief",
       "create PRD brief",
       "make PRD human readable",
+      "visualize a PRD review brief",
       "product engineering alignment",
       "create review meeting material"
     ],
