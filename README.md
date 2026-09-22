@@ -159,7 +159,7 @@ Codex Harness 不在稳定主线内。只有当项目的工程入口、验证方
 
 ### 归档决策提炼
 
-- `team-archive-distill`：从已归档 spec 中提取决策模式和工程惯例，高度抽象为规则后写入 AGENTS.md。
+- `team-archive-distill`：以既有全局上下文为首要依据，从指定归档沉淀跨需求知识到 `team-spec/CONTEXT.md`；列出冲突并建议以既有上下文为准。
 
 ## 运行时工作空间
 

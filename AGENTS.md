@@ -32,8 +32,8 @@
 - `skills/tech-debt/team-tech-debt-refine/`：用于把模糊技术债诉求细化为可评审规格。
 - `skills/tech-debt/team-tech-debt-review/`：用于评审技术债风险、优先级和可执行性。
 - `skills/tech-debt/team-tech-debt-to-tasks/`：用于把已评审技术债拆解为工程 Task。
-- `skills/harness/`：从已归档 spec 中提炼可复用规则和决策模式，独立于主线交付流程。
-- `skills/harness/team-archive-distill/`：用于从 `team-spec/archive/` 下已归档的 spec 中提取决策模式和工程惯例，高度抽象为规则后写入 `AGENTS.md`。
+- `skills/harness/`：从已归档 spec 中提炼跨需求知识到全局上下文，独立于主线交付流程。
+- `skills/harness/team-archive-distill/`：用于以既有全局上下文为首要依据，从指定归档沉淀跨需求知识到 `team-spec/CONTEXT.md`；列出冲突并建议以既有上下文为准。
 - `skills/writing/`：跨产品、代码库、交付和技术债流程复用的写作职责，包括公共语言风格和代码注释规范。
 - `skills/writing/team-writing-style/`：用于建立和维护目标项目的统一写作风格，通过 `team-spec/config.yml` 为其他技能提供单一公共规则入口。
 
@@ -49,7 +49,7 @@
 
 技能运行时，所有产物应统一写入目标项目根目录下的 `team-spec/`。`team-spec/active/` 是所有尚未归档需求的集合，不再表示唯一活跃需求；单个需求工作区必须放在 `team-spec/active/{slug}/`。`team-spec/archive/` 保存已完成、废弃或暂停的历史需求。
 
-- `team-spec/CONTEXT.md`：跨多个需求复用的全局产品语境，包括规范术语、角色、通用流程和通用业务规则。
+- `team-spec/CONTEXT.md`：跨多个需求复用的全局上下文，包括规范术语、角色、通用流程、业务规则和工程约束。需求与技术债细化技能只读；由 `team-archive-distill` 结合指定归档沉淀，冲突项列出并建议以既有上下文为准，不自动覆盖。
 - `team-spec/STYLE.md`：可选的项目级公共写作风格，约束文档、用户可见说明和代码注释；路径由 `team-spec/config.yml` 的 `writing_style.guide` 指定。
 - `team-spec/decisions/`：跨多个需求长期有效的产品决策记录，仅在决策影响后续多个需求且反悔成本较高时创建。
 - `team-spec/active/{slug}/spec/`：单个需求的规格阶段产物，包括可选的机器人场景发现文档 `discovery.md`，以及 `CONTEXT.md`、`decisions/`、`refine.md`、`reviews.md`。

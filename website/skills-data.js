@@ -494,20 +494,20 @@ window.SRT_SKILLS = Object.freeze([
     "name": "team-archive-distill",
     "category": "harness",
     "description": {
-      "zh": "从已归档的 team-spec 中提取决策模式和工程惯例，高度抽象为规则后写入 AGENTS.md。",
-      "en": "Extract decision patterns and engineering conventions from archived team-specs, abstract them into high-level rules, and write them into AGENTS.md."
+      "zh": "从指定归档沉淀全局上下文到 team-spec/CONTEXT.md；保留既有上下文，列出冲突并建议以其为准。",
+      "en": "Distill selected archives into team-spec/CONTEXT.md; preserve existing context and report conflicts with recommendations."
     },
     "triggers": [
       "从归档提取规则",
       "归档决策抽象",
-      "更新 AGENTS.md 规则",
+      "更新 team-spec/CONTEXT.md 规则",
       "从历史需求提炼规则",
       "过去决策总结",
       "复盘历史 spec",
       "extract rules from archive",
       "abstract archived decisions",
       "distill rules from past specs",
-      "update AGENTS.md from history",
+      "update team-spec/CONTEXT.md from history",
       "summarize past decisions",
       "review archived specs"
     ],

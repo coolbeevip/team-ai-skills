@@ -1,6 +1,6 @@
 # 需求上下文格式
 
-`team-spec/CONTEXT.md` 用于沉淀跨多个需求复用的产品语言，包括规范术语、角色、通用流程和通用业务规则。
+`team-spec/CONTEXT.md` 用于沉淀跨需求有效的全局上下文。需求细化阶段只读；全局候选内容先记入当前 `spec/refine.md`，归档后由 `team-archive-distill` 评估并沉淀。本文模板用于当前需求的局部上下文。
 
 `team-spec/active/{slug}/spec/CONTEXT.md` 用于沉淀单个需求在 PRD、任务和研发讨论中应保持一致的局部产品语言，包括当前需求特有术语、局部流程和局部业务规则。
 
@@ -41,5 +41,5 @@ _避免使用_：模糊角色名
 - 每个定义最多一句话。
 - 当同义词会导致混乱时，把需要避免的叫法写出来。
 - 只记录产品语境中特有的概念，不解释通用软件术语。
-- 术语、规则、角色或流程边界一旦确认，立即更新本文件。
-- 能跨多个需求复用的信息放入 `team-spec/CONTEXT.md`；只属于当前需求的信息放入 `team-spec/active/{slug}/spec/CONTEXT.md`。
+- 当前需求内的术语、规则、角色或流程边界确认后，更新局部上下文。
+- 不创建或更新全局 `team-spec/CONTEXT.md`；当前需求内已确认且需要复用的信息放入 `team-spec/active/{slug}/spec/CONTEXT.md`。

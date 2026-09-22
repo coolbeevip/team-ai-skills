@@ -56,11 +56,12 @@ triggers:
 
 开始新技术债需求前，必须确定本次要使用的 slug，并检查 `team-spec/active/{slug}/` 是否已存在。`team-spec/active/` 下允许同时存在多个技术债或产品需求 slug，不得因为其他 slug 未归档而要求用户先归档。无法唯一判断目标 slug 时，必须向用户确认。
 
+全局 `team-spec/CONTEXT.md` 在本技能中只读，不创建或更新；文件缺失不阻塞细化。可能跨需求复用的术语、角色或通用规则，连同适用范围和确认状态记录在当前 `spec/refine.md`，归档后由 `team-archive-distill` 评估并沉淀。与既有全局上下文冲突时，在当前需求内列出冲突，不覆盖全局内容。局部 `spec/CONTEXT.md` 只记录当前需求内已确认且需要复用的语境，未确认内容留在 `spec/refine.md`。
+
 ## 输出物
 
 - 对话中的澄清结论：问题定义、影响范围、优先级、验收口径、开放问题。
 - `team-spec/active/{slug}/spec/refine.md`：技术债细化主文档。
-- `team-spec/CONTEXT.md`：当需要沉淀跨多个需求长期有效的术语、角色或通用规则时更新。
 - `team-spec/decisions/{number}-{decision-slug}.md`：当出现跨多个需求长期有效且高成本回退的决策时创建。
 - `team-spec/active/{slug}/spec/CONTEXT.md`：当需要沉淀当前技术债局部语境时更新。
 - `team-spec/active/{slug}/spec/decisions/{number}-{decision-slug}.md`：当出现只影响当前技术债的决策时创建。
