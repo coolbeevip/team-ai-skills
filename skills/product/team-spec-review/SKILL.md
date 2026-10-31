@@ -4,7 +4,7 @@ description: 评审已细化的需求规格，输出风险、阻塞项、补救�
 license: MIT
 metadata:
   author: coolbeevip
-  version: "1.0"
+  version: "0.9.0"
 triggers:
   - 评审规格
   - 规格准备好了吗

@@ -4,7 +4,7 @@ description: 通过用户确认细化需求规格，澄清术语、边界、业�
 license: MIT
 metadata:
   author: coolbeevip
-  version: "1.0"
+  version: "0.9.0"
 triggers:
   - 细化需求
   - 需求不清楚

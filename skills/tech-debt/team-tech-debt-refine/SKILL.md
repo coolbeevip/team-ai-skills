@@ -4,7 +4,7 @@ description: 通过用户确认细化技术债需求，明确证据、影响范�
 license: MIT
 metadata:
   author: coolbeevip
-  version: "1.0"
+  version: "0.9.0"
 triggers:
   - 技术债细化
   - 梳理技术债

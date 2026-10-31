@@ -1,6 +1,11 @@
 repos:
   - repo: local
     hooks:
+      - id: check-version
+        name: Check release version
+        entry: python3 scripts/check_version.py
+        language: system
+        pass_filenames: false
       - id: check-skills
         name: Check skill structure
         entry: python3 scripts/check_skills.py

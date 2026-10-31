@@ -111,7 +111,7 @@
 - `description` 必须同时包含中文和英文描述，便于 AI 在不同语言上下文中识别触发场景。
 - `triggers` 是一个自然语言短语列表，用于提升技能的可发现性。AI 可通过匹配用户输入与 `triggers` 自动推荐合适的技能，无需用户知道技能名称。每个技能至少包含 3 条中文短语和 3 条英文短语，覆盖用户最常见的表达方式。
 - 每个技能必须声明 `license: MIT`。
-- 每个技能必须包含 `metadata.author: coolbeevip` 和 `metadata.version: "1.0"`。
+- 每个技能必须包含 `metadata.author: coolbeevip` 和 与根目录 `VERSION` 一致的 `metadata.version`（整库发行版）。
 - 每个技能必须声明 `## 输入物` 和 `## 输出物`，明确会读取哪些上游技能产物，以及会给哪些下游技能使用。
 - 依赖上游产物的技能必须先确定唯一 slug 或明确文件路径；无法唯一判断时必须要求用户提供，不得猜测。
 - 用户可见说明优先使用中文。
@@ -153,7 +153,7 @@ description: 通过与用户反复确认来细化需求规格，适用于 PRD �
 license: MIT
 metadata:
   author: coolbeevip
-  version: "1.0"
+  version: "0.9.0"
 triggers:
   - 细化需求
   - 打磨规格
@@ -163,6 +163,10 @@ triggers:
   - spec is unclear
 ---
 ```
+
+## 版本管理
+
+整库统一使用 `主版本.次版本.修订版本`，根目录 `VERSION` 为唯一来源。技能版本由 `python3 scripts/check_version.py --sync` 同步，默认不带参数时只检查。同步前先补充 `CHANGELOG.md` 对应版本记录；同步后重新生成网站数据。版本规则和发布流程见 README 的“版本与发布”。这些脚本仅用于仓库维护，不是技能运行时依赖。
 
 ## 测试与校验
 

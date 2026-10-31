@@ -4,7 +4,7 @@ description: 将已评审技术债拆为可独立实现、验证并形成独立�
 license: MIT
 metadata:
   author: coolbeevip
-  version: "1.0"
+  version: "0.9.0"
 triggers:
   - 技术债拆 Task
   - 把技术债拆成工程任务

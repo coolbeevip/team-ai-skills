@@ -4,7 +4,7 @@ description: 对项目或模块进行只读技术债分析，输出有证据的�
 license: MIT
 metadata:
   author: coolbeevip
-  version: "1.0"
+  version: "0.9.0"
 triggers:
   - 分析技术债
   - 代码健康检查

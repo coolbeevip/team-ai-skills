@@ -37,7 +37,7 @@ description: 检查一个测试技能的通用结构。Check the generic structu
 license: MIT
 metadata:
   author: coolbeevip
-  version: "1.0"
+  version: "{(ROOT / 'VERSION').read_text().strip()}"
 triggers:
   - 检查技能
   - 校验技能

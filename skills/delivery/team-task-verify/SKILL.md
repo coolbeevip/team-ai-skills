@@ -4,7 +4,7 @@ description: 独立验证单个 Task 实现是否满足验收、PRD、风险和�
 license: MIT
 metadata:
   author: coolbeevip
-  version: "1.0"
+  version: "0.9.0"
 triggers:
   - 验证 Task
   - 检查工程任务是否完成

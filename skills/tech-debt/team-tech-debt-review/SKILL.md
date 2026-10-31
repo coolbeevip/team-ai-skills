@@ -4,7 +4,7 @@ description: 评审技术债规格的风险、优先级、阻塞项和工程 Tas
 license: MIT
 metadata:
   author: coolbeevip
-  version: "1.0"
+  version: "0.9.0"
 triggers:
   - 评审技术债
   - 技术债有没有风险

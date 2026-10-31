@@ -4,7 +4,7 @@ description: 在 Spec 共享分支实现单个工程 Task，验证通过并经�
 license: MIT
 metadata:
   author: coolbeevip
-  version: "1.0"
+  version: "0.9.0"
 triggers:
   - 实现 Task
   - 开始工程任务

@@ -206,8 +206,9 @@ def check_skill(path: Path) -> list[str]:
     else:
         if metadata.get("author") != "coolbeevip":
             errors.append("metadata.author must be coolbeevip")
-        if metadata.get("version") != "1.0":
-            errors.append('metadata.version must be "1.0"')
+        expected_version = (ROOT / "VERSION").read_text(encoding="utf-8").strip()
+        if metadata.get("version") != expected_version:
+            errors.append(f"metadata.version must equal VERSION ({expected_version})")
 
     triggers = data.get("triggers")
     if not isinstance(triggers, list):

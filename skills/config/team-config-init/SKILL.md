@@ -4,7 +4,7 @@ description: 初始化、校验并增量补全 team-spec/config.yml，集中管�
 license: MIT
 metadata:
   author: coolbeevip
-  version: "1.0"
+  version: "0.9.0"
 triggers:
   - 初始化团队配置
   - 创建 team-spec 配置

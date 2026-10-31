@@ -4,7 +4,7 @@ description: 将完整 Spec 创建或同步为一个 GitHub Issue，并用 check
 license: MIT
 metadata:
   author: coolbeevip
-  version: "1.0"
+  version: "0.9.0"
 triggers:
   - 为 Spec 创建 GitHub Issue
   - 发布完整需求到 GitHub

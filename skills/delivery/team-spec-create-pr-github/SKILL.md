@@ -4,7 +4,7 @@ description: 推送一个 Spec 的共享分支，并为其全部已提交 Tasks 
 license: MIT
 metadata:
   author: coolbeevip
-  version: "1.0"
+  version: "0.9.0"
 triggers:
   - 为 Spec 创建 GitHub PR
   - 所有 Task 完成后提 PR

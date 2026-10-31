@@ -4,7 +4,7 @@ description: 将已完成、废弃或暂停的单个需求工作区从 active �
 license: MIT
 metadata:
   author: coolbeevip
-  version: "1.0"
+  version: "0.9.0"
 triggers:
   - 归档需求
   - 归档 active 需求

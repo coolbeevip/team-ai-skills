@@ -4,7 +4,7 @@ description: 从指定归档沉淀全局上下文到 team-spec/CONTEXT.md；保�
 license: MIT
 metadata:
   author: coolbeevip
-  version: "1.0"
+  version: "0.9.0"
 triggers:
   - 从归档提取规则
   - 归档决策抽象

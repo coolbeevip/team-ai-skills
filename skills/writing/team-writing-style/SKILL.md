@@ -4,7 +4,7 @@ description: 为团队项目建立、维护和应用统一的自然语言、代�
 license: MIT
 metadata:
   author: coolbeevip
-  version: "1.0"
+  version: "0.9.0"
 triggers:
   - 定义写作风格
   - 去掉 AI 味

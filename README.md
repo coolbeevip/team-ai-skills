@@ -220,6 +220,32 @@ team-spec/
 - Task 文件记录 `draft`、`implementing`、`needs-changes`、`blocked`、`verified` 或 `committed`。
 - `DELIVERY.md` 记录整个 Spec 的共享分支、远端 Issue、Task/commit 映射和 PR/MR。
 
+## 版本与发布
+
+当前版本见 [VERSION](VERSION)，升级说明见 [变更记录](CHANGELOG.md)。整套技能统一发布，技能内的 `metadata.version` 表示所属发行版，即使该技能在本版没有变化也会同步。
+
+版本采用 `主版本.次版本.修订版本`：稳定阶段，主版本用于不兼容变化，次版本用于兼容新增能力，修订版本用于兼容修复。初始版本为 `0.9.0`；`0.x` 阶段，新增能力或不兼容调整提升次版本，兼容修复提升修订版本。不兼容变化必须记录影响和迁移方法。
+
+兼容性覆盖技能名称、运行时配置、产物路径与格式、状态值、脚本参数、上下游交接和授权边界。Markdown 修改也按行为影响判断版本；版本不保证不同模型输出完全相同的文字。
+
+维护者发布步骤：
+
+1. 修改 `VERSION`，在 `CHANGELOG.md` 增加对应版本条目，说明新增、修复及迁移方法。
+2. 执行以下命令同步技能版本、更新网站数据并验证：
+
+   ```bash
+   python3 scripts/check_version.py --sync
+   python3 scripts/build_website_data.py
+   pre-commit run --all-files
+   ```
+
+   `check_version.py` 默认只读检查；只有 `--sync` 才写入技能元数据。脚本是仓库维护工具，不随技能作为运行时依赖。
+
+3. 审查并提交修改，在通过验证的 commit 上创建与版本一致的 tag（例如 `v0.9.0`）。发布前可用 `python3 scripts/check_version.py --tag v0.9.0` 校验。
+4. 推送发布 tag，等待 tag CI 通过，再创建 GitHub Release，附上该版本的变更说明。已发布 tag 不移动，问题通过新版本修复。
+
+需要复现版本时，应使用对应 tag 或 commit 的仓库快照，并从该快照安装技能；默认安装入口跟随仓库默认分支，不保证固定发行版。团队宜使用同一发行版的整套技能，避免混用不同版本的上下游技能。
+
 ## 参与维护
 
 本仓库是 Markdown 技能库，没有构建系统。技能正文以中文为主，frontmatter 中的 `description` 和 `triggers` 同时覆盖中文和英文，以支持不同语言上下文中的发现和触发。

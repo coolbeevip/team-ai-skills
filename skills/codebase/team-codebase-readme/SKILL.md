@@ -4,7 +4,7 @@ description: 创建、审阅和优化团队自有项目 README.md，以准确事
 license: MIT
 metadata:
   author: coolbeevip
-  version: "1.0"
+  version: "0.9.0"
 triggers:
   - 编写项目 README
   - 创建 README.md
