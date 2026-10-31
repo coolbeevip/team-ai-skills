@@ -4,7 +4,7 @@ description: 将结构化 PRD 转换为适合需求、研发和项目管理评�
 license: MIT
 metadata:
   author: coolbeevip
-  version: "0.9.0"
+  version: "0.9.1"
 triggers:
   - PRD 简报
   - PRD 转评审简报

@@ -4,7 +4,7 @@ description: 将代码库事实转化为面向业务、产品和管理者的能�
 license: MIT
 metadata:
   author: coolbeevip
-  version: "0.9.0"
+  version: "0.9.1"
 triggers:
   - 生成业务分享材料
   - 给产品讲代码能力

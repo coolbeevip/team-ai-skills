@@ -15,7 +15,7 @@ window.SRT_SKILLS = Object.freeze([
       "create team-spec config",
       "complete project configuration"
     ],
-    "version": "0.9.0"
+    "version": "0.9.1"
   },
   {
     "name": "team-concept-whitepaper",
@@ -36,7 +36,7 @@ window.SRT_SKILLS = Object.freeze([
       "define product positioning and boundaries",
       "document a product vision"
     ],
-    "version": "0.9.0"
+    "version": "0.9.1"
   },
   {
     "name": "team-spec-refine",
@@ -56,7 +56,7 @@ window.SRT_SKILLS = Object.freeze([
       "spec is unclear",
       "help me think through this requirement"
     ],
-    "version": "0.9.0"
+    "version": "0.9.1"
   },
   {
     "name": "team-spec-review",
@@ -76,7 +76,7 @@ window.SRT_SKILLS = Object.freeze([
       "check requirement risks",
       "is the spec ready"
     ],
-    "version": "0.9.0"
+    "version": "0.9.1"
   },
   {
     "name": "team-spec-to-prd",
@@ -98,7 +98,7 @@ window.SRT_SKILLS = Object.freeze([
       "spec is ready produce PRD",
       "produce PRD from reviewed spec"
     ],
-    "version": "0.9.0"
+    "version": "0.9.1"
   },
   {
     "name": "team-spec-archive",
@@ -119,7 +119,7 @@ window.SRT_SKILLS = Object.freeze([
       "close this requirement",
       "archive this slug"
     ],
-    "version": "0.9.0"
+    "version": "0.9.1"
   },
   {
     "name": "team-codebase-onboarding",
@@ -144,7 +144,7 @@ window.SRT_SKILLS = Object.freeze([
       "large C++ codebase onboarding",
       "telecom codebase analysis"
     ],
-    "version": "0.9.0"
+    "version": "0.9.1"
   },
   {
     "name": "team-codebase-walk",
@@ -172,7 +172,7 @@ window.SRT_SKILLS = Object.freeze([
       "codebase Q&A",
       "trace implementation path"
     ],
-    "version": "0.9.0"
+    "version": "0.9.1"
   },
   {
     "name": "team-codebase-brief",
@@ -197,7 +197,7 @@ window.SRT_SKILLS = Object.freeze([
       "visualize a codebase capability brief",
       "stakeholder alignment"
     ],
-    "version": "0.9.0"
+    "version": "0.9.1"
   },
   {
     "name": "team-codebase-readme",
@@ -216,7 +216,7 @@ window.SRT_SKILLS = Object.freeze([
       "improve repository documentation",
       "rewrite the project README"
     ],
-    "version": "0.9.0"
+    "version": "0.9.1"
   },
   {
     "name": "team-prd-to-brief",
@@ -241,7 +241,7 @@ window.SRT_SKILLS = Object.freeze([
       "product engineering alignment",
       "create review meeting material"
     ],
-    "version": "0.9.0"
+    "version": "0.9.1"
   },
   {
     "name": "team-prd-to-tasks",
@@ -258,7 +258,7 @@ window.SRT_SKILLS = Object.freeze([
       "create engineering tasks",
       "plan commit-sized tasks"
     ],
-    "version": "0.9.0"
+    "version": "0.9.1"
   },
   {
     "name": "team-spec-create-issue-github",
@@ -275,7 +275,7 @@ window.SRT_SKILLS = Object.freeze([
       "publish spec to GitHub",
       "sync GitHub spec tracking issue"
     ],
-    "version": "0.9.0"
+    "version": "0.9.1"
   },
   {
     "name": "team-spec-create-issue-gitlab",
@@ -292,7 +292,7 @@ window.SRT_SKILLS = Object.freeze([
       "publish spec to GitLab",
       "sync GitLab spec tracking issue"
     ],
-    "version": "0.9.0"
+    "version": "0.9.1"
   },
   {
     "name": "team-task-batch-implement",
@@ -309,7 +309,7 @@ window.SRT_SKILLS = Object.freeze([
       "implement multiple tasks",
       "complete tasks on one branch"
     ],
-    "version": "0.9.0"
+    "version": "0.9.1"
   },
   {
     "name": "team-task-implement",
@@ -326,7 +326,7 @@ window.SRT_SKILLS = Object.freeze([
       "start task coding",
       "implement and commit task"
     ],
-    "version": "0.9.0"
+    "version": "0.9.1"
   },
   {
     "name": "team-task-verify",
@@ -343,7 +343,7 @@ window.SRT_SKILLS = Object.freeze([
       "review task implementation",
       "is this task ready to commit"
     ],
-    "version": "0.9.0"
+    "version": "0.9.1"
   },
   {
     "name": "team-spec-create-pr-github",
@@ -360,7 +360,7 @@ window.SRT_SKILLS = Object.freeze([
       "open PR after all tasks",
       "push spec branch and create PR"
     ],
-    "version": "0.9.0"
+    "version": "0.9.1"
   },
   {
     "name": "team-spec-create-mr-gitlab",
@@ -377,14 +377,14 @@ window.SRT_SKILLS = Object.freeze([
       "open MR after all tasks",
       "push spec branch and create MR"
     ],
-    "version": "0.9.0"
+    "version": "0.9.1"
   },
   {
     "name": "team-tech-debt-analyze",
     "category": "tech-debt",
     "description": {
-      "zh": "对项目或模块进行只读技术债分析，输出有证据的维护性、稳定性、测试、架构和交付风险报告。",
-      "en": "Analyze technical debt through read-only inspection and produce evidence-backed maintainability, stability, testing, architecture, and delivery risk findings."
+      "zh": "对项目或模块进行只读技术债分析，评估阶段性重构机会，输出有证据的维护性、稳定性、测试、架构和交付风险报告。",
+      "en": "Analyze technical debt and incremental refactoring opportunities through read-only inspection with evidence-backed findings."
     },
     "triggers": [
       "分析技术债",
@@ -397,6 +397,8 @@ window.SRT_SKILLS = Object.freeze([
       "复杂度审计",
       "收集延迟债务",
       "收集 team-minimal 注释",
+      "评估阶段性重构",
+      "看看哪里值得重构",
       "technical debt analysis",
       "code health review",
       "maintainability audit",
@@ -406,16 +408,18 @@ window.SRT_SKILLS = Object.freeze([
       "dependency simplification review",
       "complexity audit",
       "collect deferred debt",
-      "collect team-minimal comments"
+      "collect team-minimal comments",
+      "assess refactoring opportunities",
+      "where should we refactor"
     ],
-    "version": "0.9.0"
+    "version": "0.9.1"
   },
   {
     "name": "team-tech-debt-refine",
     "category": "tech-debt",
     "description": {
-      "zh": "通过用户确认细化技术债需求，明确证据、影响范围、风险等级和验收口径。",
-      "en": "Refine technical debt requests through user confirmation of evidence, scope, risk, and acceptance criteria."
+      "zh": "通过用户确认细化技术债和已明确对象的阶段性重构，明确证据、行为边界、风险及验收口径。",
+      "en": "Refine technical debt and scoped refactoring requests through confirmation of evidence, behavior boundaries, risks, and acceptance criteria."
     },
     "triggers": [
       "技术债细化",
@@ -423,12 +427,16 @@ window.SRT_SKILLS = Object.freeze([
       "技术债需求说不清楚",
       "帮我想清楚这个技术债",
       "技术债验收怎么定",
+      "细化模块重构范围",
+      "制定阶段性重构规格",
       "refine tech debt",
       "clarify tech debt",
       "tech debt is unclear",
-      "define tech debt acceptance"
+      "define tech debt acceptance",
+      "refine module refactoring scope",
+      "specify an incremental refactor"
     ],
-    "version": "0.9.0"
+    "version": "0.9.1"
   },
   {
     "name": "team-tech-debt-review",
@@ -448,7 +456,7 @@ window.SRT_SKILLS = Object.freeze([
       "is tech debt ready for breakdown",
       "ready to create tech debt tasks"
     ],
-    "version": "0.9.0"
+    "version": "0.9.1"
   },
   {
     "name": "team-tech-debt-to-tasks",
@@ -465,7 +473,7 @@ window.SRT_SKILLS = Object.freeze([
       "create technical debt tasks",
       "plan technical debt commits"
     ],
-    "version": "0.9.0"
+    "version": "0.9.1"
   },
   {
     "name": "team-writing-style",
@@ -488,7 +496,7 @@ window.SRT_SKILLS = Object.freeze([
       "standardize emoji usage",
       "humanize team documents"
     ],
-    "version": "0.9.0"
+    "version": "0.9.1"
   },
   {
     "name": "team-archive-distill",
@@ -511,6 +519,6 @@ window.SRT_SKILLS = Object.freeze([
       "summarize past decisions",
       "review archived specs"
     ],
-    "version": "0.9.0"
+    "version": "0.9.1"
   }
 ]);

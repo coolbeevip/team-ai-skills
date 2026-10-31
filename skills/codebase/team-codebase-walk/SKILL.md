@@ -4,7 +4,7 @@ description: 基于 onboarding 产物和源码，围绕功能清单做代码库�
 license: MIT
 metadata:
   author: coolbeevip
-  version: "0.9.0"
+  version: "0.9.1"
 triggers:
   - 代码走读
   - 带我理解代码

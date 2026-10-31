@@ -1,10 +1,10 @@
 ---
 name: team-tech-debt-analyze
-description: 对项目或模块进行只读技术债分析，输出有证据的维护性、稳定性、测试、架构和交付风险报告。Analyze technical debt through read-only inspection and produce evidence-backed maintainability, stability, testing, architecture, and delivery risk findings.
+description: 对项目或模块进行只读技术债分析，评估阶段性重构机会，输出有证据的维护性、稳定性、测试、架构和交付风险报告。Analyze technical debt and incremental refactoring opportunities through read-only inspection with evidence-backed findings.
 license: MIT
 metadata:
   author: coolbeevip
-  version: "0.9.0"
+  version: "0.9.1"
 triggers:
   - 分析技术债
   - 代码健康检查
@@ -16,6 +16,8 @@ triggers:
   - 复杂度审计
   - 收集延迟债务
   - 收集 team-minimal 注释
+  - 评估阶段性重构
+  - 看看哪里值得重构
   - technical debt analysis
   - code health review
   - maintainability audit
@@ -26,6 +28,8 @@ triggers:
   - complexity audit
   - collect deferred debt
   - collect team-minimal comments
+  - assess refactoring opportunities
+  - where should we refactor
 ---
 
 # 技术债分析
@@ -44,6 +48,8 @@ triggers:
 
 - 适合触发：用户还没有明确技术债规格，需要只读扫描项目、模块或 diff，识别有证据的债务候选项。
 - 不适合触发：用户已有明确债务诉求并要细化验收时，转交 `team-tech-debt-refine`；已有评审通过的债务规格要拆工程任务时，转交 `team-tech-debt-to-tasks`。
+
+阶段性重构尚未明确对象时，从本技能发现问题；已有明确对象和目标时直接进入 `team-tech-debt-refine`，不强制重新分析全库。当前 Task 内为完成既定验收所必需的局部整理，留在 `team-task-implement`，不另建技术债工作区。
 
 ## 运行时配置
 
@@ -116,6 +122,15 @@ team-spec/active/{candidate_slug}/tasks/
 - 复杂度来自真实安全、权限、数据一致性、错误处理、可访问性、硬件校准或验收标准要求时，不把它判为可删除债务。
 
 分析 URL query、日期、CSV、分组、深拷贝、格式化、分页、唯一性、数据库约束、Shell/OS 或项目内 helper 相关复杂度时，先读取 `../../delivery/team-task-implement/references/PLATFORM-STDLIB.md`，用其中替代清单判断是否存在平台能力或标准库替代。
+
+## 阶段性重构机会
+
+仅在分析阶段性重构时应用，结论仍写入既有分析报告，不新增重构计划文件：
+
+- 每个候选说明当前问题、影响及不涉及的范围、预期收益和验证方式。以理解、修改、测试或运维成本的实际证据判断是否值得现在处理，不以代码长度、目录整齐、新框架或个人偏好立项。
+- 区分保持既定契约的结构调整与缺陷修复、业务规则或接口变化；后者单独列出，不能作为纯重构收益。检查相关历史决定和故障，证据缺失时记录待确认项，不猜测旧约束已失效。
+- 检查职责、接口、数据归属和副作用，追踪上下游依赖；说明抽象能解决的已有问题及代价，不能仅凭代码相似就合并职责不同的逻辑，也不能以局部简化换取循环依赖、隐藏共享状态或跨层耦合。
+- 可以建议暂不重构或保留少量重复，记录依据与重新评估条件，不为凑候选数量制造债务。选定候选后将证据和开放问题交给 `team-tech-debt-refine`，不要求用户重复提供已有事实。
 
 ## 复杂度审计
 
@@ -211,6 +226,7 @@ team-minimal: {当前简化做法}; ceiling={不能超过的规模/条件}; upgr
 - Evidence:
   - `{path}`：{具体事实}
 - Recommended Direction: {治理方向，不写具体补丁}
+- Expected Benefit and Verification: {预期降低的具体成本或风险，以及验证方式}
 - Suggested Next Skill: `team-tech-debt-refine`
 - Open Questions: {如无则写 None}
 

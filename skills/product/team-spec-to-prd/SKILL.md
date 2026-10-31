@@ -4,7 +4,7 @@ description: 将已细化并通过评审的规格固化为结构化 PRD，形成
 license: MIT
 metadata:
   author: coolbeevip
-  version: "0.9.0"
+  version: "0.9.1"
 triggers:
   - 写 PRD
   - 生成 PRD

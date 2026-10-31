@@ -4,7 +4,7 @@ description: 将 PRD 拆解为可独立实现、验证并形成独立本地提�
 license: MIT
 metadata:
   author: coolbeevip
-  version: "0.9.0"
+  version: "0.9.1"
 triggers:
   - 拆 Task
   - 把 PRD 拆成工程任务

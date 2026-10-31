@@ -4,7 +4,7 @@ description: 在产品规划阶段澄清产品定位、价值与能力边界，�
 license: MIT
 metadata:
   author: coolbeevip
-  version: "0.9.0"
+  version: "0.9.1"
 triggers:
   - 编写产品概念白皮书
   - 写产品白皮书

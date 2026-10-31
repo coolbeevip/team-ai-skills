@@ -4,7 +4,7 @@ description: 在同一 Spec 分支批量实现多个 Task，开始前选择逐�
 license: MIT
 metadata:
   author: coolbeevip
-  version: "0.9.0"
+  version: "0.9.1"
 triggers:
   - 批量实现 Task
   - 连续处理多个工程任务

@@ -4,7 +4,7 @@ description: 从已有代码仓库提取可追溯的功能清单、架构说明�
 license: MIT
 metadata:
   author: coolbeevip
-  version: "0.9.0"
+  version: "0.9.1"
 triggers:
   - 熟悉代码库
   - 生成项目功能清单

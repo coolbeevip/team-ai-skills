@@ -1,11 +1,15 @@
 from __future__ import annotations
 
 import tempfile
+import json
+import subprocess
+import sys
 import unittest
 from pathlib import Path
 
 from agent.audit_verify_case import audit
 from agent.prepare_verify_case import git, prepare
+from agent.prepare_refactor_case import prepare as prepare_refactor
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -43,6 +47,28 @@ class VerifyFixtureTests(unittest.TestCase):
             destination = Path(directory) / "case"
             prepare(ROOT, destination, "single", True)
             self.assertEqual([p.name for p in (destination / "skills").iterdir()], ["team-task-verify"])
+
+
+class RefactorFixtureTests(unittest.TestCase):
+    def test_replays_have_identical_baseline_commits_and_refuse_existing_destination(self):
+        with tempfile.TemporaryDirectory() as directory:
+            first, second = Path(directory) / "first", Path(directory) / "second"
+            for destination in (first, second):
+                prepare_refactor(ROOT, destination, "implement")
+            snapshots = [json.loads((p / "before.json").read_text()) for p in (first, second)]
+            self.assertEqual(snapshots[0]["head"], snapshots[1]["head"])
+            self.assertEqual(snapshots[0]["files"], snapshots[1]["files"])
+            with self.assertRaises(FileExistsError):
+                prepare_refactor(ROOT, first, "implement")
+
+    def test_cli_baseline_distinguishes_supported_contract_from_existing_defect(self):
+        with tempfile.TemporaryDirectory() as directory:
+            for case, success in (("implement", True), ("failed-baseline", False)):
+                with self.subTest(case=case):
+                    destination = Path(directory) / case
+                    prepare_refactor(ROOT, destination, case)
+                    result = subprocess.run([sys.executable, "-m", "unittest", "-v"], cwd=destination / "project", capture_output=True, text=True)
+                    self.assertEqual(result.returncode == 0, success, result.stderr)
 
 
 if __name__ == "__main__":
