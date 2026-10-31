@@ -16,7 +16,7 @@ triggers:
 
 # Task 实现
 
-实现 `team-prd-to-tasks` 或 `team-tech-debt-to-tasks` 生成的一个 Task。所有同 slug Task 共用与 slug 完全同名的 `{slug}` 分支，不添加 `spec/` 前缀；每个 Task 验证通过后，必须先让用户检查实际差异并确认，再形成一个本地逻辑 commit。
+实现 `team-prd-to-tasks` 或 `team-tech-debt-to-tasks` 生成的一个 Task。所有同 slug Task 共用与 slug 完全同名的 `{slug}` 分支，不添加 `spec/` 前缀。单独调用时，Task 验证通过后须让用户检查实际差异并确认，再形成一个本地逻辑 commit；由 `team-task-batch-implement` 编排时按启动时选择的提交模式执行。
 
 ## 触发边界
 
@@ -29,7 +29,7 @@ triggers:
 
 Commit message 语言按“用户对本次提交的明确指定 > `version_control.language` > 顶层 `language` > `en-US`”确定。交付语言与 Task 文档语言不同时，只转换变更摘要，不修改 Task 原文；代码标识符和专有名词保持原样。Commit message 只写简洁的变更摘要，不添加 `T001` 等 Task ID 前缀或后缀。
 
-默认 Spec 分支为 `{slug}`。用户显式指定且已确认的分支名可以覆盖默认值，但同一 slug 的所有 Task 必须使用同一个分支。
+Spec 分支严格为 `{slug}`，单任务、批量任务和远端交付使用同一命名合同。
 
 ## 公共写作风格
 
@@ -58,25 +58,31 @@ Commit message 语言按“用户对本次提交的明确指定 > `version_contr
 
 - 满足 Task 验收标准和当前受支持契约的代码与测试，包括必要的新增、修改或删除。
 - `team-task-verify` 的独立验证结果。
-- 用户检查差异并明确确认后创建的一个本地逻辑 commit。
+- 按适用的提交模式创建的一个本地逻辑 commit；单独调用须由用户检查差异并明确确认。
 - 等待确认时 Task 文件中的 `Status: verified`；提交后更新为 `Status: committed`，并记录 commit SHA、实现和验证结果。
 
 不得 push、创建远端 Issue、PR 或 MR。`team-spec/` 下的运行时文件不得加入代码 commit。
 
 ## 共享分支合同
 
-1. 从 `team-spec/config.yml` 确定 `trunk_branch`、`contribution_model`、`source_remote` 和 `target_remote`。
-2. 将 Spec 分支计算为 `{slug}`，不得添加 `spec/` 或其他前缀。
-3. 当前分支不是 Spec 分支时：
-   - 工作区有未提交变更则停止。
-   - 分支已存在：切换到该分支，不执行主干同步。
-   - 分支不存在：先同步主干，再从主干创建。
-4. 同步主干规则（仅在创建新分支时执行）：
-   - `contribution_model = direct`（source_remote 与 target_remote 相同）：`git switch {trunk_branch}`，然后 `git fetch {source_remote} {trunk_branch}`，再执行 `git pull --ff-only {source_remote} {trunk_branch}`。切换主干前必须确认工作区干净；无法 fast-forward 时停止，不自动 merge 或 rebase。
-   - `contribution_model = fork-pull`（target_remote 为上游仓库）：`git fetch {target_remote} {trunk_branch}` 然后 `git switch {trunk_branch}` 然后 `git merge {target_remote}/{trunk_branch}`。
-   - 同步后，`git switch -c {slug} {trunk_branch}` 创建新分支。
-5. 后续 Task 必须继续使用同一分支。
-6. 不创建 Task 独立分支，不把其他 slug 的 commit 混入当前分支。
+- 单任务、批量任务和 PR/MR 统一使用与 slug 完全同名的 `{slug}` 分支，不添加前缀、不提供分支名覆盖例外。已有非标准分支时停止并说明差异，不自动重命名。
+- 先区分产品代码与 `team-spec/` 运行时文档。仅有可归因、未暂存的 `team-spec/` 变化时允许继续，不要求暂存、提交或 stash；文档已暂存或存在未解决的 Git 操作时停止，不自行清理。
+- 当前已在 Spec 分支时，可保留明确属于当前 Task 的未暂存代码变化；通过 `--task-path` 逐个传入已核对的路径。其他代码变化仍阻塞。需要切分支时，任何非 `team-spec/` 变化都阻塞，不能用该参数放行。
+- Spec 分支已存在时直接切换，不同步主干。创建新分支时先 fetch：`direct` 使用 source remote，`fork-pull` 使用 target remote；本地主干必须可快进到所取提交。然后切换主干、以 `--ff-only` 同步并创建 Spec 分支；主干超前或分叉时停止，不自动产生 merge commit 或 rebase。
+- 切换和同步必须保留 Git 覆盖保护，包括未跟踪和被忽略文件；禁止 autostash。若文件会被覆盖，则停止，报告具体路径、当前分支和已完成步骤，不强制切换、不自动回滚或丢弃变化。
+- 每个 Task commit 后重新确认分支和变化归属；`team-spec/` 回写继续保持未暂存，不加入代码 commit。
+
+## 分支准备脚本
+
+使用 [prepare_spec_branch.py](./scripts/prepare_spec_branch.py) 检查工作区并准备共享分支；脚本通过本地 [_team_common.py](./scripts/_team_common.py) 读取保留状态列和完整路径的 Git 记录。仅依赖 Python 标准库和 Git，在目标项目根目录执行。
+
+```sh
+python3 {skill_dir}/scripts/prepare_spec_branch.py --slug {slug} --trunk-branch {trunk_branch} --contribution-model {direct|fork-pull} --source-remote {source_remote} --target-remote {target_remote}
+```
+
+默认 dry-run，仅检查本地状态并输出 JSON 计划，不 fetch、不写文件。准备正式进入开发分支时追加 `--execute`；只有新建分支才需要主干、贡献模式和对应 remote 参数，值来自已读取的配置或已确认的 Git 证据。已在目标分支时不执行 Git 变更。`--task-path relative/path` 可重复，仅供恢复同一分支上已明确归属于当前 Task 的未暂存变化。
+
+脚本不执行 add、commit、stash、reset 或 push，不回写配置。dry-run 不代表远端最新状态或实际切换已验证；execute 时 Git 覆盖保护是最终检查。失败后检查当前分支与输出，保留现场后恢复，不盲目重复整个流程。
 
 ## 最小实现模式
 
@@ -88,17 +94,17 @@ Commit message 语言按“用户对本次提交的明确指定 > `version_contr
 
 ## 工作流
 
-1. 读取配置、Task、PRD 和必要上下文。
-2. 校验依赖、工作区和 Spec 分支；创建或切换到共享分支。
+1. 读取配置、Task、来源规格（产品 PRD 或已评审技术债）和必要上下文。
+2. 校验依赖，运行分支准备脚本预览并执行；确认处于共享分支且现有变化归属明确。
 3. 将本地 Task 状态更新为 `implementing`。
 4. 输出最小路径检查、测试设计、契约变更分类和 commit 范围预览。
 5. 按行为 TDD 执行 red-green-refactor。
 6. 运行新增或修改的测试、Task 相关测试和受影响的回归测试。
 7. 自动衔接 `team-task-verify`，不在验证前提交。
 8. 验证不是 `verified` 时停止，不创建 commit。
-9. 验证通过后、暂存任何文件之前，生成提交前检查摘要并进入“提交前确认”。
-10. 用户选择继续修改时，完成修改、重新运行受影响验证并再次生成检查摘要；旧确认立即失效。
-11. 只有用户明确选择“接受当前实现并提交”后，才暂存本 Task 的代码、测试和必要配置；排除 `team-spec/` 和无关改动。
+9. 验证通过后、暂存任何文件之前，生成提交前检查摘要；单独调用或批量逐 Task 模式进入“提交前确认”，批次自动模式执行批量技能的限定授权和差异检查。
+10. 逐 Task 模式下用户选择继续修改时，完成修改、重新运行受影响验证并再次生成检查摘要；旧确认立即失效。自动模式下出现验证后变化也须重新验证、检查差异。
+11. 满足适用模式的提交条件后，才暂存本 Task 的代码、测试和必要配置；排除 `team-spec/` 和无关改动，并复核暂存范围。
 12. 创建一个逻辑 commit，推荐信息为 `{concise localized change summary}`，例如 `Add filtered export support`；不得添加 Task ID，标题使用已确定的版本控制交付语言。
 13. 确认 commit 已创建且工作区没有遗留的本 Task 代码变更。
 14. 回写 Task：`Status: committed`、`Commit: {sha}`、实现、验证命令和残余风险；不得暂存该回写。
@@ -182,7 +188,7 @@ RED 必须记录执行命令、预期缺失的行为和实际失败原因。接�
 
 ## 提交前确认
 
-验证通过后、暂存任何文件之前，必须暂停自动流程，让用户有机会在本地检查实际代码差异。不得先执行 `git add`，否则普通 `git diff` 无法直接展示待提交变化。
+单独调用或由批量技能选择逐 Task 模式时，验证通过后、暂存任何文件之前，必须暂停自动流程，让用户有机会在本地检查实际代码差异。不得先执行 `git add`，否则普通 `git diff` 无法直接展示待提交变化。批次自动模式按 `team-task-batch-implement` 的限定授权执行，仍须在暂存前审查实际差异和验证结果。
 
 先向用户提供：
 
@@ -198,7 +204,7 @@ RED 必须记录执行命令、预期缺失的行为和实际失败原因。接�
 3. `🔄 继续修改当前 Task`：询问或读取修改意见，修改并重新验证，再回到本确认节点。
 4. `⏸️ 暂停并保留当前改动`：停止本轮，不提交、不回滚，保持 `Status: verified` 和当前工作区。
 
-不得把用户在任务开始时说的“实现并提交”、AFK 授权或批量执行授权视为这次提交确认。确认只对当前已展示的 Task、文件范围和实际 diff 有效；确认后只要代码、测试或必要配置再次变化，就必须重新验证并再次确认。
+不得把用户在任务开始时说的“实现并提交”、AFK 授权或笼统的批量执行请求视为这次提交确认。确认只对当前已展示的 Task、文件范围和实际 diff 有效；确认后只要代码、测试或必要配置再次变化，就必须重新验证并再次确认。只有批量技能先展示确定的 Task 范围、用户明确选择批次自动模式时，才按其限定授权逐 Task 创建本地 commit；单独调用本技能不能使用该例外。
 
 提交前确认是代码交付控制点，不是产品或技术方案决策，不改变 Task 原有的 AFK/HITL 分类。
 
@@ -206,7 +212,7 @@ RED 必须记录执行命令、预期缺失的行为和实际失败原因。接�
 
 - 一个 Task 对应一个最终逻辑 commit。
 - commit 只能在 Task 验证通过后创建。
-- commit 只能在用户查看提交前摘要并明确确认当前实际 diff 后创建。
+- 单独调用或批量逐 Task 模式下，commit 只能在用户查看提交前摘要并明确确认当前实际 diff 后创建；批次自动模式遵守已明确选择的限定授权和逐 Task 差异审查。
 - commit 范围必须与 Task 验收标准一致。
 - commit message 使用简洁的祈使句或变更摘要，不包含 `T001` 等 Task ID；Task 与 commit 的关联只通过 Task 文件中的 `Commit: {sha}` 和后续 Task/commit 映射维护。
 - 不提交 `team-spec/`、无关格式化、顺手重构或其他 Task 的提前实现。
@@ -218,7 +224,7 @@ RED 必须记录执行命令、预期缺失的行为和实际失败原因。接�
 - 当前分支是该 slug 的 Spec 共享分支。
 - Task 的所有验收标准通过独立验证。
 - 测试集合只描述当前支持的契约；旧契约引用已删除，或有明确的兼容依据和移除条件。
-- 用户已基于当前实际 diff 明确确认提交。
+- 已满足适用模式的提交条件；单独调用或批量逐 Task 模式须取得用户基于当前实际 diff 的明确确认。
 - 已创建且只创建一个对应逻辑 commit。
 - Task 文件记录 `committed` 和有效 commit SHA；如果用户选择查看、继续修改或暂停，则保持 `verified`，不得伪装为完成。
 - 没有 push、远端 Issue、PR 或 MR。
@@ -231,6 +237,6 @@ RED 必须记录执行命令、预期缺失的行为和实际失败原因。接�
 - Task 路径、ID、slug 和共享分支。
 - 主要代码变化，以及新增、改写、删除的测试和保留兼容测试的依据。
 - 验收覆盖、验证命令和结果。
-- 提交前确认结果；已提交时包含 commit SHA、commit 信息和范围，未提交时明确说明当前改动仍可用 `git diff` 检查。
+- 提交控制结果；已提交时包含 commit SHA、commit 信息和范围，未提交时明确说明当前改动仍可用 `git diff` 检查。
 - 未提交的 `team-spec/` 回写。
 - 跳过项、残余风险和下一步。

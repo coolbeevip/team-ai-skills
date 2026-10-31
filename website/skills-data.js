@@ -247,8 +247,8 @@ window.SRT_SKILLS = Object.freeze([
     "name": "team-prd-to-tasks",
     "category": "delivery",
     "description": {
-      "zh": "将 PRD 拆解为可独立实现、验证并在用户确认差异后提交的工程 Task。",
-      "en": "Break a PRD into dependency-ordered tasks that each produce one user-confirmed local commit after verification."
+      "zh": "将 PRD 拆解为可独立实现、验证并形成独立本地提交的工程 Task。",
+      "en": "Break a PRD into dependency-ordered tasks that each produce one independently verified local commit."
     },
     "triggers": [
       "拆 Task",
@@ -298,8 +298,8 @@ window.SRT_SKILLS = Object.freeze([
     "name": "team-task-batch-implement",
     "category": "delivery",
     "description": {
-      "zh": "在同一 Spec 分支按依赖顺序批量实现多个 Task，每个 Task 验证后等待用户检查差异并确认提交。",
-      "en": "Batch implement tasks on one shared spec branch with per-task diff review and commit confirmation."
+      "zh": "在同一 Spec 分支批量实现多个 Task，开始前选择逐项确认或限定范围内自动提交。",
+      "en": "Batch implement tasks on one shared spec branch with an upfront choice between per-task review and bounded automatic local commits."
     },
     "triggers": [
       "批量实现 Task",
@@ -454,8 +454,8 @@ window.SRT_SKILLS = Object.freeze([
     "name": "team-tech-debt-to-tasks",
     "category": "tech-debt",
     "description": {
-      "zh": "将已评审技术债拆为可独立实现、验证并在用户确认差异后提交的 Task。",
-      "en": "Break a reviewed technical-debt spec into tasks that each produce one user-confirmed local commit after verification."
+      "zh": "将已评审技术债拆为可独立实现、验证并形成独立本地提交的 Task。",
+      "en": "Break a reviewed technical-debt spec into tasks that each produce one independently verified local commit."
     },
     "triggers": [
       "技术债拆 Task",

@@ -20,7 +20,7 @@ triggers:
 
 ## 触发边界
 
-- 适合触发：唯一 Spec/slug 已有 PRD 和 Tasks，需要一个可选的远端跟踪 Issue。
+- 适合触发：唯一 Spec/slug 已有产品 PRD 或已评审技术债规格，以及 Tasks，需要一个可选的远端跟踪 Issue。
 - 不适合触发：拆解 Task 使用 `team-prd-to-tasks`；实现 Task 使用 `team-task-implement`；创建代码 MR 使用 `team-spec-create-mr-gitlab`。
 
 ## 运行时配置
@@ -41,7 +41,7 @@ Issue 正文遵守以下原则：
 
 ## Issue 正文模板
 
-从 PRD 提取信息后，按以下结构用自然语言组织：
+从来源规格提取信息后，按以下结构用自然语言组织：
 
 ```markdown
 ## 背景
@@ -61,18 +61,27 @@ Issue 正文遵守以下原则：
 <!-- team-spec-slug: {slug} -->
 ```
 
-模板只是参考结构，不是强制格式。如果 PRD 内容更适合其他组织方式，按实际调整。核心原则：一个人花两分钟读完就能理解要做什么、怎么算做完。
+模板只是参考结构，不是强制格式。如果来源规格内容更适合其他组织方式，按实际调整。核心原则：一个人花两分钟读完就能理解要做什么、怎么算做完。
 
 ## 输入物
 
 必须先确定唯一 `{slug}`，默认读取：
 
-- `team-spec/active/{slug}/prd/prd.md`
-- `team-spec/active/{slug}/spec/refine.md`
+- 产品需求：`team-spec/active/{slug}/prd/prd.md`
+- 技术债：`team-spec/active/{slug}/spec/refine.md` 与 `team-spec/active/{slug}/spec/reviews.md`（`Status: ready`）
+- `team-spec/active/{slug}/tasks/T*.md`
 - `team-spec/active/{slug}/DELIVERY.md`（如果存在）
 - `team-spec/config.yml`
 
-缺少 PRD 或 slug 不唯一时停止。不得扫描 archive 猜测。
+缺少对应类型的来源规格或 slug 不唯一时停止。不得扫描 archive 猜测。
+
+## 产品需求与技术债输入
+
+产品需求以 `prd/prd.md` 为权威输入；技术债以同 slug 的 `spec/refine.md` 和 `spec/reviews.md` 为输入，评审 `Status` 必须为 `ready`（支持 `## Status` 章节或独立的 `Status: ready` 字段，冲突或缺失时停止），不要求生成 PRD。技术债即使存在旧 PRD，也不得用其替代技术债规格。
+
+脚本默认 `--spec-type auto`：slug 中有独立的 `debt` 段时按技术债处理，否则按产品需求处理。旧项目或命名不能表达类型时，先确认类型，再显式传入 `--spec-type product` 或 `--spec-type technical-debt`；不得因主输入缺失自动切换类型。dry-run 输出 `spec_type` 和 `source_path` 供核对。
+
+从权威输入提取目标、范围、验收和风险；技术债还合并评审风险。缺失内容明确标注，不编造或修改上游文件。正文和标题统一称为来源规格内容，不将技术债伪装成 PRD。
 
 ## 输出物
 
@@ -113,6 +122,7 @@ GITLAB_URL=https://gitlab.example.com GITLAB_TOKEN=... python3 {skill_dir}/scrip
 - `--milestone-id id`
 - `--force`
 - `--language zh-CN`
+- `--spec-type auto|product|technical-debt`
 - `--json`
 
 脚本使用隐藏标记 `team-spec-slug` 做幂等识别。发现已有 Issue 时同步标题和正文，不重复创建。
@@ -120,9 +130,9 @@ GITLAB_URL=https://gitlab.example.com GITLAB_TOKEN=... python3 {skill_dir}/scrip
 ## Issue 合同
 
 - 一个 slug 最多对应一个 GitLab Issue。
-- 标题来自显式参数或 PRD 一级标题。
+- 标题来自显式参数或来源规格一级标题。
 - **Issue 是给人看的，不是给 AI 看的**。正文用自然语言写成一段可读的概述，不要复刻 PRD 的章节结构，不要用 Given/When/Then 格式。
-- 正文从 PRD 中提取三个核心信息：背景（为什么做）、要做什么、做完的标准（用自然语言描述，不用僵硬格式）。
+- 正文从来源规格中提取三个核心信息：背景（为什么做）、要做什么、做完的标准（用自然语言描述，不用僵硬格式）。
 - 规格文档本身不会上传到 Git，Issue 正文中不得出现指向本地规格文件的链接或路径。
 - 不暴露工程 Task 编号（T{nnn}），Issue 只需要描述工作内容，不需要透漏内部 Task 拆解。
 - 正文末尾保留一行隐藏式的 slug 标记用于幂等识别，格式为 `<!-- team-spec-slug: {slug} -->`，人类读者不可见。
@@ -130,9 +140,9 @@ GITLAB_URL=https://gitlab.example.com GITLAB_TOKEN=... python3 {skill_dir}/scrip
 
 ## 工作流
 
-1. 读取配置、slug、PRD 和已有 `DELIVERY.md`。
+1. 读取配置、slug、来源规格 和已有 `DELIVERY.md`。
 2. 确认项目、`GITLAB_URL`、语言和 token 来源。
-3. 从 PRD 中提取背景、目标和验收标准，用自然语言改写为 Issue 正文。
+3. 从来源规格中提取背景、目标和验收标准，用自然语言改写为 Issue 正文。
 4. 运行 dry-run。
 5. 用户已要求正式发布时追加 `--execute`。
 6. 创建或更新一个 GitLab Issue。

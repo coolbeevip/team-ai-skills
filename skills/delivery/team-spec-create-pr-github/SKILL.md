@@ -35,13 +35,22 @@ triggers:
 
 主输入必须是唯一 `{slug}`，默认读取：
 
-- `team-spec/active/{slug}/prd/prd.md`
+- 产品需求：`team-spec/active/{slug}/prd/prd.md`
+- 技术债：`team-spec/active/{slug}/spec/refine.md` 与 `team-spec/active/{slug}/spec/reviews.md`（`Status: ready`）
 - `team-spec/active/{slug}/tasks/T*.md`
 - `team-spec/active/{slug}/DELIVERY.md`（如果存在）
 - 当前 `{slug}` 分支及其提交历史
 - `team-spec/config.yml`
 
-不再接受单个 Task 作为 PR 聚合边界。缺少 PRD、Tasks、共享分支或唯一 slug 时停止。
+不再接受单个 Task 作为 PR 聚合边界。缺少对应类型的来源规格、Tasks、共享分支或唯一 slug 时停止。
+
+## 产品需求与技术债输入
+
+产品需求以 `prd/prd.md` 为权威输入；技术债以同 slug 的 `spec/refine.md` 和 `spec/reviews.md` 为输入，评审 `Status` 必须为 `ready`（支持 `## Status` 章节或独立的 `Status: ready` 字段，冲突或缺失时停止），不要求生成 PRD。技术债即使存在旧 PRD，也不得用其替代技术债规格。
+
+脚本默认 `--spec-type auto`：slug 中有独立的 `debt` 段时按技术债处理，否则按产品需求处理。旧项目或命名不能表达类型时，先确认类型，再显式传入 `--spec-type product` 或 `--spec-type technical-debt`；不得因主输入缺失自动切换类型。dry-run 输出 `spec_type` 和 `source_path` 供核对。
+
+从权威输入提取目标、范围、验收和风险；技术债还合并评审风险。缺失内容明确标注，不编造或修改上游文件。正文和标题统一称为来源规格内容，不将技术债伪装成 PRD。
 
 ## 输出物
 
@@ -85,6 +94,7 @@ GITHUB_TOKEN=... python3 {skill_dir}/scripts/create_github_pr.py --slug {slug} -
 - `--draft`
 - `--assignee login`
 - `--language zh-CN`
+- `--spec-type auto|product|technical-debt`
 - `--json`
 
 脚本只推送已有 commits 和创建 PR，不执行 git add、commit、stash 或 rebase。
@@ -99,7 +109,7 @@ GITHUB_TOKEN=... python3 {skill_dir}/scripts/create_github_pr.py --slug {slug} -
 - 每个 SHA 存在、是当前 HEAD 的祖先，并位于目标主干到当前分支的提交范围。
 - 分支至少包含一个 Task commit。
 - 目标主干到当前分支之间不存在未映射到 Task 的额外 commit。
-- 非 `team-spec/` 工作区和暂存区干净。
+- 非 `team-spec/` 工作区和暂存区干净；允许 `team-spec/` 存在未暂存变化，不要求提交或 stash 文档。重命名检查源、目标两端，跨边界重命名按代码变化处理；Git 状态读取失败时停止。
 - source/target repo、remote 和主干明确。
 
 任一条件不满足时停止，不允许用 PR 补救未完成 Task。
@@ -107,9 +117,9 @@ GITHUB_TOKEN=... python3 {skill_dir}/scripts/create_github_pr.py --slug {slug} -
 ## PR 合同
 
 - 一个 slug 最多一个打开的 GitHub PR。
-- 标题来自显式参数或 PRD 一级标题。
-- 正文从完整 Spec/PRD 生成。
-- PRD/Task 语言与 PR 语言不同时，生成对应语言的标题和完整正文，并通过 `--title`、`--body-file` 传入；不修改源文档。Task ID、commit SHA、代码标识符、命令、路径和专有名词保持原样。
+- 标题来自显式参数或来源规格一级标题。
+- 正文从完整来源规格生成。
+- 来源规格/Task 语言与 PR 语言不同时，生成对应语言的标题和完整正文，并通过 `--title`、`--body-file` 传入；不修改源文档。Task ID、commit SHA、代码标识符、命令、路径和专有名词保持原样。
 - 正文包含所有 Task ID、标题和 commit SHA。
 - 如果 `DELIVERY.md` 或参数提供 Spec 级 GitHub Issue，正文使用 `Fixes #{number}`。
 - 没有远端 Issue 时不强制 Closing keyword。
@@ -117,7 +127,7 @@ GITHUB_TOKEN=... python3 {skill_dir}/scripts/create_github_pr.py --slug {slug} -
 
 ## 工作流
 
-1. 读取配置、slug、PRD、Tasks 和 `DELIVERY.md`。
+1. 读取配置、slug、来源规格、Tasks 和 `DELIVERY.md`。
 2. 校验共享分支、Task 状态、SHA、base 范围和工作区。
 3. 推断 source/target repo、remote 和主干。
 4. 生成标题、正文和 Task/commit 映射。

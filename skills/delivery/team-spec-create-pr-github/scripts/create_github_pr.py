@@ -14,7 +14,7 @@ from pathlib import Path
 from string import Template
 from typing import Any
 
-from _team_common import ApiRequestError, api_request
+from _team_common import ApiRequestError, api_request, git_status_entries
 
 
 SECTION_RE = re.compile(r"^##\s+(.+?)\s*$", re.MULTILINE)
@@ -43,6 +43,7 @@ def parse_args() -> argparse.Namespace:
         description="Create one GitHub Pull Request for a complete Spec."
     )
     parser.add_argument("--slug", required=True, help="Slug under team-spec/active.")
+    parser.add_argument("--spec-type", choices=("auto", "product", "technical-debt"), default="auto", help="Auto uses the debt component of the slug; override for legacy workspaces.")
     parser.add_argument("--github-url", default="https://github.com")
     parser.add_argument("--source-remote")
     parser.add_argument("--target-remote")
@@ -208,6 +209,45 @@ def section(sections: dict[str, str], *names: str) -> str | None:
     return None
 
 
+def load_spec_source(workspace: Path, spec_type: str) -> tuple[str, Path, str, dict[str, str]]:
+    if spec_type == "auto":
+        spec_type = "technical-debt" if "debt" in workspace.name.split("-") else "product"
+    source_path = workspace / ("spec/refine.md" if spec_type == "technical-debt" else "prd/prd.md")
+    if not source_path.is_file():
+        raise SystemExit(f"Spec source does not exist: {source_path}")
+    source_text = source_path.read_text(encoding="utf-8")
+    sections = split_sections(source_text)
+    review_sections: dict[str, str] = {}
+    if spec_type == "technical-debt":
+        review_path = workspace / "spec/reviews.md"
+        if not review_path.is_file():
+            raise SystemExit(f"Technical-debt review does not exist: {review_path}")
+        review_text = review_path.read_text(encoding="utf-8")
+        review_sections = split_sections(review_text)
+        status = (section(review_sections, "Status") or "").strip()
+        inline = re.findall(r"^Status:\s*([a-z-]+)\s*$", review_text, re.MULTILINE)
+        if not status and len(inline) == 1:
+            status = inline[0]
+        if inline and any(value != status for value in inline):
+            raise SystemExit(f"Conflicting technical-debt review status: {review_path}")
+        if status != "ready":
+            raise SystemExit(f"Technical-debt review must be ready: {review_path}")
+    aliases = {
+        "goal": ("Goal", "目标", "预期改善", "Problem", "问题", "问题定义"),
+        "scope": ("Scope", "范围", "影响范围", "What to build", "功能范围", "User stories", "用户故事"),
+        "acceptance criteria": ("Acceptance criteria", "验收标准", "验收口径"),
+        "risks": ("Risks", "风险", "风险清单", "Risk register", "风险与约束"),
+    }
+    for canonical, names in aliases.items():
+        value = section(sections, *names)
+        if value:
+            sections[canonical] = value
+    reviewed_risks = section(review_sections, *aliases["risks"])
+    if reviewed_risks and reviewed_risks != sections.get("risks"):
+        sections["risks"] = "\n\n".join(filter(None, [sections.get("risks"), reviewed_risks]))
+    return spec_type, source_path, source_text, sections
+
+
 def first_heading(text: str) -> str | None:
     match = re.search(r"^#\s+(.+?)\s*$", text, re.MULTILINE)
     return match.group(1).strip() if match else None
@@ -252,19 +292,15 @@ def canonical_commit(value: str, task_id: str) -> str:
 
 
 def worktree_issues() -> tuple[list[str], list[str]]:
-    lines = (run_git(["status", "--porcelain"], check=False) or "").splitlines()
     non_spec: list[str] = []
     staged_spec: list[str] = []
-    for line in lines:
-        if len(line) < 4:
-            continue
-        status = line[:2]
-        path = line[3:].split(" -> ")[-1]
-        if path == "team-spec" or path.startswith("team-spec/"):
+    for status, paths in git_status_entries():
+        description = f"{status} {paths!r}"
+        if all(path == "team-spec" or path.startswith("team-spec/") for path in paths):
             if status[0] not in {" ", "?"}:
-                staged_spec.append(line)
+                staged_spec.append(description)
         else:
-            non_spec.append(line)
+            non_spec.append(description)
     return non_spec, staged_spec
 
 
@@ -303,6 +339,9 @@ def language_labels(language: str) -> dict[str, str]:
     if language.lower().startswith("zh"):
         return {
             "purpose_heading": "变更目的",
+            "scope_heading": "范围",
+            "acceptance_heading": "验收标准",
+            "risks_heading": "风险",
             "task_commits_heading": "Task 与 Commit",
             "testing_heading": "验证",
             "compatibility_heading": "兼容性与影响",
@@ -310,6 +349,9 @@ def language_labels(language: str) -> dict[str, str]:
         }
     return {
         "purpose_heading": "Purpose",
+        "scope_heading": "Scope",
+        "acceptance_heading": "Acceptance criteria",
+        "risks_heading": "Risks",
         "task_commits_heading": "Tasks and commits",
         "testing_heading": "Testing",
         "compatibility_heading": "Compatibility and impact",
@@ -340,10 +382,13 @@ def build_body(
         if evidence:
             testing_parts.append(f"### {task.task_id}\n\n{evidence}")
     zh = language.lower().startswith("zh")
-    fallback = "未在 PRD 中单独说明。" if zh else "Not stated separately in the PRD."
+    fallback = "未在来源规格中单独说明。" if zh else "Not stated separately in the source specification."
     values = {
         **language_labels(language),
         "slug": args.slug,
+        "scope": section(prd_sections, "Scope") or fallback,
+        "acceptance": section(prd_sections, "Acceptance criteria") or fallback,
+        "risks": section(prd_sections, "Risks") or fallback,
         "purpose": section(prd_sections, "Goal", "目标", "Problem", "问题") or fallback,
         "closing_line": f"Fixes #{issue_number}" if issue_number else "",
         "task_commits": task_lines,
@@ -527,9 +572,7 @@ def main() -> int:
     args = parse_args()
     config = config_values()
     workspace = Path("team-spec") / "active" / args.slug
-    prd_path = workspace / "prd" / "prd.md"
-    if not prd_path.is_file():
-        raise SystemExit(f"PRD does not exist: {prd_path}")
+    spec_type, source_path, prd_text, prd_sections = load_spec_source(workspace, args.spec_type)
     expected_branch = args.slug
     branch = run_git(["branch", "--show-current"]) or ""
     if branch != expected_branch:
@@ -547,11 +590,9 @@ def main() -> int:
     if not git_succeeds(["rev-parse", "--verify", f"{base_ref}^{{commit}}"]):
         raise SystemExit(f"Target branch ref is unavailable locally: {base_ref}")
     tasks, branch_commits = validate_task_commits(load_tasks(workspace), base_ref)
-    prd_text = prd_path.read_text(encoding="utf-8")
-    prd_sections = split_sections(prd_text)
     title = args.title or first_heading(prd_text)
     if not title:
-        raise SystemExit("Cannot derive PR title from PRD; provide --title.")
+        raise SystemExit("Cannot derive PR title from Spec source; provide --title.")
     delivery_path = workspace / "DELIVERY.md"
     delivery_text = (
         delivery_path.read_text(encoding="utf-8") if delivery_path.exists() else ""
@@ -570,6 +611,8 @@ def main() -> int:
     plan: dict[str, Any] = {
         "mode": "execute" if args.execute else "dry-run",
         "slug": args.slug,
+        "spec_type": spec_type,
+        "source_path": str(source_path),
         "branch": branch,
         "source_repo": source.repo,
         "source_remote": source.remote,
@@ -597,6 +640,7 @@ def main() -> int:
     else:
         print(f"Mode: {plan['mode']}")
         print(f"Spec: {args.slug}")
+        print(f"Source: {source_path} ({spec_type})")
         print(f"Branch: {branch}")
         print(f"Target: {target.repo}:{target_branch}")
         print(f"Tasks: {len(tasks)}")

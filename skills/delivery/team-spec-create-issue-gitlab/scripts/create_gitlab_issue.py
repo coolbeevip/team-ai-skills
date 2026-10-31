@@ -35,9 +35,10 @@ def parse_args() -> argparse.Namespace:
         description="Create or synchronize one GitLab Issue for a complete Spec."
     )
     parser.add_argument("--slug", required=True, help="Slug under team-spec/active.")
+    parser.add_argument("--spec-type", choices=("auto", "product", "technical-debt"), default="auto", help="Auto uses the debt component of the slug; override for legacy workspaces.")
     parser.add_argument("--project", help="Target project namespace/path or numeric ID.")
     parser.add_argument("--remote", help="Git remote used to infer the target project.")
-    parser.add_argument("--title", help="Override the PRD-derived issue title.")
+    parser.add_argument("--title", help="Override the source-derived issue title.")
     parser.add_argument("--body-file", help="Use a prewritten localized Issue body.")
     parser.add_argument("--token-env", default="GITLAB_TOKEN")
     parser.add_argument("--label", action="append", default=[])
@@ -162,6 +163,45 @@ def split_sections(text: str) -> dict[str, str]:
     return sections
 
 
+def load_spec_source(workspace: Path, spec_type: str) -> tuple[str, Path, str, dict[str, str]]:
+    if spec_type == "auto":
+        spec_type = "technical-debt" if "debt" in workspace.name.split("-") else "product"
+    source_path = workspace / ("spec/refine.md" if spec_type == "technical-debt" else "prd/prd.md")
+    if not source_path.is_file():
+        raise SystemExit(f"Spec source does not exist: {source_path}")
+    source_text = source_path.read_text(encoding="utf-8")
+    sections = split_sections(source_text)
+    review_sections: dict[str, str] = {}
+    if spec_type == "technical-debt":
+        review_path = workspace / "spec/reviews.md"
+        if not review_path.is_file():
+            raise SystemExit(f"Technical-debt review does not exist: {review_path}")
+        review_text = review_path.read_text(encoding="utf-8")
+        review_sections = split_sections(review_text)
+        status = (section(review_sections, "Status") or "").strip()
+        inline = re.findall(r"^Status:\s*([a-z-]+)\s*$", review_text, re.MULTILINE)
+        if not status and len(inline) == 1:
+            status = inline[0]
+        if inline and any(value != status for value in inline):
+            raise SystemExit(f"Conflicting technical-debt review status: {review_path}")
+        if status != "ready":
+            raise SystemExit(f"Technical-debt review must be ready: {review_path}")
+    aliases = {
+        "goal": ("Goal", "目标", "预期改善", "Problem", "问题", "问题定义"),
+        "scope": ("Scope", "范围", "影响范围", "What to build", "功能范围", "User stories", "用户故事"),
+        "acceptance criteria": ("Acceptance criteria", "验收标准", "验收口径"),
+        "risks": ("Risks", "风险", "风险清单", "Risk register", "风险与约束"),
+    }
+    for canonical, names in aliases.items():
+        value = section(sections, *names)
+        if value:
+            sections[canonical] = value
+    reviewed_risks = section(review_sections, *aliases["risks"])
+    if reviewed_risks and reviewed_risks != sections.get("risks"):
+        sections["risks"] = "\n\n".join(filter(None, [sections.get("risks"), reviewed_risks]))
+    return spec_type, source_path, source_text, sections
+
+
 def first_heading(text: str) -> str | None:
     match = re.search(r"^#\s+(.+?)\s*$", text, re.MULTILINE)
     return match.group(1).strip() if match else None
@@ -206,12 +246,14 @@ def language_labels(language: str) -> dict[str, str]:
             "scope_heading": "范围",
             "acceptance_heading": "验收标准",
             "tasks_heading": "工程 Tasks",
+            "risks_heading": "风险",
         }
     return {
         "goal_heading": "Goal",
         "scope_heading": "Scope",
         "acceptance_heading": "Acceptance criteria",
         "tasks_heading": "Engineering tasks",
+        "risks_heading": "Risks",
     }
 
 
@@ -223,10 +265,11 @@ def build_body(
     body_file: str | None = None,
 ) -> str:
     zh = language.lower().startswith("zh")
-    fallback = "未在 PRD 中单独说明。" if zh else "Not stated separately in the PRD."
+    fallback = "未在来源规格中单独说明。" if zh else "Not stated separately in the source specification."
     values = {
         **language_labels(language),
         "slug": slug,
+        "risks": section(prd_sections, "Risks") or fallback,
         "goal": section(prd_sections, "Goal", "目标", "Problem", "问题") or fallback,
         "scope": section(
             prd_sections,
@@ -380,11 +423,7 @@ def main() -> int:
     args = parse_args()
     base_url = gitlab_url()
     workspace = Path("team-spec") / "active" / args.slug
-    prd_path = workspace / "prd" / "prd.md"
-    if not prd_path.is_file():
-        raise SystemExit(f"PRD does not exist: {prd_path}")
-    prd_text = prd_path.read_text(encoding="utf-8")
-    prd_sections = split_sections(prd_text)
+    spec_type, source_path, prd_text, prd_sections = load_spec_source(workspace, args.spec_type)
     tasks = load_tasks(workspace)
     config = config_values()
     language = (
@@ -396,7 +435,7 @@ def main() -> int:
     project = infer_project(args, config, base_url)
     title = args.title or first_heading(prd_text)
     if not title:
-        raise SystemExit("Cannot derive Issue title from PRD; provide --title.")
+        raise SystemExit("Cannot derive Issue title from Spec source; provide --title.")
     body = build_body(args.slug, prd_sections, tasks, language, args.body_file)
     delivery_path = workspace / "DELIVERY.md"
     delivery_text = (
@@ -407,6 +446,8 @@ def main() -> int:
     result: dict[str, Any] = {
         "mode": "execute" if args.execute else "dry-run",
         "slug": args.slug,
+        "spec_type": spec_type,
+        "source_path": str(source_path),
         "project": project,
         "title": title,
         "body": body,
@@ -434,6 +475,7 @@ def main() -> int:
     else:
         print(f"Mode: {result['mode']}")
         print(f"Spec: {args.slug}")
+        print(f"Source: {source_path} ({spec_type})")
         print(f"Project: {project}")
         print(f"Title: {title}")
         print(f"Tasks: {len(tasks)}")

@@ -20,7 +20,7 @@ triggers:
 
 ## 触发边界
 
-- 适合触发：唯一 Spec/slug 已有 PRD 和 Tasks，需要一个可选的远端跟踪 Issue。
+- 适合触发：唯一 Spec/slug 已有产品 PRD 或已评审技术债规格，以及 Tasks，需要一个可选的远端跟踪 Issue。
 - 不适合触发：拆解 Task 使用 `team-prd-to-tasks`；实现 Task 使用 `team-task-implement`；创建代码 PR 使用 `team-spec-create-pr-github`。
 
 ## 运行时配置
@@ -35,13 +35,22 @@ triggers:
 
 必须先确定唯一 `{slug}`，默认读取：
 
-- `team-spec/active/{slug}/prd/prd.md`
+- 产品需求：`team-spec/active/{slug}/prd/prd.md`
+- 技术债：`team-spec/active/{slug}/spec/refine.md` 与 `team-spec/active/{slug}/spec/reviews.md`（`Status: ready`）
 - `team-spec/active/{slug}/spec/refine.md`
 - `team-spec/active/{slug}/tasks/T*.md`
 - `team-spec/active/{slug}/DELIVERY.md`（如果存在）
 - `team-spec/config.yml`
 
-缺少 PRD、slug 不唯一或 Tasks 目录不存在时停止。不得扫描 archive 猜测。
+缺少对应类型的来源规格、slug 不唯一或 Tasks 目录不存在时停止。不得扫描 archive 猜测。
+
+## 产品需求与技术债输入
+
+产品需求以 `prd/prd.md` 为权威输入；技术债以同 slug 的 `spec/refine.md` 和 `spec/reviews.md` 为输入，评审 `Status` 必须为 `ready`（支持 `## Status` 章节或独立的 `Status: ready` 字段，冲突或缺失时停止），不要求生成 PRD。技术债即使存在旧 PRD，也不得用其替代技术债规格。
+
+脚本默认 `--spec-type auto`：slug 中有独立的 `debt` 段时按技术债处理，否则按产品需求处理。旧项目或命名不能表达类型时，先确认类型，再显式传入 `--spec-type product` 或 `--spec-type technical-debt`；不得因主输入缺失自动切换类型。dry-run 输出 `spec_type` 和 `source_path` 供核对。
+
+从权威输入提取目标、范围、验收和风险；技术债还合并评审风险。缺失内容明确标注，不编造或修改上游文件。正文和标题统一称为来源规格内容，不将技术债伪装成 PRD。
 
 ## 输出物
 
@@ -83,6 +92,7 @@ GITHUB_TOKEN=... python3 {skill_dir}/scripts/create_github_issue.py --slug {slug
 - `--milestone number`
 - `--force`
 - `--language zh-CN`
+- `--spec-type auto|product|technical-debt`
 - `--json`
 
 脚本使用隐藏标记 `team-spec-slug` 做幂等识别。发现已有 Issue 时同步标题和正文，不重复创建。
@@ -90,9 +100,9 @@ GITHUB_TOKEN=... python3 {skill_dir}/scripts/create_github_issue.py --slug {slug
 ## Issue 合同
 
 - 一个 slug 最多对应一个 GitHub Issue。
-- 标题来自显式参数或 PRD 一级标题。
-- 正文从完整 PRD/Spec 生成，不从单个 Task 生成。
-- PRD/Task 语言与 Issue 语言不同时，生成对应语言的标题和完整正文，并通过 `--title`、`--body-file` 传入；不修改源文档。Task ID、代码标识符、命令、路径和专有名词保持原样。
+- 标题来自显式参数或来源规格一级标题。
+- 正文从完整来源规格生成，不从单个 Task 生成。
+- 来源规格/Task 语言与 Issue 语言不同时，生成对应语言的标题和完整正文，并通过 `--title`、`--body-file` 传入；不修改源文档。Task ID、代码标识符、命令、路径和专有名词保持原样。
 - 所有 `T{nnn}` Task 作为 checklist。
 - checklist 仅反映本地 Task 状态：`committed` 为已完成，其他状态为未完成。
 - 正文保留 slug 标记，供重复执行定位。
@@ -100,7 +110,7 @@ GITHUB_TOKEN=... python3 {skill_dir}/scripts/create_github_issue.py --slug {slug
 
 ## 工作流
 
-1. 读取配置、slug、PRD、Tasks 和已有 `DELIVERY.md`。
+1. 读取配置、slug、来源规格、Tasks 和已有 `DELIVERY.md`。
 2. 确认仓库、平台地址、语言和认证 token 来源。
 3. 生成标题、正文、Task checklist 和幂等标记。
 4. 运行 dry-run，展示创建或同步计划。

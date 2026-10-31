@@ -136,7 +136,7 @@ Codex Harness 不在稳定主线内。只有当项目的工程入口、验证方
 
 - `team-prd-to-brief`：把结构化 PRD 转换为适合需求、研发和项目管理评审的简报。
 - `team-prd-to-tasks`：把 PRD 拆解为可独立实现、验证并形成一个逻辑 commit 的工程 Task。
-- `team-task-batch-implement`：在同一 Spec 分支按依赖顺序批量实现、验证并逐个提交多个 Task。
+- `team-task-batch-implement`：在同一 Spec 分支按依赖顺序批量实现、验证并逐个提交多个 Task；开始前选择逐 Task 确认或限定范围内自动执行。
 - `team-task-implement`：围绕单个 Task 使用行为测试、TDD、现有代码复用和最小实现模式完成一个本地 commit。
 - `team-task-verify`：独立验证单个 Task 是否满足验收标准、PRD、风险和 commit 边界。
 - `team-spec-create-issue-github`：将完整 Spec 创建或同步为一个 GitHub Issue，Tasks 作为 checklist。
@@ -210,6 +210,8 @@ team-spec/
 - `team-spec-to-prd` 读取已细化规格和评审报告。
 - `team-prd-to-tasks` 以 `prd/prd.md` 为主输入，并参考全局语境、产品决策、规格语境和评审报告。
 - `team-codebase-walk` 读取 `design/codebase-onboarding/`，并把走读记录写入 `design/codebase-walk/`。
+
+开发和远端交付统一使用与 slug 同名的分支。进入开发时，未暂存的 `team-spec/` 变化可以保留；切分支仍受文件覆盖保护。产品需求交付读取 PRD，技术债交付读取已评审的 `spec/refine.md`，无需补建 PRD。
 
 机器可读状态按写入位置区分：
 

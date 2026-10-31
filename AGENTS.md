@@ -20,7 +20,7 @@
 - `skills/delivery/`：交付执行职责，包括 PRD 评审简报、Task 拆解、实现、验证和 Spec 级远端交付。
 - `skills/delivery/team-prd-to-brief/`：用于把 AI 结构化 PRD 转换为需求、研发和项目管理可评审的演示文稿式简报。
 - `skills/delivery/team-prd-to-tasks/`：用于把 PRD 拆解成可独立实现、验证并提交的工程 Task。
-- `skills/delivery/team-task-batch-implement/`：用于在同一 Spec 分支按依赖顺序批量实现和验证多个 Task，并在用户逐个检查差异、确认后提交。
+- `skills/delivery/team-task-batch-implement/`：用于在同一 Spec 分支按依赖顺序批量实现和验证多个 Task；开始前选择逐 Task 确认或限定范围内自动提交，每个 Task 独立提交。
 - `skills/delivery/team-task-implement/`：用于按行为测试和 TDD 循环实现单个 Task，验证后等待用户检查差异并确认，再形成一个本地 commit。
 - `skills/delivery/team-task-verify/`：用于验证单个 Task 实现是否满足验收标准、PRD 和 commit 边界。
 - `skills/delivery/team-spec-create-issue-github/`：用于把完整 Spec 创建或同步为一个 GitHub Issue，Tasks 作为 checklist。
@@ -73,7 +73,7 @@
 
 每个需求使用唯一 slug 串联全流程，格式为 `{yyyy-mm-dd}-{short-english-slug}`。例如：`team-spec/active/2026-05-10-export-filter/concept/whitepaper.md`、`team-spec/active/2026-05-10-export-filter/spec/discovery.md`、`team-spec/active/2026-05-10-export-filter/spec/refine.md`、`team-spec/active/2026-05-10-export-filter/spec/reviews.md`、`team-spec/active/2026-05-10-export-filter/prd/prd.md`、`team-spec/active/2026-05-10-export-filter/tasks/`。
 
-同一个 slug 的所有 Task 必须在同一个 `{slug}` 本地分支上开发，分支名不得添加 `spec/` 前缀。每个 Task 验证通过后，必须先保持未暂存状态供用户检查实际差异；只有用户明确确认后才形成一个逻辑 commit。全部必需 Task 都达到 `committed` 后，才允许为该 Spec 一次性创建一个 PR 或 MR。
+同一个 slug 的所有 Task 必须在同一个 `{slug}` 本地分支上开发，分支名不得添加 `spec/` 前缀或提供覆盖例外。单任务、批量任务与远端交付统一遵守该命名合同。仅有未暂存的 `team-spec/` 文档变化不阻塞进入开发；切分支时仍须保证无其他代码变化并由 Git 拒绝文件覆盖，不自动暂存、stash 或丢弃文档。每个 Task 验证通过后形成一个逻辑 commit。单任务执行须先保持未暂存状态供用户检查实际差异，并在明确确认后提交。批量执行须在开始前展示确定的 Task 范围并让用户选择逐 Task 确认或批次自动执行；未明确选择时不得开始实现或提交。逐 Task 模式沿用单任务确认；批次自动模式只授权已展示范围内通过独立验证的本地 Task commits，不逐项等待确认。范围变化、验证失败、HITL 决策或无法归因的改动均须停止并重新取得适用授权。批次选择不授权 push 或创建 PR/MR。全部必需 Task 都达到 `committed` 后，才允许为该 Spec 一次性创建一个 PR 或 MR。
 
 开始新需求前，`team-spec-refine` 只需检查目标 slug 是否已存在。若 `team-spec/active/` 下有其他 slug，不得要求用户归档；应允许多个未归档需求并行存在。只有当用户请求无法唯一确定 slug 或目标文件路径时，才要求用户指定 slug、继续某个已有需求或创建新的 slug。
 
@@ -142,6 +142,7 @@
 - 提交前执行 `rtk python3 scripts/check_vendored_common.py --check`，确保所有 vendored `_team_common.py` 与根目录源文件一致。
 - 根目录 `scripts/check_vendored_common.py` 只用于仓库维护；技能 `SKILL.md` 中不得把它写成业务项目运行时依赖。
 - `_team_common.py` 只放跨技能稳定基础能力，例如 HTTP 请求、`no_proxy` 处理、请求调试输出和通用错误包装；不要放 Task、Issue、PR、MR 的业务流程逻辑。
+- 分支准备脚本以 `skills/delivery/team-task-implement/scripts/prepare_spec_branch.py` 为源，批量实现技能携带同名副本；修改源后同步副本，回归测试检查一致性。产品/技术债来源解析保留在各远端脚本中，用跨平台场景回归保证一致，不放入 `_team_common.py`。
 
 最小 frontmatter 示例：
 

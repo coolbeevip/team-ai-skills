@@ -1,6 +1,6 @@
 ---
 name: team-task-batch-implement
-description: 在同一 Spec 分支按依赖顺序批量实现多个 Task，每个 Task 验证后等待用户检查差异并确认提交。Batch implement tasks on one shared spec branch with per-task diff review and commit confirmation.
+description: 在同一 Spec 分支批量实现多个 Task，开始前选择逐项确认或限定范围内自动提交。Batch implement tasks on one shared spec branch with an upfront choice between per-task review and bounded automatic local commits.
 license: MIT
 metadata:
   author: coolbeevip
@@ -16,13 +16,13 @@ triggers:
 
 # Task 批量实现编排
 
-在同一个 `{slug}` 分支上按依赖顺序处理多个 Task。分支名严格等于 slug，不添加 `spec/` 或其他前缀。每个 Task 都完整执行实现和验证，然后暂停让用户检查实际差异；只有用户明确确认后才创建本地 commit。任何失败或暂停都保留可恢复边界。
+在同一个 `{slug}` 分支上按依赖顺序处理多个 Task。分支名严格等于 slug，不添加 `spec/` 或其他前缀。开始前确定 Task 范围并选择提交模式。每个 Task 都完整执行实现、独立验证并形成一个本地 commit；任何失败或暂停都保留可恢复边界。
 
 核心原则：一个 Spec 分支，多个 Task commits，最后一个 Spec PR/MR。
 
 ## 触发边界
 
-- 适合触发：用户要求连续处理同一 slug 的多个 Task，并愿意逐 Task 检查差异和确认提交。
+- 适合触发：用户要求连续处理同一 slug 的多个 Task，并选择逐 Task 确认或在限定范围内自动执行。
 - 不适合触发：单个 Task 使用 `team-task-implement`；只验证一个 Task 使用 `team-task-verify`；创建远端合并请求使用 Spec 级技能。
 
 ## 运行时配置
@@ -49,7 +49,7 @@ triggers:
 ## 输出物
 
 - 依赖排序后的批量计划。
-- 每个已处理 Task 的实现、验证、提交前确认和独立 commit。
+- 每个已处理 Task 的实现、验证、所选模式的提交控制和独立 commit。
 - 可选汇总：`team-spec/active/{slug}/tasks/batch-implementation.md`。
 - 最终共享分支和剩余队列。
 
@@ -74,19 +74,35 @@ python3 {skill_dir}/scripts/plan_task_batch.py --slug {slug} --limit 3 --json
 
 ## 共享分支合同
 
-- 整个批次只使用与 slug 完全相同的 `{slug}` 分支。
-- 开始前工作区不得有无法归因的变化。
-- 分支不存在时，先同步主干再创建；分支已存在时直接使用，不执行主干同步。
-- 同步主干规则（仅在创建新分支时执行）：
-  - `contribution_model = direct`（source_remote 与 target_remote 相同）：`git switch {trunk_branch}`，然后 `git fetch {source_remote} {trunk_branch}`，再执行 `git pull --ff-only {source_remote} {trunk_branch}`。切换主干前必须确认工作区干净；无法 fast-forward 时停止，不自动 merge 或 rebase。
-  - `contribution_model = fork-pull`（target_remote 为上游仓库）：`git fetch {target_remote} {trunk_branch}` 然后 `git switch {trunk_branch}` 然后 `git merge {target_remote}/{trunk_branch}`。
-  - 同步后，`git switch -c {slug} {trunk_branch}` 创建新分支，不得添加 `spec/` 前缀。
-- 每个 Task commit 后再次确认分支和工作区边界。
-- 不为 Task 创建独立分支，不在批次中切换到其他 slug。
+- 单任务、批量任务和 PR/MR 统一使用与 slug 完全同名的 `{slug}` 分支，不添加前缀、不提供分支名覆盖例外。已有非标准分支时停止并说明差异，不自动重命名。
+- 先区分产品代码与 `team-spec/` 运行时文档。仅有可归因、未暂存的 `team-spec/` 变化时允许继续，不要求暂存、提交或 stash；文档已暂存或存在未解决的 Git 操作时停止，不自行清理。
+- 当前已在 Spec 分支时，可保留明确属于当前 Task 的未暂存代码变化；通过 `--task-path` 逐个传入已核对的路径。其他代码变化仍阻塞。需要切分支时，任何非 `team-spec/` 变化都阻塞，不能用该参数放行。
+- Spec 分支已存在时直接切换，不同步主干。创建新分支时先 fetch：`direct` 使用 source remote，`fork-pull` 使用 target remote；本地主干必须可快进到所取提交。然后切换主干、以 `--ff-only` 同步并创建 Spec 分支；主干超前或分叉时停止，不自动产生 merge commit 或 rebase。
+- 切换和同步必须保留 Git 覆盖保护，包括未跟踪和被忽略文件；禁止 autostash。若文件会被覆盖，则停止，报告具体路径、当前分支和已完成步骤，不强制切换、不自动回滚或丢弃变化。
+- 每个 Task commit 后重新确认分支和变化归属；`team-spec/` 回写继续保持未暂存，不加入代码 commit。
+
+## 分支准备脚本
+
+使用 [prepare_spec_branch.py](./scripts/prepare_spec_branch.py) 检查工作区并准备共享分支；脚本通过本地 [_team_common.py](./scripts/_team_common.py) 读取保留状态列和完整路径的 Git 记录。仅依赖 Python 标准库和 Git，在目标项目根目录执行。
+
+```sh
+python3 {skill_dir}/scripts/prepare_spec_branch.py --slug {slug} --trunk-branch {trunk_branch} --contribution-model {direct|fork-pull} --source-remote {source_remote} --target-remote {target_remote}
+```
+
+默认 dry-run，仅检查本地状态并输出 JSON 计划，不 fetch、不写文件。准备正式进入开发分支时追加 `--execute`；只有新建分支才需要主干、贡献模式和对应 remote 参数，值来自已读取的配置或已确认的 Git 证据。已在目标分支时不执行 Git 变更。`--task-path relative/path` 可重复，仅供恢复同一分支上已明确归属于当前 Task 的未暂存变化。
+
+脚本不执行 add、commit、stash、reset 或 push，不回写配置。dry-run 不代表远端最新状态或实际切换已验证；execute 时 Git 覆盖保护是最终检查。失败后检查当前分支与输出，保留现场后恢复，不盲目重复整个流程。
 
 ## 批量边界
 
 默认最多处理 3 个 Task。用户明确要求全部时可以更多，但仍逐个验证和提交。
+
+先展示 slug、分支、确定的 Task ID 与顺序、依赖、跳过和阻塞项、批量上限，并让用户选择：
+
+1. `🔍 逐 Task 确认`：每个 Task 验证后展示实际 diff，等待用户确认再提交。
+2. `🚀 批次自动执行`：授权本次已展示范围内的本地 Task commits；每个 Task 仍须独立验证和提交，正常完成后集中汇报。
+
+用户在本次请求中已经明确指定 slug、Task 集合和模式时，展示核对后的队列即可采用，不重复询问。只指定模式或只说“批量实现”“全部完成”时，展示确定范围并等待用户选择或确认后再开始分支准备和实现；AFK 分类不能推断为自动模式。模式选择只对当前 slug、已展示的 Task 集合和本次批次有效；恢复中断批次时，只有范围和模式仍能从本次会话明确确认且没有范围变化，才可沿用，否则重新选择。新增 Task、改变已展示顺序或验收范围时停止并重新展示计划、取得模式选择。模式选择不授权 push、远端 Issue、PR 或 MR。
 
 每个 Task 严格执行：
 
@@ -94,13 +110,13 @@ python3 {skill_dir}/scripts/plan_task_batch.py --slug {slug} --limit 3 --json
 team-task-implement
 → team-task-verify
 → verified
-→ user reviews current diff
-→ user confirms commit
+→ inspect current diff and exact commit scope
+→ apply selected commit mode
 → one local commit
 → Task status committed
 ```
 
-每个 Task 都必须独立执行提交前确认。只有用户确认当前 Task 的实际 diff、该 Task 达到 `committed` 后，才继续下一个；批量或 AFK 授权不能替代逐 Task 确认。
+逐 Task 确认模式执行 `team-task-implement` 的完整“提交前确认”。批次自动执行模式使用本节的限定授权，不调用单任务的逐项确认；该 Task 达到 `committed` 后才继续下一个。两种模式都必须在暂存前审查实际 diff、核对验证证据和提交范围，不能提前暂存后续 Task 的变化。
 
 ## 批量测试合同
 
@@ -109,23 +125,23 @@ team-task-implement
 - 接口、参数、数据格式、配置项或命令行契约被替换时，在当前 Task 内修改或删除失效测试、fixture、Fake/Mock、快照和示例，不把旧测试留给未定义的后续清理 Task。
 - 旧契约测试只有具备明确兼容、迁移或动态外部输入拒绝依据时才能保留，并记录依据和移除条件。没有依据的旧参数检查使当前 Task 保持 `needs-changes`，不得进入提交确认。
 - 每个 Task 遵循 `team-task-implement` 的“真实依赖、Fake 与时间控制”和“E2E 优先与分级执行”：禁止 Mock，基础设施优先用真实实例，难以接入的外部系统才注入经过真实契约校验的 Fake，时间逻辑使用 fake timer，禁止固定 sleep。优先从用户入口验证可见结果；其他测试层级需有具体理由。
-- 每个 Task 提交确认前运行快速冒烟、新增或修改的测试、Task 定向测试和覆盖已完成 Task 的受影响回归测试；按本次改动及直接、间接依赖选测，不逐 Task 重跑全量。批次结束时核对累计改动的回归覆盖，补跑尚无有效证据的受影响测试；完整测试集按项目周期和发布规则运行。
+- 每个 Task 提交前运行快速冒烟、新增或修改的测试、Task 定向测试和覆盖已完成 Task 的受影响回归测试；按本次改动及直接、间接依赖选测，不逐 Task 重跑全量。批次结束时核对累计改动的回归覆盖，补跑尚无有效证据的受影响测试；完整测试集按项目周期和发布规则运行。
 - 每个 Task 的摘要分别列出新增、改写和删除的测试，以及保留兼容测试的依据。测试数量下降本身不是失败。
 - 如果旧测试清理无法与当前契约变更形成同一个可验证 commit，停止批次并返回 Task 拆解调整边界，不得用批量流程掩盖不完整契约。
 
 ## 工作流
 
 1. 确定唯一 slug 和 Task 集合。
-2. 读取配置、PRD、评审和必要上下文。
-3. 检查工作区与共享分支。
+2. 读取配置、来源规格（产品 PRD 或已评审技术债）、评审和必要上下文。
+3. 使用分支准备脚本检查工作区与共享分支，区分运行时文档和代码变化。
 4. 运行 `plan_task_batch.py`。
-5. 展示队列、跳过项、阻塞项和批量上限。
-6. 创建或进入与 slug 完全相同的 `{slug}` 分支。
+5. 展示确定的队列、跳过项、阻塞项和批量上限，取得“批量边界”中的模式选择。
+6. 正式执行分支准备脚本，创建或进入与 slug 完全相同的 `{slug}` 分支。
 7. 按顺序实现并验证当前 Task，完成测试契约审查，不暂存代码。
-8. 当前 Task 达到 `verified` 后展示修改文件、测试新增/改写/删除、保留兼容测试依据、diff 摘要、拟提交范围、验证结果和残余风险，然后进入“逐 Task 提交确认”。
-9. 用户要求继续修改时，修改并重新验证当前 Task，再次展示实际 diff；用户选择查看或暂停时停止批次并保留当前改动与剩余队列。
-10. 只有用户明确确认当前 Task 后才暂存并 commit，随后记录 Task ID、SHA、测试和残余风险。
-11. 当前 Task 达到 `committed` 后继续下一个，并重复独立确认；任何失败立即停止，保留已完成 commits 和剩余队列。
+8. 当前 Task 达到 `verified` 后检查修改文件、测试新增/改写/删除、保留兼容测试依据、实际 diff、拟提交范围、验证结果和残余风险。逐 Task 模式向用户展示并等待确认；自动模式记录摘要，按限定授权继续。
+9. 逐 Task 模式下，用户要求继续修改时修改并重新验证；用户选择查看或暂停时停止批次并保留当前改动与剩余队列。自动模式下，出现停止条件时停止，不把异常当作已授权变更。
+10. 按所选模式满足提交条件后，只暂存当前 Task 的代码、测试和必要配置，排除 `team-spec/` 与无关改动；复核暂存差异与已验证范围一致后创建一个本地 commit，记录 Task ID、SHA、测试和残余风险。
+11. 当前 Task 达到 `committed` 后继续下一个；任何失败立即停止，保留已完成 commits 和剩余队列。
 12. 只有所有必需 Task 均 `committed` 时，才推荐 Spec 级 PR/MR。
 
 ## 逐 Task 提交确认
@@ -141,10 +157,16 @@ team-task-implement
 
 逐 Task 提交确认是代码交付控制点，不改变 Task 原有的 AFK/HITL 分类。
 
+## 批次自动执行
+
+用户明确选择自动模式后，已展示的 Task 范围和提交模式构成本批次的本地 commit 授权。每个 Task 验证通过后，先保持代码未暂存，检查实际 diff、未跟踪文件、验证结果、测试契约与拟提交范围；只在变化均可归于当前 Task 且符合已展示验收范围时暂存。复核暂存差异与已检查、已验证的范围一致后提交，不逐项等待用户回复。任何验证后发生的代码、测试或配置变化都要重新验证并检查差异。
+
+不得因自动模式跳过 `team-task-verify`、合并多个 Task commit、扩大 Task 集合，或把 `team-spec/` 回写纳入代码 commit。出现 HITL、规格或设计决策、验收范围变化、无法归因的文件、验证失败、提交失败时立即停止；保留已完成 commits 和当前工作区现场，报告原因、暂存状态、可检查的 diff 和剩余队列，待用户处理后再恢复。批次结束时按 Task 汇总 commit SHA、主要 diff、测试变化、验证结果和残余风险。
+
 ## 停止条件
 
 - 当前 Task 验证结果不是 `verified`。
-- 当前 Task 已验证，但用户选择查看 diff、继续修改或暂停；此时不得 commit 或开始下一个 Task。
+- 逐 Task 模式下，当前 Task 已验证，但用户选择查看 diff、继续修改或暂停；此时不得 commit 或开始下一个 Task。
 - commit 创建失败或范围混入其他 Task。
 - 测试失败或缺少关键验证方法。
 - 存在无兼容依据的旧契约测试，或测试无法识别合理错误实现。
@@ -157,7 +179,7 @@ team-task-implement
 
 ## 完成标准
 
-- 所有已处理 Task 都经过独立的提交前确认，处于 `committed` 并记录唯一 SHA。
+- 所有已处理 Task 都按所选模式完成提交控制，处于 `committed` 并记录唯一 SHA。
 - 每个已处理 Task 的测试集合反映提交后的当前契约，旧契约引用已删除或有明确兼容依据和移除条件。
 - 所有 commits 位于同一个 Spec 分支。
 - 未处理、跳过和阻塞 Task 有明确原因。
@@ -169,8 +191,9 @@ team-task-implement
 必须包含：
 
 - slug、共享分支和批量范围。
+- 本批次选择的提交模式。
 - 已完成 Task 与 commit SHA。
-- 当前 Task 的提交前确认结果；如果尚未提交，明确说明可检查的 diff、`verified` 状态和恢复入口。
+- 当前 Task 的提交控制结果；如果尚未提交，明确说明可检查的 diff、当前状态和恢复入口。
 - 失败、跳过、阻塞和剩余队列。
 - 测试的新增、改写和删除、保留兼容测试的依据，以及关键验证命令和结果。
 - 未提交的 `team-spec/` 回写。

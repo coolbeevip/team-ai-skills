@@ -183,36 +183,13 @@ def create_git_delivery_repo(remote_url: str) -> tuple[tempfile.TemporaryDirecto
 
 
 class SpecDeliveryWorkflowTests(unittest.TestCase):
-    def test_direct_branch_initialization_switches_and_fast_forwards_trunk(self) -> None:
-        for relative_path in (
-            "skills/delivery/team-task-implement/SKILL.md",
-            "skills/delivery/team-task-batch-implement/SKILL.md",
-        ):
-            with self.subTest(skill=relative_path):
-                text = (ROOT / relative_path).read_text(encoding="utf-8")
-                direct_rule = next(
-                    line
-                    for line in text.splitlines()
-                    if "`contribution_model = direct`" in line
-                    and "git switch" in line
-                )
-                switched = direct_rule.index("git switch {trunk_branch}")
-                fetched = direct_rule.index("git fetch {source_remote} {trunk_branch}")
-                pulled = direct_rule.index(
-                    "git pull --ff-only {source_remote} {trunk_branch}"
-                )
-
-                self.assertLess(switched, fetched)
-                self.assertLess(fetched, pulled)
-                self.assertIn("无法 fast-forward 时停止", direct_rule)
-
-    def test_task_implement_requires_post_verification_commit_confirmation(self) -> None:
+    def test_standalone_task_requires_post_verification_commit_confirmation(self) -> None:
         text = (
             ROOT / "skills/delivery/team-task-implement/SKILL.md"
         ).read_text(encoding="utf-8")
 
         verified = text.index("9. 验证通过后、暂存任何文件之前")
-        confirmed = text.index("11. 只有用户明确选择")
+        confirmed = text.index("11. 满足适用模式的提交条件后")
         committed = text.index("12. 创建一个逻辑 commit")
 
         self.assertLess(verified, confirmed)
@@ -220,23 +197,33 @@ class SpecDeliveryWorkflowTests(unittest.TestCase):
         self.assertIn("🔍 暂不提交，我要先查看 diff", text)
         self.assertIn("🔄 继续修改当前 Task", text)
         self.assertIn("不得把用户在任务开始时说的“实现并提交”", text)
+        self.assertIn("单独调用本技能不能使用该例外", text)
         self.assertIn("不添加 `T001` 等 Task ID", text)
         self.assertNotIn("`T001: ", text)
 
-    def test_task_batch_requires_confirmation_for_each_task(self) -> None:
+    def test_task_batch_selects_commit_mode_before_implementation(self) -> None:
         text = (
             ROOT / "skills/delivery/team-task-batch-implement/SKILL.md"
         ).read_text(encoding="utf-8")
 
-        previewed = text.index("8. 当前 Task 达到 `verified` 后展示")
-        confirmed = text.index("10. 只有用户明确确认当前 Task 后")
+        selected = text.index("5. 展示确定的队列")
+        implemented = text.index("7. 按顺序实现并验证当前 Task")
+        reviewed = text.index("8. 当前 Task 达到 `verified` 后检查")
+        committed = text.index("10. 按所选模式满足提交条件后")
         next_task = text.index("11. 当前 Task 达到 `committed` 后继续下一个")
 
-        self.assertLess(previewed, confirmed)
-        self.assertLess(confirmed, next_task)
+        self.assertLess(selected, implemented)
+        self.assertLess(implemented, reviewed)
+        self.assertLess(reviewed, committed)
+        self.assertLess(committed, next_task)
         self.assertIn("## 逐 Task 提交确认", text)
         self.assertIn("一次确认只覆盖一个 Task 的当前实际 diff", text)
         self.assertIn("🔍 暂不提交，我要先查看 diff", text)
+        self.assertIn("## 批次自动执行", text)
+        self.assertIn("只指定模式或只说“批量实现”“全部完成”时", text)
+        self.assertIn("展示确定范围并等待用户选择或确认", text)
+        self.assertIn("复核暂存差异与已检查、已验证的范围一致后提交", text)
+        self.assertIn("出现 HITL、规格或设计决策、验收范围变化", text)
         self.assertIn("不添加 `T001` 等 Task ID", text)
 
     def test_task_implementation_maintains_the_current_test_contract(self) -> None:

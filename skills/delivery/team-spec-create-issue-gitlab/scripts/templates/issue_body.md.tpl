@@ -12,6 +12,10 @@ ${scope}
 
 ${acceptance}
 
+## ${risks_heading}
+
+${risks}
+
 ## ${tasks_heading}
 
 ${tasks}

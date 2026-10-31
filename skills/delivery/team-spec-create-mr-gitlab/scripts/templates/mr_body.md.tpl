@@ -4,6 +4,18 @@
 
 ${purpose}
 
+## ${scope_heading}
+
+${scope}
+
+## ${acceptance_heading}
+
+${acceptance}
+
+## ${risks_heading}
+
+${risks}
+
 ${closing_line}
 
 ## ${task_commits_heading}

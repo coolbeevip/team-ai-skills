@@ -113,7 +113,7 @@ triggers:
 - 通过的验收项已勾选，未通过项保留并说明原因。
 - 记录实际执行的命令、结果和跳过项。
 - 未创建 commit、push、远端 Issue、PR 或 MR。
-- 结果可供 `team-task-implement` 进入提交前确认；验证本身不授权创建 Task commit。
+- 结果可供 `team-task-implement` 执行适用模式的提交控制；验证本身不授权创建 Task commit。
 
 ## 最终回复
 

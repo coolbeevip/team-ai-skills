@@ -11,6 +11,7 @@ import ipaddress
 import json
 import os
 import sys
+import subprocess
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -114,3 +115,31 @@ def api_request(
         ) from exc
     except urllib.error.URLError as exc:
         raise ApiRequestError(f"{service} API {method} {url} failed: {exc.reason}") from exc
+
+
+def git_status_entries() -> list[tuple[str, tuple[str, ...]]]:
+    """Read porcelain v1 without trimming status columns or decoding quoted paths."""
+    try:
+        result = subprocess.run(
+            ["git", "status", "--porcelain=v1", "-z", "--untracked-files=all"],
+            check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+        )
+    except (OSError, subprocess.CalledProcessError) as error:
+        raise SystemExit("Cannot inspect Git worktree status.") from error
+    records = result.stdout.split(b"\0")
+    entries: list[tuple[str, tuple[str, ...]]] = []
+    index = 0
+    while index < len(records) - 1:
+        record = records[index]
+        index += 1
+        if len(record) < 4 or record[2:3] != b" ":
+            raise SystemExit("Malformed Git porcelain status record.")
+        status = record[:2].decode("ascii")
+        paths = (os.fsdecode(record[3:]),)
+        if "R" in status or "C" in status:
+            if index >= len(records) - 1 or not records[index]:
+                raise SystemExit("Missing source path in Git rename/copy status.")
+            paths += (os.fsdecode(records[index]),)
+            index += 1
+        entries.append((status, paths))
+    return entries
