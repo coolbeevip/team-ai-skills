@@ -1,7 +1,7 @@
 ---
 name: team-spec-create-issue-github
 description: 将完整 Spec 创建或同步为一个 GitHub Issue，并用 checklist 汇总其所有 Tasks。Create or sync one GitHub Issue for a complete spec, with all local tasks represented as a checklist.
-license: MIT
+license: PolyForm-Noncommercial-1.0.0
 metadata:
   author: coolbeevip
   version: "0.9.1"

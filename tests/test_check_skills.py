@@ -34,7 +34,7 @@ def skill_text(
     return f"""---
 name: {name}
 description: 检查一个测试技能的通用结构。Check the generic structure of a test skill.
-license: MIT
+license: PolyForm-Noncommercial-1.0.0
 metadata:
   author: coolbeevip
   version: "{(ROOT / 'VERSION').read_text().strip()}"

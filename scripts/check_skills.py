@@ -197,8 +197,8 @@ def check_skill(path: Path) -> list[str]:
             f"(max {MAX_DESCRIPTION_CHARS})"
         )
 
-    if data.get("license") != "MIT":
-        errors.append("license must be MIT")
+    if data.get("license") != "PolyForm-Noncommercial-1.0.0":
+        errors.append("license must be PolyForm-Noncommercial-1.0.0")
 
     metadata = data.get("metadata")
     if not isinstance(metadata, dict):

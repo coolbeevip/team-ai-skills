@@ -1,7 +1,7 @@
 ---
 name: team-config-init
 description: 初始化、校验并增量补全 team-spec/config.yml，集中管理语言、版本控制、访问策略和写作风格入口。Initialize, validate, and safely complete shared team-spec project configuration.
-license: MIT
+license: PolyForm-Noncommercial-1.0.0
 metadata:
   author: coolbeevip
   version: "0.9.1"

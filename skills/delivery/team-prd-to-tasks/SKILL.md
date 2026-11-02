@@ -1,7 +1,7 @@
 ---
 name: team-prd-to-tasks
 description: 将 PRD 拆解为可独立实现、验证并形成独立本地提交的工程 Task。Break a PRD into dependency-ordered tasks that each produce one independently verified local commit.
-license: MIT
+license: PolyForm-Noncommercial-1.0.0
 metadata:
   author: coolbeevip
   version: "0.9.1"

@@ -1,7 +1,7 @@
 ---
 name: team-tech-debt-to-tasks
 description: 将已评审技术债拆为可独立实现、验证并形成独立本地提交的 Task。Break a reviewed technical-debt spec into tasks that each produce one independently verified local commit.
-license: MIT
+license: PolyForm-Noncommercial-1.0.0
 metadata:
   author: coolbeevip
   version: "0.9.1"

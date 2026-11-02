@@ -1,7 +1,7 @@
 ---
 name: team-spec-review
 description: 评审已细化的需求规格，输出风险、阻塞项、补救动作和 ready 结论。Review refined product specs and produce risks, blockers, mitigations, and readiness findings.
-license: MIT
+license: PolyForm-Noncommercial-1.0.0
 metadata:
   author: coolbeevip
   version: "0.9.1"

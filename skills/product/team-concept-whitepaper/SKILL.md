@@ -1,7 +1,7 @@
 ---
 name: team-concept-whitepaper
 description: 在产品规划阶段澄清产品定位、价值与能力边界，并编写可评审的产品概念白皮书。Create a reviewable product concept white paper by clarifying its positioning, value, and capability boundaries.
-license: MIT
+license: PolyForm-Noncommercial-1.0.0
 metadata:
   author: coolbeevip
   version: "0.9.1"

@@ -1,7 +1,7 @@
 ---
 name: team-spec-refine
 description: 通过用户确认细化需求规格，澄清术语、边界、业务规则和验收口径。Refine product specs through user confirmation of terminology, scope, business rules, and acceptance criteria.
-license: MIT
+license: PolyForm-Noncommercial-1.0.0
 metadata:
   author: coolbeevip
   version: "0.9.1"

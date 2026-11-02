@@ -269,4 +269,4 @@ python3 scripts/check_vendored_common.py --check
 
 ## 许可证
 
-本项目使用 [MIT License](LICENSE)。
+本项目使用 [PolyForm Noncommercial License 1.0.0](LICENSE)。该许可仅允许非商业用途。

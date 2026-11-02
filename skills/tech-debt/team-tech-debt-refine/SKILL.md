@@ -1,7 +1,7 @@
 ---
 name: team-tech-debt-refine
 description: 通过用户确认细化技术债和已明确对象的阶段性重构，明确证据、行为边界、风险及验收口径。Refine technical debt and scoped refactoring requests through confirmation of evidence, behavior boundaries, risks, and acceptance criteria.
-license: MIT
+license: PolyForm-Noncommercial-1.0.0
 metadata:
   author: coolbeevip
   version: "0.9.1"

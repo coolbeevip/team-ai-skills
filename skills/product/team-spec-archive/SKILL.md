@@ -1,7 +1,7 @@
 ---
 name: team-spec-archive
 description: 将已完成、废弃或暂停的单个需求工作区从 active 归档到 archive。Archive one completed, abandoned, or paused requirement workspace from active to archive.
-license: MIT
+license: PolyForm-Noncommercial-1.0.0
 metadata:
   author: coolbeevip
   version: "0.9.1"

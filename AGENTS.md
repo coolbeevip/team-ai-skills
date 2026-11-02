@@ -110,7 +110,7 @@
 - `SKILL.md` 必须包含 YAML frontmatter，并提供 `name`、`description`、`triggers`、`license` 和 `metadata`。
 - `description` 必须同时包含中文和英文描述，便于 AI 在不同语言上下文中识别触发场景。
 - `triggers` 是一个自然语言短语列表，用于提升技能的可发现性。AI 可通过匹配用户输入与 `triggers` 自动推荐合适的技能，无需用户知道技能名称。每个技能至少包含 3 条中文短语和 3 条英文短语，覆盖用户最常见的表达方式。
-- 每个技能必须声明 `license: MIT`。
+- 每个技能必须声明 `license: PolyForm-Noncommercial-1.0.0`。
 - 每个技能必须包含 `metadata.author: coolbeevip` 和 与根目录 `VERSION` 一致的 `metadata.version`（整库发行版）。
 - 每个技能必须声明 `## 输入物` 和 `## 输出物`，明确会读取哪些上游技能产物，以及会给哪些下游技能使用。
 - 依赖上游产物的技能必须先确定唯一 slug 或明确文件路径；无法唯一判断时必须要求用户提供，不得猜测。
@@ -150,7 +150,7 @@
 ---
 name: team-spec-refine
 description: 通过与用户反复确认来细化需求规格，适用于 PRD 前的规格打磨。Refine product specs through iterative user confirmation before PRD creation.
-license: MIT
+license: PolyForm-Noncommercial-1.0.0
 metadata:
   author: coolbeevip
   version: "0.9.0"

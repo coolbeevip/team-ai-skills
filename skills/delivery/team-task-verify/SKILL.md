@@ -1,7 +1,7 @@
 ---
 name: team-task-verify
 description: 独立验证单个 Task 实现是否满足验收、PRD、风险和最小实现要求。Independently verify one task implementation against its acceptance criteria, parent spec, risks, and commit boundary.
-license: MIT
+license: PolyForm-Noncommercial-1.0.0
 metadata:
   author: coolbeevip
   version: "0.9.1"

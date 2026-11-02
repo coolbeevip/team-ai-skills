@@ -1,7 +1,7 @@
 ---
 name: team-task-implement
 description: 在 Spec 共享分支实现单个工程 Task，验证通过并经用户检查差异、明确确认后创建本地逻辑 commit。Implement one task on its shared spec branch, pausing for user diff review and confirmation before the local commit.
-license: MIT
+license: PolyForm-Noncommercial-1.0.0
 metadata:
   author: coolbeevip
   version: "0.9.1"

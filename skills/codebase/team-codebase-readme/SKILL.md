@@ -1,7 +1,7 @@
 ---
 name: team-codebase-readme
 description: 创建、审阅和优化团队自有项目 README.md，以准确事实和自上而下的信息层级呈现定位、快速开始、使用与维护入口。Create, review, and improve README.md for team-owned projects using verified facts and a progressive top-to-bottom reading flow.
-license: MIT
+license: PolyForm-Noncommercial-1.0.0
 metadata:
   author: coolbeevip
   version: "0.9.1"
