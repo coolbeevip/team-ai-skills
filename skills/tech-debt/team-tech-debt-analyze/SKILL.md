@@ -1,7 +1,7 @@
 ---
 name: team-tech-debt-analyze
 description: 对项目或模块进行只读技术债分析，评估阶段性重构机会，输出有证据的维护性、稳定性、测试、架构和交付风险报告。Analyze technical debt and incremental refactoring opportunities through read-only inspection with evidence-backed findings.
-license: MIT
+license: PolyForm-Noncommercial-1.0.0
 metadata:
   author: coolbeevip
   version: "0.9.1"

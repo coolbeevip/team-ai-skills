@@ -1,7 +1,7 @@
 ---
 name: team-spec-to-prd
 description: 将已细化并通过评审的规格固化为结构化 PRD，形成需求到工程的交接边界。Turn refined and reviewed specs into a structured PRD as the product-to-engineering handoff boundary.
-license: MIT
+license: PolyForm-Noncommercial-1.0.0
 metadata:
   author: coolbeevip
   version: "0.9.1"

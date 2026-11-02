@@ -1,7 +1,7 @@
 ---
 name: team-codebase-walk
 description: 基于 onboarding 产物和源码，围绕功能清单做代码库走读、问答和证据追踪。Guide developers through codebase features with walkthroughs, Q&A, and source-backed explanations.
-license: MIT
+license: PolyForm-Noncommercial-1.0.0
 metadata:
   author: coolbeevip
   version: "0.9.1"

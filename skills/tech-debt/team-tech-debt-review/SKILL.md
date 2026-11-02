@@ -1,7 +1,7 @@
 ---
 name: team-tech-debt-review
 description: 评审技术债规格的风险、优先级、阻塞项和工程 Task 拆解 ready 状态。Review technical debt specs for risk, priority, blockers, and readiness for Task breakdown.
-license: MIT
+license: PolyForm-Noncommercial-1.0.0
 metadata:
   author: coolbeevip
   version: "0.9.1"

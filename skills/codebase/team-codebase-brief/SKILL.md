@@ -1,7 +1,7 @@
 ---
 name: team-codebase-brief
 description: 将代码库事实转化为面向业务、产品和管理者的能力说明、场景材料和影响分析。Turn codebase evidence into business-facing capability briefs, scenario narratives, and impact analysis.
-license: MIT
+license: PolyForm-Noncommercial-1.0.0
 metadata:
   author: coolbeevip
   version: "0.9.1"

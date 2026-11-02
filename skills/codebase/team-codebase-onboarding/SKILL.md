@@ -1,7 +1,7 @@
 ---
 name: team-codebase-onboarding
 description: 从已有代码仓库提取可追溯的功能清单、架构说明和 AI 接手上下文。Extract traceable feature inventory, architecture notes, and AI onboarding context from an existing codebase.
-license: MIT
+license: PolyForm-Noncommercial-1.0.0
 metadata:
   author: coolbeevip
   version: "0.9.1"

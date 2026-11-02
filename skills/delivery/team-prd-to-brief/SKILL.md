@@ -1,7 +1,7 @@
 ---
 name: team-prd-to-brief
 description: 将结构化 PRD 转换为适合需求、研发和项目管理评审的简报。Turn structured PRDs into review briefs for product, engineering, and project management.
-license: MIT
+license: PolyForm-Noncommercial-1.0.0
 metadata:
   author: coolbeevip
   version: "0.9.1"

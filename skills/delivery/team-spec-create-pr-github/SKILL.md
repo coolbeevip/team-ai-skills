@@ -1,7 +1,7 @@
 ---
 name: team-spec-create-pr-github
 description: 推送一个 Spec 的共享分支，并为其全部已提交 Tasks 创建一个 GitHub Pull Request。Push one spec branch and create a single GitHub Pull Request covering all committed tasks in that spec.
-license: MIT
+license: PolyForm-Noncommercial-1.0.0
 metadata:
   author: coolbeevip
   version: "0.9.1"

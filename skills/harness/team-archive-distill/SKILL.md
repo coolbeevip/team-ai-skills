@@ -1,7 +1,7 @@
 ---
 name: team-archive-distill
 description: 从指定归档沉淀全局上下文到 team-spec/CONTEXT.md；保留既有上下文，列出冲突并建议以其为准。Distill selected archives into team-spec/CONTEXT.md; preserve existing context and report conflicts with recommendations.
-license: MIT
+license: PolyForm-Noncommercial-1.0.0
 metadata:
   author: coolbeevip
   version: "0.9.1"

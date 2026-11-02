@@ -1,7 +1,7 @@
 ---
 name: team-task-batch-implement
 description: 在同一 Spec 分支批量实现多个 Task，开始前选择逐项确认或限定范围内自动提交。Batch implement tasks on one shared spec branch with an upfront choice between per-task review and bounded automatic local commits.
-license: MIT
+license: PolyForm-Noncommercial-1.0.0
 metadata:
   author: coolbeevip
   version: "0.9.1"

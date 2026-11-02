@@ -1,7 +1,7 @@
 ---
 name: team-writing-style
 description: 为团队项目建立、维护和应用统一的自然语言、代码注释与交互标记风格。Define and apply a shared writing, code-comment, and interaction-marker style for team projects.
-license: MIT
+license: PolyForm-Noncommercial-1.0.0
 metadata:
   author: coolbeevip
   version: "0.9.1"
