@@ -34,8 +34,9 @@
 - `skills/tech-debt/team-tech-debt-to-tasks/`：用于把已评审技术债拆解为工程 Task。
 - `skills/harness/`：从已归档 spec 中提炼跨需求知识到全局上下文，独立于主线交付流程。
 - `skills/harness/team-archive-distill/`：用于以既有全局上下文为首要依据，从指定归档沉淀跨需求知识到 `team-spec/CONTEXT.md`；列出冲突并建议以既有上下文为准。
-- `skills/writing/`：跨产品、代码库、交付和技术债流程复用的写作职责，包括公共语言风格和代码注释规范。
+- `skills/writing/`：跨产品、代码库、交付和技术债流程复用的写作职责，包括公共语言风格、代码注释规范及指定材料的科技编辑与视觉表达。
 - `skills/writing/team-writing-style/`：用于建立和维护目标项目的统一写作风格，通过 `team-spec/config.yml` 为其他技能提供单一公共规则入口。
+- `skills/writing/team-writing-polish/`：用于把指定材料编辑为面向 CEO 或 CTO 的阅读视图，交付可维护正文、自包含 HTML 和经渲染检查的长图，保留来源事实与条件。
 
 每个技能目录必须包含 `SKILL.md`。只有当辅助文件被 `SKILL.md` 明确引用时才添加，例如 `CONTEXT-FORMAT.md`、`DECISION-FORMAT.md`。
 
@@ -55,6 +56,7 @@
 - `team-spec/active/{slug}/spec/`：单个需求的规格阶段产物，包括可选的机器人场景发现文档 `discovery.md`，以及 `CONTEXT.md`、`decisions/`、`refine.md`、`reviews.md`。
 - `team-spec/active/{slug}/concept/`：单个产品或产品体系的概念阶段产物，默认白皮书为 `whitepaper.md`，作为规格细化和后续 PRD 的上游输入。
 - `team-spec/active/{slug}/prd/`：单个需求的 PRD 固化产物，是需求到工程的正式交接边界，包括 `prd.md` 与可选 `brief.md`。
+- `team-spec/active/{slug}/brief/editorial-polish/{ceo|cto}/`：指定材料的受众阅读视图，包括 `editorial.md`、`index.html`、`longform.png` 及按需分段图；不替代原始材料，不改变工作区或 Task 状态。
 - `team-spec/active/{slug}/tasks/`：单个需求 PRD 或技术债规格拆解后的工程 Task。
 - `team-spec/active/{slug}/DELIVERY.md`：可选的 Spec 级交付记录，包括共享分支、远端 Issue、Task/commit 映射和 PR/MR；不得加入产品代码 commit。
 - `team-spec/active/{slug}/design/`：单个需求的可选功能设计说明书，默认文件为 `functional-design.md`。当前技能库不提供通用功能设计生成技能；该文件由用户或团队另行提供时，下游 Task 拆解、实现和验证必须读取，但不得因文件不存在而阻塞已 ready 的 PRD。

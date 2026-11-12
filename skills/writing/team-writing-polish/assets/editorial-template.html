@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>科技编辑与视觉抛光 · 排版示例</title>
+  <style>
+    :root {
+      --paper: #f5f3ec;
+      --ink: #222722;
+      --muted: #535b54;
+      --accent: #245b47;
+      --tint: #e6ede5;
+      --rule: #c7cdc3;
+      --body-size: 17px;
+    }
+    * { box-sizing: border-box; }
+    html { background: var(--paper); color: var(--ink); }
+    body {
+      margin: 0;
+      font: var(--body-size)/1.65 -apple-system, BlinkMacSystemFont, "PingFang SC",
+        "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+      overflow-wrap: anywhere;
+      -webkit-text-size-adjust: 100%;
+    }
+    main { max-width: 680px; margin: auto; padding: 26px 24px 40px; }
+    .masthead, .meta { color: var(--muted); font-size: 14px; }
+    .masthead { display: flex; justify-content: space-between; gap: 16px; }
+    header { border-top: 3px solid var(--accent); padding-top: 17px; }
+    .eyebrow { color: var(--accent); font-size: 14px; font-weight: 650; margin: 30px 0 10px; }
+    h1 { font-size: clamp(30px, 8.5vw, 40px); line-height: 1.25; letter-spacing: -.025em; margin: 0 0 22px; }
+    h2 { font-size: 25px; line-height: 1.4; letter-spacing: -.015em; margin: 8px 0 18px; }
+    h3 { font-size: 18px; line-height: 1.5; margin: 0 0 5px; }
+    p { margin: 0 0 16px; }
+    p:last-child { margin-bottom: 0; }
+    .lead { font-size: 20px; line-height: 1.6; }
+    .meta { margin-top: 22px; }
+    section { border-top: 1px solid var(--rule); padding-top: 24px; margin-top: 32px; }
+    .section-no { color: var(--accent); font-size: 14px; font-weight: 650; }
+    .judgment { padding: 20px; background: var(--tint); border-left: 3px solid var(--accent); margin-top: 24px; }
+    .judgment p { font-size: 19px; }
+    .label { display: block; color: var(--accent); font-size: 14px; font-weight: 650; margin-bottom: 9px; }
+    figure { margin: 24px 0 0; }
+    figcaption, .source { font-size: 14px; line-height: 1.65; color: var(--muted); }
+    figcaption { margin-top: 14px; }
+    .flow { list-style: none; margin: 0; padding: 0; }
+    .flow li { position: relative; border: 1px solid var(--rule); padding: 15px 16px; margin-bottom: 32px; }
+    .flow li:not(:last-child)::after { content: "↓"; position: absolute; bottom: -29px; left: 18px; color: var(--accent); }
+    .flow li:last-child { margin-bottom: 0; }
+    .flow .pending { border: 1px dashed var(--accent); }
+    .flow .pending .label::before { content: "待验证 · "; }
+    .comparison { margin: 0; }
+    .comparison > div { padding: 16px 0; border-bottom: 1px solid var(--rule); }
+    dt { font-weight: 650; margin-bottom: 6px; }
+    dd { margin: 0; }
+    .condition { border-left: 2px solid var(--accent); padding-left: 15px; margin-top: 22px; }
+    a { color: var(--accent); text-underline-offset: 3px; }
+    img, svg { max-width: 100%; height: auto; display: block; }
+    svg text { font-family: inherit; }
+    table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+    th, td { padding: 10px 6px; text-align: left; vertical-align: top; border-bottom: 1px solid var(--rule); }
+    pre { white-space: pre-wrap; overflow-wrap: anywhere; }
+    footer { margin-top: 36px; padding-top: 20px; border-top: 1px solid var(--rule); }
+    @media (max-width: 360px) { main { padding-inline: 20px; } }
+    @media print { main { max-width: none; } section, figure { break-inside: avoid; } }
+  </style>
+</head>
+<body>
+  <!-- 独立编写的可编辑模板。复制后按阅读任务选择模块，替换全部示例及来源。 -->
+  <main>
+    <header>
+      <div class="masthead"><span>科技观察 / TECH NOTES</span><span>排版示例</span></div>
+      <p class="eyebrow">Skill 评测与推广</p>
+      <h1>测试表现改善，<br>推广依据还需补齐</h1>
+      <p class="lead">现有测试说明优化有进展。是否扩大使用，还需要知道它在新任务上的表现，以及维护评测的投入。</p>
+      <p class="meta">示例材料 · 未提供具体数值 · 不代表真实项目结果</p>
+    </header>
+
+    <aside class="judgment" aria-label="核心判断">
+      <span class="label">核心判断</span>
+      <p>先补齐新任务效果与维护成本，再判断是否推广。</p>
+    </aside>
+
+    <section aria-labelledby="progress-heading">
+      <span class="section-no">01 / 已知进展</span>
+      <h2 id="progress-heading">改善发生在哪里</h2>
+      <p>某 Skill 经过迭代，在参与优化的既有测试集上成功率提高。材料没有给出幅度，当前只能确认这一测试范围内的改善。</p>
+      <p class="condition">未做独立盲测，也未统计维护评测集的成本。现有表现尚不能回答新任务收益与推广投入。</p>
+    </section>
+
+    <section aria-labelledby="path-heading">
+      <span class="section-no">02 / 判断路径</span>
+      <h2 id="path-heading">推广前还缺两项依据</h2>
+      <figure>
+        <ol class="flow" aria-label="从现有结果到推广判断的证据路径">
+          <li><span class="label">已有观察</span><h3>既有测试表现改善</h3><p>范围限于已参与优化的测试集。</p></li>
+          <li class="pending"><span class="label">新任务效果</span><h3>独立样本能否复现收益</h3><p>当前尚未开展独立盲测。</p></li>
+          <li class="pending"><span class="label">持续投入</span><h3>维护评测需要多少成本</h3><p>当前材料尚未统计。</p></li>
+          <li><span class="label">待判断</span><h3>是否扩大使用</h3><p>综合收益、投入和适用范围作判断。</p></li>
+        </ol>
+        <figcaption>箭头表示阅读与判断路径；两项缺口可并行补证，不代表已执行的实验顺序。</figcaption>
+      </figure>
+    </section>
+
+    <section aria-labelledby="choice-heading">
+      <span class="section-no">03 / 当前边界</span>
+      <h2 id="choice-heading">进展与未知分别看</h2>
+      <dl class="comparison">
+        <div><dt>材料支持</dt><dd>在既有测试范围内，迭代后表现有所改善。</dd></div>
+        <div><dt>仍需确认</dt><dd>新任务收益和维护成本；尚不能计算 ROI 或承诺推广收益。</dd></div>
+      </dl>
+    </section>
+
+    <footer>
+      <p class="source">来源：本模板的假设示例，仅供版式预览。交付时替换为获准展示的真实来源及位置。</p>
+    </footer>
+  </main>
+</body>
+</html>

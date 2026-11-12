@@ -47,6 +47,7 @@ SKILL_ORDER = [
     "team-tech-debt-review",
     "team-tech-debt-to-tasks",
     "team-writing-style",
+    "team-writing-polish",
     "team-archive-distill",
 ]
 DESCRIPTION_SPLIT = re.compile(r"^(.*?[。！？])\s*([A-Z].*)$", re.DOTALL)

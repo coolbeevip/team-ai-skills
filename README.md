@@ -153,9 +153,10 @@ Codex Harness 不在稳定主线内。只有当项目的工程入口、验证方
 - `team-tech-debt-review`：评审技术债规格的风险、优先级、阻塞项和工程拆解 ready 状态。
 - `team-tech-debt-to-tasks`：把已评审的技术债规格拆解为可独立实现、验证并提交的工程 Task。
 
-### 写作规范
+### 写作与视觉表达
 
 - `team-writing-style`：建立和维护跨产品、代码库、交付与技术债流程复用的公共写作风格。
+- `team-writing-polish`：将指定文档编辑为面向 CEO 或 CTO 的科技图文，交付可维护正文、自包含 HTML 和长图；两版共享事实基础，保留关键条件与风险，不替代原始材料。
 
 ### 归档决策提炼
 
@@ -192,7 +193,10 @@ team-spec/
 │       │   ├── codebase-onboarding/        # 代码库接手知识库
 │       │   └── codebase-walk/              # 代码库走读记录
 │       ├── brief/
-│       │   └── codebase-brief/             # 面向干系人的能力材料
+│       │   ├── codebase-brief/             # 面向干系人的能力材料
+│       │   └── editorial-polish/
+│       │       ├── ceo/                    # 决策速览：Markdown、HTML、PNG
+│       │       └── cto/                    # 技术洞察：Markdown、HTML、PNG
 │       ├── tech-debt/
 │       │   └── analysis.md                 # 技术债分析报告
 │       └── STATUS.md                       # 可选：工作区生命周期
