@@ -1,0 +1,33 @@
+{
+  "id": "tech-magazine",
+  "version": "1.0",
+  "name": "科技杂志",
+  "headingFont": "serif",
+  "heroRole": "mechanism",
+  "type": {
+    "hero": 42,
+    "section": 26,
+    "body": 17,
+    "lineHeight": 1.65,
+    "caption": 13,
+    "label": 14,
+    "meta": 12
+  },
+  "colors": {
+    "background": "#F6F4EE",
+    "text": "#202521",
+    "muted": "#59615B",
+    "accent": "#28584A",
+    "surface": "#E9EEE8",
+    "divider": "#D9DED7"
+  },
+  "chartSeries": [
+    "#28584A",
+    "#72502E",
+    "#59615B"
+  ],
+  "status": {
+    "warning": "#795000",
+    "error": "#A11D33"
+  }
+}

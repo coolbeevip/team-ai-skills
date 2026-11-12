@@ -502,18 +502,22 @@ window.SRT_SKILLS = Object.freeze([
     "name": "team-writing-polish",
     "category": "writing",
     "description": {
-      "zh": "将指定文档编辑为面向 CEO 或 CTO 的科技图文，保留事实与条件，交付可编辑内容、HTML 和长图。",
-      "en": "Polish supplied documents for CEO or CTO readers with faithful editorial content, editable HTML, and shareable long images."
+      "zh": "将指定文档编辑为面向 CEO 或 CTO 的图文，独立选择五种编辑视觉风格，保留事实与条件，交付可编辑 HTML 和长图。",
+      "en": "Polish supplied documents for CEO or CTO readers with five editorial styles, faithful evidence, editable HTML, and rendered images."
     },
     "triggers": [
       "科技编辑与视觉抛光",
       "把技术文档做成高管阅读长图",
       "为 CEO 提炼决策速览",
       "为 CTO 制作技术洞察",
+      "给技术文章配图",
+      "选择报告视觉风格",
       "editorial polish",
       "polish a document for CEO readers",
       "turn a technical report into a CTO visual brief",
-      "create an executive longform image"
+      "create an executive longform image",
+      "illustrate a technical article",
+      "compare editorial visual styles"
     ],
     "version": "0.9.1"
   },

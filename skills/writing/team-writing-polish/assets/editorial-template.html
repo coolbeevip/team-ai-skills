@@ -4,116 +4,161 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light">
-  <title>科技编辑与视觉抛光 · 排版示例</title>
+  <title>测试改善之后，推广仍需补证</title>
   <style>
     :root {
-      --paper: #f5f3ec;
-      --ink: #222722;
-      --muted: #535b54;
-      --accent: #245b47;
-      --tint: #e6ede5;
-      --rule: #c7cdc3;
+      --paper: #f6f4ee;
+      --ink: #202521;
+      --muted: #69706a;
+      --accent: #28584a;
+      --tint: #eeeee8;
+      --rule: #d9ded7;
+      --sans: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+      --serif: "Songti SC", "Noto Serif CJK SC", "Source Han Serif SC", serif;
       --body-size: 17px;
     }
     * { box-sizing: border-box; }
-    html { background: var(--paper); color: var(--ink); }
-    body {
-      margin: 0;
-      font: var(--body-size)/1.65 -apple-system, BlinkMacSystemFont, "PingFang SC",
-        "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
-      overflow-wrap: anywhere;
-      -webkit-text-size-adjust: 100%;
-    }
-    main { max-width: 680px; margin: auto; padding: 26px 24px 40px; }
-    .masthead, .meta { color: var(--muted); font-size: 14px; }
-    .masthead { display: flex; justify-content: space-between; gap: 16px; }
-    header { border-top: 3px solid var(--accent); padding-top: 17px; }
-    .eyebrow { color: var(--accent); font-size: 14px; font-weight: 650; margin: 30px 0 10px; }
-    h1 { font-size: clamp(30px, 8.5vw, 40px); line-height: 1.25; letter-spacing: -.025em; margin: 0 0 22px; }
-    h2 { font-size: 25px; line-height: 1.4; letter-spacing: -.015em; margin: 8px 0 18px; }
-    h3 { font-size: 18px; line-height: 1.5; margin: 0 0 5px; }
-    p { margin: 0 0 16px; }
+    html { background: #e8e9e7; color: var(--ink); }
+    body { margin: 0; font: var(--body-size)/1.75 var(--sans); overflow-wrap: anywhere; -webkit-text-size-adjust: 100%; }
+    main { max-width: 1040px; margin: auto; padding: 24px 24px 38px; background: var(--paper); }
+    p { margin: 0 0 18px; }
     p:last-child { margin-bottom: 0; }
-    .lead { font-size: 20px; line-height: 1.6; }
-    .meta { margin-top: 22px; }
-    section { border-top: 1px solid var(--rule); padding-top: 24px; margin-top: 32px; }
-    .section-no { color: var(--accent); font-size: 14px; font-weight: 650; }
-    .judgment { padding: 20px; background: var(--tint); border-left: 3px solid var(--accent); margin-top: 24px; }
-    .judgment p { font-size: 19px; }
-    .label { display: block; color: var(--accent); font-size: 14px; font-weight: 650; margin-bottom: 9px; }
-    figure { margin: 24px 0 0; }
-    figcaption, .source { font-size: 14px; line-height: 1.65; color: var(--muted); }
-    figcaption { margin-top: 14px; }
-    .flow { list-style: none; margin: 0; padding: 0; }
-    .flow li { position: relative; border: 1px solid var(--rule); padding: 15px 16px; margin-bottom: 32px; }
-    .flow li:not(:last-child)::after { content: "↓"; position: absolute; bottom: -29px; left: 18px; color: var(--accent); }
-    .flow li:last-child { margin-bottom: 0; }
-    .flow .pending { border: 1px dashed var(--accent); }
-    .flow .pending .label::before { content: "待验证 · "; }
-    .comparison { margin: 0; }
-    .comparison > div { padding: 16px 0; border-bottom: 1px solid var(--rule); }
-    dt { font-weight: 650; margin-bottom: 6px; }
-    dd { margin: 0; }
-    .condition { border-left: 2px solid var(--accent); padding-left: 15px; margin-top: 22px; }
+    .masthead { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; padding-bottom: 13px; border-bottom: 2px solid var(--ink); }
+    .masthead strong { font-size: 22px; font-weight: 750; letter-spacing: -.04em; }
+    .masthead span { color: var(--muted); font-size: 14px; }
+    .cover { padding-top: 28px; }
+    .eyebrow { font-size: 14px; color: var(--muted); margin-bottom: 17px; }
+    h1 { font-family: var(--serif); font-size: 40px; font-weight: 900; line-height: 1.28; letter-spacing: -.04em; margin: 0 0 22px; }
+    h1 span { display: block; }
+    h1 .accent { color: var(--accent); }
+    .lead { max-width: 670px; font-size: 19px; line-height: 1.75; }
+    .cover-art { margin: 28px -24px 0; }
+    .cover-art img { width: 100%; height: auto; }
+    .cover-art figcaption { margin: 0; padding: 13px 24px 0; }
+    img, svg { display: block; max-width: 100%; height: auto; }
+    figcaption, .source, .meta { font-size: 14px; line-height: 1.65; color: var(--muted); }
+    .caption-kind { color: var(--ink); font-weight: 650; margin-right: 8px; }
+    .story { margin-top: 40px; }
+    h2 { font-size: 26px; line-height: 1.45; font-weight: 700; letter-spacing: -.025em; margin: 0 0 20px; }
+    h3 { font-size: 18px; line-height: 1.5; margin: 0 0 12px; }
+    .margin-note { margin-top: 25px; border-left: 2px solid var(--ink); padding-left: 17px; }
+    .evidence { background: var(--tint); margin: 40px -24px 0; padding: 28px 24px; }
+    .evidence h2 { max-width: 600px; }
+    figure { margin: 0; }
+    .evidence figcaption { margin-top: 20px; color: var(--ink); }
+    .relationship { width: 100%; max-width: 430px; margin: auto; }
+    .relationship .node { fill: var(--paper); stroke: var(--muted); }
+    .relationship .pending { fill: none; stroke: var(--accent); stroke-dasharray: 5 4; }
+    .relationship .result { fill: var(--paper); stroke: var(--accent); }
+    .relationship .connector { fill: none; stroke: var(--ink); stroke-width: 1.5; }
+    .relationship text { fill: var(--ink); text-anchor: middle; font: 17px var(--sans); }
+    .relationship .detail { fill: var(--ink); font-size: 16px; }
+    .closing { margin-top: 40px; }
+    .comparison { margin: 0; display: grid; gap: 25px; }
+    .comparison > div { border-top: 1px solid var(--ink); padding-top: 14px; }
+    dt { color: var(--muted); font-size: 14px; margin-bottom: 10px; }
+    dd { margin: 0; font-size: 19px; line-height: 1.7; text-wrap: balance; }
+    .comparison .phrase { white-space: nowrap; }
+    footer { border-top: 2px solid var(--ink); margin-top: 38px; padding-top: 18px; }
     a { color: var(--accent); text-underline-offset: 3px; }
-    img, svg { max-width: 100%; height: auto; display: block; }
-    svg text { font-family: inherit; }
     table { width: 100%; border-collapse: collapse; table-layout: fixed; }
     th, td { padding: 10px 6px; text-align: left; vertical-align: top; border-bottom: 1px solid var(--rule); }
     pre { white-space: pre-wrap; overflow-wrap: anywhere; }
-    footer { margin-top: 36px; padding-top: 20px; border-top: 1px solid var(--rule); }
-    @media (max-width: 360px) { main { padding-inline: 20px; } }
-    @media print { main { max-width: none; } section, figure { break-inside: avoid; } }
+    @media (min-width: 760px) {
+      main { padding: 32px 56px 48px; }
+      .masthead strong { font-size: 28px; }
+      .cover { padding-top: 40px; }
+      h1 { font-size: 68px; line-height: 1.2; margin-bottom: 28px; }
+      .lead { font-size: 21px; }
+      .cover-art { margin: 36px -56px 0; }
+      .cover-art figcaption { padding-inline: 56px; }
+      .cover-art img { width: 100%; }
+      .story { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr); gap: 56px; margin-top: 52px; }
+      h2 { font-size: 31px; }
+      .margin-note { margin-top: 5px; align-self: start; }
+      .evidence { margin: 52px -56px 0; padding: 38px 56px; display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: 32px; }
+      .evidence h2 { align-self: start; padding-top: 14px; }
+      .comparison { grid-template-columns: 1fr 1fr; gap: 40px; }
+      .closing { margin-top: 48px; }
+      footer { margin-top: 48px; }
+    }
+    @media (max-width: 359px) {
+      h1 { font-size: 34px; }
+      main { padding-inline: 20px; }
+      .cover-art, .evidence { margin-inline: -20px; }
+      .cover-art figcaption, .evidence { padding-inline: 20px; }
+    }
+    @media print { html { background: var(--paper); } main { max-width: none; } figure, .margin-note { break-inside: avoid; } }
   </style>
 </head>
 <body>
-  <!-- 独立编写的可编辑模板。复制后按阅读任务选择模块，替换全部示例及来源。 -->
-  <main>
-    <header>
-      <div class="masthead"><span>科技观察 / TECH NOTES</span><span>排版示例</span></div>
+  <!-- 此模板及相邻封面图组成离线样张。交付单文件 HTML 时内联图片，按文章替换示例和素材。 -->
+  <!-- 本样张无附录，主线即 main；如增加附录，将其放在 data-export="main" 区域之外。 -->
+  <main data-export="main">
+    <div class="masthead"><strong>科技观察</strong><span>专题样张</span></div>
+    <header class="cover">
       <p class="eyebrow">Skill 评测与推广</p>
-      <h1>测试表现改善，<br>推广依据还需补齐</h1>
-      <p class="lead">现有测试说明优化有进展。是否扩大使用，还需要知道它在新任务上的表现，以及维护评测的投入。</p>
-      <p class="meta">示例材料 · 未提供具体数值 · 不代表真实项目结果</p>
+      <h1><span>测试改善之后，</span><span class="accent">推广仍需补证</span></h1>
+      <p class="lead">已有测试表现提高。新任务效果与评测维护成本仍是缺口。</p>
+      <figure class="cover-art">
+        <img src="editorial-cover.png" width="1536" height="1024" alt="纸页从已有支撑向另一块平台延伸，中间仍留有缺口，用来比喻既有测试与新任务验证之间尚未补齐的证据。">
+        <figcaption><span class="caption-kind">概念插画</span>纸桥的缺口比喻尚待验证的跨越，不代表实验结果或实际性能。</figcaption>
+      </figure>
     </header>
 
-    <aside class="judgment" aria-label="核心判断">
-      <span class="label">核心判断</span>
-      <p>先补齐新任务效果与维护成本，再判断是否推广。</p>
-    </aside>
-
-    <section aria-labelledby="progress-heading">
-      <span class="section-no">01 / 已知进展</span>
-      <h2 id="progress-heading">改善发生在哪里</h2>
-      <p>某 Skill 经过迭代，在参与优化的既有测试集上成功率提高。材料没有给出幅度，当前只能确认这一测试范围内的改善。</p>
-      <p class="condition">未做独立盲测，也未统计维护评测集的成本。现有表现尚不能回答新任务收益与推广投入。</p>
+    <section class="story" aria-labelledby="progress-heading">
+      <div>
+        <h2 id="progress-heading">改善发生在哪里</h2>
+        <p>某 Skill 经过迭代，在参与优化的既有测试集上成功率提高。材料没有给出幅度，当前只能确认这一测试范围内的改善。</p>
+      </div>
+      <aside class="margin-note" aria-label="结论成立的边界">
+        <h3>现有证据的边界</h3>
+        <p>未做独立盲测，也未统计维护评测集的成本。现有表现尚不能回答新任务收益与推广投入。</p>
+      </aside>
     </section>
 
-    <section aria-labelledby="path-heading">
-      <span class="section-no">02 / 判断路径</span>
-      <h2 id="path-heading">推广前还缺两项依据</h2>
-      <figure>
-        <ol class="flow" aria-label="从现有结果到推广判断的证据路径">
-          <li><span class="label">已有观察</span><h3>既有测试表现改善</h3><p>范围限于已参与优化的测试集。</p></li>
-          <li class="pending"><span class="label">新任务效果</span><h3>独立样本能否复现收益</h3><p>当前尚未开展独立盲测。</p></li>
-          <li class="pending"><span class="label">持续投入</span><h3>维护评测需要多少成本</h3><p>当前材料尚未统计。</p></li>
-          <li><span class="label">待判断</span><h3>是否扩大使用</h3><p>综合收益、投入和适用范围作判断。</p></li>
-        </ol>
-        <figcaption>箭头表示阅读与判断路径；两项缺口可并行补证，不代表已执行的实验顺序。</figcaption>
+    <section class="evidence" aria-labelledby="path-heading">
+      <h2 id="path-heading">推广前，<br>还缺两项依据</h2>
+      <figure aria-labelledby="evidence-caption">
+        <svg class="relationship" viewBox="0 0 342 388" role="img" aria-labelledby="evidence-title evidence-desc">
+          <title id="evidence-title">从已有进展到推广判断的证据关系</title>
+          <desc id="evidence-desc">已有测试表现改善。新任务效果与评测维护成本是两个可并行补证的缺口，共同支持后续是否扩大使用的判断。</desc>
+          <defs>
+            <marker id="evidence-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M1 1 L7 4 L1 7" fill="none" stroke="var(--ink)" stroke-width="1.4" />
+            </marker>
+          </defs>
+          <rect class="node" x="12" y="12" width="318" height="74" />
+          <text x="171" y="42">既有测试表现改善</text>
+          <text class="detail" x="171" y="66">仅限已参与优化的测试集</text>
+          <path class="connector" d="M171 86 V112 H87 V140" marker-end="url(#evidence-arrow)" />
+          <path class="connector" d="M171 112 H255 V140" marker-end="url(#evidence-arrow)" />
+          <rect class="node pending" x="12" y="140" width="150" height="90" />
+          <text x="87" y="174">新任务效果</text>
+          <text class="detail" x="87" y="203">待独立盲测</text>
+          <rect class="node pending" x="180" y="140" width="150" height="90" />
+          <text x="255" y="174">评测维护</text>
+          <text class="detail" x="255" y="203">成本待统计</text>
+          <path class="connector" d="M87 230 V264 H255 V230" />
+          <path class="connector" d="M171 264 V302" marker-end="url(#evidence-arrow)" />
+          <rect class="node result" x="12" y="302" width="318" height="74" />
+          <text x="171" y="332">是否扩大使用</text>
+          <text class="detail" x="171" y="357">综合收益、投入与适用范围</text>
+        </svg>
+        <figcaption id="evidence-caption">关系示意：虚线框为两项待补证据，可并行开展；箭头连接判断依据，不代表实验已经完成。</figcaption>
       </figure>
     </section>
 
-    <section aria-labelledby="choice-heading">
-      <span class="section-no">03 / 当前边界</span>
-      <h2 id="choice-heading">进展与未知分别看</h2>
+    <section class="closing" aria-labelledby="choice-heading">
+      <h2 id="choice-heading">进展与未知，分别看</h2>
       <dl class="comparison">
-        <div><dt>材料支持</dt><dd>在既有测试范围内，迭代后表现有所改善。</dd></div>
-        <div><dt>仍需确认</dt><dd>新任务收益和维护成本；尚不能计算 ROI 或承诺推广收益。</dd></div>
+        <div><dt>材料支持</dt><dd><span class="phrase">在既有测试范围内，</span><span class="phrase">迭代后表现有所改善。</span></dd></div>
+        <div class="open"><dt>仍需确认</dt><dd>新任务收益和维护成本；尚不能计算 ROI 或承诺推广收益。</dd></div>
       </dl>
     </section>
 
     <footer>
-      <p class="source">来源：本模板的假设示例，仅供版式预览。交付时替换为获准展示的真实来源及位置。</p>
+      <p class="source">本文为假设材料的排版示例，未提供具体数值，不代表真实项目结果。封面为 AI 生成的概念插画。交付时替换为获准展示的真实来源及位置。</p>
     </footer>
   </main>
 </body>

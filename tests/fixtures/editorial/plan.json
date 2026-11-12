@@ -1,0 +1,249 @@
+{
+  "specVersion": "1.0",
+  "audience": "ceo",
+  "styleId": "tech-magazine",
+  "styleVersion": "1.0",
+  "contentVersion": "fixture-1",
+  "purpose": "understand",
+  "locale": "zh-CN",
+  "density": "comfortable",
+  "brand": null,
+  "canvas": {
+    "cssWidth": 400,
+    "scale": 2.7,
+    "splitPolicy": "semantic",
+    "maxExportPixels": 24000000,
+    "targetChannelLimits": {}
+  },
+  "outputs": [
+    "html",
+    "png",
+    "markdown"
+  ],
+  "mainClaim": {
+    "text": "测试改善之后，推广仍需补证",
+    "deck": "已有进展值得记录，新任务效果与维护投入仍待确认。",
+    "claimIds": [
+      "c2",
+      "c4",
+      "c5"
+    ]
+  },
+  "facts": [
+    {
+      "id": "c1",
+      "text": "迭代前在20个固定任务中成功12个。",
+      "kind": "fact",
+      "source": "source.md:4",
+      "conditions": [],
+      "quantity": {
+        "value": 12,
+        "unit": "项 / 20"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "迭代后在同一组20个任务中成功16个。",
+      "kind": "fact",
+      "source": "source.md:4",
+      "conditions": [
+        "改善仅在参与优化的既有测试范围内观察到。"
+      ],
+      "quantity": {
+        "value": 16,
+        "unit": "项 / 20"
+      },
+      "required": true
+    },
+    {
+      "id": "c3",
+      "text": "模型版本、工具权限与成功规则保持一致。",
+      "kind": "fact",
+      "source": "source.md:5",
+      "conditions": [],
+      "required": true
+    },
+    {
+      "id": "c4",
+      "text": "尚未进行独立盲测。",
+      "kind": "fact",
+      "source": "source.md:6",
+      "conditions": [],
+      "required": true
+    },
+    {
+      "id": "c5",
+      "text": "未统计评测维护耗时，没有ROI结论。",
+      "kind": "fact",
+      "source": "source.md:6-7",
+      "conditions": [],
+      "required": true
+    },
+    {
+      "id": "c6",
+      "text": "作者建议增加独立样本。",
+      "kind": "recommendation",
+      "source": "source.md:7",
+      "conditions": []
+    }
+  ],
+  "blocks": [
+    {
+      "id": "sample-context",
+      "role": "context",
+      "title": "熟悉的任务，已有改善",
+      "paragraphs": [
+        "同一组任务既参与优化，也用于观察改动后的表现。"
+      ],
+      "claimIds": [
+        "c1",
+        "c2"
+      ],
+      "scene": {
+        "object": "任务样本",
+        "state": "参与优化",
+        "caption": "同一组样本参与优化；这是概念示意，不是实验现场。",
+        "claimIds": [
+          "c1",
+          "c2"
+        ],
+        "status": "observed"
+      }
+    },
+    {
+      "id": "comparison",
+      "role": "evidence",
+      "title": "变化发生在这20个任务中",
+      "paragraphs": [
+        "成功数增加了，但不能据此承诺新任务也有同等收益。"
+      ],
+      "claimIds": [
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "chartId": "success"
+    },
+    {
+      "id": "mechanism",
+      "role": "mechanism",
+      "title": "证据在哪一步停下",
+      "paragraphs": [
+        "已有测试支持当前范围的改善；独立盲测仍是缺口，不能把缺口直接等同于过拟合已经发生。"
+      ],
+      "claimIds": [
+        "c2",
+        "c4"
+      ],
+      "diagramId": "evidence-path"
+    },
+    {
+      "id": "new-tasks",
+      "role": "context",
+      "title": "新任务，需要另一份证据",
+      "paragraphs": [
+        "作者建议增加未参与优化的独立样本。这属于验证建议，尚未执行。"
+      ],
+      "claimIds": [
+        "c4",
+        "c6"
+      ],
+      "scene": {
+        "object": "任务样本",
+        "state": "待独立验证",
+        "caption": "沿用任务样本这一对象，虚线表示尚缺验证，不代表已经取得结果。",
+        "claimIds": [
+          "c4",
+          "c6"
+        ],
+        "status": "pending"
+      }
+    },
+    {
+      "id": "boundary",
+      "role": "boundary",
+      "title": "推广判断仍有两个缺口",
+      "paragraphs": [
+        "新任务效果尚未独立验证，评测集维护耗时也未统计。目前不能计算ROI或承诺推广收益。"
+      ],
+      "claimIds": [
+        "c4",
+        "c5"
+      ]
+    }
+  ],
+  "diagrams": [
+    {
+      "id": "evidence-path",
+      "title": "评测范围与证据缺口",
+      "description": "实线表示已有观察，虚线表示独立验证缺口；节点关系不是完整的评测系统架构。",
+      "nodes": [
+        {
+          "id": "known",
+          "label": "参与优化的20个任务",
+          "claimIds": [
+            "c1"
+          ],
+          "row": 0,
+          "column": 0,
+          "state": "observed"
+        },
+        {
+          "id": "observed",
+          "label": "成功数12变为16",
+          "claimIds": [
+            "c1",
+            "c2"
+          ],
+          "row": 1,
+          "column": 0,
+          "state": "observed"
+        },
+        {
+          "id": "unknown",
+          "label": "独立盲测尚未进行",
+          "claimIds": [
+            "c4"
+          ],
+          "row": 2,
+          "column": 0,
+          "state": "pending"
+        }
+      ],
+      "edges": [
+        {
+          "from": "known",
+          "to": "observed",
+          "claimIds": [
+            "c2"
+          ]
+        }
+      ]
+    }
+  ],
+  "charts": [
+    {
+      "id": "success",
+      "title": "固定任务集中的成功数",
+      "conditions": [
+        "20个固定任务；同一模型版本、工具权限与成功判定规则。",
+        "合成测试数据，不代表真实项目结果。"
+      ],
+      "points": [
+        {
+          "label": "迭代前",
+          "claimId": "c1"
+        },
+        {
+          "label": "迭代后",
+          "claimId": "c2"
+        }
+      ]
+    }
+  ],
+  "selection": {
+    "reason": "工程验收，直接生成五种风格对照，不用于真实发布。",
+    "preview": "skip",
+    "confirmed": false
+  }
+}

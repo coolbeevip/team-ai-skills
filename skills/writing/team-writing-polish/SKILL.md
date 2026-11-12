@@ -1,6 +1,6 @@
 ---
 name: team-writing-polish
-description: 将指定文档编辑为面向 CEO 或 CTO 的科技图文，保留事实与条件，交付可编辑内容、HTML 和长图。Polish supplied documents for CEO or CTO readers with faithful editorial content, editable HTML, and shareable long images.
+description: 将指定文档编辑为面向 CEO 或 CTO 的图文，独立选择五种编辑视觉风格，保留事实与条件，交付可编辑 HTML 和长图。Polish supplied documents for CEO or CTO readers with five editorial styles, faithful evidence, editable HTML, and rendered images.
 license: PolyForm-Noncommercial-1.0.0
 metadata:
   author: coolbeevip
@@ -10,15 +10,21 @@ triggers:
   - 把技术文档做成高管阅读长图
   - 为 CEO 提炼决策速览
   - 为 CTO 制作技术洞察
+  - 给技术文章配图
+  - 选择报告视觉风格
   - editorial polish
   - polish a document for CEO readers
   - turn a technical report into a CTO visual brief
   - create an executive longform image
+  - illustrate a technical article
+  - compare editorial visual styles
 ---
 
 # 科技编辑与视觉抛光 / Editorial Polish
 
 把指定材料制作成帮助 CEO 或 CTO 理解、判断的阅读视图。先确定读者要回答的问题，再提炼内容、组织叙事和选择图形。可以重排与改写，不能提高证据强度、扩大承诺或藏起关键限制。原文始终是权威来源。
+
+受众决定信息取舍，风格决定表达方式。统一视觉语言，不统一文章思想结构；先检查主次，再检查细节，最后在实际阅读尺寸验收。
 
 ## 判断标准
 
@@ -27,8 +33,10 @@ triggers:
 - 删冗余不删支撑：既保留让结论成立的条件，也保留让读者看懂机制的案例和过渡。
 - 抽象词有具体对应：重要概念落到对象、动作、条件和结果，不用术语替代解释。
 - 结论就近带条件：计划、假设、局部实验和作者意见保持各自身份。
-- 图形有理解职责：能解释关系、比较选择、呈现证据或显示约束；无需配图时允许纯文字。
+- 原图优先保留：先盘点原文图片、图注及上下文，默认沿用，再按缺口补充结构图或概念插画；不为统一风格重画证据图。确需省略或调整原图时记录原因。
+- 新增图形有理解职责：能解释关系、比较选择、呈现证据或显示约束；原文无图且无需补图时允许纯文字。
 - 验收按证据报告：静态检查、浏览器检查、模型审阅和真人测试分别记录，不相互替代。
+- 杂志级编排：建立明确的开篇视觉焦点、标题与正文的字形层级，以及随内容变化的图文节奏；不把每节排成相同的标题、卡片和分隔线。美观不能靠缩小条件、删证据或生成装饰图获得。
 
 ## 触发边界
 
@@ -50,6 +58,8 @@ triggers:
 ## 输入物
 
 - 用户指定的材料及允许补证据的范围，包括文件、已提供的正文或获准访问的链接。
+- 可选的原文图片、参考风格、品牌要求和配图偏好；区分事实证据图、编辑目标与仅供风格参考的图片。
+- 独立的 `visual_style`、预览策略、密度、画布与渠道限制；本次请求参数按 [RENDERING-CONTRACT.md](./references/RENDERING-CONTRACT.md) 校验，不写入共享配置。
 - 唯一 slug 或明确输入路径、目标项目；受众为 CEO、CTO 或两者；用途为了解、评审、决策或传播；输出格式和披露范围。
 - 同一 slug 中与指定材料直接相关的上下文、决策和风险说明，以及项目公共写作指南；按访问边界读取，不扩展为整个项目资料搜集。
 - `team-prd-to-brief` 的 `prd/brief.md` 或 `team-codebase-brief` 的指定文件可作为输入，但不是前置依赖。
@@ -62,12 +72,17 @@ triggers:
 
 | 文件 | 用途 |
 | --- | --- |
-| `editorial.md` | 可维护正文，含必要的来源与适用条件；是派生视图的维护入口 |
-| `index.html` | 可编辑、可复制文字的自包含图文版 |
-| `longform.png` | 由最终 HTML 实际渲染的分享长图 |
+| `cover-preview.png`、`layout-preview.html`、`layout-preview.png` | 同内容版本的首屏与全篇骨架预览；供确认方向，不能冒充最终长图 |
+| `editorial.md` | 可维护正文，含必要来源与条件；修订后同步制作计划再重新渲染 |
+| `index.html` | 可编辑、可复制文字的自包含图文版，按需分为阅读主线与附录 |
+| `longform.png` | 由最终 HTML 的阅读主线实际渲染的分享长图，不默认截入全部附录 |
 | `part-01.png` 等 | 长图超过导出或阅读承载能力时，按自然章节拆分；回复说明它们替代还是补充整图 |
+| `assets/fig-01.svg`、`assets/fig-02.png` 等 | 按需保存可编辑图源或选定插画；Markdown 引用本地素材，HTML 内联相同版本，保证离线可用 |
+| `design-plan.json` | 受众、风格与内容版本、主判断、语义块、图形数据及来源映射 |
+| `sources.md` | 可读的主张、证据、来源位置与条件对应关系 |
+| `qa-report.md`、`qa-report.json` | 已验与未验项、实际环境、导出边界、内容和文件哈希 |
 
-双模式共用一份事实底稿，可以放在上一级 `source-map.md`；单模式也可在工作记录中维护映射。需要交接或复核时保存来源映射、关键删减理由和 `checks.md`，不要求读者阅读制作记录。来源和披露限制适用于这些辅助文件，公开版不得泄露内部路径或未获准内容。
+双模式共用一份事实底稿，两个计划中的事实身份、数值和条件必须一致；可读取既有 `source-map.md`，默认交付 `sources.md`，不要求读者阅读制作记录。两版可使用同一或不同风格，不能混在一张无限长图里。预览候选与后续修订使用模式目录下的新版本/风格子目录，脚本不覆盖旧产物。来源和披露限制同样适用于辅助文件，公开版不得泄露内部路径或未获准内容。
 
 保留原始材料，写入前确认源文件与输出文件不是同一路径（含符号链接）。已有产物仅在本轮明确修订它时更新；否则使用新版本子目录或询问，不能覆盖不明来源的文件。若只请求 Markdown/HTML，则按请求交付；默认任务缺少 PNG 时必须报告部分完成。
 
@@ -76,19 +91,37 @@ triggers:
 1. **确定阅读任务。** 用一句话写明读者看完应理解或判断什么。读取 [AUDIENCE-MODES.md](./references/AUDIENCE-MODES.md) 中适用模式，阅读时长是预算，不是删掉必要解释的理由。
 2. **建立事实底稿。** 按 [EDITORIAL-PRINCIPLES.md](./references/EDITORIAL-PRINCIPLES.md) 对标题、关键结论和数据记录主张、来源位置、身份、条件和限制。双模式先锁定共同事实；矛盾并列保留，相关结论暂缓，不替作者裁定。
 3. **找出关键关系。** 识别因果、比较、反馈、依赖或约束；检查改变哪个条件会影响判断。普通材料无需深层母题，也不制造反转。材料缺失的机制或案例标为缺口；补充的推导或假设例可用于说明，必须可区分且不能升级为证据。
-4. **写编辑脚本。** 提炼中心判断，选先结论、先案例、先取舍或先变化的理解路径。先完成 `editorial.md`，核对必要解释与限制，再排版；决策建议仅在本次目的确为决策且材料支持时给出。
-5. **制作视觉表达。** 读取 [VISUAL-SYSTEM.md](./references/VISUAL-SYSTEM.md)，按语义选择图形和模块。可从 [editorial-template.html](./assets/editorial-template.html) 复制到输出目录再改写，删除示例内容和无用模块，不改技能安装目录。正文、数据和关系图用 HTML/CSS/SVG 确定性排版；图像模型仅用于必要且获准的插画。
-6. **渲染与复核。** 按 [QUALITY-GATES.md](./references/QUALITY-GATES.md) 检查事实、理解支持、手机可读性和版本一致性。用现有本地浏览器能力导出 PNG；没有渲染工具或字体时按指南降级，不伪造完成。改正文后同步 HTML 并重新导出受影响图片。
+4. **写编辑脚本。** 提炼中心判断，选先结论、先案例、先取舍或先变化的理解路径。先定稿文案与条件，再按 [RENDERING-CONTRACT.md](./references/RENDERING-CONTRACT.md) 放入可检查的制作计划，由同一数据生成正文与图文；决策建议仅在本次目的确为决策且材料支持时给出。
+5. **选择风格与视觉编辑。** 读取 [VISUAL-STYLE-CATALOG.md](./references/VISUAL-STYLE-CATALOG.md)。已指定风格直接采用；未指定按材料推荐 2～3 项，默认科技杂志。按 [VISUAL-EDITING.md](./references/VISUAL-EDITING.md) 分别设计两种受众骨架，区分证据图和解释图，安排主线、原图和附录。
+6. **预览或直接制作。** 结合 [VISUAL-SYSTEM.md](./references/VISUAL-SYSTEM.md) 用同一内容制作候选首屏与骨架，不能把更好的文案只给某候选。用户正在选择新风格时先确认具体预览；已选风格、已有适用确认或明确要求直接完成时沿用，不额外阻断。只改文案时不强加视觉预览。记录选定风格 ID/版本、品牌覆盖、内容版本与依据。
+7. **制作与渲染。** 原文有图或需要新增图时读取 [ILLUSTRATIONS.md](./references/ILLUSTRATIONS.md)，先保留原图，再实际绘图或生成必要插画。使用下述脚本生成 Markdown/HTML/PNG 与来源、QA 文件；长图只导出主线，附录留在 HTML，按语义分段。缺少能力时报告实际降级，不把提示词、占位图或未渲染格式算作完成。
+8. **复核。** 按 [QUALITY-GATES.md](./references/QUALITY-GATES.md) 检查事实、理解支持、风格差异、缩略图主次、手机可读性和版本一致性。任何正文、条件或素材变更都回写计划，在新版本目录重渲染受影响文件；人工复核结果补入 QA 报告，不把自动通过当成全部完成。
+
+## 固定脚本与风格资源
+
+[render.py](./scripts/render.py) 是本地入口，依赖同目录 [contracts.py](./scripts/contracts.py) 与 [browser.py](./scripts/browser.py)。默认 dry-run；`--request` 校验并解析输入，`--plan` 校验制作计划，`--preview` 选择预览，`--output` 指定新目录，`--apply` 才写入和渲染，`--browser` 可指定本地浏览器。先解析当前技能目录，再运行 `python3 {skill_dir}/scripts/render.py --plan plan.json --output final-v1 --apply`。完整参数、预览状态与失败处理见渲染合同。
+
+脚本不联网取素材、不改配置或源文档、不覆盖非空输出目录。HTML 制作只用 Python 标准库；PNG 额外需要本地 Chrome/Chromium 与当前 Python 已安装的 `websocket-client`。依赖缺失时保留可用产物并明确 PNG 未完成，不自动安装、上传或调用收费服务。
+
+输入使用 [request.schema.json](./assets/request.schema.json)，单受众计划使用 [plan.schema.json](./assets/plan.schema.json)；共享模板为 [editorial.html](./assets/templates/editorial.html) 与 [editorial.css](./assets/templates/editorial.css)。五份可执行配置为 [科技杂志](./assets/styles/tech-magazine.json)、[瑞士理性主义](./assets/styles/swiss-rational.json)、[数据新闻](./assets/styles/data-journalism.json)、[现代极简](./assets/styles/modern-minimal.json)、[插画叙事](./assets/styles/illustrated-narrative.json)。
+
+[原杂志样张](./assets/editorial-template.html) 与 [纸桥概念图](./assets/editorial-cover.png) 仅供设计参考，不是新引擎入口或通用配图。所有模板、脚本及必要资源都随本技能独立安装，业务产物不写回技能安装目录。
 
 ## 完成标准
 
 - 标题、关键判断、数据与条件均有来源依据；观点归属明确，关键风险保留，两版事实一致。
 - 成文保留支撑理解的具体对象和必要过程；图形关系与正文相符，没有虚构数据或装饰配额。
+- 已核对原文图片清单，默认保留可用原图、图注和相关上下文，例外有原因记录；新增配图有明确职责和来源/生成身份。素材已经保存到目标项目，HTML 与 Markdown 使用同一版本。未取得的原图或未完成的指定配图单独报告缺口。
 - 用户请求的文件实际存在、读回可用；默认交付包含 Markdown、HTML 和经检查的 PNG，或明确哪些格式尚未完成。
 - 视觉成品经过实际渲染及整图、首中尾检查；正文、图注、连线和条件在手机尺度可辨认。
+- 同时通过杂志编排检查：开篇有主次、字形分工明确、原图有合适展示空间、各章节密度随内容变化；无溢出仅代表技术可读，不等于美观达标。
+- 风格选择与受众任务独立；切换风格不改变事实。360/400/430 手机视口、实际字体、最终颜色组合与导出版本均有记录；五风格对照不能只换颜色。任何事实、安全或可读性硬门禁失败都不能标记完成。
+- 视觉方向已确认、有可沿用的明确确认，或用户明确要求直接完整制作；两版骨架不只是字数不同。主线与附录有清楚边界，影响判断的条件与关键证据没有被藏进附录。
 - 原文、配置、公共风格和工作区/Task 状态未被本次抛光改写；文件在目标业务项目，不写回技能库。
 - 报告已执行的检查及其局限；未做真人测试时不宣称阅读效率或理解效果已验证。
 
 ## 最终回复
 
 简要提供受众、核心编辑取舍和可点击产物路径；分别说明已完成的事实检查、渲染检查及未完成项。必要时列出数据冲突、待补条件或披露限制。不输出制作流水账，不把自审称为独立评测，不自行发布或发送。
+
+处于预览确认阶段时，提供首屏与骨架入口，说明主判断、主图、原图/附录安排及待确认方向，明确完整长图尚未制作。不要为了给出“已完成”而跳过预览确认。

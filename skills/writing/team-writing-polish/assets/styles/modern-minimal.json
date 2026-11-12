@@ -1,0 +1,33 @@
+{
+  "id": "modern-minimal",
+  "version": "1.0",
+  "name": "现代极简",
+  "headingFont": "sans",
+  "heroRole": null,
+  "type": {
+    "hero": 46,
+    "section": 26,
+    "body": 18,
+    "lineHeight": 1.6,
+    "caption": 13,
+    "label": 14,
+    "meta": 12
+  },
+  "colors": {
+    "background": "#F7F7F5",
+    "text": "#181A1B",
+    "muted": "#606467",
+    "accent": "#384E73",
+    "surface": "#EBEDEF",
+    "divider": "#D9DCDE"
+  },
+  "chartSeries": [
+    "#384E73",
+    "#606467",
+    "#72502E"
+  ],
+  "status": {
+    "warning": "#795000",
+    "error": "#A11D33"
+  }
+}

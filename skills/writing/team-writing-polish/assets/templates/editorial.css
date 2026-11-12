@@ -1,0 +1,88 @@
+* { box-sizing: border-box; }
+html { color: var(--text); background: var(--background); }
+body { margin: 0; font: var(--body-size)/var(--body-line) var(--body-font); overflow-wrap: anywhere; -webkit-text-size-adjust: 100%; }
+main, .appendix, .preview-outline { max-width: var(--canvas); margin-inline: auto; padding: 0 26px; }
+p { margin: 0 0 16px; }
+p:last-child { margin-bottom: 0; }
+h1, h2, h3 { text-wrap: balance; margin: 0; }
+h1 { font: 800 var(--hero-size)/1.15 var(--heading-font); }
+h2 { font-size: var(--section-size); line-height: 1.25; margin-bottom: 20px; }
+h3 { font-size: 19px; line-height: 1.4; margin-bottom: 12px; }
+a { color: var(--accent); text-underline-offset: 3px; }
+a:focus-visible { outline: 3px solid var(--accent); outline-offset: 4px; }
+.unit { padding-block: var(--section-space); }
+.hero { padding-top: 40px; }
+.eyebrow { margin-bottom: 24px; color: var(--muted); font-size: 14px; }
+.deck { margin-top: 24px; font-size: 19px; line-height: 1.65; }
+.hero-condition { margin-top: 16px; font-size: var(--body-size); line-height: var(--body-line); }
+.hero .visual { margin-top: 32px; }
+.body-copy { margin-top: 20px; }
+.conditions { margin-top: 20px; padding-left: 14px; border-left: 2px solid var(--text); }
+.conditions p { font-size: var(--body-size); }
+.citations { margin-top: 14px; font-size: 13px; line-height: 1.5; color: var(--muted); }
+figure { margin: 24px 0 0; }
+figcaption { font-size: 13px; line-height: 1.5; color: var(--muted); margin-top: 14px; }
+img, svg { display: block; width: 100%; height: auto; }
+.brand-logo { width: auto; max-width: 110px; max-height: 60px; margin-bottom: 24px; }
+.diagram text, .scene text { fill: var(--text); font: 18px var(--body-font); text-anchor: middle; }
+.diagram .node { fill: var(--background); stroke: var(--text); stroke-width: 1.5; }
+.diagram .pending { stroke: var(--accent); stroke-dasharray: 5 4; }
+.diagram .edge { fill: none; stroke: var(--text); stroke-width: 1.5; }
+.chart { font-variant-numeric: tabular-nums; }
+.chart-row { margin: 20px 0; }
+.chart-label { display: flex; justify-content: space-between; gap: 14px; font-size: 16px; line-height: 1.5; margin-bottom: 8px; }
+.chart-track { border-left: 1.5px solid var(--text); padding-block: 3px; }
+.chart-bar { height: 20px; background: var(--series-0); min-width: 0; }
+.chart-axis { font-size: 14px; color: var(--muted); }
+.scene { max-width: 348px; margin-inline: auto; }
+.scene .object { fill: var(--surface); stroke: var(--text); stroke-width: 1.5; }
+.scene .state { fill: var(--background); stroke: var(--accent); stroke-width: 1.5; }
+.scene .pending { stroke-dasharray: 5 4; }
+.scene .link { stroke: var(--text); fill: none; stroke-width: 1.5; }
+.role-boundary { border-top: 2px solid var(--text); }
+.appendix { padding-block: 40px; border-top: 1px solid var(--divider); }
+.appendix .source-entry { margin-block: 24px; }
+.source-entry p { font-size: 14px; }
+.appendix-nav { padding-bottom: 24px; font-size: 14px; }
+.preview-outline { padding-block: 32px; border-top: 2px solid var(--text); }
+.preview-outline ol { padding-left: 22px; }
+.preview-outline li { margin-block: 24px; }
+.preview-outline .focus { padding-block: 20px; font-weight: 600; }
+[data-density="compact"] { --section-space: 24px; }
+[data-style="tech-magazine"] .hero { border-top: 5px solid var(--text); margin-top: 20px; }
+[data-style="tech-magazine"] .role-mechanism { margin-inline: -26px; padding-inline: 26px; background: var(--surface); }
+[data-style="tech-magazine"] .role-comparison { padding-left: 20px; border-left: 2px solid var(--text); }
+[data-style="tech-magazine"] .role-evidence h2 { max-width: 85%; }
+[data-style="swiss-rational"] h1 { line-height: 1.1; }
+[data-style="swiss-rational"] .unit { border-top: 1px solid var(--text); }
+[data-style="swiss-rational"] .hero { border-top: 8px solid var(--accent); margin-top: 24px; }
+[data-style="swiss-rational"] .unit:not(.hero) { display: grid; grid-template-columns: 10px minmax(0,1fr); column-gap: 16px; }
+[data-style="swiss-rational"] .unit:not(.hero) > * { grid-column: 2; }
+[data-style="swiss-rational"] .unit:not(.hero)::before { content: ''; grid-column: 1; grid-row: 1; border-top: 5px solid var(--text); margin-top: 8px; }
+[data-style="swiss-rational"] figure { margin-top: 16px; }
+[data-style="data-journalism"] h1 { line-height: 1.2; }
+[data-style="data-journalism"] .hero { padding-bottom: 24px; }
+[data-style="data-journalism"] .chart { margin-top: 32px; padding-block: 20px; border-block: 1px solid var(--text); }
+[data-style="data-journalism"] .conditions { background: var(--surface); border: 0; padding: 16px; }
+[data-style="data-journalism"] .role-evidence { border-top: 1px solid var(--divider); }
+[data-style="data-journalism"] .citations { margin-top: 8px; }
+[data-style="modern-minimal"] { --section-space: 48px; }
+[data-style="modern-minimal"][data-density="compact"] { --section-space: 32px; }
+[data-style="modern-minimal"] h1 { line-height: 1.1; }
+[data-style="modern-minimal"] .hero { min-height: 420px; display: flex; flex-direction: column; justify-content: center; }
+[data-style="modern-minimal"] .role-context, [data-style="modern-minimal"] .role-comparison { padding-block: 64px; }
+[data-style="modern-minimal"] .role-boundary { border-top: 1px solid var(--text); }
+[data-style="modern-minimal"] .chart-bar { height: 10px; }
+[data-style="illustrated-narrative"] .hero { padding-top: 48px; }
+[data-style="illustrated-narrative"] .scene { padding: 16px 0; }
+[data-style="illustrated-narrative"] .role-context { background: var(--surface); margin-inline: -26px; padding-inline: 26px; }
+[data-style="illustrated-narrative"] .role-mechanism { padding-top: 48px; }
+[data-style="illustrated-narrative"] .conditions { border-left-style: dashed; }
+@media (min-width: 760px) {
+  main, .appendix, .preview-outline { max-width: 920px; padding-inline: 48px; }
+  .hero { max-width: 780px; }
+  .visual { max-width: 600px; }
+  .diagram { max-width: 430px; margin-inline: auto; }
+  [data-style="tech-magazine"] .role-mechanism, [data-style="illustrated-narrative"] .role-context { margin-inline: -48px; padding-inline: 48px; }
+}
+@media print { .unit, figure, .conditions { break-inside: avoid; } }

@@ -1,0 +1,221 @@
+{
+  "type": "object",
+  "properties": {
+    "audience": {
+      "enum": [
+        "ceo",
+        "cto",
+        "both"
+      ]
+    },
+    "purpose": {
+      "enum": [
+        "understand",
+        "decision_brief",
+        "technical_review",
+        "share"
+      ]
+    },
+    "visual_style": {
+      "anyOf": [
+        {
+          "enum": [
+            "auto",
+            "tech-magazine",
+            "swiss-rational",
+            "data-journalism",
+            "modern-minimal",
+            "illustrated-narrative"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "ceo": {
+              "enum": [
+                "tech-magazine",
+                "swiss-rational",
+                "data-journalism",
+                "modern-minimal",
+                "illustrated-narrative"
+              ]
+            },
+            "cto": {
+              "enum": [
+                "tech-magazine",
+                "swiss-rational",
+                "data-journalism",
+                "modern-minimal",
+                "illustrated-narrative"
+              ]
+            }
+          },
+          "required": [
+            "ceo",
+            "cto"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "preview": {
+      "enum": [
+        "auto",
+        "required",
+        "skip"
+      ]
+    },
+    "formats": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "html",
+          "png",
+          "markdown"
+        ]
+      },
+      "minItems": 1
+    },
+    "locale": {
+      "type": "string",
+      "minLength": 1
+    },
+    "density": {
+      "enum": [
+        "comfortable",
+        "compact"
+      ]
+    },
+    "canvas": {
+      "type": "object",
+      "properties": {
+        "css_width": {
+          "type": "integer",
+          "minimum": 360,
+          "maximum": 1280
+        },
+        "export_scale": {
+          "type": "number",
+          "minimum": 1,
+          "maximum": 4
+        },
+        "split_policy": {
+          "enum": [
+            "semantic"
+          ]
+        },
+        "max_export_pixels": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "target_channel_limits": {
+          "type": "object",
+          "properties": {
+            "max_width_px": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "max_height_px": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "max_total_pixels": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          "required": [],
+          "additionalProperties": false
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "brand": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "colors": {
+              "type": "object",
+              "properties": {
+                "background": {
+                  "type": "string",
+                  "pattern": "^#[0-9A-Fa-f]{6}$"
+                },
+                "text": {
+                  "type": "string",
+                  "pattern": "^#[0-9A-Fa-f]{6}$"
+                },
+                "muted": {
+                  "type": "string",
+                  "pattern": "^#[0-9A-Fa-f]{6}$"
+                },
+                "accent": {
+                  "type": "string",
+                  "pattern": "^#[0-9A-Fa-f]{6}$"
+                },
+                "surface": {
+                  "type": "string",
+                  "pattern": "^#[0-9A-Fa-f]{6}$"
+                },
+                "divider": {
+                  "type": "string",
+                  "pattern": "^#[0-9A-Fa-f]{6}$"
+                }
+              },
+              "required": [],
+              "additionalProperties": false
+            },
+            "fonts": {
+              "type": "object",
+              "properties": {
+                "heading": {
+                  "type": "string",
+                  "minLength": 1,
+                  "pattern": "^[^;{}<>\\\\\n\r\"',]+$"
+                },
+                "body": {
+                  "type": "string",
+                  "minLength": 1,
+                  "pattern": "^[^;{}<>\\\\\n\r\"',]+$"
+                }
+              },
+              "required": [],
+              "additionalProperties": false
+            },
+            "logo": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": [],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "source_scope": {
+      "enum": [
+        "supplied-only",
+        "approved-extension"
+      ]
+    },
+    "sources": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 1
+    }
+  },
+  "required": [
+    "sources",
+    "audience"
+  ],
+  "additionalProperties": false,
+  "$schema": "https://json-schema.org/draft/2020-12/schema"
+}

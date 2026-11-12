@@ -1,0 +1,33 @@
+{
+  "id": "data-journalism",
+  "version": "1.0",
+  "name": "数据新闻",
+  "headingFont": "sans",
+  "heroRole": "evidence",
+  "type": {
+    "hero": 36,
+    "section": 24,
+    "body": 17,
+    "lineHeight": 1.65,
+    "caption": 13,
+    "label": 14,
+    "meta": 12
+  },
+  "colors": {
+    "background": "#FFFFFF",
+    "text": "#1D2730",
+    "muted": "#52606B",
+    "accent": "#155FA0",
+    "surface": "#F2F5F7",
+    "divider": "#D6DEE3"
+  },
+  "chartSeries": [
+    "#155FA0",
+    "#B45B17",
+    "#626D79"
+  ],
+  "status": {
+    "warning": "#795000",
+    "error": "#A11D33"
+  }
+}

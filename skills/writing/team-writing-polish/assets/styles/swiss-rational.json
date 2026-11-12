@@ -1,0 +1,33 @@
+{
+  "id": "swiss-rational",
+  "version": "1.0",
+  "name": "瑞士理性主义",
+  "headingFont": "sans",
+  "heroRole": "mechanism",
+  "type": {
+    "hero": 40,
+    "section": 25,
+    "body": 17,
+    "lineHeight": 1.65,
+    "caption": 13,
+    "label": 14,
+    "meta": 12
+  },
+  "colors": {
+    "background": "#FAFAF7",
+    "text": "#171A1C",
+    "muted": "#5E6468",
+    "accent": "#B52A21",
+    "surface": "#EEF0EE",
+    "divider": "#D5D9D6"
+  },
+  "chartSeries": [
+    "#354E66",
+    "#72502E",
+    "#5E6468"
+  ],
+  "status": {
+    "warning": "#795000",
+    "error": "#A11D33"
+  }
+}
