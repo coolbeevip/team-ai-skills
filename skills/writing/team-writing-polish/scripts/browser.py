@@ -73,7 +73,11 @@ class CDP:
 METRICS = r'''(() => {
  const main=document.querySelector('main');
  const all=[...document.querySelectorAll('body *')];
- const overflow=all.filter(e=> {const b=e.getBoundingClientRect();
+ const overflow=all.filter(e=> {
+   // A panel deliberately clips the unchanged source bitmap at its SVG viewport.
+   // Check the viewport itself; the underlying full-size SVGImageElement is not overflow.
+   if(e instanceof SVGImageElement && e.closest('.image-panel')) return false;
+   const b=e.getBoundingClientRect();
    return b.width>0 && (b.left < -1 || b.right>innerWidth+1);}).map(e=>e.id||e.tagName);
  const labelErrors=[];
  for(const t of document.querySelectorAll('svg text')) {
@@ -85,14 +89,18 @@ METRICS = r'''(() => {
      labelErrors.push('small SVG label: '+t.textContent);
  }
  const missingImages=[...document.images].filter(i=>!i.complete||!i.naturalWidth).map(i=>i.alt);
+ const gutterErrors=[...main.querySelectorAll('h1,h2,h3,p,figcaption')].filter(e=>{
+   const b=e.getBoundingClientRect();
+   return b.width>0 && (b.left<16 || b.right>innerWidth-16);
+ }).map(e=>e.textContent.slice(0,32));
  const tiny=[...document.querySelectorAll('p,figcaption,.chart-label,.chart-axis')].filter(e=>
    parseFloat(getComputedStyle(e).fontSize)<13).map(e=>e.tagName);
  const rect=main.getBoundingClientRect();
  const children=[...main.children];
  const unitTops=children.filter(e=>e.classList.contains('unit')).map(e=>e.getBoundingClientRect().top+scrollY);
- return {width:innerWidth,scrollWidth:document.documentElement.scrollWidth,overflow,labelErrors,missingImages,tiny,
+ return {width:innerWidth,scrollWidth:document.documentElement.scrollWidth,overflow,labelErrors,missingImages,tiny,gutterErrors,
    fontStatus:document.fonts.status,mainHeight:Math.ceil(rect.bottom+scrollY),
-   unitTops,outlineBottom:Math.ceil((document.querySelector('.preview-outline')||main).getBoundingClientRect().bottom+scrollY),
+   unitTops,breakTops:children.filter(e=>e.dataset.breakBefore==='true').map(e=>Math.floor(e.getBoundingClientRect().top+scrollY)),
    heroBottom:Math.ceil(document.querySelector('header').getBoundingClientRect().bottom+scrollY)};
 })()'''
 
@@ -137,7 +145,7 @@ def export(html, output, plan, preview=False, browser=None):
                         time.sleep(.05)
                     cdp.evaluate('Promise.all([document.fonts.ready,...[...document.images].map(i=>i.decode())]).then(()=>true)')
                     metrics = cdp.evaluate(METRICS)
-                    if any(metrics[k] for k in ('overflow', 'labelErrors', 'missingImages', 'tiny')) or metrics['fontStatus'] != 'loaded':
+                    if any(metrics[k] for k in ('overflow', 'labelErrors', 'missingImages', 'tiny', 'gutterErrors')) or metrics['fontStatus'] != 'loaded':
                         raise ValueError('layout/font/image gate failed: ' + json.dumps(metrics, ensure_ascii=False))
                     doc = cdp.send('DOM.getDocument')['root']['nodeId']
                     fonts = {}
@@ -154,6 +162,11 @@ def export(html, output, plan, preview=False, browser=None):
                         if role in brand_fonts and not any(f['familyName'].lower() == brand_fonts[role].lower() for f in actual):
                             raise ValueError(f'brand font {role} did not load; choose an available licensed font')
                     metrics['actualFonts'] = fonts
+                    cdp.evaluate("document.documentElement.dataset.exportMode='image'")
+                    exported = cdp.evaluate(METRICS)
+                    if any(exported[k] for k in ('overflow', 'labelErrors', 'missingImages', 'tiny', 'gutterErrors')):
+                        raise ValueError('image layout gate failed: ' + json.dumps(exported, ensure_ascii=False))
+                    metrics['imageLayout'] = exported
                     measurements.append(metrics)
                 width, scale = plan['canvas']['cssWidth'], plan['canvas']['scale']
                 cdp.send('Emulation.setDeviceMetricsOverride', dict(width=width, height=844, deviceScaleFactor=scale, mobile=True))
@@ -167,33 +180,37 @@ def export(html, output, plan, preview=False, browser=None):
                 max_height = math.floor(min(limits.get('maxHeightPx', 32760) / scale,
                                             pixels / out_width / scale))
 
-                def capture(name, top, bottom):
+                def capture(name, top, bottom, shrink=1):
                     height = bottom - top
-                    if height <= 0 or height > max_height:
+                    if height <= 0 or height * shrink > max_height:
                         raise ValueError('capture exceeds pixel budget; use semantic segments')
                     shot = cdp.send('Page.captureScreenshot', {'format': 'png', 'captureBeyondViewport': True,
-                        'clip': dict(x=0, y=top, width=width, height=height, scale=1)})
+                        'clip': dict(x=0, y=top, width=width, height=height, scale=shrink)})
                     data = base64.b64decode(shot['data'], validate=True)
                     size = png_size(data)
-                    if abs(size[0] - width * scale) > 1 or abs(size[1] - height * scale) > 1:
+                    if abs(size[0] - width * scale * shrink) > 1 or abs(size[1] - height * scale * shrink) > 1:
                         raise ValueError('PNG dimensions differ from requested canvas')
                     if size[0] > limits.get('maxWidthPx', 16384) or size[1] > limits.get('maxHeightPx', 32760) or size[0] * size[1] > pixels:
                         raise ValueError('actual PNG dimensions exceed export limits')
                     (output / name).write_bytes(data)
-                    return dict(file=name, top=top, bottom=bottom, pixels=size)
+                    return dict(file=name, top=top, bottom=bottom, pixels=size, thumbnail=shrink < 1)
 
                 captures = []
                 if preview:
                     captures.append(capture('cover-preview.png', 0, metrics['heroBottom']))
-                    # Use the actual outline, not appendix/source-map screenshot.
-                    if metrics['outlineBottom'] <= max_height:
-                        captures.append(capture('layout-preview.png', 0, metrics['outlineBottom']))
-                    else:
-                        raise ValueError('preview exceeds limits; shorten outline or use a larger permitted preview budget')
+                    # The overview is the actual final layout, not a table of contents.
+                    shrink = min(1 / scale, max_height / metrics['mainHeight'])
+                    captures.append(capture('layout-preview.png', 0, metrics['mainHeight'], shrink))
                 else:
                     tops = [0] + [math.floor(t) for t in metrics['unitTops'][1:]]
                     ends = tops[1:] + [metrics['mainHeight']]
-                    groups = split_ranges(list(zip(tops, ends)), max_height)
+                    groups, section = [], []
+                    for unit in zip(tops, ends):
+                        if unit[0] in metrics['breakTops'] and section:
+                            groups.extend(split_ranges(section, max_height))
+                            section = []
+                        section.append(unit)
+                    groups.extend(split_ranges(section, max_height))
                     for i, (top, bottom) in enumerate(groups, 1):
                         filename = 'longform.png' if len(groups) == 1 else f'part-{i:02}.png'
                         captures.append(capture(filename, top, bottom))

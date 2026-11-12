@@ -123,7 +123,7 @@ def index(items, label):
 
 def content_hash(plan):
     payload = copy.deepcopy({k: plan.get(k) for k in ('audience', 'purpose', 'locale', 'contentVersion',
-                                                    'mainClaim', 'facts', 'blocks', 'diagrams', 'charts')})
+                                                    'mainClaim', 'facts', 'blocks', 'diagrams', 'charts', 'publication')})
     # Storage location is not content; Renderer adds the actual source image bytes.
     for block in payload.get('blocks') or []:
         if 'image' in block:
@@ -167,7 +167,11 @@ def validate_plan(plan):
     facts = index(plan['facts'], 'fact')
     diagrams = index(plan.get('diagrams', []), 'diagram')
     charts = index(plan.get('charts', []), 'chart')
-    index(plan['blocks'], 'block')
+    blocks = index(plan['blocks'], 'block')
+    focus = plan['mainClaim'].get('visualBlockId')
+    if focus is not None and (focus not in blocks or blocks[focus].get('appendix') or
+            not any(k in blocks[focus] for k in ('image', 'diagramId', 'chartId', 'scene'))):
+        raise ValueError('visualBlockId must reference a main-path visual block')
 
     def refs(ids):
         if set(ids) - facts.keys():
@@ -204,6 +208,19 @@ def validate_plan(plan):
     for block in plan['blocks']:
         refs(block['claimIds'])
         ids = set(block['claimIds'])
+        layout = block.get('layout', 'prose')
+        if layout in ('comparison', 'sequence', 'states'):
+            if not block.get('items'):
+                raise ValueError(f'{layout} needs sourced items, not a prose-only block')
+            if layout == 'comparison' and len(block['items']) != 2:
+                raise ValueError('comparison requires two comparable sides')
+        elif 'items' in block:
+            raise ValueError('items require comparison, sequence or states layout')
+        if layout == 'figure' and not any(k in block for k in ('image', 'diagramId', 'chartId', 'scene')):
+            raise ValueError('figure layout requires an actual visual')
+        for item in block.get('items', []):
+            refs(item['claimIds'])
+            ids.update(item['claimIds'])
         if block['role'] == 'decision' and plan['purpose'] != 'decision_brief':
             raise ValueError('decision blocks require purpose=decision_brief')
         if sum(key in block for key in ('diagramId', 'chartId', 'scene', 'image')) > 1:

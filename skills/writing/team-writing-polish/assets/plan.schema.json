@@ -191,6 +191,17 @@
         "deck": {
           "type": "string",
           "minLength": 1
+        },
+        "visualBlockId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-zA-Z][a-zA-Z0-9_-]*$"
+            },
+            {
+              "type": "null"
+            }
+          ]
         }
       },
       "required": [
@@ -376,6 +387,47 @@
               "source": {
                 "type": "string",
                 "minLength": 1
+              },
+              "dispositionReason": {
+                "type": "string",
+                "minLength": 1
+              },
+              "panels": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "x": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "y": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "width": {
+                      "type": "integer",
+                      "minimum": 1
+                    },
+                    "height": {
+                      "type": "integer",
+                      "minimum": 1
+                    },
+                    "caption": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "required": [
+                    "x",
+                    "y",
+                    "width",
+                    "height",
+                    "caption"
+                  ],
+                  "additionalProperties": false
+                }
               }
             },
             "required": [
@@ -388,6 +440,50 @@
             "additionalProperties": false
           },
           "appendix": {
+            "type": "boolean"
+          },
+          "layout": {
+            "enum": [
+              "prose",
+              "statement",
+              "figure",
+              "comparison",
+              "sequence",
+              "states"
+            ]
+          },
+          "items": {
+            "type": "array",
+            "minItems": 2,
+            "items": {
+              "type": "object",
+              "properties": {
+                "label": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "text": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "claimIds": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "pattern": "^[a-zA-Z][a-zA-Z0-9_-]*$"
+                  },
+                  "minItems": 1
+                }
+              },
+              "required": [
+                "label",
+                "text",
+                "claimIds"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "breakBefore": {
             "type": "boolean"
           }
         },
@@ -587,6 +683,27 @@
         "reason",
         "preview",
         "confirmed"
+      ],
+      "additionalProperties": false
+    },
+    "publication": {
+      "type": "object",
+      "properties": {
+        "topic": {
+          "type": "string",
+          "minLength": 1
+        },
+        "byline": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sourceNote": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "sourceNote"
       ],
       "additionalProperties": false
     }

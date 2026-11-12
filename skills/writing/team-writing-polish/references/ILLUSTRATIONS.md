@@ -28,7 +28,7 @@
 - 原图仅在重复、与本次范围无关、来源失效、清晰度不足或披露/许可不允许等具体情况下调整或省略，并在制作记录说明原因。关键证据图不能只因不好看、占高度或不合模板而删除。
 - 缺图或链接失效时报告哪张图未取得；可完成其他内容，不能凭图注重生成一张并当作原图。需要从外部获取时遵守已给定来源与访问授权。
 - 双模式都先保留与各自正文有关的原图。技术细节可安排到后续章节或附图，不因“速览”自动删光；如确实省略，检查不会改变结论和理解，并保留原因记录。
-- 图片清单记录主线、局部放大或 HTML 附录的具体去向。移入附录不等于删除，必须有可用原件、图注及主线入口；影响结论的证据仍在主线呈现。
+- 图片清单记录主线、局部放大或 HTML 附录的具体去向。只放附录属于原图退出分享主线，必须逐图说明为什么；完整原件可用不能代替图文保留要求。重要情境与承重证据在主线呈现，密集图优先局部放大或按原有分镜排版。
 
 ## 确定性绘图
 
@@ -89,3 +89,7 @@ Create a premium editorial conceptual still-life photograph for a serious techno
 ```text
 Edit this conceptual editorial still life only in its palette. Preserve exactly the paper stack, folded paper bridge, visible gap, separate right block, camera angle, shadows, texture and composition. Change the cobalt blue support block to a restrained dark forest green, approximately #28584A. Change the cool-grey ground and background to warm matte off-white, approximately #F6F4EE, while retaining realistic shadows and subtle material shading. Keep the separate right block a light neutral warm grey and the sheets warm off-white. No other colored accents. No text, logos, labels, numbers or additional objects. This remains a conceptual illustration, not documentary evidence.
 ```
+
+## 原图局部展示
+
+固定渲染器的 `image.panels` 为原始 PNG 建立 SVG 视窗，以原像素坐标定义区域和图注，不重新生成、滤色或改变原件。适用于天然分镜或局部放大；图注须说明节选范围、图片身份和关键条件，不能裁掉会改变判断的状态或坐标。完整原图字节保存在交付 assets，Markdown 提供原件链接。非 PNG 仍可整图显示；不支持的转换不得偷偷替换原图。

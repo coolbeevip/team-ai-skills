@@ -8,6 +8,7 @@ import html
 import json
 import re
 import shutil
+import struct
 import sys
 import tempfile
 from pathlib import Path
@@ -47,10 +48,18 @@ class Renderer:
         self.assets = {}
         self.hash = content_hash(plan)
         evidence_images = {}
+        self.image_placements = {}
         for block in plan['blocks']:
             if 'image' in block:
                 name, _ = self.image(block['image']['path'])
                 evidence_images[block['id']] = hashlib.sha256(self.assets[name]).hexdigest()
+                entry = self.image_placements.setdefault(name, dict(main=[], appendix=[]))
+                entry['appendix' if block.get('appendix') else 'main'].append(block['id'])
+        for name, entry in self.image_placements.items():
+            if not entry['main']:
+                omitted = [b for b in plan['blocks'] if b['id'] in entry['appendix']]
+                if any(not b['image'].get('dispositionReason') for b in omitted):
+                    raise ValueError('appendix-only image needs a specific dispositionReason; preserve useful images in the reading path')
         if evidence_images:
             self.hash = hashlib.sha256(json.dumps([self.hash, evidence_images], sort_keys=True).encode()).hexdigest()
 
@@ -73,6 +82,8 @@ class Renderer:
 
     def ids(self, block):
         ids = list(block['claimIds'])
+        for item in block.get('items', []):
+            ids += item['claimIds']
         if 'diagramId' in block:
             diagram = self.diagrams[block['diagramId']]
             for item in diagram['nodes'] + diagram['edges']:
@@ -87,8 +98,8 @@ class Renderer:
         return list(dict.fromkeys(c for key in ids for c in self.facts[key]['conditions']))
 
     def citations(self, ids):
-        return '<p class="citations">来源：' + ' · '.join(
-            f'<a href="#source-{esc(key)}">{list(self.facts).index(key) + 1}</a>' for key in ids) + '</p>'
+        return '<details class="citations"><summary>查看依据</summary><p>' + ' · '.join(
+            f'<a href="#source-{esc(key)}">来源 {list(self.facts).index(key) + 1}</a>' for key in ids) + '</p></details>'
 
     def diagram(self, diagram, instance):
         cols = max(node['column'] for node in diagram['nodes']) + 1
@@ -170,9 +181,30 @@ class Renderer:
             im = block['image']
             name, uri = self.image(im['path'])
             body = f'<img src="{uri}" alt="{esc(im["alt"])}">'
-            identity = {'evidence': '原始证据', 'explanation': '编辑绘图', 'concept': '概念插画'}[im['identity']]
+            identity = {'evidence': '原始证据', 'explanation': '说明图', 'concept': '概念插画'}[im['identity']]
             caption = identity + '：' + im['caption'] + '；来源：' + im['source']
             markdown += [f'![{md_text(im["alt"])}]({name})', md_text(caption)]
+            if im.get('panels'):
+                data = self.assets[name]
+                if not data.startswith(b'\x89PNG\r\n\x1a\n'):
+                    raise ValueError('panel viewports currently require a PNG original')
+                width, height = struct.unpack('>II', data[16:24])
+                body, markdown = '<div class="image-panels">', []
+                for i, panel in enumerate(im['panels'], 1):
+                    x, y, w, h = (panel[k] for k in ('x', 'y', 'width', 'height'))
+                    if x + w > width or y + h > height:
+                        raise ValueError('image panel viewport exceeds original dimensions')
+                    # Layout viewports preserve the original bytes; they do not redraw evidence.
+                    svg = (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="{x} {y} {w} {h}" role="img"'
+                           f' aria-label="{esc(panel["caption"])}"><title>{esc(panel["caption"])}</title>'
+                           f'<image href="{uri}" width="{width}" height="{height}"/></svg>')
+                    panel_name = f'assets/{block["id"]}-panel-{i}.svg'
+                    self.assets[panel_name] = svg.encode()
+                    body += '<div class="image-panel">' + svg + f'<p>{esc(panel["caption"])}</p></div>'
+                    markdown += [f'![{md_text(panel["caption"])}]({panel_name})', md_text(panel['caption'])]
+                body += '</div>'
+                caption += '（原图局部放大；完整原件随附）'
+                markdown += [md_text(caption), f'[完整原图]({name})']
         else:
             return '', []
         return '<figure class="visual">' + body + f'<figcaption>{esc(caption)}</figcaption></figure>', markdown
@@ -181,13 +213,28 @@ class Renderer:
         ids = self.ids(block)
         conditions = self.conditions(ids)
         visual, visual_md = self.visual(block) if include_visual else ('', [])
-        body = f'<section class="unit role-{esc(block["role"])}" id="block-{esc(block["id"])}" data-role="{esc(block["role"])}"><h2>{esc(block["title"])}</h2>'
-        body += visual
+        layout = block.get('layout', 'prose')
+        body = (f'<section class="unit role-{esc(block["role"])} layout-{layout}" id="block-{esc(block["id"])}"'
+                f' data-role="{esc(block["role"])}" data-layout="{layout}"'
+                f' data-break-before="{str(block.get("breakBefore", False)).lower()}">')
+        if layout == 'figure':
+            body += visual
+        body += f'<h2>{esc(block["title"])}</h2>'
+        if layout != 'figure':
+            body += visual
+        item_md = []
+        if block.get('items'):
+            tag = 'ol' if layout == 'sequence' else 'ul'
+            body += f'<{tag} class="editorial-items items-{layout}">'
+            for item in block['items']:
+                body += f'<li><h3>{esc(item["label"])}</h3><p>{esc(item["text"])}</p></li>'
+                item_md += ['### ' + md_text(item['label']), md_text(item['text'])]
+            body += f'</{tag}>'
         body += '<div class="body-copy">' + ''.join(f'<p>{esc(p)}</p>' for p in block['paragraphs']) + '</div>'
         if conditions:
             body += '<div class="conditions">' + ''.join(f'<p>{esc(c)}</p>' for c in conditions) + '</div>'
         body += self.citations(ids) + '</section>'
-        md = ['## ' + md_text(block['title']), *visual_md, *map(md_text, block['paragraphs']), *map(md_text, conditions),
+        md = ['## ' + md_text(block['title'].replace('\n', ' ')), *visual_md, *item_md, *map(md_text, block['paragraphs']), *map(md_text, conditions),
               '来源：' + ', '.join(ids)]
         return body, '\n\n'.join(md)
 
@@ -218,13 +265,36 @@ class Renderer:
             md += [f'## {key}', md_text(fact['text']), md_text(f'身份：{fact["kind"]}；来源：{source}'), *map(md_text, fact['conditions'])]
         return page + '</aside>', '\n\n'.join(md) + '\n'
 
+    def editorial_review(self):
+        blocks = [b for b in self.plan['blocks'] if not b.get('appendix')]
+        warnings = []
+        if self.image_placements and not any(v['main'] for v in self.image_placements.values()):
+            warnings.append('all source images are appendix-only: explicitly review the sharing-image experience')
+        run = 0
+        for b in blocks:
+            plain = b.get('layout', 'prose') == 'prose' and not any(k in b for k in ('image', 'diagramId', 'chartId', 'scene'))
+            run = run + 1 if plain else 0
+            if run == 4:
+                warnings.append('four consecutive prose blocks: review hierarchy and whether relationships need another form')
+        return dict(status='needs-editorial-review', imagePlacements=self.image_placements,
+                    blockLayouts=[dict(id=b['id'], layout=b.get('layout', 'prose')) for b in blocks],
+                    warnings=warnings,
+                    requiredObservations=['first focal point', 'original image usefulness at reading size',
+                                          'relationship and layout fit', 'rhythm and all segment boundaries'])
+
+    def publication_note(self):
+        note = self.plan.get('publication', {}).get('sourceNote', '来源与依据见随附 HTML 正文及来源映射。')
+        return '<footer class="publication-note"><p>' + esc(note) + '</p></footer>'
+
     def build(self, preview=False):
         plan = self.plan
         blocks = [b for b in plan['blocks'] if not b.get('appendix')]
         appendices = [b for b in plan['blocks'] if b.get('appendix')]
-        hero_role = self.style['heroRole']
-        focus = next((b for b in blocks if b['role'] == hero_role and
-                      any(k in b for k in ('diagramId', 'chartId', 'scene', 'image'))), None)
+        if 'visualBlockId' in plan['mainClaim']:
+            focus = next((b for b in blocks if b['id'] == plan['mainClaim']['visualBlockId']), None)
+        else:
+            focus = next((b for b in blocks if b['role'] == self.style['heroRole'] and
+                          any(k in b for k in ('diagramId', 'chartId', 'scene', 'image'))), None)
         body = '<main data-export="main">'
         hero = plan['mainClaim']
         body += '<header class="hero unit" data-role="hero-claim">'
@@ -232,36 +302,37 @@ class Renderer:
         if logo:
             _, uri = self.image(logo)
             body += f'<img class="brand-logo" src="{uri}" alt="项目标识">'
-        if preview:
-            body += '<p class="eyebrow">风格预览 · ' + esc(self.style['name']) + '</p>'
+        publication = plan.get('publication', {})
+        if publication.get('topic'):
+            body += '<p class="eyebrow">' + esc(publication['topic']) + '</p>'
         body += '<h1>' + esc(hero['text']) + '</h1>'
+        if publication.get('byline'):
+            body += '<p class="byline">' + esc(publication['byline']) + '</p>'
         if hero.get('deck'):
             body += '<p class="deck">' + esc(hero['deck']) + '</p>'
         hero_ids = list(dict.fromkeys(hero['claimIds'] + (self.ids(focus) if focus else [])))
         for condition in self.conditions(hero_ids):
             body += '<p class="hero-condition">' + esc(condition) + '</p>'
-        md = ['# ' + md_text(hero['text']), md_text(hero.get('deck', '')), *map(md_text, self.conditions(hero_ids))]
+        md = ['# ' + md_text(hero['text'].replace('\n', ' ')),
+              md_text(publication.get('topic', '')), md_text(publication.get('byline', '')),
+              md_text(hero.get('deck', '')), *map(md_text, self.conditions(hero_ids))]
         if focus:
             visual, visual_md = self.visual(focus)
             body += visual
             md.extend(visual_md)
         body += self.citations(hero_ids) + '</header>'
-        ordered = ([focus] if focus else []) + [b for b in blocks if b is not focus]
+        # Style must not silently reorder the editorial reading path.
+        for b in blocks:
+            if b.get('breakBefore'):
+                body += self.publication_note()
+            rendered, text = self.block(b, include_visual=b is not focus)
+            body += rendered
+            md.append(text)
+        body += self.publication_note()
+        body += '<nav class="appendix-nav"><a href="#editorial-appendix">来源与附录</a></nav></main>'
+        md.append(publication.get('sourceNote', '来源与依据见 sources.md。'))
         if preview:
-            # Same hero as the final article, plus a separately labelled outline.
-            body += '</main><section class="preview-outline"><h2>全篇骨架</h2><p>这是版面预览，尚未导出最终长图。</p><ol>'
-            for b in ordered:
-                body += '<li' + (' class="focus"' if b is focus else '') + f'>{esc(b["title"])} · {esc(b["role"])}'
-                if b['paragraphs']:
-                    body += '<p>' + esc(b['paragraphs'][0]) + '</p>'
-                body += '</li>'
-            body += '</ol><p>附录：' + esc('、'.join(b['title'] for b in appendices) or '无正文附录') + '</p></section>'
-        else:
-            for b in ordered:
-                rendered, text = self.block(b, include_visual=b is not focus)
-                body += rendered
-                md.append(text)
-            body += '<nav class="appendix-nav"><a href="#editorial-appendix">来源与附录</a></nav></main>'
+            body += '<aside class="preview-notice">版面预览，尚未交付最终长图；正文布局与最终渲染共用同一版本。</aside>'
         body += '<div id="editorial-appendix">'
         if appendices:
             body += '<aside class="appendix"><h2>附录</h2>'
@@ -285,7 +356,7 @@ def main():
     parser.add_argument('--request', type=Path, help='validate request and print resolved plan settings')
     parser.add_argument('--plan', type=Path, help='validated editorial plan JSON')
     parser.add_argument('--output', type=Path, help='new output directory; existing nonempty paths are refused')
-    parser.add_argument('--preview', action='store_true', help='render first focus and full outline, not final article')
+    parser.add_argument('--preview', action='store_true', help='render cover and actual full-layout preview, not final delivery')
     parser.add_argument('--apply', action='store_true', help='write output; otherwise validate and describe only')
     parser.add_argument('--browser', help='local Chrome/Chromium executable for PNG export')
     args = parser.parse_args()
@@ -315,6 +386,7 @@ def main():
     stage = Path(tempfile.mkdtemp(prefix='.editorial-', dir=output.parent))
     report = dict(contentSHA256=renderer.hash, style=plan['styleId'], styleVersion=plan['styleVersion'],
                   preview=args.preview, contrast=renderer.contrasts, browser='not-run',
+                  editorialReview=renderer.editorial_review(),
                   manualChecks=['source entailment and evidence strength', 'actual glyphs and pixel review',
                                 'thumbnail hierarchy and semantic split boundaries', 'human comprehension not tested'])
     code = 0
@@ -353,6 +425,12 @@ def main():
             f'- 自动检查：{"有未完成项" if code else "已执行所请求格式的检查"}；详见 qa-report.json。\n'
             '- 尚未完成：来源语义保真复核、字体缺字与实际图片查看、缩略图层级和分段边界人工复核。\n'
             '- 未做真人理解或读屏设备测试。自动检查通过不等于全部硬门禁通过。\n', encoding='utf-8')
+        with (stage / 'qa-report.md').open('a', encoding='utf-8') as qa:
+            qa.write('\n## 视觉编辑待审\n\n')
+            for warning in report['editorialReview']['warnings']:
+                qa.write('- ' + warning + '\n')
+            qa.write('- 必须记录：首要焦点、原图实际阅读效果、关系与构图是否匹配、全文节奏与分段衔接。\n')
+            qa.write('- 无溢出和文件完整性不能将此项改为通过；需查看实际图片并记录具体观察。\n')
         if output.exists():
             output.rmdir()  # Only the already-checked empty destination.
         stage.rename(output)

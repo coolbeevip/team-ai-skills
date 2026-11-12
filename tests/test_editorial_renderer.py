@@ -176,6 +176,49 @@ class EditorialTests(unittest.TestCase):
         self.assertNotEqual(result.returncode, 0)
         self.assertIn('local file', result.stderr)
 
+    def test_real_preview_preserves_full_layout_order_and_source_text(self):
+        self.plan['outputs'] = ['html', 'markdown']
+        self.plan['mainClaim']['visualBlockId'] = 'mechanism'
+        self.plan['publication'] = {'sourceNote': '合成测试材料，不代表真实评测。'}
+        block = self.plan['blocks'][1]
+        block['layout'] = 'comparison'
+        block['items'] = [dict(label='观察', text='已有测试', claimIds=['c1']),
+                          dict(label='边界', text='尚需独立验证', claimIds=['c4'])]
+        with tempfile.TemporaryDirectory() as work:
+            out, pre = Path(work) / 'out', Path(work) / 'preview'
+            for target, flags in [(out, []), (pre, ['--preview'])]:
+                result = self.cli(self.plan, '--output', str(target), '--apply', *flags)
+                self.assertEqual(result.returncode, 0, result.stderr)
+            final = (out / 'index.html').read_text()
+            preview = (pre / 'layout-preview.html').read_text()
+            main = lambda page: page.split('<main', 1)[1].split('</main>', 1)[0]
+            self.assertEqual(main(final), main(preview))
+            positions = [final.index('id="block-' + b['id'] + '"') for b in self.plan['blocks']]
+            self.assertEqual(positions, sorted(positions))
+            self.assertIn('items-comparison', final)
+            self.assertIn('尚需独立验证', (out / 'editorial.md').read_text())
+            self.assertIn('合成测试材料，不代表真实评测。', main(final))
+
+    def test_structured_layout_items_validate_evidence_and_conditions(self):
+        block = self.plan['blocks'][0]
+        block['layout'] = 'states'
+        with self.assertRaisesRegex(ValueError, 'sourced items'):
+            contracts.validate_plan(self.plan)
+        block['items'] = [dict(label='一', text='一', claimIds=['absent']),
+                          dict(label='二', text='二', claimIds=['c4'])]
+        with self.assertRaisesRegex(ValueError, 'claimIds'):
+            contracts.validate_plan(self.plan)
+        block['items'][0]['claimIds'] = ['c1']
+        contracts.validate_plan(self.plan)
+        self.plan['outputs'] = ['html', 'markdown']
+        with tempfile.TemporaryDirectory() as work:
+            out = Path(work) / 'out'
+            result = self.cli(self.plan, '--output', str(out), '--apply')
+            self.assertEqual(result.returncode, 0, result.stderr)
+            section = (out / 'index.html').read_text().split('id="block-' + block['id'] + '"')[1].split('</section>')[0]
+            for condition in next(f for f in self.plan['facts'] if f['id'] == 'c4')['conditions']:
+                self.assertIn(condition, section)
+
     def test_packaged_images_are_reproducible_and_content_changes_are_detected(self):
         def png(color):
             def chunk(kind, value):
@@ -204,6 +247,32 @@ class EditorialTests(unittest.TestCase):
             self.assertEqual(first, run(base / 'first/design-plan.json', base / 'replay'))
             source.write_bytes(png(b'\xff\xff\xff'))
             self.assertNotEqual(first, run(plan, base / 'changed'))
+            # Preserve bytes while exposing a real original-image viewport in the reading path.
+            self.plan['blocks'][0]['image']['panels'] = [dict(x=0, y=0, width=1, height=1, caption='原图局部')]
+            plan.write_text(json.dumps(self.plan))
+            run(plan, base / 'panels')
+            self.assertIn('原图局部', (base / 'panels/editorial.md').read_text())
+            self.assertTrue(list((base / 'panels/assets').glob('*-panel-1.svg')))
+            saved = json.loads((base / 'panels/design-plan.json').read_text())
+            self.assertEqual((base / 'panels' / saved['blocks'][0]['image']['path']).read_bytes(), source.read_bytes())
+            self.plan['blocks'][0]['image']['panels'][0]['width'] = 2
+            plan.write_text(json.dumps(self.plan))
+            result = subprocess.run([sys.executable, str(SCRIPT), '--plan', str(plan)], capture_output=True, text=True)
+            self.assertIn('viewport exceeds', result.stderr)
+            self.plan['blocks'][0]['image'].pop('panels')
+            # An image only archived in the appendix is not implicitly considered preserved in the longform.
+            appendix = copy.deepcopy(self.plan['blocks'][0])
+            appendix.update(id='original', appendix=True)
+            self.plan['blocks'][0].pop('image')
+            self.plan['blocks'].append(appendix)
+            plan.write_text(json.dumps(self.plan))
+            result = subprocess.run([sys.executable, str(SCRIPT), '--plan', str(plan)], capture_output=True, text=True)
+            self.assertIn('appendix-only image', result.stderr)
+            appendix['image']['dispositionReason'] = '测试特例：此像素图不提供正文理解信息。'
+            plan.write_text(json.dumps(self.plan))
+            run(plan, base / 'appendix')
+            qa = json.loads((base / 'appendix/qa-report.json').read_text())
+            self.assertTrue(any('appendix-only' in w for w in qa['editorialReview']['warnings']))
 
 
 if __name__ == '__main__':

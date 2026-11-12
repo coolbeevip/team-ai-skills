@@ -45,14 +45,15 @@
 
 ## 内容结构与来源
 
-- `mainClaim`：`text`、可选 `deck`、`claimIds`。文本字段为纯文本，不嵌入 HTML 或 Markdown 图片。
+- `mainClaim`：`text`、可选 `deck`、`claimIds`；可选 `visualBlockId` 指定主线图形块作为首屏视觉，`null` 明确采用文字首屏。文本字段为纯文本，不嵌入 HTML 或 Markdown 图片。
 - `facts`：唯一 `id`、原始主张 `text`、`kind`、可追溯 `source`、`conditions`；`kind` 为 `fact`、`judgment`、`recommendation` 或 `hypothesis`。`required: true` 的主张必须在主线被引用。
 - `quantity`：仅在来源给出可靠量值时写入 `value` 与 `unit`。缺数据不设零。冲突保留在底稿与正文，不能选择更吸引眼球的数字作图。
-- `blocks`：唯一 `id`、语义 `role`、`title`、`paragraphs`、`claimIds`；可设 `appendix: true`。每块至多一个主视觉：`diagramId`、`chartId`、`scene` 或 `image`。
+- `blocks`：唯一 `id`、语义 `role`、`title`、`paragraphs`、`claimIds`；可设 `appendix: true`。`layout` 可为 `prose`（默认）、`statement`（关键句）、`figure`（图先行）、`comparison`、`sequence` 或 `states`。后三种需 `items: [{label, text, claimIds}]`，对照恰好两侧；条目的事实与条件参与主线检查和正文生成。`breakBefore: true` 指定语义分图边界，每段应独立保留所需条件。每块至多一个主视觉：`diagramId`、`chartId`、`scene` 或 `image`。
 - `diagrams`：标题、文字说明、节点和边。节点包含来源、行列位置、`observed/pending` 状态；边必须有可解析的端点和来源。位置不是事实顺序，箭头才表示关系。
 - `charts`：标题、比较条件和点；每个点只给标签与 `claimId`，数值与单位从事实底稿读取，不能在图表里另填一个数。
 - `scene`：同一 `object`、`state`、`caption`、`claimIds`、状态。当前几何组件只表达“对象与证据状态”的概念对应；不适用时用真实素材或另行制作插画，不套成机器人能力图。
-- `image`：本地路径、具体 `alt`、图注、来源和 `evidence/explanation/concept` 身份。只读取计划目录内部的 PNG/JPEG/WebP，保留原件，交付副本按内容哈希命名并内联 HTML。
+- `image`：本地路径、具体 `alt`、图注、来源和 `evidence/explanation/concept` 身份。只读取计划目录内部的 PNG/JPEG/WebP，保留原件，交付副本按内容哈希命名并内联 HTML。PNG 可设 `panels: [{x, y, width, height, caption}]`，坐标为原图像素，用 SVG 视窗展示局部；越界报错，原始字节不改写。只在附录出现的图片须给 `dispositionReason`，同一原图在主线已展示时不重复要求。
+- `publication`：可选 `topic`、`byline` 和必填 `sourceNote`，只填原文支持的题材、署名与简短来源说明；不虚构刊号。来源说明随分段图片保留，内部来源编号与 HTML 导航不截入 PNG。
 
 数据条图首版只接受同单位、非负的事实量值；更复杂的时序、多变量、负数或统计图应另行确定性绘制并保留可编辑图源。SVG 原件不得直接作为可执行页面注入；可保留原件并使用受信工具栅格化用于展示，或根据来源建立节点/边数据。不会因不支持一种图形而伪造替代数据。
 
@@ -66,7 +67,7 @@
 - 用户直接要求完成或沿用已选风格、不需额外预览：记录原意，设置 `preview=skip`；不重复提问。
 - 源内容或主布局改变：重新检查构图，必要时重新预览；不承诺旧版式容纳任意内容。
 
-风格的默认首屏视觉由配置 `heroRole` 选择，正文先后顺序以受众计划为基础。若材料没有匹配图形，允许文字首屏；数据新闻不会自动捏造图表。各块仍使用可编辑 HTML/SVG，不能把全部内容交给图像模型。
+优先使用显式 `visualBlockId`；未提供时兼容旧计划，由风格 `heroRole` 选择匹配图形。无论首屏选哪张图，正文严格保持 `blocks` 的顺序，不自动把对应章节提前。若材料没有匹配图形，允许文字首屏；数据新闻不会自动捏造图表。各块仍使用可编辑 HTML/SVG，不能把全部内容交给图像模型。
 
 ## 脚本与依赖
 
@@ -92,10 +93,18 @@ JSON、Markdown、HTML 和图源制作只用 Python 标准库。PNG 需要本地
 1. 校验结构、引用、必要主张、图表数值来源和最终配色对比度。
 2. 从同一计划生成 Markdown、HTML、图源、`sources.md` 和 `design-plan.json`；PNG 需要的 HTML 即使未单独请求也作为渲染源保留。
 3. 在 360/400/430 CSS px 和指定宽度等待字体、图片完成；检查溢出、SVG 文字裁切、标签实际缩放字号、图片加载与实际字体家族。记录浏览器版本；CDP 未暴露的系统字体版本明确标为不可获取，不捏造。
-4. 只导出主线，附录留在 HTML。受像素预算或渠道限制时按完整语义块分段；单块超限则报错，返回编辑拆块，不缩字或截断图注。
+4. 预览使用与最终相同的完整正文 DOM，导出首屏及实际全篇缩略图，不生成文字目录冒充构图。缩略图仅检查主次；可打开预览 HTML 按手机尺寸阅读。最终只导出主线，附录留在 HTML。优先遵守 `breakBefore`，再受像素预算或渠道限制按完整语义块分段；单块超限则报错，返回编辑拆块，不缩字或截断图注。
 5. 超过约四个手机屏时报告编辑提醒，供检查是否应拆分；它不是强制裁切阈值。没有真实渠道限制时不伪造平台上限。
 6. 读回 PNG 的签名、尺寸与分块校验；记录文件哈希、截取范围及自动检查。实际图片仍须打开查看，不能把文件校验称为视觉验收。
 
-`qa-report.json` 保留机器记录与文件哈希，`qa-report.md` 给出检查状态和未验项。字体缺字、事实语义、首中尾和全篇视觉评审、分段上下文及真人理解测试必须区分。首版不自动启用真实设备读屏、播放声音或改音频设置。
+`qa-report.json` 保留机器记录与文件哈希，`editorialReview` 单独记录待审状态、原图主线/附录位置、实际布局与编辑提醒。四个连续纯段落、全部原图退出主线等只作为具体复核信号，不是通用图数要求，也不能用凑图消除问题。`qa-report.md` 给出检查状态和未验项。字体缺字、事实语义、首中尾和全篇视觉评审、分段上下文及真人理解测试必须区分。首版不自动启用真实设备读屏、播放声音或改音频设置。
 
 退出码：`0` 为请求格式已生成或 dry-run 通过，仍可能待人工复核；`1` 为计划/文件等硬错误；`2` 为浏览器导出未完成但已保留可用产物。任何硬门禁失败都不能宣称最终作品完成。
+
+## 布局与图像迁移示例
+
+```json
+{"id":"comparison","role":"comparison","layout":"comparison","title":"结果与过程需要不同证据","paragraphs":[],"claimIds":["claim-01"],"items":[{"label":"结果","text":"来源支持的结果说明","claimIds":["claim-01"]},{"label":"过程","text":"来源支持的过程说明","claimIds":["claim-01"]}]}
+```
+
+例子仅说明字段，不能替代材料。旧计划没有 `layout` 时保持普通段落；只在附录存图的旧计划需补充逐图理由或把相关原图恢复到主线。图形裁切范围和顺序仍需人工核对，自动坐标检查无法证明未丢失语义。
