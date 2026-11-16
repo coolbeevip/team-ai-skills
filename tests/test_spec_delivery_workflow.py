@@ -260,7 +260,7 @@ class SpecDeliveryWorkflowTests(unittest.TestCase):
 
         self.assertIn("一个内聚、完整且值得单独交付的工程结果", text)
         self.assertIn("不是缩小 Task 的目标", text)
-        self.assertIn("实现及其单元、集成和回归测试", text)
+        self.assertIn("实现及其端到端行为验证和必要的回归测试", text)
         self.assertIn("超过 6 个候选 Task", text)
         self.assertIn("不设固定减少比例", text)
         self.assertNotIn("默认目标是将 Task 数量减少约三分之一", text)

@@ -11,6 +11,16 @@ repos:
         entry: python3 scripts/check_skills.py
         language: system
         pass_filenames: false
+      - id: check-skill-policies
+        name: Check skill policy regressions
+        entry: python3 scripts/check_skill_policies.py
+        language: system
+        pass_filenames: false
+      - id: test-skill-policy-cli
+        name: Test skill policy CLI end to end
+        entry: python3 tests/agent/check_skill_policy_cli.py
+        language: system
+        pass_filenames: false
       - id: check-vendored-common
         name: Check vendored common helpers
         entry: python3 scripts/check_vendored_common.py --check
